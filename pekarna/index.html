@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pekarna">
+<meta name="theme-color" content="#fdf1e4">
+<title>Pekarna</title>
+<style>
+:root {
+  --bg: #fdf1e4; --ink: #2b2a33; --muted: #6b6876; --card: #fff; --line: #ead7bf;
+  --accent: #d9622b; --accent-ink: #fff; --good: #dff3e6; --good-line: #3c9a5f; --warn: #fff1cc; --warn-line: #e0a800;
+  --wood: #c98b55; --wood-dark: #a86b3a; --gold: #f2c94c; --silver: #d9dde3; --bill: #9fd3a8;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 20px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: manipulation;
+}
+#app { height: 100%; height: 100dvh; display: flex; flex-direction: column; }
+.screen {
+  flex: 1; display: flex; flex-direction: column; min-height: 0; width: 100%; max-width: 980px; margin: 0 auto; gap: 12px;
+  padding: calc(12px + env(safe-area-inset-top)) 16px calc(12px + env(safe-area-inset-bottom));
+}
+.center { justify-content: center; align-items: center; text-align: center; gap: 20px; overflow-y: auto; }
+h1 { font-size: 44px; margin: 0; }
+.muted { color: var(--muted); }
+.btn {
+  appearance: none; border: 0; border-radius: 18px; background: var(--accent); color: var(--accent-ink);
+  font: inherit; font-size: 26px; font-weight: 700; padding: 12px 28px; min-height: 60px; cursor: pointer;
+  text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn.secondary { background: var(--card); color: var(--ink); border: 2px solid var(--line); }
+.btn.small { font-size: 18px; min-height: 44px; padding: 6px 14px; border-radius: 12px; }
+.btn:active { transform: scale(.97); }
+
+/* menu */
+.levels { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; }
+.level {
+  appearance: none; font: inherit; color: inherit; cursor: pointer; width: 250px;
+  background: var(--card); border: 3px solid var(--line); border-radius: 24px; padding: 20px 16px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.level:active { border-color: var(--accent); }
+.level .icon { font-size: 64px; line-height: 1.1; }
+.level .name { font-size: 28px; font-weight: 800; color: var(--accent); }
+.level .done { font-size: 18px; color: var(--muted); min-height: 1.4em; }
+.bank { font-size: 22px; font-weight: 700; }
+
+/* shop */
+.top { display: flex; align-items: center; gap: 12px; }
+.top .title { font-weight: 800; font-size: 22px; }
+.progress { display: flex; gap: 4px; font-size: 26px; margin-left: auto; }
+.progress .off { opacity: .2; filter: grayscale(1); }
+.customer { display: flex; align-items: flex-start; gap: 14px; }
+.who { font-size: 84px; line-height: 1; flex: none; }
+.who.enter { animation: walkin .5s ease-out; }
+.who.happy { animation: hop .6s ease-in-out 2; }
+@keyframes walkin { from { transform: translateX(-60px); opacity: 0; } }
+@keyframes hop { 50% { transform: translateY(-18px); } }
+.bubble {
+  position: relative; flex: 1; background: var(--card); border: 3px solid var(--line); border-radius: 22px;
+  padding: 12px 16px; font-size: 24px; min-height: 84px;
+}
+.bubble::before {
+  content: ""; position: absolute; left: -14px; top: 26px; border: 12px solid transparent; border-right-color: var(--line); border-left: 0;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; background: #fff7ee; border: 2px solid var(--line); border-radius: 14px; padding: 4px 12px; font-weight: 700; }
+.chip .e { font-size: 30px; }
+.chip.ok { background: var(--good); border-color: var(--good-line); }
+.chip.bad { background: var(--warn); border-color: var(--warn-line); animation: shake .4s; }
+@keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+.counter {
+  flex: 1; min-height: 120px; background: var(--wood); border-bottom: 10px solid var(--wood-dark); border-radius: 18px;
+  padding: 12px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto;
+}
+.counter .label { color: #fff; font-weight: 700; font-size: 18px; opacity: .9; }
+.tray { flex: 1; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 6px; }
+.group { display: flex; flex-wrap: wrap; gap: 2px; background: rgba(255, 255, 255, .25); border-radius: 14px; padding: 4px 6px; }
+.thing { appearance: none; border: 0; background: none; font-size: 46px; line-height: 1; padding: 2px; cursor: pointer; position: relative; }
+.thing .n { position: absolute; right: -2px; bottom: -4px; font-size: 16px; font-weight: 800; background: #fff; border-radius: 10px; padding: 0 5px; color: var(--ink); }
+.thing.pop { animation: pop .25s ease-out; }
+@keyframes pop { from { transform: scale(.4); } }
+.tag { display: inline-block; font-size: 16px; font-weight: 800; background: #fff; border: 2px solid var(--line); border-radius: 8px; padding: 0 6px; color: var(--ink); }
+.shelf { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
+.item {
+  appearance: none; font: inherit; color: inherit; cursor: pointer; background: var(--card); border: 3px solid var(--line);
+  border-radius: 18px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.item:active { border-color: var(--accent); transform: scale(.96); }
+.item .e { font-size: 52px; line-height: 1.1; }
+.item .w { font-size: 17px; font-weight: 600; }
+.money { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; }
+.coin {
+  appearance: none; font: inherit; cursor: pointer; width: 74px; height: 74px; border-radius: 50%; border: 4px solid #c9a227;
+  background: radial-gradient(circle at 35% 30%, #fff6c8, var(--gold) 60%); font-size: 22px; font-weight: 800; color: #6b4e00;
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+}
+.coin.c1 { border: 6px solid var(--gold); background: radial-gradient(circle at 35% 30%, #fff, var(--silver) 70%); color: #3d4450; }
+.coin.c2 { border: 6px solid var(--silver); }
+.coin.bill {
+  width: 112px; height: 66px; border-radius: 10px; border: 3px solid #4f9a5c; background: linear-gradient(135deg, #c9ecd0, var(--bill));
+  color: #1f5a2a;
+}
+.coin.b10 { border-color: #c0392b; background: linear-gradient(135deg, #fbd5cf, #f19a8d); color: #7a1f14; }
+.coin.b20 { border-color: #2b6cb0; background: linear-gradient(135deg, #d4e6fb, #8fb9ec); color: #173f6b; }
+.coin:active { transform: scale(.94); }
+.coin.static { cursor: default; }
+.purse { background: #f4e2cc; border: 3px dashed var(--line); border-radius: 18px; padding: 10px; }
+.purse .label, .reg .label { font-weight: 700; color: var(--muted); font-size: 18px; text-align: center; margin-bottom: 6px; }
+.reg { background: #e9eef3; border: 3px solid #c7d0d9; border-radius: 18px; padding: 10px; }
+.footer { display: flex; gap: 12px; justify-content: flex-end; align-items: center; flex-wrap: wrap; }
+.hintline { flex: 1; font-size: 22px; font-weight: 600; color: #8a5a00; min-height: 1.4em; }
+.sum { color: #fff; font-weight: 800; font-size: 22px; }
+.line { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.line .cell { min-width: 44px; padding: 4px 6px; border-radius: 10px; background: #fff; border: 2px solid var(--line); font-weight: 800; text-align: center; }
+.line .cell.start { background: var(--warn); border-color: var(--warn-line); }
+.line .cell.end { background: var(--good); border-color: var(--good-line); }
+.line .arrow { color: #fff; font-weight: 800; }
+.big-emoji { font-size: 96px; line-height: 1; }
+.stars { font-size: 44px; letter-spacing: 4px; }
+.fly { position: fixed; font-size: 48px; pointer-events: none; z-index: 20; animation: fly 1s ease-in forwards; }
+@keyframes fly { to { transform: translate(var(--dx), var(--dy)) scale(.5); opacity: .2; } }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+'use strict';
+
+// ---------------------------------------------------------------------------
+// Content. forms = accusative after a number: 1, 2, 3–4, 5+ (native speaker to check).
+// ---------------------------------------------------------------------------
+const ITEMS = {
+  rogljic: { e: '🥐', price: 1, forms: ['rogljič', 'rogljiča', 'rogljiče', 'rogljičev'] },
+  krof: { e: '🍩', price: 2, forms: ['krof', 'krofa', 'krofe', 'krofov'] },
+  piskot: { e: '🍪', price: 1, forms: ['piškot', 'piškota', 'piškote', 'piškotov'] },
+  mafin: { e: '🧁', price: 3, forms: ['mafin', 'mafina', 'mafine', 'mafinov'] },
+  presta: { e: '🥨', price: 2, forms: ['presto', 'presti', 'preste', 'prest'] },
+};
+const CUSTOMERS = ['🐰', '🦊', '🐻', '🐿️', '🦉', '🐸', '🐷', '🐱', '🐶', '🐼'];
+const HELLO = ['Dober dan!', 'Živijo!', 'Lep pozdrav!', 'Zdravo, pek!'];
+const THANKS = ['Hvala!', 'Mmm, odlično!', 'Najlepša hvala!', 'Super si!'];
+
+const LEVELS = [
+  { id: 1, name: 'Štejem', icon: '🧺', desc: 'Spakiraj pravo število.' },
+  { id: 2, name: 'Plačilo', icon: '🪙', desc: 'Seštej ceno in vzemi denar.' },
+  { id: 3, name: 'Vračilo', icon: '💶', desc: 'Vrni pravi drobiž.' },
+];
+const PER_DAY = 5;
+
+// Money pieces the child can tap: value → class.
+const MONEY = { 1: 'coin c1', 2: 'coin c2', 5: 'coin bill', 10: 'coin bill b10', 20: 'coin bill b20' };
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+const app = document.getElementById('app');
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = (arr) => arr.map(v => [Math.random(), v]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+const formIndex = (n) => n === 1 ? 0 : n === 2 ? 1 : n <= 4 ? 2 : 3;
+const word = (id, n) => ITEMS[id].forms[formIndex(n)];
+const sumOf = (arr) => arr.reduce((a, b) => a + b, 0);
+const money = (v, extra = '') => `<span class="${MONEY[v]} ${extra}">${v} €</span>`;
+
+const SAVE_KEY = 'pekarna_v1';
+const save = {
+  read() { try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || { days: {}, bank: 0 }; } catch (e) { return { days: {}, bank: 0 }; } },
+  write(v) { try { localStorage.setItem(SAVE_KEY, JSON.stringify(v)); } catch (e) {} },
+};
+let SAVE = save.read();
+
+// Little sounds, no files needed.
+let actx = null;
+function tone(freq, dur = 0.12, type = 'sine', when = 0) {
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = type; o.frequency.value = freq;
+    const t = actx.currentTime + when;
+    g.gain.setValueAtTime(0.18, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + dur);
+  } catch (e) {}
+}
+const sfx = {
+  tap: () => tone(660, 0.06, 'triangle'),
+  coin: () => { tone(1320, 0.08, 'square'); tone(1760, 0.1, 'square', 0.06); },
+  oops: () => tone(220, 0.18, 'triangle'),
+  yay: () => [523, 659, 784, 1046].forEach((f, i) => tone(f, 0.16, 'triangle', i * 0.09)),
+};
+
+// ---------------------------------------------------------------------------
+// Orders
+// ---------------------------------------------------------------------------
+function makeOrder(level, i) {
+  for (;;) {
+    const types = level === 1 && i < 2 ? 1 : rnd(1, 2);
+    const ids = shuffle(Object.keys(ITEMS)).slice(0, types);
+    const maxN = level === 1 ? (i < 2 ? 3 : 5) : 3;
+    const lines = ids.map(id => ({ id, n: rnd(1, maxN) }));
+    const total = sumOf(lines.map(l => ITEMS[l.id].price * l.n));
+    if (level === 2 && total > 10) continue;
+    if (level === 3) {
+      // First customers pay with 10 €, later ones sometimes with 20 €.
+      const paid = i < 3 || total < 10 ? 10 : 20;
+      if (total >= paid || total < 3 || (paid === 20 && total > 15)) continue;
+      return { lines, total, paid };
+    }
+    return { lines, total, paid: null };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+const G = {
+  screen: 'menu', level: null, idx: 0, face: '', order: null,
+  phase: 'pack', basket: {}, placed: [], tries: 0, marks: null, msg: '', earned: 0,
+};
+
+function startDay(level) {
+  Object.assign(G, { level, idx: 0, earned: 0 });
+  nextCustomer();
+}
+
+function nextCustomer() {
+  Object.assign(G, {
+    screen: 'shop', face: CUSTOMERS[(G.idx + rnd(0, 9)) % CUSTOMERS.length], hello: pick(HELLO), enter: true,
+    order: makeOrder(G.level, G.idx), phase: 'pack', basket: {}, placed: [], tries: 0, marks: null, msg: '',
+  });
+  render();
+}
+
+function setPhase(phase) {
+  Object.assign(G, { phase, placed: [], tries: 0, marks: null, msg: '' });
+  render();
+}
+
+// ---------------------------------------------------------------------------
+// Rendering
+// ---------------------------------------------------------------------------
+function render() {
+  app.innerHTML = T[G.screen]();
+  G.enter = false;
+}
+
+const orderChips = () => G.order.lines.map(l => {
+  const mark = G.marks ? (G.marks[l.id] ? ' ok' : ' bad') : '';
+  return `<span class="chip${mark}">${l.n} <span class="e">${ITEMS[l.id].e}</span> ${word(l.id, l.n)}</span>`;
+}).join('');
+
+function basketHTML(numbered) {
+  return Object.entries(G.basket).filter(([, n]) => n > 0).map(([id, n]) =>
+    `<div class="group">${Array.from({ length: n }, (_, k) =>
+      `<button class="thing" data-act="unpack" data-id="${id}">${ITEMS[id].e}${numbered ? `<span class="n">${k + 1}</span>` : ''}</button>`).join('')}</div>`).join('');
+}
+
+// Basket shown with price tags, for working out the total.
+function pricedBasket() {
+  return G.order.lines.map(l => `<div class="group">${Array.from({ length: l.n }, () =>
+    `<span class="thing">${ITEMS[l.id].e}<span class="n">${ITEMS[l.id].price} €</span></span>`).join('')}</div>`).join('');
+}
+
+const pricesEquation = () => G.order.lines.flatMap(l => Array(l.n).fill(ITEMS[l.id].price)).join(' + ');
+
+function numberLine(from, to) {
+  const cells = [];
+  for (let v = from; v <= to; v++) {
+    cells.push(`<span class="cell ${v === from ? 'start' : v === to ? 'end' : ''}">${v}</span>`);
+    if (v < to) cells.push('<span class="arrow">→</span>');
+  }
+  return `<div class="line">${cells.join('')}</div>`;
+}
+
+const T = {
+  menu() {
+    return `<div class="screen center">
+      <div class="big-emoji">🥐🍩🧁</div>
+      <h1>Pekarna</h1>
+      <div class="bank">V blagajni: ${SAVE.bank} € 💰</div>
+      <div class="levels">${LEVELS.map(l => `
+        <button class="level" data-act="day" data-level="${l.id}">
+          <span class="icon">${l.icon}</span><span class="name">${l.id}. ${l.name}</span>
+          <span class="muted">${l.desc}</span>
+          <span class="done">${SAVE.days[l.id] ? '🏅'.repeat(Math.min(SAVE.days[l.id], 5)) + (SAVE.days[l.id] > 5 ? ' ×' + SAVE.days[l.id] : '') : ''}</span>
+        </button>`).join('')}</div>
+      <a class="btn secondary small" href="../">← Vse igre</a>
+    </div>`;
+  },
+
+  shop() {
+    const L = LEVELS[G.level - 1];
+    const o = G.order;
+    const dots = Array.from({ length: PER_DAY }, (_, k) => `<span class="${k < G.idx ? '' : 'off'}">⭐</span>`).join('');
+    let say, middle, bottom, action;
+
+    if (G.phase === 'pack') {
+      say = `${G.hello} Prosim:<div class="chips">${orderChips()}</div>`;
+      middle = `<div class="label">🧺 Vrečka – tapni pecivo, da ga vzameš ven</div><div class="tray">${basketHTML(G.tries >= 2)}</div>`;
+      bottom = `<div class="shelf">${Object.entries(ITEMS).map(([id, it]) => `
+        <button class="item" data-act="pack" data-id="${id}"><span class="e">${it.e}</span>
+          <span class="w">${it.forms[0]}</span>${G.level > 1 ? `<span class="tag">${it.price} €</span>` : ''}</button>`).join('')}</div>`;
+      action = '<button class="btn" data-act="packDone">Pripravljeno ✔</button>';
+    } else if (G.phase === 'pay') {
+      say = `Koliko stane? Vzemi pravo vsoto iz moje denarnice.<div class="chips">${orderChips()}</div>`;
+      const shown = G.tries >= 2 ? `<div class="sum">${pricesEquation()} = ${G.tries >= 3 ? o.total + ' €' : '?'}</div>` : '';
+      middle = `<div class="tray">${pricedBasket()}</div>${shown}
+        <div class="label">💰 Na pultu${G.tries >= 1 && G.placed.length ? ': ' + sumOf(G.placed) + ' €' : ''}</div>
+        <div class="money">${G.placed.map((v, k) => `<button class="${MONEY[v]}" data-act="unplace" data-k="${k}">${v} €</button>`).join('') || '<span class="label">tapni kovance spodaj</span>'}</div>`;
+      bottom = `<div class="purse"><div class="label">👛 Denarnica</div><div class="money">${[1, 1, 1, 1, 1, 2, 2, 2, 2, 5].map(v =>
+        `<button class="${MONEY[v]}" data-act="place" data-v="${v}">${v} €</button>`).join('')}</div></div>`;
+      action = '<button class="btn" data-act="payDone">Vzamem ✔</button>';
+    } else if (G.phase === 'change') {
+      const change = o.paid - o.total;
+      say = `Skupaj je <b>${o.total} €</b>. Plačam z ${money(o.paid, 'static')} Koliko mi vrneš?`;
+      const helper = G.tries >= 2 ? numberLine(o.total, o.paid) + (G.tries >= 3 ? `<div class="sum">Vrni ${change} €</div>` : '') : '';
+      middle = `${helper}<div class="label">🤲 Vračilo${G.tries >= 1 && G.placed.length ? ': ' + sumOf(G.placed) + ' €' : ''}</div>
+        <div class="money">${G.placed.map((v, k) => `<button class="${MONEY[v]}" data-act="unplace" data-k="${k}">${v} €</button>`).join('') || '<span class="label">tapni denar v blagajni</span>'}</div>`;
+      bottom = `<div class="reg"><div class="label">🧾 Blagajna</div><div class="money">${[1, 2, 5, 10].map(v =>
+        `<button class="${MONEY[v]}" data-act="place" data-v="${v}">${v} €</button>`).join('')}</div></div>`;
+      action = '<button class="btn" data-act="changeDone">Vrnem ✔</button>';
+    } else {
+      say = `<b>${G.thanks}</b>`;
+      middle = `<div class="tray">${G.order.lines.map(l => `<div class="group">${`<span class="thing">${ITEMS[l.id].e}</span>`.repeat(l.n)}</div>`).join('')}</div>`;
+      bottom = '';
+      action = `<button class="btn" data-act="next">${G.idx + 1 < PER_DAY ? 'Naslednji kupec →' : 'Konec dneva 🎉'}</button>`;
+    }
+
+    return `<div class="screen">
+      <div class="top"><button class="btn secondary small" data-act="menu">←</button>
+        <span class="title">${L.icon} ${L.name}</span><span class="progress">${dots}</span></div>
+      <div class="customer"><div class="who ${G.phase === 'happy' ? 'happy' : G.enter ? 'enter' : ''}">${G.face}</div><div class="bubble">${say}</div></div>
+      <div class="counter">${middle}</div>
+      ${bottom}
+      <div class="footer"><span class="hintline">${G.msg}</span>${action}</div>
+    </div>`;
+  },
+
+  dayDone() {
+    return `<div class="screen center">
+      <div class="big-emoji">🏅</div>
+      <h1>Dan je končan!</h1>
+      <div class="stars">${'⭐'.repeat(PER_DAY)}</div>
+      ${G.level > 1 ? `<div class="bank">Danes: +${G.earned} € · v blagajni: ${SAVE.bank} € 💰</div>` : ''}
+      <div class="levels"><button class="btn" data-act="day" data-level="${G.level}">Še en dan</button>
+        <button class="btn secondary" data-act="menu">Meni</button></div>
+    </div>`;
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Checks: wrong answers only add help, never take anything away.
+// ---------------------------------------------------------------------------
+function wrong(msg) {
+  G.tries++;
+  G.msg = msg;
+  sfx.oops();
+  render();
+}
+
+function served() {
+  sfx.yay();
+  G.phase = 'happy';
+  G.thanks = pick(THANKS);
+  G.msg = '';
+  G.marks = null;
+  if (G.level > 1) G.earned += G.order.total;
+  render();
+  flyStar();
+}
+
+function flyStar() {
+  const from = document.querySelector('.who').getBoundingClientRect();
+  const to = document.querySelectorAll('.progress span')[G.idx].getBoundingClientRect();
+  const el = document.createElement('div');
+  el.className = 'fly';
+  el.textContent = '⭐';
+  el.style.left = from.left + 'px';
+  el.style.top = from.top + 'px';
+  el.style.setProperty('--dx', (to.left - from.left) + 'px');
+  el.style.setProperty('--dy', (to.top - from.top) + 'px');
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+const ACTIONS = {
+  day(el) { sfx.tap(); startDay(Number(el.dataset.level)); },
+  menu() { sfx.tap(); G.screen = 'menu'; render(); },
+  pack(el) {
+    sfx.tap();
+    const id = el.dataset.id;
+    G.basket[id] = (G.basket[id] || 0) + 1;
+    G.marks = null;
+    render();
+    const last = document.querySelectorAll(`.thing[data-id="${id}"]`);
+    if (last.length) last[last.length - 1].classList.add('pop');
+  },
+  unpack(el) {
+    sfx.tap();
+    G.basket[el.dataset.id]--;
+    G.marks = null;
+    render();
+  },
+  packDone() {
+    const want = Object.fromEntries(G.order.lines.map(l => [l.id, l.n]));
+    G.marks = Object.fromEntries(G.order.lines.map(l => [l.id, (G.basket[l.id] || 0) === l.n]));
+    const extra = Object.keys(G.basket).filter(id => G.basket[id] > 0 && !want[id]);
+    const allOk = Object.values(G.marks).every(Boolean) && !extra.length;
+    if (allOk) {
+      if (G.level === 1) served();
+      else setPhase(G.level === 2 ? 'pay' : 'change');
+      return;
+    }
+    if (extra.length) wrong(`Tega ne želim: ${extra.map(id => ITEMS[id].e).join(' ')}`);
+    else wrong(G.tries >= 1 ? 'Preštej še enkrat – pomagajo ti številke.' : 'Preštej še enkrat!');
+  },
+  place(el) {
+    sfx.coin();
+    G.placed.push(Number(el.dataset.v));
+    render();
+  },
+  unplace(el) {
+    sfx.tap();
+    G.placed.splice(Number(el.dataset.k), 1);
+    render();
+  },
+  payDone() {
+    const s = sumOf(G.placed);
+    if (s === G.order.total) { served(); return; }
+    const hint = ['Seštej cene na pecivu.', 'Poglej račun zgoraj.', 'Odgovor je zgoraj. 🙂'][Math.min(G.tries, 2)];
+    wrong(`${s < G.order.total ? 'Premalo' : 'Preveč'}! ${hint}`);
+  },
+  changeDone() {
+    const s = sumOf(G.placed), change = G.order.paid - G.order.total;
+    if (s === change) { served(); return; }
+    const hint = [`Štej od ${G.order.total} do ${G.order.paid}.`, 'Preštej puščice.', 'Odgovor je zgoraj. 🙂'][Math.min(G.tries, 2)];
+    wrong(`${s < change ? 'Premalo' : 'Preveč'}! ${hint}`);
+  },
+  next() {
+    sfx.tap();
+    G.idx++;
+    if (G.idx < PER_DAY) { nextCustomer(); return; }
+    SAVE.days[G.level] = (SAVE.days[G.level] || 0) + 1;
+    SAVE.bank += G.earned;
+    save.write(SAVE);
+    G.screen = 'dayDone';
+    render();
+  },
+};
+
+app.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-act]');
+  if (!el) return;
+  const fn = ACTIONS[el.dataset.act];
+  if (fn) fn(el, e);
+});
+document.addEventListener('gesturestart', (e) => e.preventDefault());
+
+render();
+</script>
+</body>
+</html>

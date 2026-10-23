@@ -7,6 +7,7 @@ Slovenian detective reading games for children aged 6–9, built as validation p
 | [`index.html`](index.html) | Start page: pick a game. |
 | [`solo/`](solo/) | **Igraj sam:** one child finds the sentence that proves who did it. See [solo/README.md](solo/README.md). |
 | [`za-dva/`](za-dva/) | **Igrajta v dvoje:** two children share one iPad, each with a different clue card, and solve the case together. See [za-dva/README.md](za-dva/README.md). |
+| [`pekarna/`](pekarna/) | **Pekarna:** a bakery maths game. Pack the order (counting), take the payment (adding prices with coins), give change. No timers; hints grow after each wrong try. Progress is saved on the iPad. |
 | [`docs/PLAN.md`](docs/PLAN.md) | Plan for the solo game. The co-op plan is in [za-dva/docs/PLAN.md](za-dva/docs/PLAN.md). |
 
 ## On the iPad
