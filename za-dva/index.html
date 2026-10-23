@@ -1,0 +1,1206 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Detektiva">
+<meta name="theme-color" content="#fdf6e9">
+<title>Detektivska pisarna za dva</title>
+<style>
+:root {
+  --bg: #fdf6e9; --ink: #2b2a33; --muted: #6b6876; --card: #fff; --line: #e6dcc8;
+  --accent: #3d6fd8; --accent-ink: #fff; --heard: #eef3ff; --sel: #ffe9a8; --sel-line: #e0a800;
+  --good: #dff3e6; --good-line: #3c9a5f; --warn: #fff1cc; --bad: #fbe0dc; --danger: #c0392b;
+  --top-bg: #eaf1ff; --bottom-bg: #fff1e0;
+  --row-font: 21px;
+}
+.level-A { --row-font: 26px; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 20px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden; -webkit-user-select: none; user-select: none;
+  -webkit-touch-callout: none; touch-action: manipulation;
+}
+input { -webkit-user-select: text; user-select: text; font: inherit; }
+#app { height: 100%; height: 100dvh; display: flex; flex-direction: column; }
+.screen {
+  flex: 1; display: flex; flex-direction: column; min-height: 0; width: 100%; max-width: 900px; margin: 0 auto;
+  padding: calc(16px + env(safe-area-inset-top)) 24px calc(16px + env(safe-area-inset-bottom));
+}
+.center { justify-content: center; align-items: center; text-align: center; gap: 14px; }
+h1 { font-size: 36px; margin: .1em 0; }
+h2 { font-size: 28px; margin: 1em 0 .4em; }
+h3 { margin: 0 0 .5em; }
+.muted { color: var(--muted); }
+.btn {
+  appearance: none; border: 0; border-radius: 18px; background: var(--accent); color: var(--accent-ink);
+  font: inherit; font-size: 22px; font-weight: 600; padding: 12px 24px; min-height: 56px; cursor: pointer;
+}
+.btn:disabled { opacity: .35; }
+a.btn { text-decoration: none; display: inline-flex; align-items: center; }
+.btn.secondary { background: var(--card); color: var(--ink); border: 2px solid var(--line); }
+.btn.danger { background: var(--card); color: var(--danger); border: 2px solid var(--danger); }
+.btn.big { font-size: 28px; padding: 14px 36px; }
+.btn.done { background: var(--good-line); }
+.spk {
+  appearance: none; border: 2px solid var(--line); background: var(--card); border-radius: 50%;
+  width: 52px; height: 52px; flex: none; font-size: 24px; cursor: pointer;
+}
+.spk.playing { border-color: var(--accent); }
+.qbar { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.qbar .q { font-size: 24px; font-weight: 700; }
+.center .qbar { justify-content: center; }
+.qbar.big .q { font-size: 32px; }
+.case-no, .label { color: var(--muted); font-weight: 600; }
+.rows {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; touch-action: pan-y;
+  display: flex; flex-direction: column; gap: 8px; padding: 4px 2px 8px;
+}
+.row {
+  background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: 8px 14px;
+  min-height: 52px; font-size: var(--row-font); line-height: 1.3; display: flex; align-items: center;
+  cursor: pointer; text-align: left; transition: opacity .2s;
+}
+.row.heard { background: var(--heard); }
+.row.playing { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(61, 111, 216, .25); }
+.row.selected { background: var(--sel); border-color: var(--sel-line); }
+.row.good { background: var(--good); border-color: var(--good-line); }
+.row.dim { opacity: .3; }
+.pulse { animation: pulse 1.1s ease-in-out infinite; border-color: var(--sel-line) !important; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 8px rgba(224, 168, 0, .45); } }
+.footer { display: flex; gap: 12px; justify-content: flex-end; align-items: center; flex-wrap: wrap; padding-top: 8px; }
+.center .footer { justify-content: center; }
+.wait { color: var(--muted); font-size: 18px; margin: 0; }
+.ok { color: var(--good-line); font-weight: 700; margin: 0; }
+.locked .rows, .locked .footer, .locked .suspects { pointer-events: none; }
+.locked .footer { opacity: .4; }
+.suspects { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.suspect {
+  appearance: none; font: inherit; color: inherit; background: var(--card); border: 3px solid var(--line);
+  border-radius: 18px; padding: 10px 14px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  min-width: 112px; font-size: 21px; font-weight: 600;
+}
+button.suspect { cursor: pointer; }
+.suspect.picked { border-color: var(--accent); background: var(--heard); }
+.avatar { width: 76px; height: 76px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 42px; }
+.avatar.sm { width: 44px; height: 44px; font-size: 26px; flex: none; }
+.partner { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--muted); font-size: 18px; min-height: 44px; }
+.sticker { font-size: 64px; line-height: 1; }
+.stamp {
+  font-size: 32px; font-weight: 800; color: var(--danger); border: 5px solid var(--danger);
+  border-radius: 12px; padding: 4px 18px; transform: rotate(-5deg);
+}
+.reveal-rows { flex: 0 1 auto; width: 100%; max-width: 720px; }
+
+/* two children, one iPad: the top half faces the child on the far side */
+#app.split { gap: 0; }
+.half { flex: 1 1 0; min-height: 0; position: relative; display: flex; overflow: hidden; touch-action: none; }
+.half.top { transform: rotate(180deg); background: var(--top-bg); }
+.half.bottom { background: var(--bottom-bg); }
+.half .screen { padding: 12px 20px; overflow: hidden; }
+.divider { flex: none; height: 6px; background: var(--ink); opacity: .15; }
+.hint {
+  position: absolute; left: 12px; right: 12px; bottom: 12px; background: #fffbe9; border: 3px solid var(--sel-line);
+  border-radius: 18px; padding: 12px 16px; display: flex; gap: 12px; align-items: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .18); font-size: 23px; z-index: 10;
+}
+.hint .txt { flex: 1; }
+
+#gate { position: fixed; top: 0; left: 0; width: 64px; height: 64px; z-index: 40; }
+#modal { position: fixed; inset: 0; background: rgba(0, 0, 0, .4); display: flex; align-items: center; justify-content: center; z-index: 50; }
+#modal[hidden] { display: none; }
+.modal-box { background: var(--card); border-radius: 20px; padding: 24px; width: min(420px, calc(100% - 32px)); }
+.modal-box input { width: 100%; font-size: 28px; padding: 10px; border: 2px solid var(--line); border-radius: 12px; }
+
+/* adult screens */
+.adult { overflow-y: auto; font-size: 17px; max-width: 1100px; }
+.adult .btn { font-size: 18px; min-height: 48px; padding: 10px 18px; border-radius: 12px; }
+.adult .btn.big { font-size: 24px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+.seg { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
+.toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.grow { flex: 1; }
+.warn-text { color: #8a5a00; }
+.tag { background: var(--warn); border-radius: 6px; padding: 1px 6px; font-size: 14px; }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+th { font-weight: 600; color: var(--muted); white-space: nowrap; }
+tr.clickable { cursor: pointer; }
+.c-good { background: var(--good); } .c-warn { background: var(--warn); } .c-bad { background: var(--bad); }
+.timeline { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.6; }
+.timeline .t { color: var(--muted); font-variant-numeric: tabular-nums; }
+.verdict { font-weight: 700; padding: 1px 8px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="gate" aria-hidden="true"></div>
+<div id="modal" hidden></div>
+<script>
+'use strict';
+
+// ---------------------------------------------------------------------------
+// Case data. tools/cases.mjs reads everything between the CASES markers, so
+// keep this block free of DOM access.
+// ---------------------------------------------------------------------------
+// CASES-BEGIN
+// Per card (each child sees one card); a case has a top card and a bottom card.
+const LEVEL_RULES = {
+  A: { sentences: [4, 5], maxWords: 8, suspects: 3, distractors: [0, 1] },
+  B: { sentences: [5, 6], maxWords: 14, suspects: 4, distractors: [0, 1] },
+};
+
+const CHARACTERS = {
+  bine: { name: 'Bine', animal: '🐰', color: '#d6e6ff' },
+  zala: { name: 'Zala', animal: '🦊', color: '#ffdcc6' },
+  jure: { name: 'Jure', animal: '🐻', color: '#ead8c4' },
+  neza: { name: 'Neža', animal: '🐿️', color: '#f1e2c8' },
+  babica: { name: 'Babica', animal: '🦉', color: '#e4e1f6' },
+};
+
+// Every line a child can hear outside the cards. Clip id = "ui_" + key.
+const UI_AUDIO = {
+  test: 'Ali me slišiš?',
+  intro: 'Vsak detektiv ima svoj listek.',
+  accuse: 'Kdo je bil?',
+  evidence: 'Pokaži stavek na svojem listku, ki to dokaže.',
+  h1: 'Preberi svoj listek na glas drugemu detektivu.',
+  h3: 'Samo še dva. Kateri je pravi?',
+  assist: 'Poglej ta stavek in ga tapni.',
+  disagree: 'Še nista enotna. Pogovorita se!',
+  wrongSuspect: 'Dokaza sta prava! Ampak o kom govorita?',
+  solved: 'Primer rešen!',
+  more: 'Še en primer?',
+  soon: 'Nov primer pride kmalu!',
+  thanks: 'Hvala, detektiva!',
+};
+
+// no = order of play (1 join → 2 inference → 3 elimination).
+// top / bottom: [id, text, role?]; role is evidence | distractor (default neutral).
+// alone: suspects still possible from that card alone (cases.mjs checks that no card is enough by itself).
+// tip = hint 2 text; h2 = 2–3 sentences per card highlighted at hint 2, h3 = 2 candidates per card at hint 3.
+const CASES = [
+  {
+    id: 'c1A', no: 1, rung: 'join', level: 'A', sticker: '⚽',
+    question: 'Kdo je vzel rdečo žogo?',
+    suspects: ['bine', 'zala', 'jure'], culprit: 'bine',
+    top: [
+      ['t1', 'Zjutraj je bila na igrišču rdeča žoga.'],
+      ['t2', 'Zdaj je ni več.'],
+      ['t3', 'Žoga je ležala pri peskovniku.', 'evidence'],
+      ['t4', 'Zala ima rada rdečo barvo.', 'distractor'],
+      ['t5', 'Žoga je bila nova in sijoča.'],
+    ],
+    bottom: [
+      ['b1', 'Zala se je gugala na gugalnici.'],
+      ['b2', 'Jure je plezal na drevo.'],
+      ['b3', 'Jure ima zelo rad žoge.', 'distractor'],
+      ['b4', 'Samo Bine se je igral v peskovniku.', 'evidence'],
+      ['b5', 'Bine je zgradil velik grad.'],
+    ],
+    alone: { top: ['bine', 'zala', 'jure'], bottom: ['bine', 'zala', 'jure'] },
+    tip: 'Kje je bila žoga? Kdo je bil tam? Povejta si!',
+    h2: { top: ['t2', 't3', 't4'], bottom: ['b3', 'b4', 'b5'] },
+    h3: { top: ['t3', 't4'], bottom: ['b3', 'b4'] },
+    reveal: ['Žoga je bila pri peskovniku.', 'Tam se je igral samo Bine.', 'Žogo je dal na grad kot streho.', 'Zdaj jo bo vrnil.'],
+  },
+  {
+    id: 'c1B', no: 1, rung: 'join', level: 'B', sticker: '⚽',
+    question: 'Kdo je vzel rdečo žogo?',
+    suspects: ['bine', 'zala', 'jure', 'neza'], culprit: 'bine',
+    top: [
+      ['t1', 'Po pouku je na igrišču ostala nova rdeča žoga.'],
+      ['t2', 'Naslednje jutro je ni bilo nikjer.'],
+      ['t3', 'Hišnik je videl, da se je žoga skotalila v peskovnik.', 'evidence'],
+      ['t4', '»Rdeča je moja najljubša barva,« je rekla Zala.', 'distractor'],
+      ['t5', 'Žoga je bila mehka in malo umazana.'],
+    ],
+    bottom: [
+      ['b1', 'Zala je ves popoldan brala knjigo na klopci.'],
+      ['b2', 'Jure je tekel po igrišču in iskal svojo žogo.', 'distractor'],
+      ['b3', 'Neža je pod veliko smreko nabirala storže.'],
+      ['b4', 'Bine je bil edini, ki se je tisti dan igral v peskovniku.', 'evidence'],
+      ['b5', 'Iz peska je zgradil grad z visokim stolpom.'],
+    ],
+    alone: { top: ['bine', 'zala', 'jure', 'neza'], bottom: ['bine', 'zala', 'jure', 'neza'] },
+    tip: 'Kam se je skotalila žoga? Kdo je bil tam? Povejta si!',
+    h2: { top: ['t2', 't3', 't4'], bottom: ['b2', 'b3', 'b4'] },
+    h3: { top: ['t3', 't4'], bottom: ['b2', 'b4'] },
+    reveal: ['Žoga se je skotalila v peskovnik.', 'Tam se je igral samo Bine.', 'Žogo je postavil na stolp kot okroglo streho.', 'Zjutraj jo je vrnil na igrišče.'],
+  },
+  {
+    id: 'c2A', no: 2, rung: 'infer', level: 'A', sticker: '🫐',
+    question: 'Kdo je pojedel borovnice?',
+    suspects: ['zala', 'bine', 'jure'], culprit: 'jure',
+    top: [
+      ['t1', 'Na mizi je bila skleda borovnic.'],
+      ['t2', 'Zdaj je skleda prazna.'],
+      ['t3', 'Ob skledi so modre sledi tačk.', 'evidence'],
+      ['t4', 'Bine reče: »Lačen sem.«', 'distractor'],
+      ['t5', 'Sledi gredo do vrat.'],
+    ],
+    bottom: [
+      ['b1', 'Zjutraj je Jure barval ograjo.'],
+      ['b2', 'Zala ima zelo rada borovnice.', 'distractor'],
+      ['b3', 'Jure ima zdaj modre tačke.', 'evidence'],
+      ['b4', 'Zala je spala pod drevesom.'],
+      ['b5', 'Ograja je zdaj lepa in modra.'],
+    ],
+    alone: { top: ['zala', 'bine', 'jure'], bottom: ['zala', 'bine', 'jure'] },
+    tip: 'Kakšne so sledi? Kdo ima take tačke? Povejta si!',
+    h2: { top: ['t2', 't3', 't4'], bottom: ['b2', 'b3', 'b4'] },
+    h3: { top: ['t3', 't4'], bottom: ['b2', 'b3'] },
+    reveal: ['Ob skledi so bile modre sledi tačk.', 'Jure je imel modre tačke od barve.', 'Po delu je bil zelo lačen.', 'Zdaj bo nabral nove borovnice.'],
+  },
+  {
+    id: 'c2B', no: 2, rung: 'infer', level: 'B', sticker: '🫐',
+    question: 'Kdo je pojedel borovnice?',
+    suspects: ['zala', 'bine', 'neza', 'jure'], culprit: 'jure',
+    top: [
+      ['t1', 'Babica je na okensko polico postavila skledo svežih borovnic.'],
+      ['t2', 'Ko se je vrnila iz kleti, je bila skleda prazna.'],
+      ['t3', '»Bine je bil danes zelo lačen,« je rekla Neža.', 'distractor'],
+      ['t4', 'Od police do vrat so vodile modre sledi tačk.', 'evidence'],
+      ['t5', 'Na polici je ostala ena sama zmečkana borovnica.'],
+    ],
+    bottom: [
+      ['b1', 'Jure je vse dopoldne pomagal dedku barvati ograjo.'],
+      ['b2', 'Ker je bil neroden, je stopil v vedro z modro barvo.', 'evidence'],
+      ['b3', 'Zala je ves čas sedela z babico v kleti.'],
+      ['b4', '»Borovnice imam najrajši na svetu,« je rekla Zala.', 'distractor'],
+      ['b5', 'Neža je na drevesu luščila lešnike.'],
+      ['b6', 'Dedek je rekel, da je ograja zdaj zelo lepa.'],
+    ],
+    alone: { top: ['zala', 'bine', 'neza', 'jure'], bottom: ['bine', 'neza', 'jure'] },
+    tip: 'Kakšne so sledi? Kdo bi lahko imel take tačke? Povejta si!',
+    h2: { top: ['t3', 't4', 't5'], bottom: ['b1', 'b2', 'b3'] },
+    h3: { top: ['t3', 't4'], bottom: ['b2', 'b4'] },
+    reveal: ['Od police so vodile modre sledi tačk.', 'Jure je stopil v modro barvo.', 'Po barvanju je bil tako lačen, da je pozabil vprašati.', 'Babici je pomagal nabrati nove borovnice.'],
+  },
+  {
+    id: 'c3A', no: 3, rung: 'elim', level: 'A', sticker: '👒',
+    question: 'Kdo je skril Nežin klobuk?',
+    suspects: ['bine', 'jure', 'zala'], culprit: 'zala',
+    top: [
+      ['t1', 'Neža ne najde svojega klobuka.'],
+      ['t2', 'Klobuk je bil na klopi pred hišo.'],
+      ['t3', 'Bine je bil ves dan pri babici.', 'evidence'],
+      ['t4', 'Zala se hihita.', 'distractor'],
+      ['t5', 'Neža išče povsod.'],
+    ],
+    bottom: [
+      ['b1', 'Neža je zelo žalostna.'],
+      ['b2', 'Jure je ves dan spal v brlogu.', 'evidence'],
+      ['b3', 'Bine ima rad klobuke.', 'distractor'],
+      ['b4', 'Ptički pojejo na strehi.'],
+    ],
+    alone: { top: ['jure', 'zala'], bottom: ['bine', 'zala'] },
+    tip: 'Kdo ni mogel biti pred hišo? Povejta si!',
+    h2: { top: ['t2', 't3', 't4'], bottom: ['b1', 'b2', 'b3'] },
+    h3: { top: ['t3', 't4'], bottom: ['b2', 'b3'] },
+    reveal: ['Bine je bil pri babici.', 'Jure je spal v brlogu.', 'Ostane samo Zala!', 'Klobuk je skrila za šalo in ga vrnila.'],
+  },
+  {
+    id: 'c3B', no: 3, rung: 'elim', level: 'B', sticker: '👒',
+    question: 'Kdo je skril Nežin klobuk?',
+    suspects: ['bine', 'jure', 'zala', 'babica'], culprit: 'zala',
+    top: [
+      ['t1', 'Neža je zjutraj obesila zeleni klobuk na kljuko pred vrati.'],
+      ['t2', 'Ko je hotela na sprehod, klobuka ni bilo več.'],
+      ['t3', 'Bine je ves dopoldan v kuhinji pomagal babici peči piškote.', 'evidence'],
+      ['t4', 'Ko se je Neža obrnila, je Zala tiho zahihitala.', 'distractor'],
+      ['t5', 'Iz kuhinje je dišalo po vaniliji.'],
+    ],
+    bottom: [
+      ['b1', 'Ves dopoldan je sijalo sonce.'],
+      ['b2', 'Jure ima rad zelene stvari in si želi tak klobuk.', 'distractor'],
+      ['b3', 'Jure je do kosila trdno spal v svojem brlogu.', 'evidence'],
+      ['b4', 'Neža je klobuk iskala povsod, tudi pod klopjo.'],
+      ['b5', 'Na koncu ga je našla na strehi lope.'],
+    ],
+    alone: { top: ['jure', 'zala'], bottom: ['bine', 'zala', 'babica'] },
+    tip: 'Kdo ni mogel biti pred vrati? Povejta si!',
+    h2: { top: ['t2', 't3', 't4'], bottom: ['b2', 'b3', 'b4'] },
+    h3: { top: ['t3', 't4'], bottom: ['b2', 'b3'] },
+    reveal: ['Bine in babica sta pekla piškote.', 'Jure je spal v brlogu.', 'Ostane samo Zala!', 'Hotela je narediti šalo.', 'Klobuk je vrnila in se opravičila.'],
+  },
+];
+
+const SEATS = ['top', 'bottom'];
+
+function normalizeCases() {
+  for (const c of CASES) {
+    c.cards = {};
+    for (const seat of SEATS) c.cards[seat] = c[seat].map(([id, text, role = 'neutral']) => ({ id, text, role }));
+  }
+}
+normalizeCases();
+
+// Every audio clip the app can play: [clipId, text]. Recordings go in audio/<clipId>.m4a.
+function clipList() {
+  const out = Object.entries(UI_AUDIO).map(([k, t]) => ['ui_' + k, t]);
+  for (const c of CASES) {
+    out.push([c.id + '_q', c.question]);
+    for (const seat of SEATS) for (const s of c.cards[seat]) out.push([c.id + '_' + s.id, s.text]);
+    out.push([c.id + '_tip', c.tip]);
+    c.reveal.forEach((t, i) => out.push([`${c.id}_r${i + 1}`, t]));
+  }
+  return out;
+}
+// CASES-END
+
+// Filled in by tools/build.mjs with data: URIs for every recorded clip.
+const AUDIO = /*AUDIO-BEGIN*/{}/*AUDIO-END*/;
+const CLIPS = new Map(clipList());
+
+// ---------------------------------------------------------------------------
+// Storage and event log (on this device only)
+// ---------------------------------------------------------------------------
+const LOG_KEY = 'dpz_log_v1';
+const PAIR_KEY = 'dpz_pair_n';
+let storeOk = true;
+const store = {
+  read(k, def) {
+    try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch (e) { return def; }
+  },
+  write(k, v) {
+    try { localStorage.setItem(k, JSON.stringify(v)); storeOk = true; } catch (e) { storeOk = false; }
+  },
+};
+let LOG = store.read(LOG_KEY, []);
+
+const S = {
+  session: null, pair: null, ages: { top: null, bottom: null }, levelPick: null, level: null,
+  audio: false, pilot: false, ended: false,
+  caseNo: 0, c: null, run: null, screen: 'setup', resume: null, open: null,
+  ready: { top: false, bottom: false }, more: {}, rendered: null,
+};
+const ADULT = new Set(['setup', 'debrief']);
+const other = (seat) => seat === 'top' ? 'bottom' : 'top';
+
+function log(type, extra = {}) {
+  if (!S.session) return;
+  LOG.push({
+    ts: Date.now(), session: S.session, pair: S.pair, ageTop: S.ages.top, ageBottom: S.ages.bottom,
+    level: S.level, audio: S.audio, case: S.c ? S.c.id : null, screen: S.screen, type, ...extra,
+  });
+  store.write(LOG_KEY, LOG);
+}
+
+// ---------------------------------------------------------------------------
+// Audio: embedded clip → audio/<id>.m4a → Slovenian speechSynthesis voice
+// ---------------------------------------------------------------------------
+const player = new Audio();
+let playToken = 0;
+let playingEl = null;
+let slVoice = null;
+
+function loadVoices() {
+  try { slVoice = speechSynthesis.getVoices().find(v => /^sl/i.test(v.lang)) || null; } catch (e) { slVoice = null; }
+  if (S.screen === 'setup') render();
+}
+
+function markPlaying(el) {
+  if (playingEl) playingEl.classList.remove('playing');
+  playingEl = el;
+  if (el) el.classList.add('playing');
+}
+
+function stopAudio() {
+  playToken++;
+  try { player.pause(); } catch (e) {}
+  try { speechSynthesis.cancel(); } catch (e) {}
+  markPlaying(null);
+}
+
+function play(id, text, el) {
+  stopAudio();
+  const tok = playToken;
+  let fellBack = false;
+  markPlaying(el);
+  const done = () => { if (tok === playToken) markPlaying(null); };
+  const speak = () => {
+    if (tok !== playToken || fellBack) return;
+    fellBack = true;
+    if (!slVoice) { setTimeout(done, 800); return; }
+    const u = new SpeechSynthesisUtterance(text);
+    u.voice = slVoice; u.lang = slVoice.lang; u.rate = 0.9;
+    u.onend = done; u.onerror = done;
+    speechSynthesis.speak(u);
+  };
+  // Without an embedded recording, speak right away: iPad Safari only allows speech inside the tap itself.
+  if (!AUDIO[id] && slVoice) { speak(); return; }
+  player.onended = done;
+  player.onerror = speak;
+  player.src = AUDIO[id] || `audio/${id}.m4a`;
+  const p = player.play();
+  if (p && p.catch) p.catch(speak);
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+const $ = (sel) => document.querySelector(sel);
+const app = document.getElementById('app');
+const esc = (s) => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
+const pad = (n) => String(n).padStart(2, '0');
+const sent = (seat, sid) => S.c.cards[seat].find(s => s.id === sid);
+const caseById = (id) => CASES.find(c => c.id === id);
+const fmtDur = (ms) => { const s = Math.round(ms / 1000); return `${Math.floor(s / 60)}:${pad(s % 60)}`; };
+const fmtDate = (ts) => { const d = new Date(ts); return `${d.getDate()}. ${d.getMonth() + 1}. ${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+const sum = (arr, f) => arr.reduce((a, m) => a + (f(m) || 0), 0);
+const pct = (x) => x == null ? '–' : Math.round(x * 100) + ' %';
+const SEAT_LABEL = { top: 'Z', bottom: 'S' };
+
+// Pair type for the debrief: both 6–7, both 8–9, or mixed.
+const pairType = (a, b) => a <= 7 && b <= 7 ? '6-7' : a >= 8 && b >= 8 ? '8-9' : 'mešan';
+const autoLevel = () => (Math.min(S.ages.top, S.ages.bottom) <= 7 ? 'A' : 'B');
+
+const spk = (clip) => S.audio || ADULT.has(S.screen) ? `<button class="spk" data-act="say" data-clip="${clip}" aria-label="Poslušaj">🔊</button>` : '';
+const qbar = (text, clip, cls = '') => `<div class="qbar ${cls}"><span class="q">${esc(text)}</span>${spk(clip)}</div>`;
+const avatar = (id, cls = '') => { const ch = CHARACTERS[id]; return `<span class="avatar ${cls}" style="background:${ch.color}">${ch.animal}</span>`; };
+const suspectCard = (id, pickable, cls = '') => pickable
+  ? `<button class="suspect ${cls}" data-act="pick" data-id="${id}">${avatar(id)}<span>${CHARACTERS[id].name}</span></button>`
+  : `<div class="suspect ${cls}">${avatar(id)}<span>${CHARACTERS[id].name}</span></div>`;
+
+// ---------------------------------------------------------------------------
+// Child flow. One screen for both children; each half renders it for its seat.
+// ---------------------------------------------------------------------------
+function newSeat() {
+  return { heard: new Set(), pick: null, selected: null, done: false, wrong: 0, hintOpen: false };
+}
+
+function newRun() {
+  return {
+    seats: { top: newSeat(), bottom: newSeat() },
+    suspect: null, wrong: 0, ladder: 0, assisted: false, hint: null, mismatches: 0,
+  };
+}
+
+function startCase(n) {
+  S.caseNo = n;
+  S.c = CASES.find(c => c.no === n + 1 && c.level === S.level);
+  S.run = newRun();
+  go('intro');
+}
+
+let matchTimer = null;
+
+function go(screen) {
+  stopAudio();
+  clearTimeout(matchTimer);
+  S.screen = screen;
+  S.ready = { top: false, bottom: false };
+  S.more = {};
+  render();
+  if (!ADULT.has(screen)) log('screen_enter');
+  if (screen === 'thanks' && !S.ended) { S.ended = true; log('session_end'); }
+}
+
+function render() {
+  // Keep each child's scroll position when the other child's tap re-renders the page.
+  const saved = {};
+  if (S.rendered === S.screen) {
+    app.querySelectorAll('.half').forEach(h => { const r = h.querySelector('.rows'); if (r) saved[h.dataset.seat] = r.scrollTop; });
+  }
+  S.rendered = S.screen;
+  playingEl = null;
+  if (ADULT.has(S.screen)) {
+    app.className = '';
+    app.innerHTML = T[S.screen]();
+    return;
+  }
+  app.className = 'split level-' + S.level;
+  app.innerHTML = SEATS.map(seat => `<div class="half ${seat}" data-seat="${seat}">${T[S.screen](seat)}</div>`).join('<div class="divider"></div>');
+  for (const seat in saved) {
+    const r = app.querySelector(`.half.${seat} .rows`);
+    if (r) r.scrollTop = saved[seat];
+  }
+}
+
+function rowsHTML(seat, act) {
+  const r = S.run, sr = r.seats[seat];
+  const onEvidence = S.screen === 'evidence';
+  const hl = r.ladder >= 2 ? new Set(S.c[r.ladder === 2 ? 'h2' : 'h3'][seat]) : null;
+  return S.c.cards[seat].map(s => {
+    const cls = ['row'];
+    if (sr.heard.has(s.id)) cls.push('heard');
+    if (onEvidence) {
+      if (sr.selected === s.id) cls.push(sr.done ? 'good' : 'selected');
+      if (!sr.done && (r.assisted ? s.role !== 'evidence' : hl && !hl.has(s.id))) cls.push('dim');
+      if (!sr.done && r.assisted && s.role === 'evidence') cls.push('pulse');
+    }
+    return `<div class="${cls.join(' ')}" data-act="${act}" data-sid="${s.id}">${esc(s.text)}</div>`;
+  }).join('');
+}
+
+// A button both children must press; pressing again takes it back.
+function readyBtn(seat, label) {
+  return `<button class="btn big ${S.ready[seat] ? 'done' : ''}" data-act="ready">${S.ready[seat] ? '✔ ' : ''}${esc(label)}</button>`;
+}
+
+function waitLine(seat) {
+  if (S.ready[seat] && !S.ready[other(seat)]) return '<p class="wait">Čakaš na drugega detektiva …</p>';
+  if (!S.ready[seat] && S.ready[other(seat)]) return '<p class="wait">Drugi detektiv je pripravljen.</p>';
+  return '';
+}
+
+function hintHTML(h) {
+  return `<div class="hint"><span>💡</span><span class="txt">${esc(h.text)}</span>${spk(h.clip)}`
+    + '<button class="btn" data-act="hintOk">V redu</button></div>';
+}
+
+function hintFor(seat) {
+  const r = S.run;
+  return r.hint && r.seats[seat].hintOpen ? hintHTML(r.hint) : '';
+}
+
+function ladderHint(level) {
+  if (level === 1) return { key: 'h1', text: UI_AUDIO.h1, clip: 'ui_h1', level };
+  if (level === 2) return { key: 'tip', text: S.c.tip, clip: S.c.id + '_tip', level };
+  return { key: 'h3', text: UI_AUDIO.h3, clip: 'ui_h3', level };
+}
+
+// Hints go to both halves at once; each child closes their own.
+function showHint(h) {
+  const r = S.run;
+  r.hint = h;
+  for (const seat of SEATS) r.seats[seat].hintOpen = true;
+  log('hint_shown', { hint: h.key, hintLevel: h.level });
+  render();
+}
+
+function evFooter(seat) {
+  const r = S.run, sr = r.seats[seat], os = r.seats[other(seat)];
+  const stuck = sr.done && os.done && r.suspect !== S.c.culprit;
+  const change = r.wrong >= 2 || stuck ? '<button class="btn secondary" data-act="changeSuspect">Zamenjaj osumljenca</button>' : '';
+  const partner = `<p class="wait">${os.done ? '✔ Drugi detektiv je našel svoj dokaz.' : 'Drugi detektiv še išče.'}</p>`;
+  if (sr.done) return `<p class="ok">✔ Tvoj dokaz drži!</p>${partner}${change}`;
+  return `${partner}${change}<button class="btn" data-act="confirm" ${sr.selected ? '' : 'disabled'}>To je moj dokaz! ✔</button>`;
+}
+
+// Both cards proved + agreed on the culprit = solved.
+function checkSolved() {
+  const r = S.run;
+  if (!r.seats.top.done || !r.seats.bottom.done) { render(); return; }
+  if (r.suspect === S.c.culprit) {
+    log('case_done', { assisted: r.assisted, wrong: r.wrong });
+    go('reveal');
+    return;
+  }
+  showHint({ key: 'wrongSuspect', text: UI_AUDIO.wrongSuspect, clip: 'ui_wrongSuspect', level: 0 });
+}
+
+// ---------------------------------------------------------------------------
+// Screens. Child screens take the seat they are rendered for.
+// ---------------------------------------------------------------------------
+const T = {
+  setup() {
+    const next = 'P' + pad(store.read(PAIR_KEY, 0) + 1);
+    const embedded = Object.keys(AUDIO).length;
+    const both = S.ages.top && S.ages.bottom;
+    const level = S.levelPick || (both ? autoLevel() : null);
+    const ageBtns = (seat) => [6, 7, 8, 9].map(a =>
+      `<button class="btn ${S.ages[seat] === a ? '' : 'secondary'}" data-act="age" data-seat="${seat}" data-age="${a}">${a}</button>`).join('');
+    const levelBtn = (l, label) => `<button class="btn ${level === l ? '' : 'secondary'}" data-act="levelPick" data-level="${l}">${label}</button>`;
+    return `<div class="screen adult">
+      <h1>Detektivska pisarna za dva</h1>
+      <p class="muted">Priprava seje – za odrasle. iPad položi na mizo v pokončni legi; otroka sedita drug nasproti drugemu.</p>
+      <section class="card">
+        <h3>1. Otroka</h3>
+        <div class="seg"><b style="min-width:150px">Zgoraj (obrnjeno)</b>${ageBtns('top')} <span class="muted">let</span></div>
+        <div class="seg"><b style="min-width:150px">Spodaj</b>${ageBtns('bottom')} <span class="muted">let</span></div>
+        <div class="seg"><b style="min-width:150px">Raven</b>${levelBtn('A', 'A (6–7)')}${levelBtn('B', 'B (8–9)')}
+          <span class="muted">${both ? (S.levelPick ? 'ročno izbrano' : 'samodejno po mlajšem otroku') : ''}</span></div>
+        <label><input type="checkbox" data-act="pilot" ${S.pilot ? 'checked' : ''}> Pilotna seja (ne šteje v povzetek)</label>
+        <p>Koda para: <b>${next}</b> (imen ne beležimo)</p>
+      </section>
+      <section class="card">
+        <h3>2. Zvok</h3>
+        <label><input type="checkbox" data-act="audio" ${S.audio ? 'checked' : ''}> Branje na glas (tap na stavek ga prebere)</label>
+        <p class="muted">Privzeto izklopljeno: zvočnik je en sam, zato bi oba slišala listek drugega. Brez zvoka si morata listka prebrati na glas.</p>
+        <button class="btn secondary" data-act="say" data-clip="ui_test">🔊 Predvajaj »${UI_AUDIO.test}«</button>
+        <p class="muted">Vgrajeni posnetki: ${embedded} / ${CLIPS.size}. Slovenski sintetični glas: ${slVoice ? 'da (' + esc(slVoice.name) + ')' : 'ne'}.</p>
+        ${S.audio && embedded < CLIPS.size && !slVoice ? '<p class="warn-text">Ni posnetkov in ni slovenskega glasu – otroka ne bosta slišala stavkov.</p>' : ''}
+      </section>
+      <div class="footer">
+        <a class="btn secondary" href="../">← Izbira igre</a>
+        <button class="btn secondary" data-act="toDebrief">Pregled podatkov (${LOG.length} dogodkov)</button>
+        <button class="btn big" data-act="startSession" ${both ? '' : 'disabled'}>Začni sejo</button>
+      </div>
+      <p class="muted">Med igro: drži zgornji levi kot zaslona 3 sekunde za pregled.</p>
+    </div>`;
+  },
+
+  title(seat) {
+    return `<div class="screen center">
+      <div class="sticker">🔍🔍</div>
+      <h1>Detektivska pisarna</h1>
+      <p class="muted">za dva detektiva</p>
+      ${readyBtn(seat, 'Začniva!')}
+      ${waitLine(seat)}
+    </div>`;
+  },
+
+  intro(seat) {
+    const c = S.c;
+    return `<div class="screen center">
+      <div class="case-no">Primer ${S.caseNo + 1} ${c.sticker}</div>
+      ${qbar(c.question, c.id + '_q', 'big')}
+      <div class="suspects">${c.suspects.map(id => suspectCard(id, false)).join('')}</div>
+      ${qbar(UI_AUDIO.intro, 'ui_intro')}
+      ${readyBtn(seat, 'Odpri listek')}
+      ${waitLine(seat)}
+    </div>`;
+  },
+
+  clues(seat) {
+    return `<div class="screen">
+      ${qbar(S.c.question, S.c.id + '_q')}
+      <div class="label">📄 Tvoj listek</div>
+      <div class="rows">${rowsHTML(seat, 'listen')}</div>
+      <div class="footer">${waitLine(seat)}${readyBtn(seat, 'Vem, kdo je bil!')}</div>
+    </div>`;
+  },
+
+  accuse(seat) {
+    const r = S.run, sr = r.seats[seat], op = r.seats[other(seat)].pick;
+    const partner = op
+      ? `Drugi detektiv: ${avatar(op, 'sm')} <b>${CHARACTERS[op].name}</b>`
+      : 'Drugi detektiv še izbira …';
+    const cls = (id) => [sr.pick === id ? 'picked' : '', r.assisted && id === S.c.culprit ? 'pulse' : ''].join(' ');
+    return `<div class="screen center ${sr.hintOpen ? 'locked' : ''}">
+      ${qbar(UI_AUDIO.accuse, 'ui_accuse', 'big')}
+      <div class="suspects">${S.c.suspects.map(id => suspectCard(id, true, cls(id))).join('')}</div>
+      <div class="partner">${partner}</div>
+      <div class="footer"><button class="btn secondary" data-act="backToCards">📄 Nazaj na listek</button></div>
+    </div>${hintFor(seat)}`;
+  },
+
+  evidence(seat) {
+    const r = S.run, sr = r.seats[seat];
+    return `<div class="screen ${sr.hintOpen ? 'locked' : ''}">
+      <div class="qbar">${avatar(r.suspect, 'sm')}<span class="q">${UI_AUDIO.evidence}</span>${spk('ui_evidence')}</div>
+      <div class="rows">${rowsHTML(seat, 'select')}</div>
+      <div class="footer">${evFooter(seat)}</div>
+    </div>${hintFor(seat)}`;
+  },
+
+  reveal(seat) {
+    const c = S.c;
+    return `<div class="screen center">
+      <div class="qbar"><span class="stamp">${UI_AUDIO.solved}</span>${spk('ui_solved')}${avatar(c.culprit, 'sm')}</div>
+      <div class="rows reveal-rows">${c.reveal.map((t, i) => `<div class="row" data-act="say" data-clip="${c.id}_r${i + 1}">${esc(t)}</div>`).join('')}</div>
+      ${readyBtn(seat, 'Naprej')}
+      ${waitLine(seat)}
+    </div>`;
+  },
+
+  more(seat) {
+    const mine = S.more[seat];
+    const theirs = S.more[other(seat)];
+    return `<div class="screen center">
+      ${qbar(UI_AUDIO.more, 'ui_more', 'big')}
+      <div class="seg"><button class="btn big ${mine === 'yes' ? 'done' : ''}" data-act="moreYes">${mine === 'yes' ? '✔ ' : ''}Da!</button>
+      <button class="btn big secondary ${mine === 'no' ? 'picked' : ''}" data-act="moreNo">${mine === 'no' ? '✔ ' : ''}Dovolj za danes</button></div>
+      ${mine && !theirs ? '<p class="wait">Čakaš na drugega detektiva …</p>' : ''}
+      ${!mine && theirs ? '<p class="wait">Drugi detektiv je že izbral.</p>' : ''}
+    </div>`;
+  },
+
+  soon() {
+    return `<div class="screen center">
+      <div class="sticker">🚧</div>
+      ${qbar(UI_AUDIO.soon, 'ui_soon', 'big')}
+      <button class="btn big" data-act="toThanks">V redu</button>
+    </div>`;
+  },
+
+  thanks() {
+    return `<div class="screen center">
+      <div class="sticker">🏅</div>
+      ${qbar(UI_AUDIO.thanks, 'ui_thanks', 'big')}
+    </div>`;
+  },
+
+  debrief() {
+    const sessions = analyzeAll();
+    const counted = sessions.filter(s => !s.pilot);
+    return `<div class="screen adult">
+      <div class="toolbar">
+        <h1>Pregled</h1><span class="grow"></span>
+        ${S.session && S.resume && !S.ended ? '<button class="btn" data-act="resume">Nadaljuj igro</button>' : ''}
+        <button class="btn secondary" data-act="toSetup">Nova seja</button>
+        <button class="btn secondary" data-act="exportLog">Izvozi JSON</button>
+        <button class="btn danger" data-act="wipe">Izbriši vse</button>
+      </div>
+      ${storeOk ? '' : '<p class="warn-text">Shranjevanje na napravo ne deluje – takoj izvozi JSON.</p>'}
+      <h2>Povzetek</h2>
+      ${summaryHTML(counted)}
+      <h2>Seje (${sessions.length})</h2>
+      ${sessions.slice().reverse().map(sessionHTML).join('') || '<p class="muted">Ni podatkov.</p>'}
+      <p class="muted">Z = otrok zgoraj, S = otrok spodaj. Neenotna izbira = otroka sta izbrala različna osumljenca.
+      Razmik = čas med prvim pravim dokazom enega in drugega otroka (velik razmik: en otrok morda vodi).
+      Izid: rešeno = največ 1 namig; s pomočjo = 2–3 namigi; vodeno = 4. napačen poskus.</p>
+    </div>`;
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Actions (all taps go through data-act). Child actions get the seat.
+// ---------------------------------------------------------------------------
+const ADVANCE = {
+  title: () => startCase(0),
+  intro: () => go('clues'),
+  clues: () => go('accuse'),
+  reveal: () => go('more'),
+};
+
+const ACTIONS = {
+  age(el) { S.ages[el.dataset.seat] = Number(el.dataset.age); render(); },
+  levelPick(el) { S.levelPick = el.dataset.level; render(); },
+  pilot(el) { S.pilot = el.checked; },
+  audio(el) { S.audio = el.checked; render(); },
+  startSession() {
+    const n = store.read(PAIR_KEY, 0) + 1;
+    store.write(PAIR_KEY, n);
+    Object.assign(S, {
+      session: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      pair: 'P' + pad(n), level: S.levelPick || autoLevel(), ended: false, resume: null, c: null, run: null,
+    });
+    log('session_start', { pilot: S.pilot });
+    go('title');
+  },
+  toDebrief() { go('debrief'); },
+  toSetup() {
+    if (S.session && !S.ended) log('session_end', { abandoned: true });
+    Object.assign(S, {
+      session: null, ended: false, resume: null, c: null, run: null, level: null, levelPick: null,
+      pilot: false, ages: { top: null, bottom: null },
+    });
+    go('setup');
+  },
+  resume() { const to = S.resume; S.resume = null; go(to); },
+  timeline(el) { S.open = S.open === el.dataset.key ? null : el.dataset.key; render(); },
+  exportLog() {
+    const blob = new Blob([JSON.stringify({ app: 'detektivska-pisarna-za-dva', version: 1, exported: new Date().toISOString(), events: LOG }, null, 1)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const d = new Date();
+    a.href = url;
+    a.download = `detektiva-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  },
+  wipe() {
+    if (!confirm('Izbrišem vse zapise na tej napravi? Najprej izvozi JSON.')) return;
+    LOG = [];
+    store.write(LOG_KEY, LOG);
+    render();
+  },
+
+  say(el, seat) {
+    play(el.dataset.clip, CLIPS.get(el.dataset.clip) || '', el);
+    if (!ADULT.has(S.screen)) log('listen_prompt', { seat, clip: el.dataset.clip });
+  },
+  ready(el, seat) {
+    S.ready[seat] = !S.ready[seat];
+    log(S.ready[seat] ? 'ready' : 'unready', { seat });
+    if (S.ready.top && S.ready.bottom) ADVANCE[S.screen]();
+    else render();
+  },
+  listen(el, seat) {
+    const s = sent(seat, el.dataset.sid);
+    log('listen', { seat, sentenceId: s.id, role: s.role, played: S.audio });
+    S.run.seats[seat].heard.add(s.id);
+    render();
+    if (S.audio) play(S.c.id + '_' + s.id, s.text, app.querySelector(`.half.${seat} [data-sid="${s.id}"]`));
+  },
+  backToCards(el, seat) {
+    log('back_to_cards', { seat });
+    for (const st of SEATS) S.run.seats[st].pick = null;
+    go('clues');
+  },
+  pick(el, seat) {
+    const r = S.run, id = el.dataset.id;
+    r.seats[seat].pick = id;
+    log('suspect_pick', { seat, suspectId: id });
+    const a = r.seats.top.pick, b = r.seats.bottom.pick;
+    if (!a || !b) { render(); return; }
+    if (a !== b) {
+      r.mismatches++;
+      log('pick_mismatch', { top: a, bottom: b });
+      showHint({ key: 'disagree', text: UI_AUDIO.disagree, clip: 'ui_disagree', level: 0 });
+      return;
+    }
+    log('pick_match', { suspectId: a });
+    r.suspect = a;
+    render();
+    // A short pause so both see they agree.
+    clearTimeout(matchTimer);
+    matchTimer = setTimeout(() => {
+      if (S.screen !== 'accuse') return;
+      if (r.seats.top.done && r.seats.bottom.done) checkSolved();
+      else go('evidence');
+    }, 700);
+  },
+  select(el, seat) {
+    const sr = S.run.seats[seat];
+    if (sr.done || sr.hintOpen) return;
+    const s = sent(seat, el.dataset.sid);
+    sr.selected = s.id;
+    sr.heard.add(s.id);
+    log('evidence_select', { seat, sentenceId: s.id, role: s.role });
+    render();
+    if (S.audio) play(S.c.id + '_' + s.id, s.text, app.querySelector(`.half.${seat} [data-sid="${s.id}"]`));
+  },
+  confirm(el, seat) {
+    const r = S.run, sr = r.seats[seat];
+    if (!sr.selected || sr.done || sr.hintOpen) return;
+    const s = sent(seat, sr.selected);
+    const isEvidence = s.role === 'evidence';
+    log('evidence_confirm', { seat, sentenceId: s.id, role: s.role, correct: isEvidence, suspectId: r.suspect, suspectCorrect: r.suspect === S.c.culprit });
+    if (isEvidence) {
+      sr.done = true;
+      checkSolved();
+      return;
+    }
+    r.wrong++;
+    sr.wrong++;
+    sr.selected = null;
+    if (r.assisted || r.wrong >= 4) {
+      if (!r.assisted) { r.assisted = true; log('assisted'); }
+      showHint({ key: 'assist', text: UI_AUDIO.assist, clip: 'ui_assist', level: 4 });
+      return;
+    }
+    r.ladder = Math.min(r.ladder + 1, 3);
+    showHint(ladderHint(r.ladder));
+  },
+  hintOk(el, seat) {
+    const r = S.run;
+    r.seats[seat].hintOpen = false;
+    if (!SEATS.some(st => r.seats[st].hintOpen)) r.hint = null;
+    stopAudio();
+    log('hint_dismiss', { seat });
+    render();
+  },
+  changeSuspect(el, seat) {
+    log('suspect_change', { seat });
+    for (const st of SEATS) S.run.seats[st].pick = null;
+    S.run.hint = null;
+    for (const st of SEATS) S.run.seats[st].hintOpen = false;
+    go('accuse');
+  },
+  moreYes(el, seat) { chooseMore(seat, 'yes'); },
+  moreNo(el, seat) { chooseMore(seat, 'no'); },
+  toThanks() { go('thanks'); },
+};
+
+// Another case only if both want one; the fake door counts when both say yes after case 3.
+function chooseMore(seat, choice) {
+  S.more[seat] = choice;
+  log(choice === 'yes' ? 'more_yes' : 'more_no', { seat });
+  if (!S.more.top || !S.more.bottom) { render(); return; }
+  if (S.more.top === 'yes' && S.more.bottom === 'yes') {
+    if (S.caseNo < 2) startCase(S.caseNo + 1);
+    else { log('fake_door'); go('soon'); }
+  } else {
+    go('thanks');
+  }
+}
+
+function runAction(el) {
+  const fn = ACTIONS[el.dataset.act];
+  const half = el.closest('.half');
+  if (fn) fn(el, half ? half.dataset.seat : null);
+}
+
+// Adult screens use click. On the split screen two children tap at once, and iPad
+// Safari drops clicks during multi-touch, so taps there are tracked per pointer.
+app.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-act]');
+  if (!el || el.disabled || el.closest('.half')) return;
+  runAction(el);
+});
+
+const tapKey = (el) => [el.dataset.act, el.dataset.sid, el.dataset.id, el.dataset.clip, el.closest('.half').dataset.seat].join('|');
+const downs = new Map();
+app.addEventListener('pointerdown', (e) => {
+  const el = e.target.closest('[data-act]');
+  if (el && el.closest('.half')) downs.set(e.pointerId, tapKey(el));
+});
+app.addEventListener('pointerup', (e) => {
+  const key = downs.get(e.pointerId);
+  downs.delete(e.pointerId);
+  if (!key) return;
+  // The other child's tap may have re-rendered the page, so match the element by what it does.
+  const hit = document.elementFromPoint(e.clientX, e.clientY);
+  const el = hit && hit.closest('[data-act]');
+  if (!el || el.disabled || !el.closest('.half') || tapKey(el) !== key) return;
+  runAction(el);
+});
+app.addEventListener('pointercancel', (e) => downs.delete(e.pointerId));
+document.addEventListener('gesturestart', (e) => e.preventDefault());
+
+// ---------------------------------------------------------------------------
+// Adult gate: hold the top-left corner for 3 s, then solve a sum.
+// ---------------------------------------------------------------------------
+const gate = document.getElementById('gate');
+const modal = document.getElementById('modal');
+let gateTimer = null;
+gate.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  clearTimeout(gateTimer);
+  gateTimer = setTimeout(openGate, 3000);
+});
+['pointerup', 'pointerleave', 'pointercancel'].forEach(t => gate.addEventListener(t, () => clearTimeout(gateTimer)));
+
+function openGate() {
+  const a = 3 + Math.floor(Math.random() * 7), b = 3 + Math.floor(Math.random() * 7);
+  modal.dataset.answer = String(a + b);
+  modal.innerHTML = `<div class="modal-box">
+    <p>Za odrasle: koliko je ${a} + ${b}?</p>
+    <input id="gateIn" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+    <div class="footer"><button class="btn secondary" data-m="cancel">Prekliči</button><button class="btn" data-m="ok">Odpri</button></div>
+  </div>`;
+  modal.hidden = false;
+  $('#gateIn').focus();
+}
+
+modal.addEventListener('click', (e) => {
+  const m = e.target.closest('[data-m]');
+  if (!m) return;
+  if (m.dataset.m === 'cancel') { modal.hidden = true; return; }
+  const input = $('#gateIn');
+  if (input.value.trim() !== modal.dataset.answer) { input.value = ''; return; }
+  modal.hidden = true;
+  if (S.session && !S.ended && !ADULT.has(S.screen)) {
+    S.resume = S.screen;
+    log('adult_gate');
+  }
+  go('debrief');
+});
+
+// ---------------------------------------------------------------------------
+// Debrief metrics
+// ---------------------------------------------------------------------------
+function analyzeAll() {
+  const bySession = new Map();
+  for (const e of LOG) {
+    if (!bySession.has(e.session)) bySession.set(e.session, []);
+    bySession.get(e.session).push(e);
+  }
+  return [...bySession.values()].map(analyzeSession);
+}
+
+function newMetrics(id) {
+  const c = caseById(id);
+  return {
+    id, no: c ? c.no : 0, rung: c ? c.rung : '', time: {},
+    listens: { top: 0, bottom: 0 }, wrong: { top: 0, bottom: 0 }, distractorWrong: 0,
+    mismatches: 0, hints: 0, maxHint: 0, assisted: false, found: { top: null, bottom: null },
+    backs: 0, suspectChanges: 0, done: false, more: {}, door: false,
+  };
+}
+
+const BOUNDARY = new Set(['screen_enter', 'adult_gate', 'session_end']);
+
+function analyzeSession(evs) {
+  const first = evs[0];
+  const cases = new Map();
+  const M = (id) => { if (!cases.has(id)) cases.set(id, newMetrics(id)); return cases.get(id); };
+  let open = null;
+  for (const e of evs) {
+    if (BOUNDARY.has(e.type) && open) {
+      if (open.case) { const t = M(open.case).time; t[open.screen] = (t[open.screen] || 0) + (e.ts - open.ts); }
+      open = null;
+    }
+    if (e.type === 'screen_enter') open = e;
+    if (!e.case) continue;
+    const m = M(e.case);
+    switch (e.type) {
+      case 'listen':
+      case 'evidence_select':
+        m.listens[e.seat]++;
+        break;
+      case 'pick_mismatch': m.mismatches++; break;
+      case 'back_to_cards': m.backs++; break;
+      case 'suspect_change': m.suspectChanges++; break;
+      case 'evidence_confirm':
+        if (e.correct) { if (m.found[e.seat] == null) m.found[e.seat] = e.ts; }
+        else { m.wrong[e.seat]++; if (e.role === 'distractor') m.distractorWrong++; }
+        break;
+      case 'hint_shown': m.hints++; m.maxHint = Math.max(m.maxHint, e.hintLevel || 0); break;
+      case 'assisted': m.assisted = true; break;
+      case 'case_done': m.done = true; break;
+      case 'more_yes': m.more[e.seat] = 'da'; break;
+      case 'more_no': m.more[e.seat] = 'ne'; break;
+      case 'fake_door': m.door = true; break;
+    }
+  }
+  const list = [...cases.values()].filter(m => m.no).sort((a, b) => a.no - b.no);
+  for (const m of list) {
+    // Hints counted for the outcome exclude "disagree" / "wrong suspect" nudges (level 0), as in the solo game.
+    m.ladderHints = evs.filter(e => e.case === m.id && e.type === 'hint_shown' && e.hintLevel > 0).length;
+    m.outcome = !m.done ? 'unfinished' : m.assisted ? 'assisted' : m.ladderHints <= 1 ? 'clean' : m.ladderHints <= 3 ? 'helped' : 'assisted';
+    const { top, bottom } = m.found;
+    m.firstSeat = top != null && bottom != null ? (top <= bottom ? 'top' : 'bottom') : null;
+    m.gap = m.firstSeat ? Math.abs(top - bottom) : null;
+  }
+  return {
+    session: first.session, pair: first.pair, ageTop: first.ageTop, ageBottom: first.ageBottom,
+    type: pairType(first.ageTop, first.ageBottom), level: first.level, audio: first.audio, start: first.ts,
+    pilot: !!(evs.find(e => e.type === 'session_start') || {}).pilot,
+    events: evs, cases: list,
+    doneCount: list.filter(m => m.done).length,
+    wantMore: list.some(m => m.door),
+  };
+}
+
+const solvedOk = (m) => m.outcome === 'clean' || m.outcome === 'helped';
+const frac = (a, b) => b ? a / b : null;
+
+function verdict(n, success, fail) {
+  if (!n) return '<span class="verdict">–</span>';
+  const [label, cls] = success ? ['uspeh', 'c-good'] : fail ? ['neuspeh', 'c-bad'] : ['nejasno', 'c-warn'];
+  return `<span class="verdict ${cls}">${label}</span>${n < 4 ? ' <span class="tag">premalo parov (n&lt;4)</span>' : ''}`;
+}
+
+const RUNG_LABEL = { join: 'združi', infer: 'sklepaj', elim: 'izloči' };
+
+function summaryHTML(ss) {
+  const n = ss.length;
+  const attempts = ss.flatMap(s => s.cases);
+  const okShare = frac(attempts.filter(solvedOk).length, attempts.length);
+  const finished = ss.filter(s => s.doneCount === 3).length;
+  const wantMore = ss.filter(s => s.wantMore).length;
+
+  const typeRows = ['6-7', '8-9', 'mešan'].map(t => {
+    const group = ss.filter(s => s.type === t);
+    const ms = group.flatMap(s => s.cases);
+    const gaps = ms.filter(m => m.gap != null);
+    return `<tr><td>${t}</td><td>${group.length}</td>
+      <td>${pct(frac(ms.filter(solvedOk).length, ms.length))}</td>
+      <td>${group.filter(s => s.doneCount === 3).length}/${group.length}</td>
+      <td>${group.filter(s => s.wantMore).length}/${group.length}</td>
+      <td>${ms.length ? (sum(ms, m => m.mismatches) / ms.length).toFixed(1) : '–'}</td>
+      <td>${ms.length ? (sum(ms, m => m.wrong.top + m.wrong.bottom) / ms.length).toFixed(1) : '–'}</td>
+      <td>${gaps.length ? fmtDur(sum(gaps, m => m.gap) / gaps.length) : '–'}</td></tr>`;
+  }).join('');
+
+  const rungRows = ['join', 'infer', 'elim'].map((r, i) => {
+    const ms = attempts.filter(m => m.rung === r);
+    const count = (o) => ms.filter(m => m.outcome === o).length;
+    const share = frac(ms.filter(solvedOk).length, ms.length);
+    return `<tr><td>${i + 1}. ${RUNG_LABEL[r]}</td><td>${ms.length}</td>
+      <td>${count('clean')} / ${count('helped')} / ${count('assisted')} / ${count('unfinished')}</td>
+      <td class="${share == null ? '' : share < 0.5 ? 'c-bad' : 'c-good'}">${pct(share)}</td></tr>`;
+  }).join('');
+
+  return `<section class="card">
+    <h3>Vsi štejoči pari · n = ${n}</h3>
+    <div class="tablewrap"><table>
+      <tr><th>Vprašanje</th><th>Meritev</th><th>Ocena</th></tr>
+      <tr><td>V1 Si delita listka?</td><td>Iz lista opazovalca: oba bereta svoj listek na glas v ≥ 2 primerih (uspeh ≥ 4/6 parov); en otrok rešuje sam ali kuka (neuspeh ≥ 3/6).</td><td>–</td></tr>
+      <tr><td>V2 Združita dokaza?</td><td>${pct(okShare)} primerov rešenih z ≤ 3 namigi (${attempts.length} poskusov)</td>
+        <td>${verdict(n, okShare >= 0.7, okShare < 0.4)}</td></tr>
+      <tr><td>V3 Končata in želita še?</td><td>${finished}/${n} končalo vse 3 · ${wantMore}/${n} oba tapnila »Še en primer« po 3. primeru</td>
+        <td>${verdict(n, frac(finished, n) >= 2 / 3 && frac(wantMore, n) >= 0.5, frac(finished, n) <= 1 / 3 || frac(wantMore, n) <= 1 / 6)}</td></tr>
+    </table></div>
+    <h3 style="margin-top:12px">V4 Vrste parov</h3>
+    <div class="tablewrap"><table>
+      <tr><th>Par</th><th>n</th><th>Rešeno z ≤ 3 namigi</th><th>Končali vse 3</th><th>Želita še</th><th>Neenotne izbire / primer</th><th>Napačni dokazi / primer</th><th>Povp. razmik</th></tr>
+      ${typeRows}
+    </table></div>
+    <h3 style="margin-top:12px">Lestvica sodelovanja</h3>
+    <div class="tablewrap"><table>
+      <tr><th>Stopnja</th><th>Poskusi</th><th>rešeno / s pomočjo / vodeno / ni rešeno</th><th>Rešeno z ≤ 3 namigi</th></tr>
+      ${rungRows}
+    </table></div>
+  </section>`;
+}
+
+const OUTCOME = {
+  clean: ['rešeno', 'c-good'], helped: ['s pomočjo', 'c-warn'],
+  assisted: ['vodeno', 'c-bad'], unfinished: ['ni rešeno', 'c-bad'],
+};
+
+function sessionHTML(s) {
+  const rows = s.cases.map(m => {
+    const key = s.session + '|' + m.id;
+    const [outLabel, outCls] = OUTCOME[m.outcome];
+    const t = m.time;
+    const row = `<tr class="clickable" data-act="timeline" data-key="${key}">
+      <td>${m.no}. ${m.id}</td>
+      <td class="${outCls}">${outLabel}</td>
+      <td>${fmtDur(t.clues || 0)} / ${fmtDur(t.accuse || 0)} / ${fmtDur(t.evidence || 0)}</td>
+      <td>${m.listens.top} / ${m.listens.bottom}</td>
+      <td class="${m.mismatches ? 'c-warn' : ''}">${m.mismatches}</td>
+      <td>${m.wrong.top} / ${m.wrong.bottom} (${m.distractorWrong} motilec)</td>
+      <td>${m.hints} (max ${m.maxHint})</td>
+      <td>${m.firstSeat ? SEAT_LABEL[m.firstSeat] + ' · ' + fmtDur(m.gap) : '–'}</td>
+      <td>${m.backs}</td>
+      <td>${m.more.top || '–'} / ${m.more.bottom || '–'}${m.door ? ' (vrata)' : ''}</td>
+    </tr>`;
+    return row + (S.open === key ? `<tr><td colspan="10">${timelineHTML(s, m.id)}</td></tr>` : '');
+  }).join('');
+  return `<section class="card">
+    <p><b>${esc(s.pair)}</b> · Z ${esc(s.ageTop)} let, S ${esc(s.ageBottom)} let (${s.type}) · raven ${esc(s.level)} · zvok ${s.audio ? 'da' : 'ne'} · ${fmtDate(s.start)}
+      ${s.pilot ? '<span class="tag">pilot</span>' : ''} · rešenih ${s.doneCount}/3 · želita še: ${s.wantMore ? 'da' : 'ne'}</p>
+    <div class="tablewrap"><table>
+      <tr><th>Primer</th><th>Izid</th><th>Čas listek / obtožba / dokaz</th><th>Tapi Z / S</th><th>Neenotna izbira</th>
+        <th>Napačni dokazi Z / S</th><th>Namigi</th><th>Prvi dokaz · razmik</th><th>Nazaj na listek</th><th>Še? Z / S</th></tr>
+      ${rows || '<tr><td colspan="10" class="muted">Ni začetih primerov.</td></tr>'}
+    </table></div>
+  </section>`;
+}
+
+const EVENT_LABEL = {
+  screen_enter: 'zaslon', ready: 'pripravljen', unready: 'prekliče pripravljen', listen: 'tapne stavek',
+  listen_prompt: 'posluša navodilo', suspect_pick: 'izbere osumljenca', pick_mismatch: 'neenotna izbira',
+  pick_match: 'enotna izbira', back_to_cards: 'nazaj na listek', evidence_select: 'izbere stavek',
+  evidence_confirm: 'potrdi dokaz', hint_shown: 'namig', hint_dismiss: 'zapre namig', assisted: 'vodeno',
+  suspect_change: 'zamenja osumljenca', case_done: 'primer rešen', more_yes: 'še en primer', more_no: 'dovolj',
+  fake_door: 'vrata »nov primer«', adult_gate: 'odrasli pregled', session_end: 'konec seje', session_start: 'začetek seje',
+};
+
+function timelineHTML(s, caseId) {
+  const evs = s.events.filter(e => e.case === caseId);
+  const t0 = evs.length ? evs[0].ts : 0;
+  const c = caseById(caseId);
+  const name = (id) => esc(CHARACTERS[id] ? CHARACTERS[id].name : id);
+  const detail = (e) => {
+    const parts = [];
+    if (e.seat) parts.push(`[${SEAT_LABEL[e.seat]}]`);
+    if (e.type === 'screen_enter') parts.push(e.screen);
+    if (e.sentenceId && c && e.seat) { const st = c.cards[e.seat].find(x => x.id === e.sentenceId); parts.push('»' + esc(st ? st.text : e.sentenceId) + '«'); }
+    if (e.role && e.role !== 'neutral') parts.push('[' + e.role + ']');
+    if (e.type === 'evidence_confirm') parts.push(e.correct ? '✔' : '✘');
+    if (e.type === 'pick_mismatch') parts.push(`Z ${name(e.top)} · S ${name(e.bottom)}`);
+    if (e.suspectId) parts.push(name(e.suspectId));
+    if (e.hint) parts.push(e.hint);
+    if (e.clip) parts.push(e.clip);
+    return parts.join(' · ');
+  };
+  return `<ol class="timeline">${evs.map(e => `<li><span class="t">${fmtDur(e.ts - t0)}</span> <b>${EVENT_LABEL[e.type] || e.type}</b> ${detail(e)}</li>`).join('')}</ol>`;
+}
+
+// ---------------------------------------------------------------------------
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+render();
+if ('speechSynthesis' in window) {
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+</script>
+</body>
+</html>
