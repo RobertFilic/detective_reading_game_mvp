@@ -87,6 +87,34 @@ button.suspect { cursor: pointer; }
   border-radius: 12px; padding: 6px 22px; transform: rotate(-5deg);
 }
 .reveal-rows { flex: none; width: 100%; max-width: 720px; }
+.board-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.board-head .q { font-size: 30px; font-weight: 800; }
+.board-head .count { margin-left: auto; font-size: 22px; font-weight: 700; color: var(--muted); }
+.board {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding: 14px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; align-content: start;
+  background: #d9b48a; border: 10px solid #a8763f; border-radius: 18px;
+}
+.folder {
+  appearance: none; font: inherit; color: inherit; cursor: pointer; position: relative; text-align: center;
+  background: #fff3cf; border: 2px solid #e2c98f; border-radius: 6px 16px 14px 14px; padding: 12px 10px 10px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px; min-height: 170px;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, .15);
+}
+.folder .no { position: absolute; top: 6px; left: 10px; font-weight: 800; color: var(--muted); font-size: 16px; }
+.folder .stk { font-size: 52px; line-height: 1.1; }
+.folder .fq { font-size: 18px; font-weight: 600; line-height: 1.25; }
+.folder .place { font-size: 14px; font-weight: 700; color: #1f7a8c; background: #dff4f7; border-radius: 8px; padding: 0 6px; }
+.folder .lvl { font-size: 15px; letter-spacing: 1px; margin-top: auto; }
+.folder.solved { background: #e9f6ec; border-color: #9fd3ad; }
+.folder.solved .stk { opacity: .55; }
+.folder .tick {
+  position: absolute; top: 34px; right: 8px; font-size: 22px; font-weight: 900; color: var(--danger);
+  border: 3px solid var(--danger); border-radius: 8px; padding: 0 6px; transform: rotate(-8deg); background: rgba(255, 255, 255, .8);
+}
+.folder.suggest { border-color: var(--sel-line); animation: glow 1.6s ease-in-out infinite; }
+@keyframes glow { 50% { box-shadow: 0 0 0 7px rgba(224, 168, 0, .45); } }
+.trophy { background: var(--good); border-radius: 14px; padding: 8px 14px; font-weight: 700; margin-bottom: 10px; text-align: center; }
 .hint {
   position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom));
   width: min(860px, calc(100% - 32px)); background: #fffbe9; border: 3px solid var(--sel-line); border-radius: 20px;
@@ -162,11 +190,12 @@ const UI_AUDIO = {
   thanks: 'Hvala za pomoč!',
 };
 
+// no = play order (1, 2, 3, …); rung = skill (1 fact, 2 inference, 3 contradiction).
 // sentences: [id, text, role?]; role is evidence | partial | distractor (default neutral).
 // h2 = 3-sentence block highlighted at hint 2, h3 = 2 candidates at hint 3.
 const CASES = [
   {
-    id: 'c1A', rung: 1, level: 'A', sticker: '⚽',
+    id: 'c1A', no: 1, rung: 1, level: 'A', sticker: '⚽',
     question: 'Kdo je vzel rdečo žogo?',
     suspects: ['bine', 'zala', 'jure'], culprit: 'jure',
     sentences: [
@@ -185,7 +214,7 @@ const CASES = [
     reveal: ['Jure je dal žogo v torbo.', 'Vzel jo je domov, da se ne bi izgubila.', 'Jutri jo prinese nazaj.'],
   },
   {
-    id: 'c1B', rung: 1, level: 'B', sticker: '⚽',
+    id: 'c1B', no: 1, rung: 1, level: 'B', sticker: '⚽',
     question: 'Kdo je vzel rdečo žogo?',
     suspects: ['bine', 'zala', 'jure', 'neza'], culprit: 'jure',
     sentences: [
@@ -204,7 +233,7 @@ const CASES = [
     reveal: ['Jure je žogo pospravil v nahrbtnik.', 'Vzel jo je domov, da se ne bi izgubila.', 'Jutri jo prinese nazaj.'],
   },
   {
-    id: 'c2A', rung: 2, level: 'A', sticker: '🫐',
+    id: 'c2A', no: 2, rung: 2, level: 'A', sticker: '🫐',
     question: 'Kdo je pojedel borovnice?',
     suspects: ['zala', 'bine', 'jure'], culprit: 'jure',
     sentences: [
@@ -223,7 +252,7 @@ const CASES = [
     reveal: ['Jure ima moder jezik.', 'Borovnice obarvajo jezik modro.', 'Jure je mislil, da so borovnice za vse.', 'Potem je pomagal nabrati nove.'],
   },
   {
-    id: 'c2B', rung: 2, level: 'B', sticker: '🫐',
+    id: 'c2B', no: 2, rung: 2, level: 'B', sticker: '🫐',
     question: 'Kdo je pojedel borovnice?',
     suspects: ['zala', 'bine', 'neza', 'jure'], culprit: 'jure',
     sentences: [
@@ -242,7 +271,7 @@ const CASES = [
     reveal: ['Jure je imel modre zobe in jezik.', 'Borovnice obarvajo usta modro.', 'Jure je mislil, da so borovnice za vse.', 'Babici je pomagal nabrati nove.'],
   },
   {
-    id: 'c3A', rung: 3, level: 'A', sticker: '👒',
+    id: 'c3A', no: 3, rung: 3, level: 'A', sticker: '👒',
     question: 'Kdo je skril Nežin klobuk?',
     suspects: ['bine', 'jure', 'zala'], culprit: 'zala',
     sentences: [
@@ -261,7 +290,7 @@ const CASES = [
     reveal: ['Zala je rekla, da ne ve nič.', 'Potem pa je vedela, kje je klobuk!', 'Hotela je narediti šalo.', 'Klobuk je vrnila in se opravičila.'],
   },
   {
-    id: 'c3B', rung: 3, level: 'B', sticker: '👒',
+    id: 'c3B', no: 3, rung: 3, level: 'B', sticker: '👒',
     question: 'Kdo je skril Nežin klobuk?',
     suspects: ['bine', 'jure', 'zala', 'babica'], culprit: 'zala',
     sentences: [
@@ -278,6 +307,421 @@ const CASES = [
     h1: 'Ali je kdo rekel dve stvari, ki ne gresta skupaj?',
     h2: ['s6', 's7', 's8'], h3: ['s7', 's8'],
     reveal: ['Zala je rekla, da klobuka ni videla.', 'Potem pa je vedela, da je na strehi lope!', 'Hotela je narediti šalo.', 'Klobuk je vrnila in se opravičila.'],
+  },
+  // ---- Cases 4–13 (added after the first playtests; native speaker to review) ----
+  {
+    id: 'c4A', no: 4, rung: 1, level: 'A', sticker: '🎂',
+    question: 'Kdo je spekel torto?',
+    suspects: ['bine', 'zala', 'neza'], culprit: 'neza',
+    sentences: [
+      ['s1', 'Na mizi je velika jagodna torta.'],
+      ['s2', 'Nihče ne ve, kdo jo je spekel.'],
+      ['s3', 'Bine je ves dan bral knjigo.'],
+      ['s4', 'Zala ima zelo rada jagode.', 'distractor'],
+      ['s5', 'Zala je bila na izletu.'],
+      ['s6', 'Neža je zjutraj mešala testo za torto.', 'evidence'],
+      ['s7', 'Potem je umila vso posodo.'],
+      ['s8', 'Bine je prinesel krožnike.'],
+    ],
+    h1: 'Kdo je delal testo? Poišči ta stavek.',
+    h2: ['s5', 's6', 's7'], h3: ['s4', 's6'],
+    reveal: ['Neža je zjutraj mešala testo.', 'Torto je spekla za Babičin rojstni dan.', 'Presenečenje je uspelo!'],
+  },
+  {
+    id: 'c4B', no: 4, rung: 1, level: 'B', sticker: '🎂',
+    question: 'Kdo je spekel torto?',
+    suspects: ['bine', 'zala', 'jure', 'neza'], culprit: 'neza',
+    sentences: [
+      ['s1', 'Ko se je Babica zbudila, je na mizi stala jagodna torta.'],
+      ['s2', 'Na torti je s smetano pisalo: »Vse najboljše!«'],
+      ['s3', 'Bine je rekel, da sploh ne zna peči.'],
+      ['s4', 'Jure je pojedel tri jagode, ki so padle s torte.', 'distractor'],
+      ['s5', 'Zala je ves večer spala pri teti.'],
+      ['s6', 'Ponoči je Neža potiho mešala testo in prižgala pečico.', 'evidence'],
+      ['s7', 'Babica se je od veselja nasmejala.'],
+      ['s8', 'Jure je vprašal, ali lahko dobi še en kos.'],
+      ['s9', 'Vsi so skupaj zapeli pesmico.'],
+    ],
+    h1: 'Kdo je delal testo? Poišči ta stavek.',
+    h2: ['s5', 's6', 's7'], h3: ['s4', 's6'],
+    reveal: ['Neža je ponoči mešala testo.', 'Torto je spekla za Babičin rojstni dan.', 'Presenečenje je uspelo!'],
+  },
+  {
+    id: 'c5A', no: 5, rung: 2, level: 'A', sticker: '🍯',
+    question: 'Kdo je pojedel med?',
+    suspects: ['jure', 'bine', 'zala'], culprit: 'bine',
+    sentences: [
+      ['s1', 'Na polici je bil kozarec medu.'],
+      ['s2', 'Zdaj je kozarec prazen.'],
+      ['s3', 'Jure reče: »Med je moja najljubša hrana.«', 'distractor'],
+      ['s4', 'Jure je ves dan spal.'],
+      ['s5', 'Zala je lovila metulje.'],
+      ['s6', 'Bine se nedolžno smeje.'],
+      ['s7', 'Bine ima čisto lepljive tačke.', 'evidence'],
+      ['s8', 'Neža pomete kuhinjo.'],
+      ['s9', 'Zala pogleda prazen kozarec.'],
+    ],
+    h1: 'Kakšne tačke imaš, ko ješ med?',
+    h2: ['s6', 's7', 's8'], h3: ['s3', 's7'],
+    reveal: ['Bine ima lepljive tačke.', 'Med je zelo lepljiv.', 'Bine je bil po teku zelo lačen.', 'Zdaj Babici pomaga pri čebelah.'],
+  },
+  {
+    id: 'c5B', no: 5, rung: 2, level: 'B', sticker: '🍯',
+    question: 'Kdo je pojedel med?',
+    suspects: ['jure', 'bine', 'zala', 'neza'], culprit: 'bine',
+    sentences: [
+      ['s1', 'Babica je na polico v shrambi postavila poln kozarec medu.'],
+      ['s2', 'Popoldne je bil kozarec prazen, pokrovček pa je ležal na tleh.'],
+      ['s3', '»Za med bi naredil vse,« je zamrmral Jure.', 'distractor'],
+      ['s4', 'Jure je bil ves popoldan z dedkom na ribolovu.'],
+      ['s5', 'Zala in Neža sta se na travniku igrali skrivalnice.'],
+      ['s6', 'Neža je imela na tačkah rumen cvetni prah.', 'distractor'],
+      ['s7', 'Bine je pritekel v kuhinjo in se nedolžno nasmehnil.'],
+      ['s8', 'Tačke so se mu tako lepile, da ni mogel odpreti vrat.', 'evidence'],
+      ['s9', 'Babica je pogledala prazen kozarec in nato Bineta.'],
+    ],
+    h1: 'Kakšne tačke imaš, ko ješ med?',
+    h2: ['s7', 's8', 's9'], h3: ['s6', 's8'],
+    reveal: ['Binetu so se tačke lepile.', 'Tako lepljiv je med.', 'Bine je bil po teku zelo lačen.', 'Zdaj Babici pomaga pri čebelah.'],
+  },
+  {
+    id: 'c6A', no: 6, rung: 1, level: 'A', sticker: '🌷',
+    question: 'Kdo je zalil Babičine rože?',
+    suspects: ['bine', 'zala', 'jure'], culprit: 'jure',
+    sentences: [
+      ['s1', 'Babičine rože so bile čisto suhe.'],
+      ['s2', 'Danes so mokre in vesele.'],
+      ['s3', 'Bine je skakal čez kamne.'],
+      ['s4', 'Zala ima novo zeleno kanglico.', 'distractor'],
+      ['s5', 'Neža je jedla lešnike.'],
+      ['s6', 'Jure je z vedrom zalil vse rože.', 'evidence'],
+      ['s7', 'Potem je vedro odnesel nazaj.'],
+      ['s8', 'Bine je še vedno skakal.'],
+    ],
+    h1: 'Kdo je kaj naredil z vodo? Poišči ta stavek.',
+    h2: ['s5', 's6', 's7'], h3: ['s4', 's6'],
+    reveal: ['Jure je rože zalil z vedrom.', 'Videl je, da so žejne.', 'Babica se je zelo razveselila.'],
+  },
+  {
+    id: 'c6B', no: 6, rung: 1, level: 'B', sticker: '🌷',
+    question: 'Kdo je zalil Babičine rože?',
+    suspects: ['bine', 'zala', 'jure', 'neza'], culprit: 'jure',
+    sentences: [
+      ['s1', 'Babica je bila tri dni na obisku pri sestri.'],
+      ['s2', 'Ko se je vrnila, so bile njene rože mokre in sveže.'],
+      ['s3', 'Bine je ves čas gradil hišico za ptice.'],
+      ['s4', 'Zala je vsem pokazala svojo novo zeleno kanglico.', 'distractor'],
+      ['s5', 'Neža je na drevesu štela storže.'],
+      ['s6', '»Rože so moje najljubše,« je rekla Neža.', 'distractor'],
+      ['s7', 'Vsak večer je Jure z vedrom vode zalil Babičine rože.', 'evidence'],
+      ['s8', 'Zala je kanglico ves teden hranila v omari.'],
+      ['s9', 'Babica je objela vse štiri prijatelje.'],
+    ],
+    h1: 'Kdo je kaj naredil z vodo? Poišči ta stavek.',
+    h2: ['s6', 's7', 's8'], h3: ['s4', 's7'],
+    reveal: ['Jure je vsak večer zalival rože.', 'Vedel je, da bi brez vode ovenele.', 'Babica mu je za zahvalo spekla piškote.'],
+  },
+  {
+    id: 'c7A', no: 7, rung: 2, level: 'A', sticker: '⛄',
+    question: 'Kdo je naredil snežaka?',
+    suspects: ['bine', 'jure', 'zala'], culprit: 'bine',
+    sentences: [
+      ['s1', 'Zjutraj je pred hišo stal snežak.'],
+      ['s2', 'Imel je korenček za nos.'],
+      ['s3', 'Zala ima zelo rada sneg.', 'distractor'],
+      ['s4', 'Zala je bila bolna v postelji.'],
+      ['s5', 'Jure je spal pod debelo odejo.'],
+      ['s6', 'Neža je pila topel čaj.'],
+      ['s7', 'Bine ima mrzle in mokre tačke.', 'evidence'],
+      ['s8', 'Snežak ima velik nasmeh.'],
+    ],
+    h1: 'Kakšne so tačke, ko se igraš v snegu?',
+    h2: ['s6', 's7', 's8'], h3: ['s3', 's7'],
+    reveal: ['Bine ima mrzle in mokre tačke.', 'Take tačke imaš, če se igraš v snegu.', 'Snežaka je naredil za vse.', 'Za nos je dal svoj korenček!'],
+  },
+  {
+    id: 'c7B', no: 7, rung: 2, level: 'B', sticker: '⛄',
+    question: 'Kdo je naredil snežaka?',
+    suspects: ['bine', 'jure', 'zala', 'neza'], culprit: 'bine',
+    sentences: [
+      ['s1', 'Ponoči je zapadel debel sneg.'],
+      ['s2', 'Zjutraj je sredi dvorišča stal velik snežak s korenčkom.'],
+      ['s3', 'Zala je rekla, da je sneg najlepša stvar na svetu.', 'distractor'],
+      ['s4', 'Jure je še vedno trdno spal v toplem brlogu.'],
+      ['s5', 'Neža je ob oknu brala knjigo in pila čaj.'],
+      ['s6', 'Zala je imela prehlad, zato ni smela iz hiše.'],
+      ['s7', 'Bine je prišel v kuhinjo in se otresel.'],
+      ['s8', 'S kožuha so mu padale snežinke, tačke pa je imel ledene.', 'evidence'],
+      ['s9', 'Babica mu je hitro skuhala vroč kakav.'],
+    ],
+    h1: 'Kakšen si, ko prideš iz snega?',
+    h2: ['s7', 's8', 's9'], h3: ['s3', 's8'],
+    reveal: ['Bine je imel sneg na kožuhu in ledene tačke.', 'Bil je zunaj v snegu.', 'Snežaka je zgradil kot presenečenje.', 'Za nos je dal svoj najljubši korenček!'],
+  },
+  {
+    id: 'c8A', no: 8, rung: 3, level: 'A', sticker: '🍪',
+    question: 'Kdo je pojedel zadnji piškot?',
+    suspects: ['bine', 'jure', 'zala'], culprit: 'jure',
+    sentences: [
+      ['s1', 'V škatli je bil en sam piškot.'],
+      ['s2', 'Zdaj je škatla prazna.'],
+      ['s3', 'Bine reče: »Nisem ga videl.«'],
+      ['s4', 'Jure reče: »Ne maram čokoladnih piškotov.«', 'partial'],
+      ['s5', 'Zala reče: »Tako sem lačna!«', 'distractor'],
+      ['s6', 'Zala je jedla jabolko.'],
+      ['s7', 'Nato Jure reče: »Piškot je bil zelo dober!«', 'evidence'],
+      ['s8', 'Vsi pogledajo Jureta.'],
+      ['s9', 'Jure se nasmeje.'],
+    ],
+    h1: 'Ali je kdo rekel dve stvari, ki ne gresta skupaj?',
+    h2: ['s6', 's7', 's8'], h3: ['s5', 's7'],
+    reveal: ['Jure je rekel, da ne mara teh piškotov.', 'Potem pa je rekel, da je bil dober!', 'Jure je bil lačen in ni mogel čakati.', 'Jutri bo spekel nove za vse.'],
+  },
+  {
+    id: 'c8B', no: 8, rung: 3, level: 'B', sticker: '🍪',
+    question: 'Kdo je pojedel zadnji piškot?',
+    suspects: ['bine', 'jure', 'zala', 'neza'], culprit: 'jure',
+    sentences: [
+      ['s1', 'Babica je v pločevinasto škatlo dala čokoladne piškote.'],
+      ['s2', 'Zvečer je bil v škatli samo še en piškot.'],
+      ['s3', 'Naslednje jutro je bila škatla popolnoma prazna.'],
+      ['s4', 'Bine je rekel, da je vso noč trdno spal.'],
+      ['s5', '»Čokoladnih piškotov sploh ne maram,« je rekel Jure.', 'partial'],
+      ['s6', 'Zala je priznala, da je zjutraj zelo lačna.', 'distractor'],
+      ['s7', 'Neža je pokazala, da ima v duplu samo lešnike.'],
+      ['s8', 'Čez nekaj časa je Jure rekel: »Zadnji je bil najboljši!«', 'evidence'],
+      ['s9', 'Vsi so se obrnili in pogledali Jureta.'],
+    ],
+    h1: 'Ali je kdo rekel dve stvari, ki ne gresta skupaj?',
+    h2: ['s7', 's8', 's9'], h3: ['s6', 's8'],
+    reveal: ['Jure je rekel, da ne mara čokoladnih piškotov.', 'Potem pa je vedel, da je bil zadnji najboljši!', 'Ponoči je bil lačen in ni mogel čakati.', 'Babici je pomagal speči nove.'],
+  },
+  {
+    id: 'c9A', no: 9, rung: 2, level: 'A', sticker: '🥚',
+    question: 'Kdo je pobral jajca?',
+    suspects: ['bine', 'zala', 'neza'], culprit: 'zala',
+    sentences: [
+      ['s1', 'V kokošnjaku je bilo pet jajc.'],
+      ['s2', 'Zdaj so gnezda prazna.'],
+      ['s3', 'Bine ima rad jajca za zajtrk.', 'distractor'],
+      ['s4', 'Bine je ves dan delal na vrtu.'],
+      ['s5', 'Neža je skakala po drevesih.'],
+      ['s6', 'Zala ima v kožuhu kurje perje.', 'evidence'],
+      ['s7', 'Kokoši mirno spijo.'],
+      ['s8', 'Neža skoči z drevesa.'],
+    ],
+    h1: 'Kaj se ti prime na kožuh v kokošnjaku?',
+    h2: ['s5', 's6', 's7'], h3: ['s3', 's6'],
+    reveal: ['Zala ima v kožuhu kurje perje.', 'Perje se ji je prijelo v kokošnjaku.', 'Jajca je pobrala za Babičine palačinke.', 'Kokoši sploh niso bile prestrašene.'],
+  },
+  {
+    id: 'c9B', no: 9, rung: 2, level: 'B', sticker: '🥚',
+    question: 'Kdo je pobral jajca?',
+    suspects: ['bine', 'zala', 'jure', 'neza'], culprit: 'zala',
+    sentences: [
+      ['s1', 'Babica je zjutraj šla v kokošnjak po jajca.'],
+      ['s2', 'Vsa gnezda so bila prazna, kokoši pa so mirno sedele.'],
+      ['s3', '»Za zajtrk bi pojedel deset jajc,« se je pohvalil Jure.', 'distractor'],
+      ['s4', 'Jure je bil vso noč pri bratrancu v sosednjem gozdu.'],
+      ['s5', 'Bine je na vrtu pulil plevel in nabiral solato.'],
+      ['s6', 'Neža je imela v kožuhu zataknjen suh list.', 'distractor'],
+      ['s7', 'Zala je prišla v kuhinjo in sedla za mizo.'],
+      ['s8', 'Iz njenega kožuha je štrlelo belo kurje pero.', 'evidence'],
+      ['s9', 'Babica je pogledala Zalo in se nasmehnila.'],
+    ],
+    h1: 'Kaj se ti prime na kožuh v kokošnjaku?',
+    h2: ['s7', 's8', 's9'], h3: ['s6', 's8'],
+    reveal: ['Zala je imela v kožuhu kurje pero.', 'Tako pero dobiš v kokošnjaku.', 'Jajca je pobrala za Babičine palačinke.', 'Kokoši so bile čisto mirne.'],
+  },
+  {
+    id: 'c10A', no: 10, rung: 1, level: 'A', sticker: '🌈',
+    question: 'Kdo je narisal mavrico?',
+    suspects: ['bine', 'jure', 'babica'], culprit: 'babica',
+    sentences: [
+      ['s1', 'Na pločniku je velika mavrica.'],
+      ['s2', 'Narisana je s kredo.'],
+      ['s3', 'Bine ima škatlo barvnih kred.', 'distractor'],
+      ['s4', 'Bine je ves dan pri teti.'],
+      ['s5', 'Jure lovi ribe v potoku.'],
+      ['s6', 'Babica je zjutraj s kredo risala mavrico.', 'evidence'],
+      ['s7', 'Potem je pila kavo.'],
+      ['s8', 'Jure je ujel majhno ribo.'],
+    ],
+    h1: 'Kdo je risal s kredo? Poišči ta stavek.',
+    h2: ['s5', 's6', 's7'], h3: ['s3', 's6'],
+    reveal: ['Babica je risala mavrico.', 'Tudi babice rade rišejo!', 'Mavrica je za vse otroke na ulici.'],
+  },
+  {
+    id: 'c10B', no: 10, rung: 1, level: 'B', sticker: '🌈',
+    question: 'Kdo je narisal mavrico?',
+    suspects: ['bine', 'jure', 'zala', 'babica'], culprit: 'babica',
+    sentences: [
+      ['s1', 'Ko so otroci zjutraj prišli ven, je bila na pločniku ogromna mavrica.'],
+      ['s2', 'Bila je narisana z barvnimi kredami.'],
+      ['s3', 'Bine je za rojstni dan dobil škatlo barvnih kred.', 'distractor'],
+      ['s4', 'Bine je bil od včeraj na morju z mamo.'],
+      ['s5', 'Zala je rekla, da zna narisati samo zvezdo.'],
+      ['s6', 'Jure je do kosila spal.'],
+      ['s7', 'Ob sončnem vzhodu je Babica s kredo narisala mavrico.', 'evidence'],
+      ['s8', 'Potem je sedla na klop in pila kavo.'],
+      ['s9', 'Na koncu mavrice je pisalo: »Za vas!«'],
+    ],
+    h1: 'Kdo je risal s kredo? Poišči ta stavek.',
+    h2: ['s6', 's7', 's8'], h3: ['s3', 's7'],
+    reveal: ['Babica je ob sončnem vzhodu narisala mavrico.', 'Tudi babice rade rišejo!', 'Mavrico je naredila za vse otroke.'],
+  },
+  {
+    id: 'c11A', no: 11, rung: 3, level: 'A', sticker: '👓',
+    question: 'Kdo je skril Babičina očala?',
+    suspects: ['bine', 'zala', 'neza'], culprit: 'neza',
+    sentences: [
+      ['s1', 'Babica ne najde svojih očal.'],
+      ['s2', 'Brez očal ne more brati.'],
+      ['s3', 'Bine reče: »Nisem jih videl.«'],
+      ['s4', 'Neža reče: »Ne vem, kakšna so očala.«', 'partial'],
+      ['s5', 'Zala se skrije za drevo.', 'distractor'],
+      ['s6', 'Zala se igra skrivalnice z Binetom.'],
+      ['s7', 'Nato Neža reče: »Rdeča očala so v vazi!«', 'evidence'],
+      ['s8', 'Babica pogleda v vazo.'],
+      ['s9', 'Tam so njena rdeča očala!'],
+    ],
+    h1: 'Ali je kdo rekel dve stvari, ki ne gresta skupaj?',
+    h2: ['s6', 's7', 's8'], h3: ['s5', 's7'],
+    reveal: ['Neža je rekla, da ne ve, kakšna so očala.', 'Potem pa je vedela, da so rdeča in v vazi!', 'Očala je skrila za šalo.', 'Babici je prinesla še šopek rož.'],
+  },
+  {
+    id: 'c11B', no: 11, rung: 3, level: 'B', sticker: '👓',
+    question: 'Kdo je skril Babičina očala?',
+    suspects: ['bine', 'zala', 'jure', 'neza'], culprit: 'neza',
+    sentences: [
+      ['s1', 'Babica je zjutraj na mizo odložila svoja očala.'],
+      ['s2', 'Ko je hotela brati časopis, jih ni bilo nikjer.'],
+      ['s3', 'Bine je ves čas sedel pri Babici in luščil grah.'],
+      ['s4', 'Jure je zamrmral, da so očala nekaj zelo dolgočasnega.', 'distractor'],
+      ['s5', '»Še nikoli nisem videla Babičinih očal,« je rekla Neža.', 'partial'],
+      ['s6', 'Zala je hitro skrila nekaj za hrbet.', 'distractor'],
+      ['s7', 'Babica je vse prosila, naj ji pomagajo iskati.'],
+      ['s8', 'Brez iskanja je Neža rekla: »Rdeča očala so v vazi.«', 'evidence'],
+      ['s9', 'Babica je iz vaze res potegnila svoja očala.'],
+    ],
+    h1: 'Ali je kdo rekel dve stvari, ki ne gresta skupaj?',
+    h2: ['s6', 's7', 's8'], h3: ['s6', 's8'],
+    reveal: ['Neža je rekla, da očal še ni videla.', 'Potem pa je vedela, da so rdeča in v vazi!', 'Očala je skrila za šalo.', 'Zala je za hrbtom skrivala risbo za Babico.'],
+  },
+  {
+    id: 'c12A', no: 12, rung: 2, level: 'A', sticker: '🎵',
+    question: 'Kdo je ponoči pel pod oknom?',
+    suspects: ['bine', 'jure', 'zala'], culprit: 'zala',
+    sentences: [
+      ['s1', 'Ponoči je nekdo pel pod oknom.'],
+      ['s2', 'Pesem je bila zelo glasna.'],
+      ['s3', 'Bine se uči igrati kitaro.', 'distractor'],
+      ['s4', 'Bine je ponoči trdno spal.'],
+      ['s5', 'Jure je spal pri Babici.'],
+      ['s6', 'Neža je zjutraj prinesla lešnike.'],
+      ['s7', 'Zala ima danes čisto hripav glas.', 'evidence'],
+      ['s8', 'Ptički na drevesu ponavljajo pesem.'],
+    ],
+    h1: 'Kakšen glas imaš, če dolgo in glasno poješ?',
+    h2: ['s6', 's7', 's8'], h3: ['s3', 's7'],
+    reveal: ['Zala ima hripav glas.', 'Glas postane hripav, če dolgo poješ.', 'Zala je pela, ker je bila luna tako lepa.', 'Naslednjič bo pela bolj potiho.'],
+  },
+  {
+    id: 'c12B', no: 12, rung: 2, level: 'B', sticker: '🎵',
+    question: 'Kdo je ponoči pel pod oknom?',
+    suspects: ['bine', 'jure', 'zala', 'neza'], culprit: 'zala',
+    sentences: [
+      ['s1', 'Sredi noči je nekdo pod oknom glasno pel o luni.'],
+      ['s2', 'Babica se je zbudila, a pevca ni videla.'],
+      ['s3', 'Bine je ponosno pokazal svojo novo kitaro.', 'distractor'],
+      ['s4', 'Bine je povedal, da je kitaro pustil v šoli.'],
+      ['s5', 'Neža je zjutraj zehala in imela zaspane oči.', 'distractor'],
+      ['s6', 'Jure je vso noč spal pri Babici v sobi.'],
+      ['s7', 'Zala je za zajtrk hotela samo topel čaj.'],
+      ['s8', 'Ko je spregovorila, je imela čisto hripav glas.', 'evidence'],
+      ['s9', 'Babica se je nasmehnila, ker je vse razumela.'],
+    ],
+    h1: 'Kakšen glas imaš, če dolgo in glasno poješ?',
+    h2: ['s7', 's8', 's9'], h3: ['s5', 's8'],
+    reveal: ['Zala je imela hripav glas.', 'Glas postane hripav, če dolgo in glasno poješ.', 'Pela je, ker je bila luna tako lepa.', 'Naslednjič bo pela bolj potiho.'],
+  },
+  {
+    id: 'c13A', no: 13, rung: 3, level: 'A', sticker: '🌉',
+    question: 'Kdo je naredil most čez potok?',
+    suspects: ['bine', 'jure', 'zala'], culprit: 'bine',
+    sentences: [
+      ['s1', 'Čez potok je zjutraj stal majhen most.'],
+      ['s2', 'Narejen je bil iz vej.'],
+      ['s3', 'Bine reče: »Danes nisem bil zunaj.«', 'partial'],
+      ['s4', 'Jure je zelo močan.', 'distractor'],
+      ['s5', 'Zala reče: »Jaz sem bila v šoli.«'],
+      ['s6', 'Jure reče: »Jaz sem pospravljal brlog.«'],
+      ['s7', 'Nato Bine reče: »Voda v potoku je mrzla!«', 'evidence'],
+      ['s8', 'Zala pogleda Bineta.'],
+      ['s9', 'Neža veselo teče čez most.'],
+    ],
+    h1: 'Ali je kdo rekel dve stvari, ki ne gresta skupaj?',
+    h2: ['s6', 's7', 's8'], h3: ['s4', 's7'],
+    reveal: ['Bine je rekel, da ni bil zunaj.', 'Potem pa je vedel, da je voda mrzla!', 'Most je naredil za Nežo.', 'Zdaj lahko varno pride čez potok.'],
+  },
+  {
+    id: 'c13B', no: 13, rung: 3, level: 'B', sticker: '🌉',
+    question: 'Kdo je naredil most čez potok?',
+    suspects: ['bine', 'jure', 'zala', 'babica'], culprit: 'bine',
+    sentences: [
+      ['s1', 'Neža vsak dan težko preskoči potok za hišo.'],
+      ['s2', 'Danes je čez potok stal trden most iz vej.'],
+      ['s3', 'Jure je najmočnejši in lahko nese veliko vej naenkrat.', 'distractor'],
+      ['s4', 'Babica je ves dan pletla v svojem naslanjaču.'],
+      ['s5', 'Zala je rekla, da je bila ves dopoldan v knjižnici.'],
+      ['s6', '»Danes sploh nisem bil zunaj,« je rekel Bine.', 'partial'],
+      ['s7', 'Jure je ves dan pomagal dedku na njivi.'],
+      ['s8', 'Malo pozneje je Bine rekel: »Brrr, voda v potoku je ledena!«', 'evidence'],
+      ['s9', 'Neža je veselo stekla čez novi most.'],
+    ],
+    h1: 'Ali je kdo rekel dve stvari, ki ne gresta skupaj?',
+    h2: ['s7', 's8', 's9'], h3: ['s3', 's8'],
+    reveal: ['Bine je rekel, da ni bil zunaj.', 'Potem pa je vedel, da je voda v potoku ledena!', 'Most je naredil za Nežo.', 'Hotel je, da bo presenečenje.'],
+  },
+  // ---- Case 14: holiday on Gran Canaria (real places and animals) ----
+  {
+    id: 'c14A', no: 14, rung: 3, level: 'A', sticker: '🐪', place: '🏝️ Gran Canaria',
+    question: 'Kdo je naredil kamelo iz peska?',
+    suspects: ['bine', 'zala', 'neza'], culprit: 'neza',
+    sentences: [
+      ['s1', 'Prijatelji so na počitnicah na Gran Canarii.'],
+      ['s2', 'Zjutraj je na sipinah stala kamela iz peska.'],
+      ['s3', 'Bine je bil z ladjo pri delfinih.'],
+      ['s4', 'Zala ima v kožuhu pesek.', 'distractor'],
+      ['s5', 'Neža reče: »Danes nisem bila na sipinah.«', 'partial'],
+      ['s6', 'Zala reče: »Jaz sem se kopala v morju.«'],
+      ['s7', 'Nato Neža reče: »Sipine so bile zjutraj mrzle!«', 'evidence'],
+      ['s8', 'Babica se smeji kameli.'],
+      ['s9', 'Na skali se sonči velik kuščar.'],
+    ],
+    h1: 'Ali je kdo rekel dve stvari, ki ne gresta skupaj?',
+    h2: ['s6', 's7', 's8'], h3: ['s4', 's7'],
+    reveal: ['Neža je rekla, da ni bila na sipinah.', 'Potem pa je vedela, da so bile zjutraj mrzle!', 'Kamelo je naredila za Babico.', 'Ali veš? Na Gran Canarii živi velik kuščar.'],
+  },
+  {
+    id: 'c14B', no: 14, rung: 3, level: 'B', sticker: '🐪', place: '🏝️ Gran Canaria',
+    question: 'Kdo je naredil kamelo iz peska?',
+    suspects: ['bine', 'jure', 'zala', 'neza'], culprit: 'neza',
+    sentences: [
+      ['s1', 'Prijatelji so z Babico odpotovali na počitnice na Gran Canario.'],
+      ['s2', 'Nekega jutra je na sipinah Maspalomas stala velika kamela iz peska.'],
+      ['s3', 'Bine je že ob zori odplul iz Puerta de Mogán gledat delfine.'],
+      ['s4', 'Jure je zjutraj v gorah plezal pod skalo Roque Nublo.'],
+      ['s5', 'Zala je imela ves kožuh poln peska.', 'distractor'],
+      ['s6', 'Na plaži Las Canteras je namreč vse jutro lovila valove.'],
+      ['s7', '»Danes sploh nisem bila na sipinah,« je rekla Neža.', 'partial'],
+      ['s8', 'Na skali ob poti se je sončil velik kanarski kuščar.'],
+      ['s9', 'Malo pozneje je Neža rekla: »Pesek na sipinah je bil zjutraj ledeno mrzel!«', 'evidence'],
+      ['s10', 'Babica se je smejala in kameli na glavo dala svoj slamnik.'],
+    ],
+    h1: 'Ali je kdo rekel dve stvari, ki ne gresta skupaj?',
+    h2: ['s8', 's9', 's10'], h3: ['s5', 's9'],
+    reveal: ['Neža je rekla, da na sipinah ni bila.', 'Potem pa je vedela, da je bil pesek zjutraj mrzel!', 'Kamelo je naredila za Babico, ki ima rada kamele.', 'Ali veš? Na sipinah Maspalomas res hodijo kamele.'],
   },
 ];
 
@@ -301,6 +745,8 @@ function clipList() {
 }
 // CASES-END
 
+const N_CASES = Math.max(...CASES.map(c => c.no));
+
 // Filled in by tools/build.mjs with data: URIs for every recorded clip.
 const AUDIO = /*AUDIO-BEGIN*/{}/*AUDIO-END*/;
 const CLIPS = new Map(clipList());
@@ -310,6 +756,7 @@ const CLIPS = new Map(clipList());
 // ---------------------------------------------------------------------------
 const LOG_KEY = 'dp_log_v1';
 const CHILD_KEY = 'dp_child_n';
+const PLAYED_KEY = 'dp_played_v1'; // case numbers solved on this device, for the random order
 let storeOk = true;
 const store = {
   read(k, def) {
@@ -323,7 +770,7 @@ let LOG = store.read(LOG_KEY, []);
 
 const S = {
   session: null, child: null, age: null, level: null, pilot: false, ended: false,
-  caseNo: 0, c: null, run: null, screen: 'setup', resume: null, open: null,
+  caseNo: 0, orderMode: 'board', startAt: 0, order: [], started: 0, suggest: null, c: null, run: null, screen: 'setup', resume: null, open: null,
 };
 const ADULT = new Set(['setup', 'debrief']);
 
@@ -331,7 +778,7 @@ function log(type, extra = {}) {
   if (!S.session) return;
   LOG.push({
     ts: Date.now(), session: S.session, child: S.child, age: S.age, level: S.level,
-    case: S.c ? S.c.id : null, screen: S.screen, type, ...extra,
+    case: S.c ? S.c.id : null, pos: S.c ? S.caseNo + 1 : null, screen: S.screen, type, ...extra,
   });
   store.write(LOG_KEY, LOG);
 }
@@ -417,9 +864,38 @@ function newRun() {
   };
 }
 
+// "Po vrsti": from the chosen case to the last.
+function caseOrder() {
+  return [...new Set(CASES.map(c => c.no))].filter(no => no > S.startAt);
+}
+
+// Case board: the child picks any case. Solved cases (on this iPad) get a tick, and one
+// unsolved case glows as a suggestion: a random one among the easiest still open.
+const solvedNos = () => store.read(PLAYED_KEY, []);
+function pickSuggestion() {
+  const open = CASES.filter(c => c.level === S.level && !solvedNos().includes(c.no));
+  if (!open.length) return null;
+  const easiest = Math.min(...open.map(c => c.rung));
+  const pool = open.filter(c => c.rung === easiest);
+  return pool[Math.floor(Math.random() * pool.length)].no;
+}
+
+function playCase(no) {
+  S.caseNo = S.started++;
+  S.c = CASES.find(c => c.no === no && c.level === S.level);
+  S.run = newRun();
+  log('case_pick', { no, suggested: no === S.suggest, solvedBefore: solvedNos().includes(no) });
+  go('intro');
+}
+
+function toBoard() {
+  S.suggest = pickSuggestion();
+  go('board');
+}
+
 function startCase(n) {
   S.caseNo = n;
-  S.c = CASES.find(c => c.rung === n + 1 && c.level === S.level);
+  S.c = CASES.find(c => c.no === S.order[n] && c.level === S.level);
   S.run = newRun();
   go('intro');
 }
@@ -520,6 +996,15 @@ const T = {
         <div class="seg">${ageBtn('6-7', '6–7 let · raven A')}${ageBtn('8-9', '8–9 let · raven B')}</div>
         <label><input type="checkbox" data-act="pilot" ${S.pilot ? 'checked' : ''}> Pilotna seja (ne šteje v povzetek)</label>
         <p>Koda otroka: <b>${next}</b> (imen ne beležimo)</p>
+        <p style="margin-bottom:6px">Primeri (${N_CASES}):</p>
+        <div class="seg"><button class="btn ${S.orderMode === 'board' ? '' : 'secondary'}" data-act="orderMode" data-mode="board">🗂️ Otrok izbira na tabli</button>
+          <button class="btn ${S.orderMode === 'fixed' ? '' : 'secondary'}" data-act="orderMode" data-mode="fixed">Po vrsti</button></div>
+        ${S.orderMode === 'board'
+          ? `<p class="muted">Na tej napravi rešenih: ${solvedNos().length} / ${N_CASES}. Rešeni primeri dobijo kljukico; en nerešen lažji primer utripa kot predlog.</p>
+        <button class="btn secondary" data-act="resetBoard" ${solvedNos().length ? '' : 'disabled'}>Počisti kljukice (nov otrok)</button>`
+          : `<p class="muted">Začni pri primeru (za primerljiv preizkus začni pri 1):</p>
+        <div class="seg">${CASES.filter(c => c.level === 'A').map(c =>
+          `<button class="btn ${S.startAt === c.no - 1 ? '' : 'secondary'}" data-act="startAt" data-n="${c.no - 1}">${c.no} ${c.sticker}</button>`).join('')}</div>`}
       </section>
       <section class="card">
         <h3>2. Preizkus zvoka</h3>
@@ -544,10 +1029,29 @@ const T = {
     </div>`;
   },
 
+  board() {
+    const solved = solvedNos();
+    const cases = CASES.filter(c => c.level === S.level);
+    const all = cases.every(c => solved.includes(c.no));
+    return `<div class="screen">
+      <div class="board-head"><span class="q">🗂️ Izberi primer</span>
+        <span class="count">✔ ${cases.filter(c => solved.includes(c.no)).length} / ${cases.length}</span></div>
+      ${all ? '<div class="trophy">🏆 Vsi primeri so rešeni! Lahko jih rešuješ še enkrat.</div>' : ''}
+      <div class="board">${cases.map(c => {
+        const done = solved.includes(c.no);
+        return `<button class="folder ${done ? 'solved' : ''} ${c.no === S.suggest ? 'suggest' : ''}" data-act="openCase" data-no="${c.no}">
+          <span class="no">${c.no}</span>${done ? '<span class="tick">✔</span>' : ''}
+          <span class="stk">${c.sticker}</span>${c.place ? `<span class="place">${esc(c.place)}</span>` : ''}<span class="fq">${esc(c.question)}</span>
+          <span class="lvl">${'🔍'.repeat(c.rung)}</span></button>`;
+      }).join('')}</div>
+      <div class="footer"><button class="btn secondary" data-act="moreNo">Dovolj za danes</button></div>
+    </div>`;
+  },
+
   intro() {
     const c = S.c;
     return `<div class="screen center">
-      <div class="case-no">Primer ${S.caseNo + 1}</div>
+      <div class="case-no">Primer ${S.c.no}${c.place ? ' · ' + esc(c.place) : ''}</div>
       <div class="sticker">${c.sticker}</div>
       ${qbar(c.question, c.id + '_q', 'big')}
       <div class="suspects">${c.suspects.map(id => suspectCard(id, false)).join('')}</div>
@@ -643,6 +1147,17 @@ const T = {
 const ACTIONS = {
   age(el) { S.age = el.dataset.age; render(); },
   pilot(el) { S.pilot = el.checked; },
+  startAt(el) { S.startAt = Number(el.dataset.n); render(); },
+  orderMode(el) { S.orderMode = el.dataset.mode; render(); },
+  resetBoard() {
+    if (!confirm('Počistim vse kljukice na tabli? Zapisi v pregledu ostanejo.')) return;
+    store.write(PLAYED_KEY, []);
+    render();
+  },
+  openCase(el) {
+    if (S.c) log('more_yes');
+    playCase(Number(el.dataset.no));
+  },
   startSession() {
     const n = store.read(CHILD_KEY, 0) + 1;
     store.write(CHILD_KEY, n);
@@ -650,13 +1165,15 @@ const ACTIONS = {
       session: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
       child: 'O' + pad(n), level: S.age === '6-7' ? 'A' : 'B', ended: false, resume: null, c: null, run: null,
     });
-    log('session_start', { pilot: S.pilot });
+    S.order = S.orderMode === 'fixed' ? caseOrder() : [];
+    S.started = 0;
+    log('session_start', { pilot: S.pilot, orderMode: S.orderMode, order: S.order });
     go('title');
   },
   toDebrief() { go('debrief'); },
   toSetup() {
     if (S.session && !S.ended) log('session_end', { abandoned: true });
-    Object.assign(S, { session: null, ended: false, resume: null, c: null, run: null, level: null, pilot: false });
+    Object.assign(S, { session: null, ended: false, resume: null, c: null, run: null, level: null, pilot: false, startAt: 0, order: [] });
     go('setup');
   },
   resume() { const to = S.resume; S.resume = null; go(to); },
@@ -684,7 +1201,7 @@ const ACTIONS = {
     play(el.dataset.clip, CLIPS.get(el.dataset.clip) || '', el);
     if (!ADULT.has(S.screen)) log('listen_prompt', { clip: el.dataset.clip });
   },
-  begin() { startCase(0); },
+  begin() { if (S.orderMode === 'board') toBoard(); else startCase(0); },
   toStory() { go('story'); },
   listen(el) {
     const s = sent(el.dataset.sid);
@@ -725,6 +1242,8 @@ const ACTIONS = {
     log('evidence_confirm', { sentenceId: s.id, role: s.role, suspectId: r.suspect, correct: solved, suspectCorrect: rightSuspect });
     if (solved) {
       log('case_done', { assisted: r.assisted, wrong: r.wrong });
+      const played = store.read(PLAYED_KEY, []);
+      if (!played.includes(S.c.no)) store.write(PLAYED_KEY, [...played, S.c.no]);
       go('reveal');
       return;
     }
@@ -758,9 +1277,9 @@ const ACTIONS = {
     S.run.selected = null;
     go('accuse');
   },
-  next() { go('more'); },
+  next() { if (S.orderMode === 'board') toBoard(); else go('more'); },
   moreYes() {
-    if (S.caseNo < 2) { log('more_yes'); startCase(S.caseNo + 1); }
+    if (S.caseNo < S.order.length - 1) { log('more_yes'); startCase(S.caseNo + 1); }
     else { log('fake_door'); go('soon'); }
   },
   moreNo() { log('more_no'); go('thanks'); },
@@ -828,7 +1347,7 @@ function analyzeAll() {
 function newMetrics(id) {
   const c = caseById(id);
   return {
-    id, rung: c ? c.rung : 0, time: {}, heard: new Set(), confirmTs: [],
+    id, no: c ? c.no : 0, pos: null, rung: c ? c.rung : 0, time: {}, heard: new Set(), confirmTs: [],
     listens: 0, rereads: 0, confirms: 0, wrong: 0, distractorWrong: 0, partialWrong: 0,
     hints: 0, maxHint: 0, assisted: false, guess: 0, firstLatency: null, firstEvidence: null,
     anchor: null, early: 0, suspectChanges: 0, done: false, more: null,
@@ -850,6 +1369,7 @@ function analyzeSession(evs) {
     if (e.type === 'screen_enter') open = e;
     if (!e.case) continue;
     const m = M(e.case);
+    if (m.pos == null && e.pos != null) m.pos = e.pos;
     switch (e.type) {
       case 'screen_enter':
         if (e.screen === 'evidence') { m.anchor = e.ts; if (m.firstEvidence == null) m.firstEvidence = e.ts; }
@@ -888,17 +1408,20 @@ function analyzeSession(evs) {
       case 'fake_door': m.more = 'door'; break;
     }
   }
-  const list = [...cases.values()].filter(m => m.rung).sort((a, b) => a.rung - b.rung);
+  const list = [...cases.values()].filter(m => m.no).sort((a, b) => (a.pos || a.no) - (b.pos || b.no));
   for (const m of list) {
     m.outcome = !m.done ? 'unfinished' : m.assisted ? 'assisted' : m.hints <= 1 ? 'clean' : m.hints <= 3 ? 'helped' : 'assisted';
   }
-  const stop = list.find(m => !m.done || (m.more === 'no' && m.rung < 3));
+  const stop = list.find(m => !m.done || m.more === 'no');
   return {
     session: first.session, child: first.child, age: first.age, level: first.level, start: first.ts,
     pilot: !!(evs.find(e => e.type === 'session_start') || {}).pilot,
     events: evs, cases: list,
     doneCount: list.filter(m => m.done).length,
-    wantMore: list.some(m => m.more === 'door'),
+    // Q3 is about the first three cases played (by position, so replays count):
+    // finished all three, then chose another one.
+    firstThree: evs.filter(e => e.type === 'case_done' && (e.pos || 0) <= 3).length,
+    wantMore: evs.some(e => (e.type === 'more_yes' && e.pos >= 3) || e.type === 'fake_door'),
     stoppedAtRung: stop ? stop.rung : null,
   };
 }
@@ -920,7 +1443,7 @@ function groupHTML(age, ss) {
   const guessRate = frac(guesses, confirms);
   const heavyGuessers = ss.filter(s => { const c = sum(s.cases, 'confirms'); return c && sum(s.cases, 'guess') / c > 0.5; }).length;
   const okShare = frac(attempts.filter(solvedOk).length, attempts.length);
-  const finished = ss.filter(s => s.doneCount === 3).length;
+  const finished = ss.filter(s => s.firstThree === 3).length;
   const wantMore = ss.filter(s => s.wantMore).length;
   const wrong = sum(attempts, 'wrong'), distractorWrong = sum(attempts, 'distractorWrong');
   const distractorShare = frac(distractorWrong, wrong);
@@ -949,7 +1472,7 @@ function groupHTML(age, ss) {
         <td>${pct(okShare)} primerov rešenih z ≤ 3 namigi (${attempts.length} poskusov)</td>
         <td>${verdict(n, okShare >= 0.7, okShare < 0.4)}</td></tr>
       <tr><td>V3 Konča in želi še?</td>
-        <td>${finished}/${n} končalo vse 3 · ${wantMore}/${n} tapnilo »Še en primer« po 3. primeru<br><span class="muted">»brez nenačrtovane pomoči« preveri na listu opazovalca</span></td>
+        <td>${finished}/${n} končalo prve 3 · ${wantMore}/${n} po 3. primeru tapnilo »Še en primer«<br><span class="muted">»brez nenačrtovane pomoči« preveri na listu opazovalca</span></td>
         <td>${verdict(n, frac(finished, n) >= 0.8 && frac(wantMore, n) >= 0.6, frac(finished, n) <= 0.4 || frac(wantMore, n) <= 0.2)}</td></tr>
     </table></div>
     <h3 style="margin-top:12px">V4 Lestvica spretnosti</h3>
@@ -974,7 +1497,7 @@ function sessionHTML(s) {
     const guessCls = !m.confirms ? '' : m.guess === 0 ? 'c-good' : m.guess / m.confirms > 0.5 ? 'c-bad' : 'c-warn';
     const [outLabel, outCls] = OUTCOME[m.outcome];
     const row = `<tr class="clickable" data-act="timeline" data-key="${key}">
-      <td>${m.rung}. ${m.id}</td>
+      <td>${m.pos || m.no}. ${m.id} <span class="muted">(st. ${m.rung})</span></td>
       <td class="${outCls}">${outLabel}</td>
       <td>${fmtDur(m.time.story || 0)} / ${fmtDur(m.time.evidence || 0)}</td>
       <td>${m.listens}</td>
@@ -990,7 +1513,7 @@ function sessionHTML(s) {
   }).join('');
   return `<section class="card">
     <p><b>${esc(s.child)}</b> · ${esc(s.age)} let · raven ${esc(s.level)} · ${fmtDate(s.start)}
-      ${s.pilot ? '<span class="tag">pilot</span>' : ''} · rešenih ${s.doneCount}/3 · želi še: ${s.wantMore ? 'da' : 'ne'}</p>
+      ${s.pilot ? '<span class="tag">pilot</span>' : ''} · rešenih ${s.doneCount} · želi še: ${s.wantMore ? 'da' : 'ne'}</p>
     <div class="tablewrap"><table>
       <tr><th>Primer</th><th>Izid</th><th>Čas zgodba / dokaz</th><th>Poslušanja</th><th>Ponovna branja</th><th>1. potrditev</th>
         <th>Napačne</th><th>Namigi</th><th>Ugibanja</th><th>Prezgodaj</th><th>Še?</th></tr>
@@ -1004,7 +1527,7 @@ const EVENT_LABEL = {
   scroll_back: 'pomik nazaj', accuse_early: 'obtoži pred koncem', suspect_pick: 'izbere osumljenca',
   back_to_story: 'še enkrat preberi', evidence_select: 'izbere stavek', evidence_confirm: 'potrdi dokaz',
   hint_shown: 'namig', hint_dismiss: 'zapre namig', assisted: 'vodeno', suspect_change: 'zamenja osumljenca',
-  case_done: 'primer rešen', more_yes: 'še en primer', more_no: 'dovolj', fake_door: 'vrata »nov primer«',
+  case_done: 'primer rešen', case_pick: 'izbere primer na tabli', more_yes: 'še en primer', more_no: 'dovolj', fake_door: 'vrata »nov primer«',
   adult_gate: 'odrasli pregled', session_end: 'konec seje', session_start: 'začetek seje',
 };
 

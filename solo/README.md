@@ -21,7 +21,9 @@ Cases live in `index.html` between `// CASES-BEGIN` and `// CASES-END`. After ed
 node tools/cases.mjs
 ```
 
-It checks word limits per level, sentence and suspect counts, exactly one evidence sentence (not first or last), distractor counts and hint references.
+It checks word limits per level, sentence and suspect counts, exactly one evidence sentence (not first or last), distractor counts and hint references. It also checks that each case can be solved: every suspect appears in the story, the evidence sentence names the culprit and no other suspect (at level B, a pronoun that refers to the culprit in the sentence before), and in contradiction cases the culprit says the partial sentence.
+
+There are 13 cases (`no: 1…13`), each at level A and level B. Cases 1–3 are the original ladder (fact → inference → contradiction).
 
 ## Record audio
 1. `node tools/cases.mjs clips > docs/clips.tsv` gives 100 lines as `clipId<TAB>text`.
@@ -34,7 +36,9 @@ It checks word limits per level, sentence and suspect counts, exactly one eviden
 3. Test in airplane mode: open from the Home Screen, play the sound check.
 
 ## Running a session
-1. Setup screen: choose the age group (sets level A or B), tick "Pilotna seja" for the pilot child, play the sound check, press "Začni sejo".
+1. Setup screen: choose the age group (sets level A or B), tick "Pilotna seja" for the pilot child, choose the case order, play the sound check, press "Začni sejo".
+   - **🗂️ Otrok izbira na tabli** (default): after "Začni" the child sees a board with all 13 cases (sticker, question and difficulty 🔍 / 🔍🔍 / 🔍🔍🔍) and picks one. Solved cases get a ✔ that stays on this iPad; one unsolved easy case glows as a suggestion. Solved cases can be replayed. "Dovolj za danes" ends the session. "Počisti kljukice" in setup clears the board for a new child (the logs stay).
+   - **Po vrsti**: fixed order from a chosen case, with "Še en primer?" after each case. Use this from case 1 for a comparable playtest.
 2. Hand the iPad to the child.
 3. Adult access during or after play: hold the top-left corner for 3 seconds, then answer the sum.
 4. In "Pregled": per-child table (tap a row for the event timeline), age-group summary against the plan thresholds, **Izvozi JSON** after every session, "Nova seja" for the next child.

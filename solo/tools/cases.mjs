@@ -55,11 +55,47 @@ for (const c of CASES) {
   if (!c.question || !c.h1 || !c.reveal || !c.reveal.length) fail(c.id, 'question, h1 and reveal are required');
 }
 
-for (const rung of [1, 2, 3]) {
-  for (const level of ['A', 'B']) {
-    const n = CASES.filter(c => c.rung === rung && c.level === level).length;
-    if (n !== 1) fail(`rung ${rung}`, `${n} cases for level ${level} (need exactly 1)`);
+// Play order: every case number exists once per level, A and B tell the same story,
+// and cases 1–3 climb the ladder (rung 1, 2, 3).
+const nos = [...new Set(CASES.map(c => c.no))].sort((x, y) => x - y);
+nos.forEach((no, i) => { if (no !== i + 1) fail(`case ${no}`, 'case numbers must run 1, 2, 3, … without gaps'); });
+for (const no of nos) {
+  const pair = ['A', 'B'].map(level => CASES.filter(c => c.no === no && c.level === level));
+  pair.forEach((cs, i) => { if (cs.length !== 1) fail(`case ${no}`, `${cs.length} cases for level ${'AB'[i]} (need exactly 1)`); });
+  const [a, b] = pair.map(cs => cs[0]);
+  if (a && b && (a.rung !== b.rung || a.culprit !== b.culprit || a.question !== b.question)) {
+    fail(`case ${no}`, 'levels A and B must share rung, culprit and question');
   }
+  if (no <= 3 && a && a.rung !== no) fail(`case ${no}`, `the first three cases must be rungs 1, 2, 3 in order`);
+}
+
+// Solvability: the evidence must point at the culprit and nobody else.
+// Names are matched in any case form (Bine/Bineta/Binetu, Zala/Zalo, …). At level B the
+// evidence may use a pronoun; then the sentence just before it must name the culprit.
+const NAME = {
+  bine: /\bBine(ta|tu|tom)?\b/, zala: /\bZal(a|o|e|i)\b/, jure: /\bJure(ta|tu|tom)?\b/,
+  neza: /\bNež(a|o|e|i)\b/, babica: /\bBabic(a|o|e|i)\b/,
+};
+const PRONOUN = /\b(mu|ji|njen\w*|njegov\w*|je imel|je imela)\b/;
+const named = (text) => Object.keys(NAME).filter(id => NAME[id].test(text));
+for (const c of CASES) {
+  const ss = c.sentences;
+  for (const id of c.suspects) {
+    if (!ss.some(s => NAME[id].test(s.text))) fail(c.id, `suspect ${id} never appears in the story`);
+  }
+  const ev = ss.find(s => s.role === 'evidence');
+  if (!ev) continue;
+  const inEv = named(ev.text).filter(id => c.suspects.includes(id));
+  if (inEv.length) {
+    if (inEv.length !== 1 || inEv[0] !== c.culprit) fail(c.id, `evidence names [${inEv.join(', ')}], expected only ${c.culprit}`);
+  } else {
+    const prev = ss[ss.indexOf(ev) - 1];
+    const before = named(prev.text).filter(id => c.suspects.includes(id));
+    if (c.level !== 'B' || !PRONOUN.test(ev.text)) fail(c.id, 'evidence does not name the culprit (pronouns only at level B)');
+    else if (before.length !== 1 || before[0] !== c.culprit) fail(c.id, `pronoun in evidence should refer to ${c.culprit}, but the sentence before names [${before.join(', ')}]`);
+  }
+  const partial = ss.find(s => s.role === 'partial');
+  if (partial && !named(partial.text).includes(c.culprit)) fail(c.id, 'the partial sentence must be said by the culprit');
 }
 
 const clips = clipList();
