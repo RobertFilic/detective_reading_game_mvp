@@ -7,6 +7,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Detektiv">
 <meta name="theme-color" content="#fdf6e9">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
 <title>Igre</title>
 <style>
 :root { --bg: #fdf6e9; --ink: #2b2a33; --muted: #6b6876; --card: #fff; --line: #e6dcc8; --accent: #3d6fd8; }
@@ -32,10 +34,69 @@ h1 { font-size: 40px; margin: 0; }
 .game .icon { font-size: 80px; line-height: 1; }
 .game .name { font-size: 30px; font-weight: 700; color: var(--accent); }
 .game .who { color: var(--muted); font-size: 18px; }
+
+/* install: banner on top, step-by-step sheet for Safari (iPhone / iPad have no install button) */
+.install {
+  display: flex; align-items: center; gap: 14px; width: min(680px, 100%); text-align: left;
+  background: var(--card); border: 2px solid var(--line); border-radius: 20px; padding: 12px 14px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .08);
+}
+.install[hidden], .sheet-wrap[hidden], .reopen[hidden] { display: none; }
+.install img { width: 56px; height: 56px; border-radius: 14px; flex: none; }
+.install .txt { flex: 1; }
+.install b { display: block; font-size: 20px; }
+.install span { color: var(--muted); font-size: 16px; }
+.pill {
+  appearance: none; border: 0; border-radius: 999px; background: var(--accent); color: #fff; cursor: pointer;
+  font: inherit; font-size: 20px; font-weight: 700; padding: 10px 22px; min-height: 48px;
+}
+.x { appearance: none; border: 0; background: none; font-size: 24px; color: var(--muted); cursor: pointer; padding: 4px 8px; }
+.reopen { appearance: none; border: 0; background: none; color: var(--accent); font: inherit; font-size: 17px; cursor: pointer; text-decoration: underline; }
+.sheet-wrap { position: fixed; inset: 0; background: rgba(0, 0, 0, .45); display: flex; align-items: flex-end; justify-content: center; z-index: 30; }
+.sheet {
+  width: min(560px, 100%); background: var(--bg); border-radius: 26px 26px 0 0; text-align: left;
+  padding: 18px 20px calc(22px + env(safe-area-inset-bottom)); animation: up .25s ease-out;
+}
+@keyframes up { from { transform: translateY(100%); } }
+.sheet .grab { width: 44px; height: 5px; border-radius: 3px; background: var(--line); margin: 0 auto 14px; }
+.langs { display: flex; justify-content: flex-end; gap: 0; margin: -6px 0 10px; }
+.langs button {
+  appearance: none; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; padding: 4px 12px;
+  background: var(--card); color: var(--muted); border: 1px solid var(--line);
+}
+.langs button:first-child { border-radius: 999px 0 0 999px; }
+.langs button:last-child { border-radius: 0 999px 999px 0; border-left: 0; }
+.langs button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+.preview {
+  display: flex; justify-content: center; gap: 22px; padding: 18px 10px; border-radius: 18px; margin-bottom: 14px;
+  background: linear-gradient(135deg, #3b4ca8, #6a3fa0 60%, #1f7a8c);
+}
+.preview .app { display: flex; flex-direction: column; align-items: center; gap: 6px; color: #fff; font-size: 14px; }
+.preview .app img, .preview .app i { width: 62px; height: 62px; border-radius: 15px; }
+.preview .app i { background: rgba(255, 255, 255, .25); filter: blur(1px); }
+.sheet h2 { margin: 0 0 4px; font-size: 26px; }
+.sheet .sub { color: var(--muted); margin: 0 0 14px; }
+.steps { list-style: none; margin: 0; padding: 4px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; counter-reset: st; }
+.steps li { counter-increment: st; display: flex; align-items: center; gap: 12px; padding: 10px 0; font-size: 18px; }
+.steps li + li { border-top: 1px solid var(--line); }
+.steps li::before { content: counter(st); color: var(--muted); font-weight: 700; width: 18px; }
+.steps li > span:first-child { flex: 1; }
+.steps .ico { font-size: 22px; flex: none; }
+@media (max-width: 520px) {
+  .install .txt span { display: none; }
+  .install .pill { padding: 8px 16px; font-size: 18px; }
+}
+.sheet .pill { width: 100%; margin-top: 14px; }
 </style>
 </head>
 <body>
 <main>
+  <div class="install" id="install" hidden>
+    <img src="icons/icon-180.png" alt="">
+    <div class="txt"><b data-i="title"></b><span data-i="banner"></span></div>
+    <button class="pill" id="installBtn" data-i="install"></button>
+    <button class="x" id="installClose" data-i-label="close">✕</button>
+  </div>
   <h1>Izberi igro</h1>
   <div class="games">
     <a class="game" href="solo/">
@@ -54,8 +115,103 @@ h1 { font-size: 40px; margin: 0; }
       <span class="who">štej, plačaj, vrni drobiž</span>
     </a>
   </div>
+  <button class="reopen" id="reopen" hidden data-i="reopen"></button>
 </main>
+<div class="sheet-wrap" id="sheet" hidden>
+  <div class="sheet" role="dialog" data-i-label="title">
+    <div class="grab"></div>
+    <div class="langs" role="group" aria-label="Language">
+      <button data-lang="en">EN</button><button data-lang="sl">SL</button>
+    </div>
+    <div class="preview">
+      <span class="app"><i></i>&nbsp;</span>
+      <span class="app"><img src="icons/icon-180.png" alt="">Detektiv</span>
+      <span class="app"><i></i>&nbsp;</span>
+    </div>
+    <h2 data-i="title"></h2>
+    <p class="sub" data-i="sub"></p>
+    <ol class="steps" id="steps"></ol>
+    <button class="pill" id="sheetClose" data-i="ok"></button>
+  </div>
+</div>
 <script>
+// ---- Install: Chrome/Edge/Android get the real install dialog; Safari gets the steps.
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  if (standalone) return; // already opened from the Home Screen
+  const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const KEY = 'install_hidden';
+  const LANG_KEY = 'install_lang';
+  // Install widget only. English by default (most iPads run iOS in English); SL on request.
+  const T = {
+    en: {
+      title: 'Install the app', banner: 'Games on your Home Screen – they work offline too.', install: 'Install',
+      close: 'Close', reopen: '📲 Add to Home Screen', ok: 'Got it',
+      sub: 'The icon goes on your Home Screen and the games open full screen.',
+      ios: ['Tap <b>Share</b> – top right on iPad, at the bottom on iPhone, or in the <b>•••</b> menu',
+        'Scroll down and tap <b>Add to Home Screen</b>', 'Tap <b>Add</b> in the top right'],
+      other: ['Open the browser menu <b>⋮</b> or <b>•••</b>', 'Choose <b>Install app</b> or <b>Add to Home screen</b>', 'Confirm with <b>Install</b>'],
+    },
+    sl: {
+      title: 'Namesti aplikacijo', banner: 'Igre na začetnem zaslonu – delujejo tudi brez interneta.', install: 'Namesti',
+      close: 'Zapri', reopen: '📲 Namesti na začetni zaslon', ok: 'Razumem',
+      sub: 'Ikona bo na začetnem zaslonu in igre se odprejo čez cel zaslon.',
+      ios: ['Tapni <b>Deli</b> – na iPadu zgoraj desno, na iPhonu spodaj ali v meniju <b>•••</b>',
+        'Podrsaj navzdol in tapni <b>Dodaj na začetni zaslon</b>', 'Tapni <b>Dodaj</b> zgoraj desno'],
+      other: ['Odpri meni brskalnika <b>⋮</b> ali <b>•••</b>', 'Izberi <b>Namesti aplikacijo</b> ali <b>Dodaj na začetni zaslon</b>', 'Potrdi z <b>Namesti</b>'],
+    },
+  };
+  let lang = 'en';
+  try { if (localStorage.getItem(LANG_KEY) === 'sl') lang = 'sl'; } catch (e) {}
+  const ICONS = ios ? ['⬆️', '➕', '✅'] : ['☰', '➕', '✅'];
+  const applyLang = () => {
+    const t = T[lang];
+    document.querySelectorAll('[data-i]').forEach(el => { el.textContent = t[el.dataset.i]; });
+    document.querySelectorAll('[data-i-label]').forEach(el => el.setAttribute('aria-label', t[el.dataset.iLabel]));
+    $('steps').innerHTML = (ios ? t.ios : t.other)
+      .map((txt, i) => `<li><span>${txt}</span><span class="ico">${ICONS[i]}</span></li>`).join('');
+    document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
+  };
+  document.querySelectorAll('[data-lang]').forEach(b => {
+    b.onclick = () => {
+      lang = b.dataset.lang;
+      try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+      applyLang();
+    };
+  });
+  let hidden = false;
+  try { hidden = localStorage.getItem(KEY) === '1'; } catch (e) {}
+  let deferred = null;
+  const show = () => { $('install').hidden = hidden; $('reopen').hidden = !hidden; };
+
+  applyLang();
+
+  // iOS has no install dialog for web apps, so Safari always gets the steps.
+  if (!ios) window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferred = e; });
+  window.addEventListener('appinstalled', () => { $('install').hidden = true; $('reopen').hidden = true; });
+
+  const open = async () => {
+    if (deferred) {
+      deferred.prompt();
+      await deferred.userChoice.catch(() => {});
+      deferred = null;
+      return;
+    }
+    $('sheet').hidden = false;
+  };
+  $('installBtn').onclick = open;
+  $('reopen').onclick = open;
+  $('installClose').onclick = () => {
+    hidden = true;
+    try { localStorage.setItem(KEY, '1'); } catch (e) {}
+    show();
+  };
+  $('sheetClose').onclick = () => { $('sheet').hidden = true; };
+  $('sheet').onclick = (e) => { if (e.target === $('sheet')) $('sheet').hidden = true; };
+  show();
+})();
+
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
