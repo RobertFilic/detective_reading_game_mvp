@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#fdf6e9">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Igre</title>
+<title>Detektivska pisarna</title>
 <style>
 :root { --bg: #fdf6e9; --ink: #2b2a33; --muted: #6b6876; --card: #fff; --line: #e6dcc8; --accent: #3d6fd8; }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -34,6 +34,31 @@ h1 { font-size: 40px; margin: 0; }
 .game .icon { font-size: 80px; line-height: 1; }
 .game .name { font-size: 30px; font-weight: 700; color: var(--accent); }
 .game .who { color: var(--muted); font-size: 18px; }
+.games[hidden] { display: none; }
+
+/* Kid-facing hero: one tap into the detective game */
+.hero {
+  display: flex; flex-direction: column; align-items: center; gap: 8px; width: min(520px, 100%);
+  background: var(--card); border: 3px solid var(--line); border-radius: 28px; padding: 28px 20px 22px;
+  color: inherit; text-decoration: none; box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+}
+.hero:active { transform: scale(.98); }
+.hero-icon { font-size: 88px; line-height: 1; }
+.hero-title { font-size: 34px; font-weight: 800; }
+.hero-sub { font-size: 20px; color: var(--muted); max-width: 22em; }
+.hero-cast { font-size: 40px; letter-spacing: 6px; }
+.hero-btn {
+  margin-top: 6px; background: var(--accent); color: #fff; font-size: 30px; font-weight: 800;
+  border-radius: 999px; padding: 14px 56px; box-shadow: 0 6px 0 #2b55b0;
+}
+.hero-note { font-size: 16px; color: var(--muted); }
+.more-games { appearance: none; border: 0; background: none; color: var(--muted); font: inherit; font-size: 16px; cursor: pointer; }
+@media (max-width: 520px) {
+  .hero-icon { font-size: 64px; }
+  .hero-title { font-size: 28px; }
+  .hero-sub { font-size: 18px; }
+  .hero-btn { font-size: 26px; padding: 12px 44px; }
+}
 
 /* install: banner on top, step-by-step sheet for Safari (iPhone / iPad have no install button) */
 .install {
@@ -97,12 +122,20 @@ h1 { font-size: 40px; margin: 0; }
     <button class="pill" id="installBtn" data-i="install"></button>
     <button class="x" id="installClose" data-i-label="close">✕</button>
   </div>
-  <h1>Izberi igro</h1>
-  <div class="games">
+  <a class="hero" href="solo/?play">
+    <span class="hero-icon">🔍</span>
+    <span class="hero-title">Detektivska pisarna</span>
+    <span class="hero-sub">Reši skrivnosti z Binetom, Zalo, Juretom in Nežo!</span>
+    <span class="hero-cast">🐰 🦊 🐻 🐿️</span>
+    <span class="hero-btn">Igraj!</span>
+    <span class="hero-note">14 primerov · izberi svojega</span>
+  </a>
+  <button class="more-games" id="moreGames" aria-expanded="false">Druge igre ▾</button>
+  <div class="games" id="otherGames" hidden>
     <a class="game" href="solo/">
       <span class="icon">🕵️</span>
       <span class="name">Igraj sam</span>
-      <span class="who">en detektiv</span>
+      <span class="who">z nastavitvami za odrasle</span>
     </a>
     <a class="game" href="za-dva/">
       <span class="icon">🕵️🕵️</span>
@@ -135,6 +168,13 @@ h1 { font-size: 40px; margin: 0; }
   </div>
 </div>
 <script>
+// "Druge igre": the other games stay one tap away for adults.
+document.getElementById('moreGames').onclick = (e) => {
+  const g = document.getElementById('otherGames');
+  g.hidden = !g.hidden;
+  e.currentTarget.setAttribute('aria-expanded', String(!g.hidden));
+};
+
 // ---- Install: Chrome/Edge/Android get the real install dialog; Safari gets the steps.
 (() => {
   const $ = (id) => document.getElementById(id);

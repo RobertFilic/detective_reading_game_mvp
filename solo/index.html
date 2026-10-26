@@ -814,6 +814,11 @@ function clipList() {
 
 const N_CASES = Math.max(...CASES.map(c => c.no));
 
+// Kid mode (solo/?play, the "Igraj!" button on the start page): no adult setup. A session
+// starts by itself at one level for everyone, on the case board. The adult corner still works.
+const KID_MODE = new URLSearchParams(location.search).has('play');
+const KID_LEVEL = 'A'; // children 7–8 reading alone; switch to 'B' for the harder versions
+
 // Filled in by tools/build.mjs with data: URIs for every recorded clip.
 const AUDIO = /*AUDIO-BEGIN*/{}/*AUDIO-END*/;
 const CLIPS = new Map(clipList());
@@ -859,9 +864,13 @@ let playingEl = null;
 let slVoice = null;
 
 function loadVoices() {
+  const had = !!slVoice;
   try { slVoice = speechSynthesis.getVoices().find(v => /^sl/i.test(v.lang)) || null; } catch (e) { slVoice = null; }
-  if (S.screen === 'setup') render();
+  if (S.screen === 'setup' || had !== !!slVoice) render();
 }
+
+// 🔊 buttons only when something can actually be heard (recordings or a Slovenian voice).
+const canSpeak = () => Object.keys(AUDIO).length > 0 || !!slVoice;
 
 function markPlaying(el) {
   if (playingEl) playingEl.classList.remove('playing');
@@ -914,7 +923,7 @@ const fmtDate = (ts) => { const d = new Date(ts); return `${d.getDate()}. ${d.ge
 const sum = (arr, k) => arr.reduce((a, m) => a + (m[k] || 0), 0);
 const pct = (x) => x == null ? '–' : Math.round(x * 100) + ' %';
 
-const spk = (clip) => `<button class="spk" data-act="say" data-clip="${clip}" aria-label="Poslušaj">🔊</button>`;
+const spk = (clip) => canSpeak() ? `<button class="spk" data-act="say" data-clip="${clip}" aria-label="Poslušaj">🔊</button>` : '';
 const qbar = (text, clip, cls = '') => `<div class="qbar ${cls}"><span class="q">${esc(text)}</span>${spk(clip)}</div>`;
 const avatar = (id, cls = '') => { const ch = CHARACTERS[id]; return `<span class="avatar ${cls}" style="background:${ch.color}">${ch.animal}</span>`; };
 const suspectCard = (id, pickable) => pickable
@@ -1182,6 +1191,7 @@ const T = {
     return `<div class="screen center">
       <div class="sticker">🏅</div>
       ${qbar(UI_AUDIO.thanks, 'ui_thanks', 'big')}
+      ${KID_MODE ? '<button class="btn secondary" data-act="backToBoard">🗂️ Nazaj na primere</button>' : ''}
     </div>`;
   },
 
@@ -1230,14 +1240,15 @@ const ACTIONS = {
     store.write(CHILD_KEY, n);
     Object.assign(S, {
       session: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-      child: 'O' + pad(n), level: S.age === '6-7' ? 'A' : 'B', ended: false, resume: null, c: null, run: null,
+      child: 'O' + pad(n), level: KID_MODE ? KID_LEVEL : S.age === '6-7' ? 'A' : 'B', ended: false, resume: null, c: null, run: null,
     });
     S.order = S.orderMode === 'fixed' ? caseOrder() : [];
     S.started = 0;
-    log('session_start', { pilot: S.pilot, orderMode: S.orderMode, order: S.order });
+    log('session_start', { pilot: S.pilot, orderMode: S.orderMode, order: S.order, kid: KID_MODE });
     go('title');
   },
   toDebrief() { go('debrief'); },
+  backToBoard() { S.ended = false; log('session_resume'); toBoard(); },
   toSetup() {
     if (S.session && !S.ended) log('session_end', { abandoned: true });
     Object.assign(S, { session: null, ended: false, resume: null, c: null, run: null, level: null, pilot: false, startAt: 0, order: [] });
@@ -1620,7 +1631,13 @@ function timelineHTML(s, caseId) {
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
-render();
+if (KID_MODE) {
+  Object.assign(S, { age: '7-8', orderMode: 'board', pilot: false });
+  ACTIONS.startSession();
+  toBoard(); // "Igraj!" on the start page was the start button; go straight to the cases
+} else {
+  render();
+}
 if ('speechSynthesis' in window) {
   loadVoices();
   speechSynthesis.onvoiceschanged = loadVoices;
