@@ -1126,7 +1126,7 @@ const CLIPS = new Map(clipList());
 // ---------------------------------------------------------------------------
 const LOG_KEY = 'dp_log_v1';
 const CHILD_KEY = 'dp_child_n';
-const PLAYED_KEY = 'dp_played_v1'; // case numbers solved on this device, for the random order
+const PLAYED_KEY = 'dp_played_v1'; // solved cases on this device, as "file:no"
 let storeOk = true;
 const store = {
   read(k, def) {
@@ -1138,6 +1138,49 @@ const store = {
 };
 let LOG = store.read(LOG_KEY, []);
 
+// ---- Saved data: version + anonymous player id ----
+// Everything a child has done lives in localStorage on this device. SAVE_VERSION says which
+// format it is in; migrateSave() upgrades older saves once, so a code update never loses
+// progress. PLAYER_KEY holds a random id (no name) that will let a future account claim this
+// device's progress without counting it twice.
+const SAVE_VERSION_KEY = 'dp_save_version';
+const SAVE_VERSION = 2; // 1: solved cases as forest numbers · 2: solved cases as "file:no"
+const PLAYER_KEY = 'dp_player_v1';
+
+function newPlayerId() {
+  try { if (crypto.randomUUID) return crypto.randomUUID(); } catch (e) {}
+  return 'p-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+}
+
+function newPlayer() {
+  const p = { id: newPlayerId(), created: new Date().toISOString() };
+  store.write(PLAYER_KEY, p);
+  return p;
+}
+const playerInfo = () => store.read(PLAYER_KEY, null) || newPlayer();
+
+function migrateSave() {
+  const from = store.read(SAVE_VERSION_KEY, 1);
+  if (from < 2) {
+    // forest case numbers → "gozd:N"
+    const played = store.read('dp_played_v1', []);
+    store.write('dp_played_v1', played.map(k => typeof k === 'number' ? `gozd:${k}` : k));
+  }
+  if (from !== SAVE_VERSION) store.write(SAVE_VERSION_KEY, SAVE_VERSION);
+  playerInfo(); // make sure this device has an anonymous player id
+}
+migrateSave();
+
+// Everything that makes up this child's progress, in one object: what a future login
+// would upload. Not used by the game yet.
+function progressSnapshot() {
+  return {
+    app: 'detektivska-pisarna', saveVersion: SAVE_VERSION, exported: new Date().toISOString(),
+    player: playerInfo(), profile: store.read('dp_profile_v1', null), solved: store.read('dp_played_v1', []),
+    tutorialDone: store.read('dp_tutorial_done', false),
+  };
+}
+
 const S = {
   session: null, child: null, age: null, level: null, pilot: false, ended: false,
   caseNo: 0, orderMode: 'board', startAt: 0, order: [], started: 0, suggest: null, c: null, run: null, screen: 'setup', resume: null, open: null,
@@ -1147,7 +1190,7 @@ const ADULT = new Set(['setup', 'debrief']);
 function log(type, extra = {}) {
   if (!S.session) return;
   LOG.push({
-    ts: Date.now(), session: S.session, child: S.child, age: S.age, level: S.level,
+    ts: Date.now(), player: playerInfo().id, session: S.session, child: S.child, age: S.age, level: S.level,
     case: S.c ? S.c.id : null, pos: S.c ? S.caseNo + 1 : null, screen: S.screen, type, ...extra,
   });
   store.write(LOG_KEY, LOG);
@@ -1252,7 +1295,7 @@ function caseOrder() {
   return casesIn('gozd').map(c => c.no).filter(no => no > S.startAt);
 }
 
-// Solved cases on this device, as "file:no" (older saves held forest numbers only).
+// Solved cases on this device, as "file:no" (migrateSave converts older saves; the map is a safety net).
 function solvedKeys() {
   return store.read(PLAYED_KEY, []).map(k => typeof k === 'number' ? `gozd:${k}` : k);
 }
@@ -1495,7 +1538,7 @@ const T = {
         <h3>1. Otrok</h3>
         <div class="seg">${ageBtn('6-7', '6–7 let · raven A')}${ageBtn('8-9', '8–9 let · raven B')}</div>
         <label><input type="checkbox" data-act="pilot" ${S.pilot ? 'checked' : ''}> Pilotna seja (ne šteje v povzetek)</label>
-        <p>Koda otroka: <b>${next}</b> (imen ne beležimo)</p>
+        <p>Koda otroka: <b>${next}</b> (imen ne beležimo) · <span class="muted">ID igralca na tej napravi: ${esc(playerInfo().id.slice(0, 8))}…</span></p>
         <p style="margin-bottom:6px">Primeri (${ALL_KEYS.length} v ${FILES.length} mapah):</p>
         <div class="seg"><button class="btn ${S.orderMode === 'board' ? '' : 'secondary'}" data-act="orderMode" data-mode="board">🗂️ Otrok izbira na tabli</button>
           <button class="btn ${S.orderMode === 'fixed' ? '' : 'secondary'}" data-act="orderMode" data-mode="fixed">Po vrsti</button></div>
@@ -1702,6 +1745,7 @@ const ACTIONS = {
     store.write(PLAYED_KEY, []);
     store.write(TUT_KEY, false);   // a new child also gets the practice case
     store.write(PROFILE_KEY, null); // and makes their own ID card
+    newPlayer();                    // and is a new anonymous player
     render();
   },
   openFile(el) {
@@ -1771,7 +1815,7 @@ const ACTIONS = {
   resume() { const to = S.resume; S.resume = null; go(to); },
   timeline(el) { S.open = S.open === el.dataset.key ? null : el.dataset.key; render(); },
   exportLog() {
-    const blob = new Blob([JSON.stringify({ app: 'detektivska-pisarna', version: 1, exported: new Date().toISOString(), events: LOG }, null, 1)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify({ app: 'detektivska-pisarna', version: 1, exported: new Date().toISOString(), progress: progressSnapshot(), events: LOG }, null, 1)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     const d = new Date();
