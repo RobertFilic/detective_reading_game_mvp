@@ -119,6 +119,19 @@ button.suspect { cursor: pointer; }
 }
 .folder.suggest { border-color: var(--sel-line); animation: glow 1.6s ease-in-out infinite; }
 @keyframes glow { 50% { box-shadow: 0 0 0 7px rgba(224, 168, 0, .45); } }
+/* first-time tutorial: Babica (owl) coach bubble + the thing to tap glows */
+.coach {
+  position: fixed; left: 50%; transform: translateX(-50%); width: min(620px, calc(100% - 20px)); z-index: 20;
+  display: flex; gap: 12px; align-items: center; background: #fff; border: 3px solid var(--accent); border-radius: 20px;
+  padding: 10px 14px; font-size: 22px; font-weight: 600; box-shadow: 0 10px 30px rgba(0, 0, 0, .2); animation: coachIn .3s ease-out;
+}
+.coach.top { top: calc(10px + env(safe-area-inset-top)); }
+.coach.bottom { bottom: calc(10px + env(safe-area-inset-bottom)); }
+.coach .owl { font-size: 44px; line-height: 1; flex: none; }
+.coach .say { flex: 1; }
+.coach .btn { flex: none; }
+@keyframes coachIn { from { opacity: 0; transform: translateX(-50%) scale(.9); } }
+.coach-target { outline: 4px solid var(--sel-line); outline-offset: 4px; border-radius: 16px; animation: pulse 1.1s ease-in-out infinite; }
 .trophy { background: var(--good); border-radius: 14px; padding: 8px 14px; font-weight: 700; margin-bottom: 10px; text-align: center; }
 .hint {
   position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom));
@@ -162,6 +175,8 @@ button.suspect { cursor: pointer; }
   .hint .txt { flex: 1 1 calc(100% - 40px); }
   .hint .spk { margin-left: auto; }
   .reveal { gap: 10px; }
+  .coach { font-size: 18px; padding: 8px 10px; gap: 8px; }
+  .coach .owl { font-size: 34px; }
   .reveal .sticker { display: none; }
   .reveal .suspect { flex-direction: row; padding: 6px 14px; }
   .reveal .avatar { width: 44px; height: 44px; font-size: 26px; }
@@ -792,8 +807,23 @@ const CASES = [
   },
 ];
 
+// Practice case for the first-time tutorial: very easy, the answer is stated plainly.
+const TUTORIAL = {
+  id: 'tut', no: 0, rung: 1, level: 'A', sticker: '🥕',
+  question: 'Kdo je pojedel korenček?',
+  suspects: ['bine', 'jure', 'zala'], culprit: 'bine',
+  sentences: [
+    ['s1', 'Na mizi je bil korenček.'],
+    ['s2', 'Jure je spal.'],
+    ['s3', 'Bine je pojedel korenček.', 'evidence'],
+    ['s4', 'Zala je brala knjigo.'],
+  ],
+  h1: 'Kdo je pojedel korenček? Poišči ta stavek.', h2: ['s2', 's3', 's4'], h3: ['s2', 's3'],
+  reveal: ['Bine je pojedel korenček.', 'To piše v zgodbi!', 'Tako najdeš dokaz.'],
+};
+
 function normalizeCases() {
-  for (const c of CASES) {
+  for (const c of [...CASES, TUTORIAL]) {
     c.sentences = c.sentences.map(([id, text, role = 'neutral']) => ({ id, text, role }));
   }
 }
@@ -802,7 +832,7 @@ normalizeCases();
 // Every audio clip the app can play: [clipId, text]. Recordings go in audio/<clipId>.m4a.
 function clipList() {
   const out = Object.entries(UI_AUDIO).map(([k, t]) => ['ui_' + k, t]);
-  for (const c of CASES) {
+  for (const c of [TUTORIAL, ...CASES]) {
     out.push([c.id + '_q', c.question]);
     for (const s of c.sentences) out.push([c.id + '_' + s.id, s.text]);
     out.push([c.id + '_h1', c.h1]);
@@ -964,7 +994,72 @@ function playCase(no) {
   go('intro');
 }
 
+// ---- First-time tutorial: a guided practice case before the board ----
+const TUT_KEY = 'dp_tutorial_done';
+
+function startTutorial() {
+  S.c = TUTORIAL;
+  S.run = newRun();
+  S.tut = { read: false, msg: null, board: false };
+  log('tutorial_start');
+  go('intro');
+}
+
+function endTutorial() {
+  store.write(TUT_KEY, true);
+  log('tutorial_done');
+  S.c = null;
+  S.run = null;
+  S.tut = { board: true };   // one last bubble on the board
+  toBoard();
+}
+
+// What Babica says on each screen, and which element glows.
+function coachStep() {
+  const t = S.tut, r = S.run;
+  if (!t) return null;
+  if (S.screen === 'board') return t.board ? { text: 'Zdaj izberi svoj primer!', sel: '.folder.suggest', ok: true } : null;
+  if (t.msg) return { text: t.msg, sel: null, ok: true };
+  switch (S.screen) {
+    case 'intro': return { text: 'Tvoj prvi primer! Najprej preberi zgodbo.', sel: '[data-act="toStory"]' };
+    case 'story': return t.read
+      ? { text: 'Ko veš, kdo je bil, tapni tukaj.', sel: '[data-act="know"]' }
+      : { text: 'Preberi vse stavke. Kdo je pojedel korenček?', sel: '.rows', ok: true };
+    case 'accuse': return { text: 'Kdo je bil? Tapni pravo živalco.', sel: '.suspects' };
+    case 'evidence': return r && r.selected
+      ? { text: 'Tapni »To je dokaz!«', sel: '[data-act="confirm"]' }
+      : { text: 'Kateri stavek to dokaže? Tapni ga.', sel: '.rows' };
+    case 'reveal': return { text: 'Bravo, detektiv! Tako se igra. 🎉', sel: '[data-act="next"]' };
+  }
+  return null;
+}
+
+function coach() {
+  document.querySelectorAll('.coach').forEach(el => el.remove());
+  document.querySelectorAll('.coach-target').forEach(el => el.classList.remove('coach-target'));
+  const step = coachStep();
+  if (!step) return;
+  const target = step.sel && document.querySelector(step.sel);
+  if (target) target.classList.add('coach-target');
+  // Put the bubble on the side with more room, so it doesn't cover what to tap.
+  const rect = target ? target.getBoundingClientRect() : null;
+  const top = rect ? rect.top > innerHeight - rect.bottom : false;
+  document.body.insertAdjacentHTML('beforeend', `<div class="coach ${top ? 'top' : 'bottom'}">
+    <span class="owl">🦉</span><span class="say">${esc(step.text)}</span>
+    ${step.ok ? '<button class="btn" data-coach="ok">V redu</button>' : ''}</div>`);
+}
+
+document.body.addEventListener('click', (e) => {
+  if (!e.target.closest('[data-coach="ok"]') || !S.tut) return;
+  if (S.tut.msg) S.tut.msg = null;
+  else if (S.screen === 'story') S.tut.read = true;
+  else if (S.screen === 'board') S.tut = null;
+  coach();
+});
+
 function toBoard() {
+  // A child who has never played gets the practice case first.
+  if (!store.read(TUT_KEY, false) && !(S.tut && S.tut.board)) { startTutorial(); return; }
   S.suggest = pickSuggestion();
   go('board');
 }
@@ -991,6 +1086,7 @@ function render() {
     refreshRows();
     watchScroll();
   }
+  coach();
 }
 
 function rowsHTML(act) {
@@ -1120,14 +1216,15 @@ const T = {
           <span class="stk">${c.sticker}</span>${c.place ? `<span class="place">${esc(c.place)}</span>` : ''}<span class="fq">${esc(c.question)}</span>
           <span class="lvl">${'🔍'.repeat(c.rung)}</span></button>`;
       }).join('')}</div>
-      <div class="footer"><button class="btn secondary" data-act="moreNo">Dovolj za danes</button></div>
+      <div class="footer"><button class="btn secondary" data-act="tutorial">❓ Kako igram?</button>
+        <span class="grow"></span><button class="btn secondary" data-act="moreNo">Dovolj za danes</button></div>
     </div>`;
   },
 
   intro() {
     const c = S.c;
     return `<div class="screen center">
-      <div class="case-no">Primer ${S.c.no}${c.place ? ' · ' + esc(c.place) : ''}</div>
+      <div class="case-no">${S.c.no ? 'Primer ' + S.c.no : '🎓 Vaja'}${c.place ? ' · ' + esc(c.place) : ''}</div>
       <div class="sticker">${c.sticker}</div>
       ${qbar(c.question, c.id + '_q', 'big')}
       <div class="suspects">${c.suspects.map(id => suspectCard(id, false)).join('')}</div>
@@ -1229,12 +1326,15 @@ const ACTIONS = {
   resetBoard() {
     if (!confirm('Počistim vse kljukice na tabli? Zapisi v pregledu ostanejo.')) return;
     store.write(PLAYED_KEY, []);
+    store.write(TUT_KEY, false); // a new child also gets the practice case
     render();
   },
   openCase(el) {
+    S.tut = null;
     if (S.c) log('more_yes');
     playCase(Number(el.dataset.no));
   },
+  tutorial() { startTutorial(); },
   startSession() {
     const n = store.read(CHILD_KEY, 0) + 1;
     store.write(CHILD_KEY, n);
@@ -1294,6 +1394,11 @@ const ACTIONS = {
   },
   reread() { log('back_to_story'); go('story'); },
   pick(el) {
+    if (S.tut && el.dataset.id !== S.c.culprit) {
+      S.tut.msg = 'Hmm, ni še prav. Kdo je pojedel korenček? Preberi še enkrat.';
+      coach();
+      return;
+    }
     S.run.suspect = el.dataset.id;
     S.run.selected = null;
     log('suspect_pick', { suspectId: el.dataset.id });
@@ -1309,6 +1414,7 @@ const ACTIONS = {
     r.heard.add(s.id);
     refreshRows();
     $('.footer').innerHTML = evFooter();
+    coach();
   },
   confirm() {
     const r = S.run, c = S.c;
@@ -1317,6 +1423,16 @@ const ACTIONS = {
     const isEvidence = s.role === 'evidence';
     const rightSuspect = r.suspect === c.culprit;
     const solved = isEvidence && (rightSuspect || r.assisted);
+    if (S.tut) {
+      // Practice: no hint ladder and no tick on the board, just a gentle nudge.
+      if (solved) { go('reveal'); return; }
+      r.selected = null;
+      refreshRows();
+      $('.footer').innerHTML = evFooter();
+      S.tut.msg = 'To ni ta stavek. Poišči, kje piše, kdo je pojedel korenček.';
+      coach();
+      return;
+    }
     log('evidence_confirm', { sentenceId: s.id, role: s.role, suspectId: r.suspect, correct: solved, suspectCorrect: rightSuspect });
     if (solved) {
       log('case_done', { assisted: r.assisted, wrong: r.wrong });
@@ -1355,7 +1471,10 @@ const ACTIONS = {
     S.run.selected = null;
     go('accuse');
   },
-  next() { if (S.orderMode === 'board') toBoard(); else go('more'); },
+  next() {
+    if (S.tut) { endTutorial(); return; }
+    if (S.orderMode === 'board') toBoard(); else go('more');
+  },
   moreYes() {
     if (S.caseNo < S.order.length - 1) { log('more_yes'); startCase(S.caseNo + 1); }
     else { log('fake_door'); go('soon'); }
