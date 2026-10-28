@@ -3,7 +3,7 @@
 //   node tools/cases.mjs clips    print "clipId<TAB>text" for every line to record
 import { loadData } from './lib.mjs';
 
-const { LEVEL_RULES, CHARACTERS, CASES, clipList } = loadData();
+const { LEVEL_RULES, CHARACTERS, CASES, FILES, clipList } = loadData();
 
 if (process.argv[2] === 'clips') {
   for (const [id, text] of clipList()) console.log(`${id}\t${text}`);
@@ -55,27 +55,38 @@ for (const c of CASES) {
   if (!c.question || !c.h1 || !c.reveal || !c.reveal.length) fail(c.id, 'question, h1 and reveal are required');
 }
 
-// Play order: every case number exists once per level, A and B tell the same story,
-// and cases 1–3 climb the ladder (rung 1, 2, 3).
-const nos = [...new Set(CASES.map(c => c.no))].sort((x, y) => x - y);
-nos.forEach((no, i) => { if (no !== i + 1) fail(`case ${no}`, 'case numbers must run 1, 2, 3, … without gaps'); });
-for (const no of nos) {
-  const pair = ['A', 'B'].map(level => CASES.filter(c => c.no === no && c.level === level));
-  pair.forEach((cs, i) => { if (cs.length !== 1) fail(`case ${no}`, `${cs.length} cases for level ${'AB'[i]} (need exactly 1)`); });
-  const [a, b] = pair.map(cs => cs[0]);
-  if (a && b && (a.rung !== b.rung || a.culprit !== b.culprit || a.question !== b.question)) {
-    fail(`case ${no}`, 'levels A and B must share rung, culprit and question');
+// Play order, per file: case numbers run 1, 2, 3, … without gaps. The forest file has every
+// case at levels A and B (same rung, culprit and question) and starts with rungs 1, 2, 3;
+// the themed files are written once, at level A. A final case must be the last one.
+const fileIds = FILES ? FILES.map(f => f.id) : ['gozd'];
+for (const c of CASES) if (!fileIds.includes(c.file)) fail(c.id, `unknown file ${c.file}`);
+for (const f of fileIds) {
+  const inFile = CASES.filter(c => c.file === f);
+  const nos = [...new Set(inFile.map(c => c.no))].sort((x, y) => x - y);
+  if (!nos.length) fail(f, 'file has no cases');
+  nos.forEach((no, i) => { if (no !== i + 1) fail(`${f} ${no}`, 'case numbers must run 1, 2, 3, … without gaps'); });
+  for (const no of nos) {
+    const byLevel = (level) => inFile.filter(c => c.no === no && c.level === level);
+    const a = byLevel('A'), b = byLevel('B');
+    if (a.length !== 1) fail(`${f} ${no}`, `${a.length} cases at level A (need exactly 1)`);
+    if (f === 'gozd' && b.length !== 1) fail(`${f} ${no}`, `${b.length} cases at level B (need exactly 1)`);
+    if (b.length > 1) fail(`${f} ${no}`, 'more than one case at level B');
+    if (a[0] && b[0] && (a[0].rung !== b[0].rung || a[0].culprit !== b[0].culprit || a[0].question !== b[0].question)) {
+      fail(`${f} ${no}`, 'levels A and B must share rung, culprit and question');
+    }
+    if (f === 'gozd' && no <= 3 && a[0] && a[0].rung !== no) fail(`${f} ${no}`, 'the first three forest cases must be rungs 1, 2, 3 in order');
+    if (f !== 'gozd' && no === 1 && a[0] && a[0].rung !== 1) fail(`${f} 1`, 'a file starts with a rung 1 case');
   }
-  if (no <= 3 && a && a.rung !== no) fail(`case ${no}`, `the first three cases must be rungs 1, 2, 3 in order`);
+  const finals = inFile.filter(c => c.final);
+  if (finals.some(c => c.no !== nos[nos.length - 1])) fail(f, 'the final case must be the last one in its file');
+  if (f !== 'gozd' && !finals.length) fail(f, 'a themed file ends with a final case (final: true)');
 }
 
 // Solvability: the evidence must point at the culprit and nobody else.
 // Names are matched in any case form (Bine/Bineta/Binetu, Zala/Zalo, …). At level B the
 // evidence may use a pronoun; then the sentence just before it must name the culprit.
-const NAME = {
-  bine: /\bBine(ta|tu|tom)?\b/, zala: /\bZal(a|o|e|i)\b/, jure: /\bJure(ta|tu|tom)?\b/,
-  neza: /\bNež(a|o|e|i)\b/, babica: /\bBabic(a|o|e|i)\b/,
-};
+const NAME = Object.fromEntries(Object.entries(CHARACTERS).map(([id, ch]) => [id, new RegExp(`(^|[^\\p{L}])(${ch.re})(?![\\p{L}])`, 'u')]));
+for (const [id, ch] of Object.entries(CHARACTERS)) if (!ch.re) fail(id, 'character needs a name pattern (re)');
 const PRONOUN = /\b(mu|ji|njen\w*|njegov\w*|je imel|je imela)\b/;
 const named = (text) => Object.keys(NAME).filter(id => NAME[id].test(text));
 for (const c of CASES) {

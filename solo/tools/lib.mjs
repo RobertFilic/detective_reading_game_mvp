@@ -12,5 +12,5 @@ export function readIndex() {
 export function loadData(html = readIndex()) {
   const m = html.match(/\/\/ CASES-BEGIN([\s\S]*?)\/\/ CASES-END/);
   if (!m) throw new Error('CASES-BEGIN / CASES-END markers not found in index.html');
-  return new Function(`${m[1]}\nreturn { LEVEL_RULES, CHARACTERS, UI_AUDIO, CASES, clipList };`)();
+  return new Function(`${m[1]}\nreturn { LEVEL_RULES, CHARACTERS, UI_AUDIO, CASES, clipList, FILES: typeof FILES === "undefined" ? null : FILES };`)();
 }

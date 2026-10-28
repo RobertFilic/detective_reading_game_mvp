@@ -132,6 +132,57 @@ button.suspect { cursor: pointer; }
 .coach .btn { flex: none; }
 @keyframes coachIn { from { opacity: 0; transform: translateX(-50%) scale(.9); } }
 .coach-target { outline: 4px solid var(--sel-line); outline-offset: 4px; border-radius: 16px; animation: pulse 1.1s ease-in-out infinite; }
+/* Detective ID card */
+.idcard {
+  width: min(440px, 100%); background: linear-gradient(135deg, #fffaf0, #f3e6c9); border: 2px solid #d9c08f;
+  border-radius: 16px; padding: 10px 14px 12px; text-align: left; box-shadow: 0 6px 18px rgba(0, 0, 0, .1);
+}
+.id-top { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; letter-spacing: .5px; color: #8a6a2f; }
+.id-body { display: flex; align-items: center; gap: 14px; margin: 8px 0; }
+.id-photo { font-size: 64px; line-height: 1; background: #fff; border: 2px solid #e2cfa4; border-radius: 12px; padding: 4px 8px; }
+.id-text { display: flex; flex-direction: column; gap: 2px; font-size: 17px; }
+.id-text b { font-size: 24px; }
+.id-stamps { display: flex; gap: 8px; }
+.stamp-slot { font-size: 22px; width: 38px; height: 38px; border: 2px dashed #d9c08f; border-radius: 50%; display: flex; align-items: center; justify-content: center; filter: grayscale(1); opacity: .35; }
+.stamp-slot.got { filter: none; opacity: 1; border: 2px solid var(--danger); transform: rotate(-8deg); background: #fff; }
+.files-screen { overflow-y: auto; -webkit-overflow-scrolling: touch; gap: 12px; }
+.files-card { position: relative; display: flex; justify-content: center; }
+.files-card .edit { position: absolute; bottom: 10px; right: max(10px, calc(50% - 210px)); min-height: 40px; padding: 4px 10px; font-size: 18px; }
+.file-list { display: flex; flex-direction: column; gap: 10px; }
+.file-card {
+  appearance: none; font: inherit; color: inherit; cursor: pointer; display: flex; align-items: center; gap: 14px; text-align: left;
+  background: #fff3cf; border: 2px solid #e2c98f; border-radius: 18px; padding: 12px 16px; box-shadow: 0 3px 0 rgba(0, 0, 0, .12);
+}
+.file-card.done { background: #e9f6ec; border-color: #9fd3ad; }
+.file-card .fi { font-size: 48px; line-height: 1; }
+.file-card .ft { flex: 1; display: flex; flex-direction: column; }
+.file-card .ft b { font-size: 22px; }
+.file-card .cast { font-size: 24px; letter-spacing: 2px; }
+.file-card .fp { font-weight: 800; color: var(--muted); font-size: 18px; white-space: nowrap; }
+.file-soon { color: var(--muted); text-align: center; font-size: 16px; padding: 4px; }
+.folder.final { background: #fff0f6; border-color: #f0b8d0; }
+.folder.locked { cursor: pointer; }
+.folder.locked .stk { filter: grayscale(1); opacity: .6; }
+.folder.locked .fq { color: var(--muted); font-weight: 500; }
+.toast { background: var(--warn); border: 2px solid var(--sel-line); border-radius: 12px; padding: 8px 12px; margin-bottom: 10px; font-weight: 600; }
+.kudos { font-size: 22px; font-weight: 800; color: var(--accent); }
+/* ID card maker */
+.make { gap: 16px; }
+.mk-top { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 520px; min-height: 44px; }
+.mk-back { min-height: 44px; padding: 4px 14px; font-size: 18px; }
+.steps-dots { display: flex; gap: 8px; }
+.steps-dots i { width: 12px; height: 12px; border-radius: 50%; background: var(--line); }
+.steps-dots i.on { background: var(--accent); }
+.pick-grid { display: grid; grid-template-columns: repeat(3, minmax(90px, 140px)); gap: 12px; justify-content: center; }
+.pick-grid.four { grid-template-columns: repeat(4, minmax(70px, 120px)); }
+.pick {
+  appearance: none; font: inherit; color: var(--muted); cursor: pointer; background: var(--card); border: 3px solid var(--line);
+  border-radius: 18px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 16px; font-weight: 600;
+}
+.pick.on { border-color: var(--accent); background: var(--heard); }
+.pick .pe { font-size: 56px; line-height: 1.1; }
+.name-in { font-size: 28px; padding: 10px 16px; border: 3px solid var(--line); border-radius: 16px; width: min(320px, 100%); text-align: center; background: #fff; }
+.name-in:focus { outline: none; border-color: var(--accent); }
 .trophy { background: var(--good); border-radius: 14px; padding: 8px 14px; font-weight: 700; margin-bottom: 10px; text-align: center; }
 .hint {
   position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom));
@@ -175,6 +226,16 @@ button.suspect { cursor: pointer; }
   .hint .txt { flex: 1 1 calc(100% - 40px); }
   .hint .spk { margin-left: auto; }
   .reveal { gap: 10px; }
+  .kudos { font-size: 19px; }
+  .footer .btn.secondary { font-size: 17px; padding: 8px 14px; min-height: 46px; }
+  .pick .pe { font-size: 44px; }
+  .pick-grid { gap: 8px; }
+  .id-photo { font-size: 52px; }
+  .id-text b { font-size: 20px; }
+  .file-card { padding: 10px 12px; gap: 10px; }
+  .file-card .fi { font-size: 38px; }
+  .file-card .ft b { font-size: 19px; }
+  .file-card .cast { font-size: 20px; }
   .coach { font-size: 18px; padding: 8px 10px; gap: 8px; }
   .coach .owl { font-size: 34px; }
   .reveal .sticker { display: none; }
@@ -248,13 +309,34 @@ const LEVEL_RULES = {
   B: { sentences: [9, 11], maxWords: 14, suspects: 4, distractors: [1, 2] },
 };
 
+// animal = the picture on the card (an animal or a person); re = the name in any case form,
+// used by tools/cases.mjs to check that the evidence names the culprit.
 const CHARACTERS = {
-  bine: { name: 'Bine', animal: '🐰', color: '#d6e6ff' },
-  zala: { name: 'Zala', animal: '🦊', color: '#ffdcc6' },
-  jure: { name: 'Jure', animal: '🐻', color: '#ead8c4' },
-  neza: { name: 'Neža', animal: '🐿️', color: '#f1e2c8' },
-  babica: { name: 'Babica', animal: '🦉', color: '#e4e1f6' },
+  bine: { name: 'Bine', animal: '🐰', color: '#d6e6ff', re: 'Bine(ta|tu|tom)?' },
+  zala: { name: 'Zala', animal: '🦊', color: '#ffdcc6', re: 'Zal(a|o|e|i)' },
+  jure: { name: 'Jure', animal: '🐻', color: '#ead8c4', re: 'Jure(ta|tu|tom)?' },
+  neza: { name: 'Neža', animal: '🐿️', color: '#f1e2c8', re: 'Než(a|o|e|i)' },
+  babica: { name: 'Babica', animal: '🦉', color: '#e4e1f6', re: 'Babic(a|o|e|i)' },
+  // 🚀 Vesoljska postaja Zvezdica
+  maja: { name: 'Maja', animal: '👩🏼‍🚀', color: '#dbe4ff', re: 'Maj(a|o|e|i)' },
+  tim: { name: 'Tim', animal: '👨🏽‍🚀', color: '#e2f2e6', re: 'Tim(a|u|om)?' },
+  ela: { name: 'Ela', animal: '👩🏿‍🚀', color: '#f6e2f0', re: 'El(a|o|e|i)' },
+  robi: { name: 'Robi', animal: '🤖', color: '#e6e9ee', re: 'Robi(ja|ju|jem)?' },
+  // 🐄 Pri babici na kmetiji
+  nik: { name: 'Nik', animal: '👦🏻', color: '#dff0ff', re: 'Nik(a|u|om)?' },
+  pia: { name: 'Pia', animal: '👧🏼', color: '#ffe3ea', re: 'Pi(a|o|e|ji)' },
+  dedek: { name: 'Dedek', animal: '👴🏻', color: '#efe6d8', re: 'Ded(ek|ka|ku|kom)' },
+  jan: { name: 'Jan', animal: '👨🏽‍🌾', color: '#e8f3d8', re: 'Jan(a|u|om)?' },
 };
+
+// Case files (mape): one place, one cast. Every case has file + no (1, 2, … within the file).
+// The original animal cases are the forest file. A case marked final opens when the
+// other cases of its file are solved. docs/CASE_FILES.md has the backlog of themes.
+const FILES = [
+  { id: 'vesolje', icon: '🚀', title: 'Vesoljska postaja', cast: ['maja', 'tim', 'ela', 'robi'] },
+  { id: 'kmetija', icon: '🐄', title: 'Pri babici na kmetiji', cast: ['nik', 'pia', 'dedek', 'jan'] },
+  { id: 'gozd', icon: '🌲', title: 'Gozdna mapa', cast: ['bine', 'zala', 'jure', 'neza'] },
+];
 
 // Every line the child can hear outside the stories. Clip id = "ui_" + key.
 const UI_AUDIO = {
@@ -765,6 +847,191 @@ const CASES = [
     h2: ['s7', 's8', 's9'], h3: ['s3', 's8'],
     reveal: ['Bine je rekel, da ni bil zunaj.', 'Potem pa je vedel, da je voda v potoku ledena!', 'Most je naredil za Nežo.', 'Hotel je, da bo presenečenje.'],
   },
+  // ======== 🚀 Vesoljska postaja Zvezdica (level A only) ========
+  {
+    id: 'v1', file: 'vesolje', no: 1, rung: 1, level: 'A', sticker: '🍦',
+    question: 'Kdo je pojedel vesoljski sladoled?',
+    suspects: ['tim', 'ela', 'robi'], culprit: 'tim',
+    sentences: [
+      ['s1', 'Na postaji Zvezdica je čas za kosilo.'],
+      ['s2', 'Vrečka vesoljskega sladoleda je prazna.'],
+      ['s3', 'Ela ima zelo rada sladoled.', 'distractor'],
+      ['s4', 'Ela je ves dan popravljala anteno.'],
+      ['s5', 'Robi je čistil okna postaje.'],
+      ['s6', 'Tim je odprl vrečko sladoleda.', 'evidence'],
+      ['s7', 'Potem je pojedel vse do zadnje mrvice.'],
+      ['s8', 'Robi ne je, ker je robot.'],
+    ],
+    h1: 'Kdo je kaj naredil z vrečko? Poišči ta stavek.',
+    h2: ['s5', 's6', 's7'], h3: ['s3', 's6'],
+    reveal: ['Tim je odprl vrečko sladoleda.', 'Po treningu je bil zelo lačen.', 'Ali veš? Vesoljski sladoled je suh in hrustljav.'],
+  },
+  {
+    id: 'v2', file: 'vesolje', no: 2, rung: 2, level: 'A', sticker: '🥬',
+    question: 'Kdo je zalil vesoljski vrt?',
+    suspects: ['maja', 'tim', 'ela'], culprit: 'ela',
+    sentences: [
+      ['s1', 'Na postaji raste majhen vrt.'],
+      ['s2', 'Solata je bila žejna.'],
+      ['s3', 'Danes so listi mokri in sveži.'],
+      ['s4', 'Maja ima novo zalivalko.', 'distractor'],
+      ['s5', 'Maja je spala v svoji kabini.'],
+      ['s6', 'Tim je telovadil na tekalni stezi.'],
+      ['s7', 'Okoli Ele lebdijo kapljice vode.', 'evidence'],
+      ['s8', 'Kapitanka Vesna se nasmehne.'],
+    ],
+    h1: 'Kaj se zgodi z vodo v vesolju?',
+    h2: ['s6', 's7', 's8'], h3: ['s4', 's7'],
+    reveal: ['Okoli Ele so lebdele kapljice vode.', 'V vesolju voda ne teče, ampak lebdi.', 'Ela je zalila solato.', 'Ali veš? Astronavti v vesolju res gojijo solato.'],
+  },
+  {
+    id: 'v3', file: 'vesolje', no: 3, rung: 1, level: 'A', sticker: '🌍',
+    question: 'Kdo je narisal Zemljo na okno?',
+    suspects: ['maja', 'tim', 'robi'], culprit: 'maja',
+    sentences: [
+      ['s1', 'Skozi okno postaje se vidi Zemlja.'],
+      ['s2', 'Zjutraj je bila na oknu risba.'],
+      ['s3', 'Narisana je bila modra Zemlja.'],
+      ['s4', 'Tim ima škatlo flomastrov.', 'distractor'],
+      ['s5', 'Tim je pisal pismo domov.'],
+      ['s6', 'Robi je preštel vse zvezde.'],
+      ['s7', 'Maja je z modrim flomastrom risala Zemljo.', 'evidence'],
+      ['s8', 'Kapitanka je risbo fotografirala.'],
+    ],
+    h1: 'Kdo je risal? Poišči ta stavek.',
+    h2: ['s6', 's7', 's8'], h3: ['s4', 's7'],
+    reveal: ['Maja je z modrim flomastrom risala Zemljo.', 'Hotela je, da je dom vedno blizu.', 'Ali veš? Zemlja je iz vesolja videti modra.'],
+  },
+  {
+    id: 'v4', file: 'vesolje', no: 4, rung: 3, level: 'A', sticker: '🔴',
+    question: 'Kdo je pritisnil rdeči gumb?',
+    suspects: ['tim', 'ela', 'robi'], culprit: 'robi',
+    sentences: [
+      ['s1', 'Na postaji je zatulil alarm.'],
+      ['s2', 'Nekdo je pritisnil rdeči gumb.'],
+      ['s3', 'Tim reče: »Jaz sem bil v kuhinji.«'],
+      ['s4', 'Ela je stala blizu gumba.', 'distractor'],
+      ['s5', 'Robi reče: »Rdečega gumba ne poznam.«', 'partial'],
+      ['s6', 'Ela reče: »Jaz sem samo gledala zvezde.«'],
+      ['s7', 'Nato Robi reče: »Rdeči gumb lepo piska!«', 'evidence'],
+      ['s8', 'Kapitanka Vesna ugasne alarm.'],
+      ['s9', 'Vsi pogledajo Robija.'],
+    ],
+    h1: 'Ali je kdo rekel dve stvari, ki ne gresta skupaj?',
+    h2: ['s6', 's7', 's8'], h3: ['s4', 's7'],
+    reveal: ['Robi je rekel, da gumba ne pozna.', 'Potem pa je vedel, da lepo piska!', 'Robi je hotel slišati, kako zveni.', 'Zdaj ve, da je gumb samo za nevarnost.'],
+  },
+  {
+    id: 'v5', file: 'vesolje', no: 5, rung: 2, level: 'A', sticker: '🎂', final: true,
+    question: 'Kdo je pripravil presenečenje za kapitanko?',
+    suspects: ['maja', 'tim', 'ela'], culprit: 'maja',
+    sentences: [
+      ['s1', 'Kapitanka Vesna ima danes rojstni dan.'],
+      ['s2', 'Na oknu je nova velika risba.'],
+      ['s3', 'Narisana je torta in modra Zemlja.'],
+      ['s4', 'Ela je zalila solato za praznično kosilo.', 'distractor'],
+      ['s5', 'Tim je ves dan popravljal anteno.'],
+      ['s6', 'Maja je prišla iz kabine.'],
+      ['s7', 'Maja ima prste modre od flomastra.', 'evidence'],
+      ['s8', 'Kapitanka se je od veselja zasmejala.'],
+    ],
+    h1: 'Kdo je risal? Kakšne prste ima?',
+    h2: ['s6', 's7', 's8'], h3: ['s4', 's7'],
+    reveal: ['Maja je imela modre prste od flomastra.', 'Z njim je narisala torto in Zemljo.', 'Tim je prinesel sladoled, Ela pa solato.', 'Vse najboljše, kapitanka Vesna! 🚀'],
+  },
+  // ======== 🐄 Pri babici na kmetiji (level A only) ========
+  {
+    id: 'k1', file: 'kmetija', no: 1, rung: 1, level: 'A', sticker: '🐔',
+    question: 'Kdo je odprl kokošnjak?',
+    suspects: ['nik', 'pia', 'jan'], culprit: 'nik',
+    sentences: [
+      ['s1', 'Babi je zjutraj zaspala.'],
+      ['s2', 'Kokoši so že na dvorišču.'],
+      ['s3', 'Nekdo je odprl vrata kokošnjaka.'],
+      ['s4', 'Pia ima rada kokoši.', 'distractor'],
+      ['s5', 'Pia je še spala v postelji.'],
+      ['s6', 'Jan je na njivi oral s traktorjem.'],
+      ['s7', 'Nik je zgodaj odprl vrata kokošnjaka.', 'evidence'],
+      ['s8', 'Kokoši veselo kokodakajo.'],
+    ],
+    h1: 'Kdo je kaj naredil z vrati? Poišči ta stavek.',
+    h2: ['s6', 's7', 's8'], h3: ['s4', 's7'],
+    reveal: ['Nik je zgodaj odprl kokošnjak.', 'Hotel je pomagati Babi.', 'Ali veš? Kokoši zjutraj rade brskajo po travi.'],
+  },
+  {
+    id: 'k2', file: 'kmetija', no: 2, rung: 2, level: 'A', sticker: '🐷',
+    question: 'Kdo je nahranil pujse?',
+    suspects: ['nik', 'pia', 'dedek'], culprit: 'pia',
+    sentences: [
+      ['s1', 'Pujsi so bili zjutraj zelo lačni.'],
+      ['s2', 'Zdaj veselo spijo v blatu.'],
+      ['s3', 'Nekdo jih je nahranil.'],
+      ['s4', 'Dedek je nesel vedro na vrt.', 'distractor'],
+      ['s5', 'Nik je pobiral jajca.'],
+      ['s6', 'Dedek je zalival paradižnik.'],
+      ['s7', 'Pia ima škornje do kolen v blatu.', 'evidence'],
+      ['s8', 'Babi pogleda škornje in se nasmeje.'],
+    ],
+    h1: 'Kakšno je pri pujsih? Kakšni so škornji?',
+    h2: ['s6', 's7', 's8'], h3: ['s4', 's7'],
+    reveal: ['Pia je imela škornje v blatu.', 'Pri pujsih je vedno veliko blata.', 'Pia jim je prinesla korenje.', 'Ali veš? Pujsi se valjajo v blatu, da se ohladijo.'],
+  },
+  {
+    id: 'k3', file: 'kmetija', no: 3, rung: 1, level: 'A', sticker: '🍞',
+    question: 'Kdo je spekel kruh?',
+    suspects: ['nik', 'dedek', 'jan'], culprit: 'dedek',
+    sentences: [
+      ['s1', 'V kuhinji diši po kruhu.'],
+      ['s2', 'Na mizi je velik hlebec.'],
+      ['s3', 'Jan je prinesel vrečo moke.', 'distractor'],
+      ['s4', 'Potem je šel nazaj na njivo.'],
+      ['s5', 'Nik je gledal kravo Lisko.'],
+      ['s6', 'Dedek je hlebec dal v krušno peč.', 'evidence'],
+      ['s7', 'Babi je narezala kruh za vse.'],
+      ['s8', 'Kruh je bil še topel.'],
+    ],
+    h1: 'Kdo je dal kruh v peč? Poišči ta stavek.',
+    h2: ['s5', 's6', 's7'], h3: ['s3', 's6'],
+    reveal: ['Dedek je dal hlebec v krušno peč.', 'Peče ga po Babinem receptu.', 'Ali veš? Krušna peč je velika peč iz opeke.'],
+  },
+  {
+    id: 'k4', file: 'kmetija', no: 4, rung: 3, level: 'A', sticker: '🐴',
+    question: 'Kdo je jahal ponija Bliska?',
+    suspects: ['nik', 'pia', 'jan'], culprit: 'pia',
+    sentences: [
+      ['s1', 'Poni Blisk živi v hlevu.'],
+      ['s2', 'Nekdo ga je danes jahal.'],
+      ['s3', 'Nik reče: »Jaz se bojim konjev.«'],
+      ['s4', 'Pia reče: »Danes nisem bila v hlevu.«', 'partial'],
+      ['s5', 'Jan je prinesel seno.', 'distractor'],
+      ['s6', 'Jan reče: »Seno sem pustil pred vrati.«'],
+      ['s7', 'Nato Pia reče: »Danes je Blisk tekel hitro!«', 'evidence'],
+      ['s8', 'Blisk veselo zarezgeta.'],
+      ['s9', 'Vsi pogledajo Pio.'],
+    ],
+    h1: 'Ali je kdo rekel dve stvari, ki ne gresta skupaj?',
+    h2: ['s6', 's7', 's8'], h3: ['s5', 's7'],
+    reveal: ['Pia je rekla, da ni bila v hlevu.', 'Potem pa je vedela, kako hitro je Blisk tekel!', 'Pia ima Bliska zelo rada.', 'Naslednjič bo prej vprašala Babi.'],
+  },
+  {
+    id: 'k5', file: 'kmetija', no: 5, rung: 3, level: 'A', sticker: '💐', final: true,
+    question: 'Kdo je Babi prinesel šopek rož?',
+    suspects: ['nik', 'pia', 'jan'], culprit: 'nik',
+    sentences: [
+      ['s1', 'Babi ima danes rojstni dan.'],
+      ['s2', 'Na mizi je šopek travniških rož.'],
+      ['s3', 'Pia ima rada rože.', 'distractor'],
+      ['s4', 'Nik reče: »Ne vem, kje rastejo rože.«', 'partial'],
+      ['s5', 'Jan reče: »Ves dan sem bil na njivi.«'],
+      ['s6', 'Pia je z Dedkom pekla torto.'],
+      ['s7', 'Nato Nik reče: »Rože rastejo za hlevom!«', 'evidence'],
+      ['s8', 'Babi objame vse vnuke.'],
+      ['s9', 'Za hlevom se pase poni Blisk.'],
+    ],
+    h1: 'Ali je kdo rekel dve stvari, ki ne gresta skupaj?',
+    h2: ['s6', 's7', 's8'], h3: ['s3', 's7'],
+    reveal: ['Nik je rekel, da ne ve, kje rastejo rože.', 'Potem pa je vedel, da rastejo za hlevom!', 'Rože je nabral za Babi.', 'Vse najboljše, Babi! 🐄'],
+  },
   // ---- Case 14: holiday on Gran Canaria (real places and animals) ----
   {
     id: 'c14A', no: 14, rung: 3, level: 'A', sticker: '🐪', place: '🏝️ Gran Canaria',
@@ -824,6 +1091,7 @@ const TUTORIAL = {
 
 function normalizeCases() {
   for (const c of [...CASES, TUTORIAL]) {
+    c.file = c.file || 'gozd';
     c.sentences = c.sentences.map(([id, text, role = 'neutral']) => ({ id, text, role }));
   }
 }
@@ -842,7 +1110,7 @@ function clipList() {
 }
 // CASES-END
 
-const N_CASES = Math.max(...CASES.map(c => c.no));
+const N_CASES = Math.max(...CASES.filter(c => c.file === 'gozd' || !c.file).map(c => c.no));
 
 // Kid mode (solo/?play, the "Igraj!" button on the start page): no adult setup. A session
 // starts by itself at one level for everyone, on the case board. The adult corner still works.
@@ -970,16 +1238,34 @@ function newRun() {
   };
 }
 
-// "Po vrsti": from the chosen case to the last.
+// The case to play for file + number: the child's level, or level A when a themed file
+// has only one version.
+function caseFor(file, no) {
+  return CASES.find(c => c.file === file && c.no === no && c.level === S.level)
+    || CASES.find(c => c.file === file && c.no === no && c.level === 'A');
+}
+const casesIn = (file) => [...new Set(CASES.filter(c => c.file === file).map(c => c.no))].sort((a, b) => a - b).map(no => caseFor(file, no));
+const caseKey = (c) => `${c.file}:${c.no}`;
+
+// "Po vrsti": the forest file, from the chosen case to the last.
 function caseOrder() {
-  return [...new Set(CASES.map(c => c.no))].filter(no => no > S.startAt);
+  return casesIn('gozd').map(c => c.no).filter(no => no > S.startAt);
 }
 
-// Case board: the child picks any case. Solved cases (on this iPad) get a tick, and one
+// Solved cases on this device, as "file:no" (older saves held forest numbers only).
+function solvedKeys() {
+  return store.read(PLAYED_KEY, []).map(k => typeof k === 'number' ? `gozd:${k}` : k);
+}
+const isSolved = (c) => solvedKeys().includes(caseKey(c));
+// A final case opens when the rest of its file is solved.
+const isLocked = (c) => !!c.final && casesIn(c.file).some(x => !x.final && !isSolved(x));
+const fileDone = (file) => casesIn(file).every(isSolved);
+const ALL_KEYS = FILES.flatMap(f => casesIn(f.id).map(caseKey));
+
+// Case board: the child picks any case of the file. Solved cases get a tick, and one
 // unsolved case glows as a suggestion: a random one among the easiest still open.
-const solvedNos = () => store.read(PLAYED_KEY, []);
 function pickSuggestion() {
-  const open = CASES.filter(c => c.level === S.level && !solvedNos().includes(c.no));
+  const open = casesIn(S.file).filter(c => !isSolved(c) && !isLocked(c));
   if (!open.length) return null;
   const easiest = Math.min(...open.map(c => c.rung));
   const pool = open.filter(c => c.rung === easiest);
@@ -988,10 +1274,39 @@ function pickSuggestion() {
 
 function playCase(no) {
   S.caseNo = S.started++;
-  S.c = CASES.find(c => c.no === no && c.level === S.level);
+  S.c = caseFor(S.file, no);
   S.run = newRun();
-  log('case_pick', { no, suggested: no === S.suggest, solvedBefore: solvedNos().includes(no) });
+  log('case_pick', { file: S.file, no, suggested: no === S.suggest, solvedBefore: isSolved(S.c) });
   go('intro');
+}
+
+// ---------- Detective ID card: avatar (also sets detektiv / detektivka), sidekick, optional name
+const PROFILE_KEY = 'dp_profile_v1';
+const AVATARS = [
+  { e: '🕵🏻‍♂️', g: 'm' }, { e: '🕵🏽‍♂️', g: 'm' }, { e: '🕵🏿‍♂️', g: 'm' },
+  { e: '🕵🏻‍♀️', g: 'f' }, { e: '🕵🏽‍♀️', g: 'f' }, { e: '🕵🏿‍♀️', g: 'f' },
+];
+const SIDEKICKS = ['🐶', '🐱', '🦉', '🦊'];
+const profile = () => store.read(PROFILE_KEY, null);
+const detTitle = (p = profile()) => (p && p.g === 'f' ? 'Detektivka' : 'Detektiv');
+const detName = (p = profile()) => detTitle(p) + (p && p.name ? ' ' + p.name : '');
+// Slovenian plural after a number: 1 rešen primer, 2 rešena primera, 3–4 rešeni primeri, 5+ rešenih primerov.
+const solvedLabel = (n) => n % 100 === 1 ? `${n} rešen primer` : n % 100 === 2 ? `${n} rešena primera`
+  : (n % 100 === 3 || n % 100 === 4) ? `${n} rešeni primeri` : `${n} rešenih primerov`;
+const cleanName = (v) => v.replace(/[^\p{L} '-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 12)
+  .replace(/^\p{L}/u, ch => ch.toUpperCase());
+
+function idCard(p) {
+  const n = solvedKeys().filter(k => ALL_KEYS.includes(k)).length;
+  return `<div class="idcard">
+    <div class="id-top"><span>🔍 DETEKTIVSKA IZKAZNICA</span><span>št. ${esc(p.id)}</span></div>
+    <div class="id-body">
+      <span class="id-photo">${p.av}</span>
+      <div class="id-text"><b>${esc(detName(p))}</b>
+        <span>Pomočnik: ${p.sk}</span><span>✔ ${solvedLabel(n)}</span></div>
+    </div>
+    <div class="id-stamps">${FILES.map(f => `<span class="stamp-slot ${fileDone(f.id) ? 'got' : ''}" title="${esc(f.title)}">${f.icon}</span>`).join('')}</div>
+  </div>`;
 }
 
 // ---- First-time tutorial: a guided practice case before the board ----
@@ -1010,15 +1325,16 @@ function endTutorial() {
   log('tutorial_done');
   S.c = null;
   S.run = null;
-  S.tut = { board: true };   // one last bubble on the board
-  toBoard();
+  S.tut = { board: true };   // one last bubble on the file picker
+  toHome();
 }
 
 // What Babica says on each screen, and which element glows.
 function coachStep() {
   const t = S.tut, r = S.run;
   if (!t) return null;
-  if (S.screen === 'board') return t.board ? { text: 'Zdaj izberi svoj primer!', sel: '.folder.suggest', ok: true } : null;
+  if (S.screen === 'files') return t.board ? { text: 'Zdaj izberi mapo in reši svoj primer!', sel: '.file-card', ok: true } : null;
+  if (S.screen === 'board') return null;
   if (t.msg) return { text: t.msg, sel: null, ok: true };
   switch (S.screen) {
     case 'intro': return { text: 'Tvoj prvi primer! Najprej preberi zgodbo.', sel: '[data-act="toStory"]' };
@@ -1029,7 +1345,7 @@ function coachStep() {
     case 'evidence': return r && r.selected
       ? { text: 'Tapni »To je dokaz!«', sel: '[data-act="confirm"]' }
       : { text: 'Kateri stavek to dokaže? Tapni ga.', sel: '.rows' };
-    case 'reveal': return { text: 'Bravo, detektiv! Tako se igra. 🎉', sel: '[data-act="next"]' };
+    case 'reveal': return { text: `Bravo, ${detTitle().toLowerCase()}! Tako se igra. 🎉`, sel: '[data-act="next"]' };
   }
   return null;
 }
@@ -1049,24 +1365,36 @@ function coach() {
     ${step.ok ? '<button class="btn" data-coach="ok">V redu</button>' : ''}</div>`);
 }
 
+app.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && e.target.id === 'mkName') ACTIONS.mkName();
+});
+
 document.body.addEventListener('click', (e) => {
   if (!e.target.closest('[data-coach="ok"]') || !S.tut) return;
   if (S.tut.msg) S.tut.msg = null;
   else if (S.screen === 'story') S.tut.read = true;
-  else if (S.screen === 'board') S.tut = null;
+  else if (S.screen === 'files') S.tut = null;
   coach();
 });
 
-function toBoard() {
-  // A child who has never played gets the practice case first.
+// Home: a new child first makes the ID card, then plays the practice case, then picks a file.
+function toHome() {
+  if (!profile()) { S.mk = { step: 1, av: null, g: null, sk: null, name: '' }; go('make'); return; }
   if (!store.read(TUT_KEY, false) && !(S.tut && S.tut.board)) { startTutorial(); return; }
+  S.file = null;
+  go('files');
+}
+
+function toBoard() {
+  if (!S.file) { toHome(); return; }
   S.suggest = pickSuggestion();
   go('board');
 }
 
 function startCase(n) {
   S.caseNo = n;
-  S.c = CASES.find(c => c.no === S.order[n] && c.level === S.level);
+  S.file = 'gozd';
+  S.c = caseFor('gozd', S.order[n]);
   S.run = newRun();
   go('intro');
 }
@@ -1168,14 +1496,14 @@ const T = {
         <div class="seg">${ageBtn('6-7', '6–7 let · raven A')}${ageBtn('8-9', '8–9 let · raven B')}</div>
         <label><input type="checkbox" data-act="pilot" ${S.pilot ? 'checked' : ''}> Pilotna seja (ne šteje v povzetek)</label>
         <p>Koda otroka: <b>${next}</b> (imen ne beležimo)</p>
-        <p style="margin-bottom:6px">Primeri (${N_CASES}):</p>
+        <p style="margin-bottom:6px">Primeri (${ALL_KEYS.length} v ${FILES.length} mapah):</p>
         <div class="seg"><button class="btn ${S.orderMode === 'board' ? '' : 'secondary'}" data-act="orderMode" data-mode="board">🗂️ Otrok izbira na tabli</button>
           <button class="btn ${S.orderMode === 'fixed' ? '' : 'secondary'}" data-act="orderMode" data-mode="fixed">Po vrsti</button></div>
         ${S.orderMode === 'board'
-          ? `<p class="muted">Na tej napravi rešenih: ${solvedNos().length} / ${N_CASES}. Rešeni primeri dobijo kljukico; en nerešen lažji primer utripa kot predlog.</p>
-        <button class="btn secondary" data-act="resetBoard" ${solvedNos().length ? '' : 'disabled'}>Počisti kljukice (nov otrok)</button>`
+          ? `<p class="muted">Na tej napravi rešenih: ${solvedKeys().filter(k => ALL_KEYS.includes(k)).length} / ${ALL_KEYS.length}. Otrok izbere mapo in primer; rešeni dobijo kljukico, en lažji nerešen utripa kot predlog. Zadnji (veliki) primer mape se odpre, ko so ostali rešeni.</p>
+        <button class="btn secondary" data-act="resetBoard" ${solvedKeys().length || profile() ? '' : 'disabled'}>Nov otrok: počisti izkaznico in kljukice</button>`
           : `<p class="muted">Začni pri primeru (za primerljiv preizkus začni pri 1):</p>
-        <div class="seg">${CASES.filter(c => c.level === 'A').map(c =>
+        <div class="seg">${CASES.filter(c => c.level === 'A' && c.file === 'gozd').map(c =>
           `<button class="btn ${S.startAt === c.no - 1 ? '' : 'secondary'}" data-act="startAt" data-n="${c.no - 1}">${c.no} ${c.sticker}</button>`).join('')}</div>`}
       </section>
       <section class="card">
@@ -1201,22 +1529,67 @@ const T = {
     </div>`;
   },
 
+  // New child: three taps to a detective ID card.
+  make() {
+    const m = S.mk;
+    const back = m.step > 1 ? '<button class="btn secondary mk-back" data-act="mkBack">← Nazaj</button>' : '';
+    let body;
+    if (m.step === 1) {
+      body = `<h1>Postani detektiv!</h1><p class="muted">Izberi svojega detektiva.</p>
+        <div class="pick-grid">${AVATARS.map((a, i) => `<button class="pick ${m.av === a.e ? 'on' : ''}" data-act="mkAvatar" data-i="${i}">
+          <span class="pe">${a.e}</span><span>${a.g === 'f' ? 'detektivka' : 'detektiv'}</span></button>`).join('')}</div>`;
+    } else if (m.step === 2) {
+      body = `<h1>Izberi pomočnika</h1>
+        <div class="pick-grid four">${SIDEKICKS.map(e => `<button class="pick ${m.sk === e ? 'on' : ''}" data-act="mkSidekick" data-e="${e}"><span class="pe">${e}</span></button>`).join('')}</div>`;
+    } else if (m.step === 3) {
+      body = `<h1>Kako ti je ime?</h1>
+        <input id="mkName" class="name-in" type="text" maxlength="12" autocomplete="off" autocapitalize="words" placeholder="tvoje ime" value="${esc(m.name)}">
+        <div class="seg"><button class="btn big" data-act="mkName">Naprej</button></div>
+        <button class="btn secondary" data-act="mkSkip">Preskoči</button>`;
+    } else {
+      body = `<h1>To si ti!</h1>${idCard({ id: m.id, av: m.av, g: m.g, sk: m.sk, name: m.name })}
+        <button class="btn big" data-act="mkDone">Začni 🔍</button>`;
+    }
+    return `<div class="screen center make"><div class="mk-top"><span class="steps-dots">${[1, 2, 3, 4].map(i => `<i class="${i <= m.step ? 'on' : ''}"></i>`).join('')}</span>${back}</div>${body}</div>`;
+  },
+
+  files() {
+    const p = profile();
+    return `<div class="screen files-screen">
+      <div class="files-card">${idCard(p)}<button class="btn secondary edit" data-act="editCard" aria-label="Uredi izkaznico">✏️</button></div>
+      <div class="board-head"><span class="q">📁 Izberi mapo</span></div>
+      <div class="file-list">${FILES.map(f => {
+        const cs = casesIn(f.id), done = cs.filter(isSolved).length;
+        return `<button class="file-card ${done === cs.length ? 'done' : ''}" data-act="openFile" data-file="${f.id}">
+          <span class="fi">${f.icon}</span>
+          <span class="ft"><b>${esc(f.title)}</b><span class="cast">${f.cast.map(id => CHARACTERS[id].animal).join(' ')}</span></span>
+          <span class="fp">${done === cs.length ? '🏅' : `✔ ${done} / ${cs.length}`}</span></button>`;
+      }).join('')}
+        <div class="file-soon">Kmalu nove mape: ⚽ nogomet, 🏫 šola, 🏖️ morje …</div></div>
+      <div class="footer"><button class="btn secondary" data-act="tutorial">❓ Kako igram?</button>
+        <span class="grow"></span><button class="btn secondary" data-act="moreNo">Dovolj za danes</button></div>
+    </div>`;
+  },
+
   board() {
-    const solved = solvedNos();
-    const cases = CASES.filter(c => c.level === S.level);
-    const all = cases.every(c => solved.includes(c.no));
+    const f = FILES.find(x => x.id === S.file);
+    const cases = casesIn(S.file);
+    const done = cases.filter(isSolved).length;
+    const p = profile();
     return `<div class="screen">
-      <div class="board-head"><span class="q">🗂️ Izberi primer</span>
-        <span class="count">✔ ${cases.filter(c => solved.includes(c.no)).length} / ${cases.length}</span></div>
-      ${all ? '<div class="trophy">🏆 Vsi primeri so rešeni! Lahko jih rešuješ še enkrat.</div>' : ''}
+      <div class="board-head"><span class="q">${f.icon} ${esc(f.title)}</span>
+        <span class="count">✔ ${done} / ${cases.length}</span></div>
+      ${done === cases.length ? `<div class="trophy">🏅 Mapa rešena! Bravo, ${esc(detName(p))}!</div>` : ''}
+      ${S.toast ? `<div class="toast">${esc(S.toast)}</div>` : ''}
       <div class="board">${cases.map(c => {
-        const done = solved.includes(c.no);
-        return `<button class="folder ${done ? 'solved' : ''} ${c.no === S.suggest ? 'suggest' : ''}" data-act="openCase" data-no="${c.no}">
-          <span class="no">${c.no}</span>${done ? '<span class="tick">✔</span>' : ''}
-          <span class="stk">${c.sticker}</span>${c.place ? `<span class="place">${esc(c.place)}</span>` : ''}<span class="fq">${esc(c.question)}</span>
+        const solved = isSolved(c), locked = isLocked(c);
+        return `<button class="folder ${solved ? 'solved' : ''} ${locked ? 'locked' : ''} ${c.final ? 'final' : ''} ${c.no === S.suggest ? 'suggest' : ''}" data-act="${locked ? 'lockedCase' : 'openCase'}" data-no="${c.no}">
+          <span class="no">${c.no}</span>${solved ? '<span class="tick">✔</span>' : ''}
+          <span class="stk">${locked ? '🔒' : c.sticker}</span>${c.final ? '<span class="place">⭐ Veliki primer</span>' : c.place ? `<span class="place">${esc(c.place)}</span>` : ''}
+          <span class="fq">${locked ? 'Odpre se, ko rešiš ostale primere.' : esc(c.question)}</span>
           <span class="lvl">${'🔍'.repeat(c.rung)}</span></button>`;
       }).join('')}</div>
-      <div class="footer"><button class="btn secondary" data-act="tutorial">❓ Kako igram?</button>
+      <div class="footer"><button class="btn secondary" data-act="toFiles">📁 Mape</button>
         <span class="grow"></span><button class="btn secondary" data-act="moreNo">Dovolj za danes</button></div>
     </div>`;
   },
@@ -1261,6 +1634,7 @@ const T = {
     const c = S.c;
     return `<div class="screen center reveal">
       <div class="qbar"><span class="stamp">${UI_AUDIO.solved}</span>${spk('ui_solved')}</div>
+      ${profile() && S.orderMode === 'board' ? `<div class="kudos">Bravo, ${esc(detName())}!</div>` : ''}
       ${suspectCard(c.culprit, false)}
       <div class="rows reveal-rows">${c.reveal.map((t, i) => `<div class="row" data-act="say" data-clip="${c.id}_r${i + 1}">${esc(t)}</div>`).join('')}</div>
       <div class="sticker">${c.sticker}</div>
@@ -1324,15 +1698,55 @@ const ACTIONS = {
   startAt(el) { S.startAt = Number(el.dataset.n); render(); },
   orderMode(el) { S.orderMode = el.dataset.mode; render(); },
   resetBoard() {
-    if (!confirm('Počistim vse kljukice na tabli? Zapisi v pregledu ostanejo.')) return;
+    if (!confirm('Nov otrok: počistim izkaznico in vse kljukice? Zapisi v pregledu ostanejo.')) return;
     store.write(PLAYED_KEY, []);
-    store.write(TUT_KEY, false); // a new child also gets the practice case
+    store.write(TUT_KEY, false);   // a new child also gets the practice case
+    store.write(PROFILE_KEY, null); // and makes their own ID card
+    render();
+  },
+  openFile(el) {
+    S.tut = null;
+    S.file = el.dataset.file;
+    S.toast = null;
+    log('file_open', { file: S.file });
+    toBoard();
+  },
+  toFiles() { S.toast = null; toHome(); },
+  lockedCase() {
+    S.toast = '🔒 Veliki primer se odpre, ko rešiš ostale primere v tej mapi.';
     render();
   },
   openCase(el) {
     S.tut = null;
+    S.toast = null;
     if (S.c) log('more_yes');
     playCase(Number(el.dataset.no));
+  },
+  editCard() {
+    const p = profile();
+    S.mk = { step: 1, av: p.av, g: p.g, sk: p.sk, name: p.name || '', id: p.id };
+    go('make');
+  },
+  mkBack() { S.mk.step--; render(); },
+  mkAvatar(el) {
+    const a = AVATARS[Number(el.dataset.i)];
+    Object.assign(S.mk, { av: a.e, g: a.g, step: 2 });
+    render();
+  },
+  mkSidekick(el) { Object.assign(S.mk, { sk: el.dataset.e, step: 3 }); render(); },
+  mkName() {
+    S.mk.name = cleanName($('#mkName').value || '');
+    S.mk.id = S.mk.id || String(1000 + Math.floor(Math.random() * 9000));
+    S.mk.step = 4;
+    render();
+  },
+  mkSkip() { S.mk.name = ''; S.mk.id = S.mk.id || String(1000 + Math.floor(Math.random() * 9000)); S.mk.step = 4; render(); },
+  mkDone() {
+    const m = S.mk;
+    store.write(PROFILE_KEY, { av: m.av, g: m.g, sk: m.sk, name: m.name, id: m.id });
+    log('profile_saved', { gender: m.g, named: !!m.name }); // the name itself is never logged
+    S.mk = null;
+    toHome();
   },
   tutorial() { startTutorial(); },
   startSession() {
@@ -1379,7 +1793,7 @@ const ACTIONS = {
     play(el.dataset.clip, CLIPS.get(el.dataset.clip) || '', el);
     if (!ADULT.has(S.screen)) log('listen_prompt', { clip: el.dataset.clip });
   },
-  begin() { if (S.orderMode === 'board') toBoard(); else startCase(0); },
+  begin() { if (S.orderMode === 'board') toHome(); else startCase(0); },
   toStory() { go('story'); },
   listen(el) {
     const s = sent(el.dataset.sid);
@@ -1436,8 +1850,8 @@ const ACTIONS = {
     log('evidence_confirm', { sentenceId: s.id, role: s.role, suspectId: r.suspect, correct: solved, suspectCorrect: rightSuspect });
     if (solved) {
       log('case_done', { assisted: r.assisted, wrong: r.wrong });
-      const played = store.read(PLAYED_KEY, []);
-      if (!played.includes(S.c.no)) store.write(PLAYED_KEY, [...played, S.c.no]);
+      const played = solvedKeys();
+      if (!played.includes(caseKey(S.c))) store.write(PLAYED_KEY, [...played, caseKey(S.c)]);
       go('reveal');
       return;
     }
@@ -1753,7 +2167,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 if (KID_MODE) {
   Object.assign(S, { age: '7-8', orderMode: 'board', pilot: false });
   ACTIONS.startSession();
-  toBoard(); // "Igraj!" on the start page was the start button; go straight to the cases
+  toHome(); // "Igraj!" on the start page was the start button: ID card / practice / files
 } else {
   render();
 }
