@@ -21,14 +21,26 @@ Cases live in `index.html` between `// CASES-BEGIN` and `// CASES-END`. After ed
 node tools/cases.mjs
 ```
 
-It checks word limits per level, sentence and suspect counts, exactly one evidence sentence (not first or last), distractor counts and hint references. It also checks that each case can be solved: every suspect appears in the story, the evidence sentence names the culprit and no other suspect (at level B, a pronoun that refers to the culprit in the sentence before), and in contradiction cases the culprit says the partial sentence.
+Every case has a `type`, a step on the reasoning ladder, and its difficulty (🔍 count on the board) follows from it:
 
-Cases are grouped in **case files** (`FILES`, shown to children as *pustolovščine*, adventures): 🚀 Vesoljska postaja, 🐄 Pri babici na kmetiji (5 cases each, level A only, the 5th is a final case that opens when the others are solved) and 🌲 Gozdne skrivnosti (the 14 original animal cases at levels A and B; cases 1–3 are the original ladder). Each case has `file` and `no` (1, 2, … within its file). Ideas for the next files are in [docs/CASE_FILES.md](../docs/CASE_FILES.md).
+| 🔍 | `type` | The child… |
+|---|---|---|
+| 1 | `fact` | finds the sentence that says it |
+| 2 | `trace` | links a trace to a person (a blue tongue → blueberries) |
+| 3 | `slip` | notices the culprit knows something only the culprit could know |
+| 4 | `alibi` | finds the sentence that shows the culprit's claim isn't true |
+| 5 | `pair` | picks **two** sentences that only prove it together ("Izberi dva stavka") |
+
+`twist: true` marks a case where an animal of the place did it (a mouse, a goat); at most one per adventure.
+
+The checker tests, per case: word limits, sentence, suspect and decoy counts, the evidence count for the type (2 for a pair), that slip and alibi cases have the culprit's own claim (`partial`), and hint references. Solvability: every suspect appears in the story; the evidence names the culprit and no other suspect; in a pair one proof names the culprit and the other names no suspect. Per adventure, it checks the ladder (starts with a fact case, rungs never go down, ends with a final two-proof case) and **variety**, so a child can't learn a pattern instead of reading: the proof sits early, in the middle and late across the adventure; no two cases have the same shape; the decoy sits straight before the proof in at most one case; the number of decoys changes; the final case is the longest.
+
+Cases are grouped in **adventures** (`FILES`, *pustolovščine*): 🚀 Vesoljska postaja and 🐄 Pri babici na kmetiji, 6 cases each at level A, one per ladder step plus a twist; the 6th is a final case that opens when the others are solved. The original 14 forest cases were removed (they are in the git history). Ideas for the next adventures are in [docs/CASE_FILES.md](../docs/CASE_FILES.md).
 
 **First launch (board mode):** the child makes a detective ID card (avatar = detektiv / detektivka, sidekick, optional name; stored on the device only, the name is never logged), plays the 🎓 practice case, then picks a file. Adult "Nov otrok" in setup clears the card, the ticks and the practice.
 
 ## Record audio
-1. `node tools/cases.mjs clips > docs/clips.tsv` gives 100 lines as `clipId<TAB>text`.
+1. `node tools/cases.mjs clips > docs/clips.tsv` gives every line as `clipId<TAB>text`.
 2. A native speaker records each line, saved as `audio/<clipId>.m4a` (mono, ~32 kbps is plenty). `.mp3` also works.
 3. `node tools/build.mjs` writes `dist/index.html` and reports any missing clips.
 
@@ -39,8 +51,8 @@ Cases are grouped in **case files** (`FILES`, shown to children as *pustolovšč
 
 ## Running a session
 1. Setup screen: choose the age group (sets level A or B), tick "Pilotna seja" for the pilot child, choose the case order, play the sound check, press "Začni sejo".
-   - **🗂️ Otrok izbira na tabli** (default): after "Začni" the child sees a board with all 13 cases (sticker, question and difficulty 🔍 / 🔍🔍 / 🔍🔍🔍) and picks one. Solved cases get a ✔ that stays on this iPad; one unsolved easy case glows as a suggestion. Solved cases can be replayed. "Dovolj za danes" ends the session. "Počisti kljukice" in setup clears the board for a new child (the logs stay).
-   - **Po vrsti**: fixed order from a chosen case, with "Še en primer?" after each case. Use this from case 1 for a comparable playtest.
+   - **🗂️ Otrok izbira na tabli** (default): after "Začni" the child picks an adventure and sees its board (sticker, question and difficulty 🔍 … 🔍🔍🔍🔍🔍), then picks a case. Solved cases get a ✔ that stays on this iPad; one unsolved easy case glows as a suggestion. Solved cases can be replayed. "Dovolj za danes" ends the session. "Počisti kljukice" in setup clears the board for a new child (the logs stay).
+   - **Po vrsti**: every case of every adventure in order, from a chosen case, with "Še en primer?" after each case. Use this from 🚀 1 for a comparable playtest. The themed cases exist at level A only, so level B plays them too.
 2. Hand the iPad to the child.
 3. Adult access during or after play: hold the top-left corner for 3 seconds, then answer the sum.
 4. In "Pregled": per-child table (tap a row for the event timeline), age-group summary against the plan thresholds, **Izvozi JSON** after every session, "Nova seja" for the next child.

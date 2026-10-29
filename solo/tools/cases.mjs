@@ -3,7 +3,7 @@
 //   node tools/cases.mjs clips    print "clipId<TAB>text" for every line to record
 import { loadData } from './lib.mjs';
 
-const { LEVEL_RULES, CHARACTERS, CASES, FILES, clipList } = loadData();
+const { LEVEL_RULES, CHARACTERS, CASES, FILES, RUNG, clipList } = loadData();
 
 if (process.argv[2] === 'clips') {
   for (const [id, text] of clipList()) console.log(`${id}\t${text}`);
@@ -15,71 +15,88 @@ const words = (t) => t.replace(/[»«„“”"',.!?:;–—]/g, ' ').split(/\s+
 let problems = 0;
 const fail = (id, msg) => { problems++; console.log(`✘ ${id}: ${msg}`); };
 
+const inRange = (n, [lo, hi]) => n >= lo && n <= hi;
 for (const c of CASES) {
   const R = LEVEL_RULES[c.level];
   if (!R) { fail(c.id, `unknown level ${c.level}`); continue; }
+  if (!RUNG[c.type]) fail(c.id, `unknown type ${c.type} (${Object.keys(RUNG).join(', ')})`);
   const ss = c.sentences;
   const ids = new Set(ss.map(s => s.id));
   if (ids.size !== ss.length) fail(c.id, 'duplicate sentence ids');
-  if (ss.length < R.sentences[0] || ss.length > R.sentences[1]) {
-    fail(c.id, `${ss.length} sentences (level ${c.level} allows ${R.sentences.join('–')})`);
-  }
+  if (!inRange(ss.length, R.sentences)) fail(c.id, `${ss.length} sentences (level ${c.level} allows ${R.sentences.join('–')})`);
   for (const s of ss) {
     if (!ROLES.has(s.role)) fail(c.id, `${s.id} has unknown role ${s.role}`);
     const w = words(s.text);
     if (w > R.maxWords) fail(c.id, `${s.id} has ${w} words (max ${R.maxWords}): ${s.text}`);
   }
-  if (c.suspects.length !== R.suspects) fail(c.id, `${c.suspects.length} suspects (level ${c.level} needs ${R.suspects})`);
+  if (!inRange(c.suspects.length, R.suspects)) fail(c.id, `${c.suspects.length} suspects (level ${c.level} allows ${R.suspects.join('–')})`);
   for (const id of c.suspects) if (!CHARACTERS[id]) fail(c.id, `unknown character ${id}`);
   if (!c.suspects.includes(c.culprit)) fail(c.id, `culprit ${c.culprit} is not a suspect`);
 
+  const pair = c.type === 'pair';
   const evidence = ss.filter(s => s.role === 'evidence');
-  if (evidence.length !== 1) {
-    fail(c.id, `${evidence.length} evidence sentences (need exactly 1)`);
-  } else {
-    const i = ss.indexOf(evidence[0]);
-    if (i === 0 || i === ss.length - 1) fail(c.id, 'evidence sentence is first or last');
-    for (const k of ['h2', 'h3']) {
-      if (!c[k].includes(evidence[0].id)) fail(c.id, `${k} does not include the evidence sentence`);
-    }
-  }
+  if (evidence.length !== (pair ? 2 : 1)) fail(c.id, `${evidence.length} evidence sentences (${c.type} needs ${pair ? 2 : 1})`);
+  for (const k of ['h2', 'h3']) for (const e of evidence) if (!c[k].includes(e.id)) fail(c.id, `${k} does not include evidence ${e.id}`);
   const distractors = ss.filter(s => s.role === 'distractor').length;
-  if (distractors < R.distractors[0] || distractors > R.distractors[1]) {
-    fail(c.id, `${distractors} distractors (level ${c.level} allows ${R.distractors.join('–')})`);
-  }
+  if (!inRange(distractors, R.distractors)) fail(c.id, `${distractors} distractors (level ${c.level} allows ${R.distractors.join('–')})`);
   const partials = ss.filter(s => s.role === 'partial').length;
-  if (partials > 1 || (partials && c.rung !== 3)) fail(c.id, 'partial sentences are only allowed in rung 3, at most 1');
-  if (c.h2.length !== 3) fail(c.id, 'h2 must list 3 sentences');
-  if (c.h3.length !== 2) fail(c.id, 'h3 must list 2 sentences');
+  const wantPartial = c.type === 'slip' || c.type === 'alibi' ? 1 : 0;
+  if (partials !== wantPartial) fail(c.id, `${partials} partial sentences (${c.type} needs ${wantPartial}: the culprit's own claim)`);
+  if (c.h2.length !== (pair ? 4 : 3)) fail(c.id, `h2 must list ${pair ? 4 : 3} sentences`);
+  if (c.h3.length !== (pair ? 3 : 2)) fail(c.id, `h3 must list ${pair ? 3 : 2} sentences`);
   for (const k of ['h2', 'h3']) for (const id of c[k]) if (!ids.has(id)) fail(c.id, `${k} references missing ${id}`);
   if (!c.question || !c.h1 || !c.reveal || !c.reveal.length) fail(c.id, 'question, h1 and reveal are required');
 }
 
-// Play order, per file: case numbers run 1, 2, 3, … without gaps. The forest file has every
-// case at levels A and B (same rung, culprit and question) and starts with rungs 1, 2, 3;
-// the themed files are written once, at level A. A final case must be the last one.
-const fileIds = FILES ? FILES.map(f => f.id) : ['gozd'];
+// Play order and the ladder, per file: case numbers run 1, 2, 3, … without gaps; the rungs
+// climb (never go down), from a fact case to a final two-proof case. A twist (an animal
+// of the place did it) appears at most once per file; otherwise the culprit is one of the cast.
+const fileIds = FILES.map(f => f.id);
 for (const c of CASES) if (!fileIds.includes(c.file)) fail(c.id, `unknown file ${c.file}`);
-for (const f of fileIds) {
-  const inFile = CASES.filter(c => c.file === f);
+for (const f of FILES) {
+  const inFile = CASES.filter(c => c.file === f.id);
   const nos = [...new Set(inFile.map(c => c.no))].sort((x, y) => x - y);
-  if (!nos.length) fail(f, 'file has no cases');
-  nos.forEach((no, i) => { if (no !== i + 1) fail(`${f} ${no}`, 'case numbers must run 1, 2, 3, … without gaps'); });
+  if (!nos.length) fail(f.id, 'file has no cases');
+  nos.forEach((no, i) => { if (no !== i + 1) fail(`${f.id} ${no}`, 'case numbers must run 1, 2, 3, … without gaps'); });
   for (const no of nos) {
     const byLevel = (level) => inFile.filter(c => c.no === no && c.level === level);
     const a = byLevel('A'), b = byLevel('B');
-    if (a.length !== 1) fail(`${f} ${no}`, `${a.length} cases at level A (need exactly 1)`);
-    if (f === 'gozd' && b.length !== 1) fail(`${f} ${no}`, `${b.length} cases at level B (need exactly 1)`);
-    if (b.length > 1) fail(`${f} ${no}`, 'more than one case at level B');
-    if (a[0] && b[0] && (a[0].rung !== b[0].rung || a[0].culprit !== b[0].culprit || a[0].question !== b[0].question)) {
-      fail(`${f} ${no}`, 'levels A and B must share rung, culprit and question');
+    if (a.length !== 1) fail(`${f.id} ${no}`, `${a.length} cases at level A (need exactly 1)`);
+    if (b.length > 1) fail(`${f.id} ${no}`, 'more than one case at level B');
+    if (a[0] && b[0] && (a[0].type !== b[0].type || a[0].culprit !== b[0].culprit || a[0].question !== b[0].question)) {
+      fail(`${f.id} ${no}`, 'levels A and B must share type, culprit and question');
     }
-    if (f === 'gozd' && no <= 3 && a[0] && a[0].rung !== no) fail(`${f} ${no}`, 'the first three forest cases must be rungs 1, 2, 3 in order');
-    if (f !== 'gozd' && no === 1 && a[0] && a[0].rung !== 1) fail(`${f} 1`, 'a file starts with a rung 1 case');
   }
-  const finals = inFile.filter(c => c.final);
-  if (finals.some(c => c.no !== nos[nos.length - 1])) fail(f, 'the final case must be the last one in its file');
-  if (f !== 'gozd' && !finals.length) fail(f, 'a themed file ends with a final case (final: true)');
+  const ladder = nos.map(no => inFile.find(c => c.no === no && c.level === 'A')).filter(Boolean);
+  if (ladder[0] && ladder[0].type !== 'fact') fail(f.id, 'an adventure starts with a fact case');
+  ladder.forEach((c, i) => { if (i && c.rung < ladder[i - 1].rung) fail(c.id, `rung ${c.rung} after rung ${ladder[i - 1].rung}: the ladder must not go down`); });
+  const last = ladder[ladder.length - 1];
+  if (!last || !last.final || last.type !== 'pair') fail(f.id, 'an adventure ends with a final two-proof case (final: true, type: pair)');
+  if (inFile.some(c => c.final && c !== last && c.no !== last.no)) fail(f.id, 'the final case must be the last one');
+  if (new Set(ladder.filter(c => c.twist).map(c => c.no)).size > 1) fail(f.id, 'at most one twist case per adventure');
+  for (const c of inFile) {
+    if (c.twist && f.cast.includes(c.culprit)) fail(c.id, 'a twist culprit is not one of the cast');
+    if (!c.twist && !f.cast.includes(c.culprit)) fail(c.id, `culprit ${c.culprit} is not in the cast (mark twist: true?)`);
+  }
+
+  // Variety, so the child can't learn a pattern instead of reading:
+  // – the proof sits early, in the middle and late across the adventure (by thirds);
+  // – no two cases have the same shape (roles in order);
+  // – the decoy comes straight before the proof in at most one case;
+  // – the number of decoys changes, and the final case is the longest.
+  const third = (c, s) => Math.min(2, Math.floor(3 * c.sentences.indexOf(s) / c.sentences.length));
+  const thirds = new Set(ladder.flatMap(c => c.sentences.filter(s => s.role === 'evidence').map(s => third(c, s))));
+  if (thirds.size < 3) fail(f.id, `the proof is never ${['early', 'in the middle', 'late'].filter((_, i) => !thirds.has(i)).join(' or ')} in a story`);
+  const shapes = new Map();
+  for (const c of ladder) {
+    const shape = c.sentences.map(s => s.role[0]).join('');
+    if (shapes.has(shape)) fail(c.id, `same shape as ${shapes.get(shape)} (${shape})`);
+    shapes.set(shape, c.id);
+  }
+  const decoyFirst = ladder.filter(c => c.sentences.some((s, i) => s.role === 'evidence' && i && c.sentences[i - 1].role === 'distractor'));
+  if (decoyFirst.length > 1) fail(f.id, `the decoy comes right before the proof in ${decoyFirst.map(c => c.id).join(', ')} (at most one)`);
+  if (new Set(ladder.map(c => c.sentences.filter(s => s.role === 'distractor').length)).size < 2) fail(f.id, 'every case has the same number of decoys');
+  if (last && ladder.some(c => c.sentences.length > last.sentences.length)) fail(f.id, 'the final case should be the longest');
 }
 
 // Solvability: the evidence must point at the culprit and nobody else.
@@ -94,16 +111,25 @@ for (const c of CASES) {
   for (const id of c.suspects) {
     if (!ss.some(s => NAME[id].test(s.text))) fail(c.id, `suspect ${id} never appears in the story`);
   }
-  const ev = ss.find(s => s.role === 'evidence');
-  if (!ev) continue;
-  const inEv = named(ev.text).filter(id => c.suspects.includes(id));
-  if (inEv.length) {
-    if (inEv.length !== 1 || inEv[0] !== c.culprit) fail(c.id, `evidence names [${inEv.join(', ')}], expected only ${c.culprit}`);
-  } else {
-    const prev = ss[ss.indexOf(ev) - 1];
-    const before = named(prev.text).filter(id => c.suspects.includes(id));
-    if (c.level !== 'B' || !PRONOUN.test(ev.text)) fail(c.id, 'evidence does not name the culprit (pronouns only at level B)');
-    else if (before.length !== 1 || before[0] !== c.culprit) fail(c.id, `pronoun in evidence should refer to ${c.culprit}, but the sentence before names [${before.join(', ')}]`);
+  // A pair: one proof names the culprit (and no other suspect), the other names no suspect,
+  // so neither is enough alone.
+  if (c.type === 'pair') {
+    const evs = ss.filter(s => s.role === 'evidence');
+    const who = evs.map(s => named(s.text).filter(id => c.suspects.includes(id)));
+    if (who.some(w => w.some(id => id !== c.culprit))) fail(c.id, `a proof names [${who.flat().join(', ')}], expected only ${c.culprit}`);
+    if (who.filter(w => w.length).length !== 1) fail(c.id, 'in a pair exactly one proof names the culprit, the other names no suspect');
+  }
+  const ev = c.type === 'pair' ? null : ss.find(s => s.role === 'evidence');
+  if (ev) {
+    const inEv = named(ev.text).filter(id => c.suspects.includes(id));
+    if (inEv.length) {
+      if (inEv.length !== 1 || inEv[0] !== c.culprit) fail(c.id, `evidence names [${inEv.join(', ')}], expected only ${c.culprit}`);
+    } else {
+      const prev = ss[ss.indexOf(ev) - 1];
+      const before = prev ? named(prev.text).filter(id => c.suspects.includes(id)) : [];
+      if (c.level !== 'B' || !PRONOUN.test(ev.text)) fail(c.id, 'evidence does not name the culprit (pronouns only at level B)');
+      else if (before.length !== 1 || before[0] !== c.culprit) fail(c.id, `pronoun in evidence should refer to ${c.culprit}, but the sentence before names [${before.join(', ')}]`);
+    }
   }
   const partial = ss.find(s => s.role === 'partial');
   if (partial && !named(partial.text).includes(c.culprit)) fail(c.id, 'the partial sentence must be said by the culprit');
