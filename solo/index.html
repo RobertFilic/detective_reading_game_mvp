@@ -329,13 +329,13 @@ const CHARACTERS = {
   jan: { name: 'Jan', animal: '👨🏽‍🌾', color: '#e8f3d8', re: 'Jan(a|u|om)?' },
 };
 
-// Case files (mape): one place, one cast. Every case has file + no (1, 2, … within the file).
+// Case files (shown to children as pustolovščine, adventures): one place, one cast. Every case has file + no (1, 2, … within the file).
 // The original animal cases are the forest file. A case marked final opens when the
 // other cases of its file are solved. docs/CASE_FILES.md has the backlog of themes.
 const FILES = [
   { id: 'vesolje', icon: '🚀', title: 'Vesoljska postaja', cast: ['maja', 'tim', 'ela', 'robi'] },
   { id: 'kmetija', icon: '🐄', title: 'Pri babici na kmetiji', cast: ['nik', 'pia', 'dedek', 'jan'] },
-  { id: 'gozd', icon: '🌲', title: 'Gozdna mapa', cast: ['bine', 'zala', 'jure', 'neza'] },
+  { id: 'gozd', icon: '🌲', title: 'Gozdne skrivnosti', cast: ['bine', 'zala', 'jure', 'neza'] },
 ];
 
 // Every line the child can hear outside the stories. Clip id = "ui_" + key.
@@ -1376,7 +1376,7 @@ function endTutorial() {
 function coachStep() {
   const t = S.tut, r = S.run;
   if (!t) return null;
-  if (S.screen === 'files') return t.board ? { text: 'Zdaj izberi mapo in reši svoj primer!', sel: '.file-card', ok: true } : null;
+  if (S.screen === 'files') return t.board ? { text: 'Zdaj izberi pustolovščino in reši svoj primer!', sel: '.file-card', ok: true } : null;
   if (S.screen === 'board') return null;
   if (t.msg) return { text: t.msg, sel: null, ok: true };
   switch (S.screen) {
@@ -1449,6 +1449,52 @@ function go(screen) {
   if (!ADULT.has(screen)) log('screen_enter');
   if (screen === 'thanks' && !S.ended) { S.ended = true; log('session_end'); }
 }
+
+// ---------- Back: one step back, for the ← button and for the browser / swipe back.
+// Returns what to do, 'stay' (nothing sensible behind this screen) or null (leave the game).
+function backTarget() {
+  const tut = S.tut && !S.tut.board;
+  switch (S.screen) {
+    case 'make':
+      if (S.mk.step > 1) return () => { S.mk.step--; render(); };
+      return profile() ? () => { S.mk = null; toHome(); } : null;
+    case 'board': return () => { S.toast = null; toHome(); };
+    case 'intro':
+      if (tut) return store.read(TUT_KEY, false) ? () => { S.tut = null; S.c = null; toHome(); } : () => { ACTIONS.editCard(); S.mk.step = 4; render(); };
+      return S.orderMode === 'board' ? toBoard : 'stay';
+    case 'story': return () => go('intro');
+    case 'accuse': return () => go('story');
+    case 'evidence': return S.run.hint ? 'stay' : () => { S.run.selected = null; go('accuse'); };
+    case 'reveal': return tut ? endTutorial : S.orderMode === 'board' ? toBoard : 'stay';
+    case 'soon': return () => go('more');
+    case 'thanks': return KID_MODE ? ACTIONS.backToBoard : 'stay';
+    case 'title': return ACTIONS.toSetup;
+    case 'debrief': return S.resume ? ACTIONS.resume : ACTIONS.toSetup;
+    case 'files': case 'setup': return null;
+    default: return 'stay';
+  }
+}
+
+function goBack(how) {
+  const to = backTarget();
+  if (typeof to !== 'function') return to;
+  if (!ADULT.has(S.screen)) log('nav_back', { how });
+  to();
+  return 'done';
+}
+
+// The browser back pops a spare history entry; the game then steps back itself and adds a
+// new one, or really leaves on the first screens. Browsers may skip entries added without
+// a tap, so the next tap adds one more.
+let tapArmed = false;
+const armBack = () => history.pushState({ dp: 'in' }, '');
+document.addEventListener('click', () => {
+  if (!tapArmed) { armBack(); tapArmed = true; }
+}, true);
+addEventListener('popstate', () => {
+  tapArmed = false;
+  if (goBack('browser') === null) history.back(); else armBack();
+});
 
 function render() {
   app.className = 'level-' + (S.level || 'B');
@@ -1539,11 +1585,11 @@ const T = {
         <div class="seg">${ageBtn('6-7', '6–7 let · raven A')}${ageBtn('8-9', '8–9 let · raven B')}</div>
         <label><input type="checkbox" data-act="pilot" ${S.pilot ? 'checked' : ''}> Pilotna seja (ne šteje v povzetek)</label>
         <p>Koda otroka: <b>${next}</b> (imen ne beležimo) · <span class="muted">ID igralca na tej napravi: ${esc(playerInfo().id.slice(0, 8))}…</span></p>
-        <p style="margin-bottom:6px">Primeri (${ALL_KEYS.length} v ${FILES.length} mapah):</p>
+        <p style="margin-bottom:6px">Primeri (${ALL_KEYS.length} v ${FILES.length} pustolovščinah):</p>
         <div class="seg"><button class="btn ${S.orderMode === 'board' ? '' : 'secondary'}" data-act="orderMode" data-mode="board">🗂️ Otrok izbira na tabli</button>
           <button class="btn ${S.orderMode === 'fixed' ? '' : 'secondary'}" data-act="orderMode" data-mode="fixed">Po vrsti</button></div>
         ${S.orderMode === 'board'
-          ? `<p class="muted">Na tej napravi rešenih: ${solvedKeys().filter(k => ALL_KEYS.includes(k)).length} / ${ALL_KEYS.length}. Otrok izbere mapo in primer; rešeni dobijo kljukico, en lažji nerešen utripa kot predlog. Zadnji (veliki) primer mape se odpre, ko so ostali rešeni.</p>
+          ? `<p class="muted">Na tej napravi rešenih: ${solvedKeys().filter(k => ALL_KEYS.includes(k)).length} / ${ALL_KEYS.length}. Otrok izbere pustolovščino in primer; rešeni dobijo kljukico, en lažji nerešen utripa kot predlog. Zadnji (veliki) primer pustolovščine se odpre, ko so ostali rešeni.</p>
         <button class="btn secondary" data-act="resetBoard" ${solvedKeys().length || profile() ? '' : 'disabled'}>Nov otrok: počisti izkaznico in kljukice</button>`
           : `<p class="muted">Začni pri primeru (za primerljiv preizkus začni pri 1):</p>
         <div class="seg">${CASES.filter(c => c.level === 'A' && c.file === 'gozd').map(c =>
@@ -1600,7 +1646,7 @@ const T = {
     const p = profile();
     return `<div class="screen files-screen">
       <div class="files-card">${idCard(p)}<button class="btn secondary edit" data-act="editCard" aria-label="Uredi izkaznico">✏️</button></div>
-      <div class="board-head"><span class="q">📁 Izberi mapo</span></div>
+      <div class="board-head"><span class="q">🗺️ Izberi pustolovščino</span></div>
       <div class="file-list">${FILES.map(f => {
         const cs = casesIn(f.id), done = cs.filter(isSolved).length;
         return `<button class="file-card ${done === cs.length ? 'done' : ''}" data-act="openFile" data-file="${f.id}">
@@ -1608,7 +1654,7 @@ const T = {
           <span class="ft"><b>${esc(f.title)}</b><span class="cast">${f.cast.map(id => CHARACTERS[id].animal).join(' ')}</span></span>
           <span class="fp">${done === cs.length ? '🏅' : `✔ ${done} / ${cs.length}`}</span></button>`;
       }).join('')}
-        <div class="file-soon">Kmalu nove mape: ⚽ nogomet, 🏫 šola, 🏖️ morje …</div></div>
+        <div class="file-soon">Kmalu nove pustolovščine: ⚽ nogomet, 🏫 šola, 🏖️ morje …</div></div>
       <div class="footer"><button class="btn secondary" data-act="tutorial">❓ Kako igram?</button>
         <span class="grow"></span><button class="btn secondary" data-act="moreNo">Dovolj za danes</button></div>
     </div>`;
@@ -1622,7 +1668,7 @@ const T = {
     return `<div class="screen">
       <div class="board-head"><span class="q">${f.icon} ${esc(f.title)}</span>
         <span class="count">✔ ${done} / ${cases.length}</span></div>
-      ${done === cases.length ? `<div class="trophy">🏅 Mapa rešena! Bravo, ${esc(detName(p))}!</div>` : ''}
+      ${done === cases.length ? `<div class="trophy">🏅 Pustolovščina rešena! Bravo, ${esc(detName(p))}!</div>` : ''}
       ${S.toast ? `<div class="toast">${esc(S.toast)}</div>` : ''}
       <div class="board">${cases.map(c => {
         const solved = isSolved(c), locked = isLocked(c);
@@ -1632,7 +1678,7 @@ const T = {
           <span class="fq">${locked ? 'Odpre se, ko rešiš ostale primere.' : esc(c.question)}</span>
           <span class="lvl">${'🔍'.repeat(c.rung)}</span></button>`;
       }).join('')}</div>
-      <div class="footer"><button class="btn secondary" data-act="toFiles">📁 Mape</button>
+      <div class="footer"><button class="btn secondary" data-act="toFiles">← 🗺️ Pustolovščine</button>
         <span class="grow"></span><button class="btn secondary" data-act="moreNo">Dovolj za danes</button></div>
     </div>`;
   },
@@ -1645,6 +1691,7 @@ const T = {
       ${qbar(c.question, c.id + '_q', 'big')}
       <div class="suspects">${c.suspects.map(id => suspectCard(id, false)).join('')}</div>
       <button class="btn big" data-act="toStory">Beri zgodbo</button>
+      ${backTarget() === 'stay' ? '' : '<button class="btn secondary" data-act="back">← Nazaj</button>'}
     </div>`;
   },
 
@@ -1652,7 +1699,8 @@ const T = {
     return `<div class="screen">
       ${qbar(S.c.question, S.c.id + '_q')}
       <div class="rows">${rowsHTML('listen')}</div>
-      <div class="footer"><button class="btn big" data-act="know">Vem, kdo je bil!</button></div>
+      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
+        <span class="grow"></span><button class="btn big" data-act="know">Vem, kdo je bil!</button></div>
     </div>`;
   },
 
@@ -1756,8 +1804,9 @@ const ACTIONS = {
     toBoard();
   },
   toFiles() { S.toast = null; toHome(); },
+  back() { goBack('button'); },
   lockedCase() {
-    S.toast = '🔒 Veliki primer se odpre, ko rešiš ostale primere v tej mapi.';
+    S.toast = '🔒 Veliki primer se odpre, ko rešiš ostale primere te pustolovščine.';
     render();
   },
   openCase(el) {
@@ -2180,7 +2229,7 @@ function sessionHTML(s) {
 const EVENT_LABEL = {
   screen_enter: 'zaslon', listen: 'posluša', listen_prompt: 'posluša navodilo', scroll_end: 'konec besedila',
   scroll_back: 'pomik nazaj', accuse_early: 'obtoži pred koncem', suspect_pick: 'izbere osumljenca',
-  back_to_story: 'še enkrat preberi', evidence_select: 'izbere stavek', evidence_confirm: 'potrdi dokaz',
+  back_to_story: 'še enkrat preberi', nav_back: 'nazaj', evidence_select: 'izbere stavek', evidence_confirm: 'potrdi dokaz',
   hint_shown: 'namig', hint_dismiss: 'zapre namig', assisted: 'vodeno', suspect_change: 'zamenja osumljenca',
   case_done: 'primer rešen', case_pick: 'izbere primer na tabli', more_yes: 'še en primer', more_no: 'dovolj', fake_door: 'vrata »nov primer«',
   adult_gate: 'odrasli pregled', session_end: 'konec seje', session_start: 'začetek seje',

@@ -23,7 +23,7 @@ node tools/cases.mjs
 
 It checks word limits per level, sentence and suspect counts, exactly one evidence sentence (not first or last), distractor counts and hint references. It also checks that each case can be solved: every suspect appears in the story, the evidence sentence names the culprit and no other suspect (at level B, a pronoun that refers to the culprit in the sentence before), and in contradiction cases the culprit says the partial sentence.
 
-Cases are grouped in **case files** (`FILES`): 🚀 Vesoljska postaja, 🐄 Pri babici na kmetiji (5 cases each, level A only, the 5th is a final case that opens when the others are solved) and 🌲 Gozdna mapa (the 14 original animal cases at levels A and B; cases 1–3 are the original ladder). Each case has `file` and `no` (1, 2, … within its file). Ideas for the next files are in [docs/CASE_FILES.md](../docs/CASE_FILES.md).
+Cases are grouped in **case files** (`FILES`, shown to children as *pustolovščine*, adventures): 🚀 Vesoljska postaja, 🐄 Pri babici na kmetiji (5 cases each, level A only, the 5th is a final case that opens when the others are solved) and 🌲 Gozdne skrivnosti (the 14 original animal cases at levels A and B; cases 1–3 are the original ladder). Each case has `file` and `no` (1, 2, … within its file). Ideas for the next files are in [docs/CASE_FILES.md](../docs/CASE_FILES.md).
 
 **First launch (board mode):** the child makes a detective ID card (avatar = detektiv / detektivka, sidekick, optional name; stored on the device only, the name is never logged), plays the 🎓 practice case, then picks a file. Adult "Nov otrok" in setup clears the card, the ticks and the practice.
 

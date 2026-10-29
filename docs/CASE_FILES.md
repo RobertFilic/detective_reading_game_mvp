@@ -1,11 +1,11 @@
-# Case files (mape) – themes and backlog
+# Case files (pustolovščine) – themes and backlog
 
 Each file is one place with its own cast of 4–5 people. It holds 4–5 cases that climb the ladder (fact → inference → contradiction), and the last one is a **final case** that ties back to the earlier ones and opens when the others are solved. Cases are written once, at level A (≤ 8 words per sentence, 3 suspects, 1 distractor). The rules are in [PLAN.md](PLAN.md) and checked by `solo/tools/cases.mjs`.
 
 ## Built
 | File | Cast | Cases |
 |---|---|---|
-| 🌲 Gozdna mapa | Bine 🐰, Zala 🦊, Jure 🐻, Neža 🐿️, Babica 🦉 | the 14 original cases (levels A and B), incl. the Gran Canaria holiday case |
+| 🌲 Gozdne skrivnosti | Bine 🐰, Zala 🦊, Jure 🐻, Neža 🐿️, Babica 🦉 | the 14 original cases (levels A and B), incl. the Gran Canaria holiday case |
 | 🚀 Vesoljska postaja Zvezdica | Maja, Tim, Ela, robot Robi; kapitanka Vesna | space ice cream · space garden (water floats) · Earth drawn on the window · the red button · final: the captain's birthday surprise |
 | 🐄 Pri babici na kmetiji | Nik, Pia, Dedek, sosed Jan; Babi, poni Blisk | henhouse door · who fed the pigs (mud) · bread in the krušna peč · who rode Blisk · final: flowers for Babi's birthday |
 
