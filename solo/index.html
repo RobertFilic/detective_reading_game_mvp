@@ -218,10 +218,20 @@ button.suspect { cursor: pointer; }
 .ask .suspect.on { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent); }
 .ask .suspect .ok { position: absolute; top: 4px; right: 6px; color: #2e9d57; font-weight: 800; }
 .ask .suspect { position: relative; }
-.qs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 8px 0; flex: none; }
-.qbtn { appearance: none; font: inherit; font-size: 20px; font-weight: 600; cursor: pointer; background: #fff; border: 3px solid var(--accent); border-radius: 16px; padding: 8px 14px; }
-.qbtn.got { border-color: var(--line); color: var(--muted); }
-.answer { margin: 0 auto 8px; flex: none; }
+.chat { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 8px 4px; }
+.chat-head { text-align: center; color: var(--muted); font-weight: 700; font-size: 16px; }
+.msg { display: flex; align-items: flex-end; gap: 8px; }
+.msg.me { justify-content: flex-end; }
+.msg .mav { font-size: 28px; line-height: 1; flex: none; }
+.msg .mtxt { max-width: 75%; padding: 8px 14px; border-radius: 20px; font-size: var(--row-font, 24px); }
+.msg:last-child .mtxt { animation: fadein .25s both; }
+.msg.me .mtxt { background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+.msg.them .mtxt { background: #fff; border: 2px solid var(--line); border-bottom-left-radius: 4px; cursor: pointer; }
+.typing i { display: inline-block; width: 8px; height: 8px; margin: 0 2px; border-radius: 50%; background: var(--muted); animation: dot 1s infinite; }
+.typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes dot { 50% { transform: translateY(-5px); opacity: .4; } }
+.qs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin: 4px 0 8px; flex: none; }
+.qbtn { appearance: none; font: inherit; font-size: 20px; font-weight: 600; cursor: pointer; background: #fff; color: var(--accent); border: 3px solid var(--accent); border-radius: 20px; padding: 8px 14px; }
 .row .who { font-weight: 700; color: var(--muted); }
 .objs { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin-bottom: 8px; flex: none; }
 .obj {
@@ -264,6 +274,19 @@ button.suspect { cursor: pointer; }
 .pincard.empty { background: rgba(255, 255, 255, .35); border: 2px dashed #8a6a2f; box-shadow: none; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; color: #8a6a2f; transform: none; cursor: default; }
 .pincard.empty::before { content: none; }
 .string { flex: none; width: 16px; height: 3px; background: var(--danger); }
+.string.draw { transform-origin: left; animation: draw .5s .5s ease-out both; }
+.pincard.new { animation: flyin .7s ease-out both; }
+@keyframes draw { from { transform: scaleX(0); } }
+@keyframes flyin { from { transform: translateY(-120px) rotate(-25deg) scale(1.4); opacity: 0; } }
+.think { margin-top: 8px; background: #fff; border-radius: 16px; padding: 6px 12px; font-weight: 600; font-size: 18px; animation: fadein .4s 1s both; cursor: pointer; }
+@keyframes fadein { from { opacity: 0; transform: translateY(6px); } }
+.cork-q { display: flex; align-items: center; gap: 8px; }
+.vent { appearance: none; margin-left: auto; width: 54px; height: 30px; border-radius: 6px; border: 3px solid #6b5333; cursor: pointer; position: relative;
+  background: repeating-linear-gradient(0deg, #3b2f22 0 4px, #6b5333 4px 8px); }
+.vent .eyes { font-size: 16px; animation: blink 4s infinite; display: inline-block; }
+@keyframes blink { 0%, 60%, 100% { opacity: 0; } 66%, 90% { opacity: 1; } 93% { opacity: .2; } }
+.vent.peek .eyes { animation: none; opacity: 1; }
+.vent.peek::after { content: 'pip-pip!'; position: absolute; top: -26px; right: -6px; background: #fff; border-radius: 10px; padding: 0 6px; font-size: 14px; font-weight: 700; animation: fadein .2s both; }
 .waiting { background: var(--good); border-radius: 14px; padding: 8px 12px; margin-bottom: 10px; font-weight: 600; display: flex; align-items: center; gap: 10px; flex: none; }
 .waiting span { flex: 1; }
 .waiting .btn { padding: 8px 14px; font-size: 18px; }
@@ -520,7 +543,8 @@ const UI_AUDIO = {
 // A step case (steps) adds to sentences a 4th item: obj (the emoji it hides behind), label,
 // clears (the suspect this alibi rules out, role clear), dark (needs the 🔦 torch).
 // In an ask step (questioning) a sentence is an answer instead: who says it and ask, the question.
-// client + call = who phones for help; card = the sentence pinned to the season's corkboard;
+// client + call = who phones for help; card = the sentence pinned to the season's corkboard
+// (think = the detective's thought when it is pinned);
 // caught = the culprit in the accusative (newspaper); excuse = the culprit's funny excuse;
 // letter = a thank-you that arrives on the next visit.
 const RUNG = { fact: 1, trace: 2, elim: 2, slip: 3, alibi: 4, pair: 5 };
@@ -766,7 +790,7 @@ const CASES = [
     h1: 'Kdo NI mogel biti? Za vsakega poišči stavek.',
     reveal: ['Ročaj omarice je bil lepljiv od medu.', 'Zvečer je med jedel Tim.', 'Z lepljivimi prsti je odprl omarico.', 'Ampak čigav je zeleni odtis? 🤔'],
     caught: 'Tima', excuse: 'Hotel sem samo en piškot … no, tri.',
-    card: { icon: '👣', sid: 's6' },
+    card: { icon: '👣', sid: 's6', think: 'Kdo ima tako majhne noge? 🤔' },
     letter: ['Hvala za pomoč s piškoti!', 'Tim zdaj sam peče piškote za vse.', 'P. S. Ponoči nekaj piska v zračniku …'],
   },
   {
@@ -787,7 +811,7 @@ const CASES = [
     h1: 'Kdo NI mogel biti? Kdo govori o sebi?',
     reveal: ['Robiju je zmanjkalo baterije.', 'Izvlekel je velik vtikač za svoj kabel.', 'Zato so ugasnile vse luči.', 'Ampak kdo je piskal v zračniku? 🤔'],
     caught: 'Robija', excuse: 'Bil sem tako lačen elektrike!',
-    card: { icon: '🔊', sid: 's2' },
+    card: { icon: '🔊', sid: 's2', think: 'Zelen odtis … in zdaj piskanje. Je to isto bitje? 🤔' },
     letter: ['Hvala! Luči spet svetijo.', 'Robi ima zdaj svoj močan polnilec.', 'P. S. Iz kuhinje je izginil moj sir! 🧀'],
   },
 ];
@@ -826,6 +850,7 @@ function clipList() {
     out.push([c.id + '_h1', c.h1]);
     c.reveal.forEach((t, i) => out.push([`${c.id}_r${i + 1}`, t]));
     if (c.excuse) out.push([c.id + '_x', c.excuse]);
+    if (c.card && c.card.think) out.push([c.id + '_t', c.card.think]);
     (c.letter || []).forEach((t, i) => out.push([`${c.id}_l${i + 1}`, t]));
   }
   return out;
@@ -1008,7 +1033,7 @@ function newRun() {
     heard: new Set(), scrolledEnd: false, backArmed: false, maxTop: 0,
     suspect: null, picks: [], wrong: 0, ladder: 0, assisted: false, hint: null, highlight: null, rankUp: null,
     // step cases: call answered, clues found (in order), torch on, crossed-off suspects, selected clue
-    answered: false, found: [], who: null, said: null, torch: false, crossed: [], sel: null, note: null,
+    answered: false, found: [], who: null, typing: null, torch: false, crossed: [], sel: null, note: null,
   };
 }
 
@@ -1113,6 +1138,7 @@ function sfx(name) {
     if (name === 'click') tone(1400, 0, .05, 'square', .06);
     if (name === 'stamp') { tone(90, 0, .25, 'sine', .35); tone(140, 0, .12, 'triangle', .15); }
     if (name === 'nope') { tone(220, 0, .15, 'sine', .1); tone(180, .12, .2, 'sine', .1); }
+    if (name === 'beep') { tone(1760, 0, .08, 'square', .05); tone(1760, .14, .08, 'square', .05); }
     if (name === 'tada') [523, 659, 784, 1047].forEach((f, i) => tone(f, .12 + i * .1, .3, 'triangle', .1));
   } catch (e) { /* no sound is fine */ }
 }
@@ -1242,6 +1268,7 @@ function startCase(n) {
 function go(screen) {
   stopAudio();
   stopRing();
+  if (screen !== 'board') S.pinNew = null;
   S.screen = screen;
   render();
   if (screen === 'call' && !S.run.answered) {
@@ -1306,6 +1333,8 @@ addEventListener('popstate', () => {
 function render() {
   app.className = 'level-' + (S.level || 'B');
   app.innerHTML = T[S.screen]();
+  const chat = $('.chat');
+  if (chat) chat.scrollTop = chat.scrollHeight;
   if (S.screen === 'story' || S.screen === 'evidence') {
     refreshRows();
     watchScroll();
@@ -1369,14 +1398,23 @@ function hintHTML(h) {
 }
 
 // The season's corkboard: one slot per case, a pinned card for each solved case that has one.
+// S.pinNew = the case just solved: its card flies in, the string to it draws, and the
+// detective thinks out loud. From 2 cards on, eyes blink in the vent.
 function corkboard(f, cases) {
   const slots = cases.length + (f.soon || 0);
-  return `<div class="cork"><div class="cork-q">📌 ${esc(f.mystery)}</div><div class="pins">${Array.from({ length: slots }, (_, i) => {
+  const pinned = cases.filter(c => c.card && isSolved(c)).length;
+  const fresh = cases.find(c => c.id === S.pinNew && c.card);
+  const pins = Array.from({ length: slots }, (_, i) => {
     const c = cases[i];
     const s = c && c.card && isSolved(c) ? c.sentences.find(x => x.id === c.card.sid) : null;
-    return s ? `<div class="pincard" data-act="say" data-clip="${c.id}_${s.id}"><span class="ci">${c.card.icon}</span>${esc(s.text)}</div>`
-      : '<div class="pincard empty">?</div>';
-  }).join('<span class="string"></span>')}</div></div>`;
+    const isNew = fresh && c === fresh;
+    return (i ? `<span class="string ${isNew ? 'draw' : ''}"></span>` : '')
+      + (s ? `<div class="pincard ${isNew ? 'new' : ''}" data-act="say" data-clip="${c.id}_${s.id}"><span class="ci">${c.card.icon}</span>${esc(s.text)}</div>`
+        : '<div class="pincard empty">?</div>');
+  }).join('');
+  return `<div class="cork"><div class="cork-q">📌 ${esc(f.mystery)}${pinned >= 2 ? '<button class="vent" data-act="vent" aria-label="zračnik"><span class="eyes">👀</span></button>' : ''}</div>
+    <div class="pins">${pins}</div>
+    ${fresh && fresh.card.think ? `<div class="think" data-act="say" data-clip="${fresh.id}_t">💭 ${esc(fresh.card.think)}</div>` : ''}</div>`;
 }
 
 function letterHTML(c) {
@@ -1564,7 +1602,10 @@ const T = {
     const c = S.c, r = S.run;
     const all = c.sentences.length, done = r.found.length === all;
     const qs = r.who ? c.sentences.filter(s => s.who === r.who) : [];
-    const said = r.said && sent(r.said);
+    const chat = r.found.map(sent).filter(s => s.who === r.who);
+    const open = qs.filter(s => !r.found.includes(s.id));
+    const me = profile() ? profile().av : '🕵️';
+    const unq = (t) => t.replace(/^»|«$/g, '');
     return `<div class="screen scene ask">
       <div class="caseq">❓ ${esc(c.question)}</div>
       ${qbar(done ? UI_AUDIO.askDone : UI_AUDIO.ask, done ? 'ui_askDone' : 'ui_ask')}
@@ -1573,10 +1614,12 @@ const T = {
         return `<button class="suspect ${r.who === id ? 'on' : ''}" data-act="askWho" data-id="${id}">
           ${avatar(id)}<span>${CHARACTERS[id].name}</span>${left ? '' : '<span class="ok">✔</span>'}</button>`;
       }).join('')}</div>
-      ${qs.length ? `<div class="qs">${qs.map(s => `<button class="qbtn ${r.found.includes(s.id) ? 'got' : ''}" data-act="askQ" data-sid="${s.id}">🗣️ ${esc(s.ask)}</button>`).join('')}</div>` : ''}
-      ${said ? `<div class="caller answer">${avatar(said.who, 'sm')}<div class="bubble"><div class="row" data-act="listenClue" data-sid="${said.id}">${esc(said.text)}</div></div></div>` : ''}
-      <div class="rows pocket">${r.found.slice().reverse().filter(sid => sid !== r.said).map(sid =>
-        `<div class="row" data-act="listenClue" data-sid="${sid}">${sayHTML(sent(sid))}</div>`).join('')}</div>
+      <div class="chat">${r.who ? `<div class="chat-head">💬 ${CHARACTERS[r.who].name}</div>` : ''}${chat.map(s => `
+        <div class="msg me"><span class="mtxt">${esc(s.ask)}</span><span class="mav">${me}</span></div>
+        ${r.typing === s.id ? `<div class="msg them"><span class="mav">${CHARACTERS[s.who].animal}</span><span class="mtxt typing"><i></i><i></i><i></i></span></div>`
+          : `<div class="msg them"><span class="mav">${CHARACTERS[s.who].animal}</span><span class="mtxt" data-act="listenClue" data-sid="${s.id}">${esc(unq(s.text))}</span></div>`}`).join('')}
+      </div>
+      ${open.length && !r.typing ? `<div class="qs">${open.map(s => `<button class="qbtn" data-act="askQ" data-sid="${s.id}">${esc(s.ask)}</button>`).join('')}</div>` : ''}
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
         <span class="pocket-count">👝 ${r.found.length} / ${all}</span>
         <span class="grow"></span><button class="btn big" data-act="toSolve" ${done ? '' : 'disabled'}>Vem, kdo je bil!</button></div>
@@ -1764,6 +1807,13 @@ const ACTIONS = {
   toFiles() { S.toast = null; toHome(); },
   back() { goBack('button'); },
   // the waiting note says it already; without one (earlier cases unsolved) a toast does
+  vent(el) {
+    sfx('beep');
+    el.classList.remove('peek');
+    void el.offsetWidth;
+    el.classList.add('peek');
+    log('vent_tap');
+  },
   soonCase() {
     const cases = casesIn(S.file);
     S.toast = cases.every(isSolved) ? 'soon' : '⏳ Ta primer še ni napisan. Pride kmalu!';
@@ -1964,17 +2014,23 @@ const ACTIONS = {
     sfx('click');
     render();
   },
+  // the question goes out, the suspect "types" for a moment, then the answer arrives
   askQ(el) {
     const r = S.run, s = sent(el.dataset.sid);
-    r.said = s.id;
-    if (!r.found.includes(s.id)) {
-      r.found.push(s.id);
-      r.heard.add(s.id);
-      sfx('pop');
-      log('ask_q', { suspectId: s.who, sentenceId: s.id, role: s.role, n: r.found.length });
-    }
+    if (r.typing || r.found.includes(s.id)) return;
+    r.found.push(s.id);
+    r.heard.add(s.id);
+    r.typing = s.id;
+    sfx('click');
+    log('ask_q', { suspectId: s.who, sentenceId: s.id, role: s.role, n: r.found.length });
     render();
-    play(S.c.id + '_' + s.id, s.text, $('.answer'));
+    setTimeout(() => {
+      if (S.screen !== 'ask' || r.typing !== s.id) return;
+      r.typing = null;
+      sfx('pop');
+      render();
+      play(S.c.id + '_' + s.id, s.text, document.querySelector(`.msg [data-sid="${s.id}"]`));
+    }, 900);
   },
   torch() {
     const r = S.run;
@@ -2092,6 +2148,7 @@ const ACTIONS = {
   },
   next() {
     if (S.tut) { endTutorial(); return; }
+    if (S.c && S.c.card) S.pinNew = S.c.id;
     if (S.orderMode === 'board') toBoard(); else go('more');
   },
   moreYes() {

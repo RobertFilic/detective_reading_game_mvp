@@ -77,7 +77,7 @@ for (const c of CASES) {
   const pair = c.type === 'pair';
   const evidence = ss.filter(s => s.role === 'evidence');
   if (evidence.length !== (pair ? 2 : 1)) fail(c.id, `${evidence.length} evidence sentences (${c.type} needs ${pair ? 2 : 1})`);
-  const lines = [c.h1, ...(c.call || []), ...(c.letter || []), ...(c.excuse ? [c.excuse] : [])];
+  const lines = [c.h1, ...(c.call || []), ...(c.letter || []), ...(c.excuse ? [c.excuse] : []), ...(c.card && c.card.think ? [c.card.think] : [])];
   for (const t of lines.flatMap(l => l.split(/(?<=[.!?…])\s+(?=\p{Lu})/u))) if (words(t) > R.maxWords) fail(c.id, `${words(t)} words (max ${R.maxWords}): ${t}`);
   if (c.steps) { checkSteps(c); continue; }
   for (const k of ['h2', 'h3']) for (const e of evidence) if (!c[k].includes(e.id)) fail(c.id, `${k} does not include evidence ${e.id}`);
