@@ -97,7 +97,7 @@ button.suspect { cursor: pointer; }
 .board-head .q { font-size: 30px; font-weight: 800; }
 .board-head .count { margin-left: auto; font-size: 22px; font-weight: 700; color: var(--muted); }
 .board {
-  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding: 14px;
+  flex: 1; min-height: 170px; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding: 14px;
   display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; align-content: start;
   background: #d9b48a; border: 10px solid #a8763f; border-radius: 18px;
 }
@@ -165,6 +165,7 @@ button.suspect { cursor: pointer; }
 .folder.locked { cursor: pointer; }
 .folder.locked .stk { filter: grayscale(1); opacity: .6; }
 .folder.locked .fq { color: var(--muted); font-weight: 500; }
+.caseq { font-weight: 700; font-size: 22px; text-align: center; margin-bottom: 6px; }
 .toast { background: var(--warn); border: 2px solid var(--sel-line); border-radius: 12px; padding: 8px 12px; margin-bottom: 10px; font-weight: 600; }
 .kudos { font-size: 22px; font-weight: 800; color: var(--accent); }
 /* ID card maker */
@@ -192,6 +193,10 @@ button.suspect { cursor: pointer; }
   font-size: 26px; z-index: 10;
 }
 .hint .txt { flex: 1; }
+.hint .hi { font-size: 34px; line-height: 1; }
+.hint.no { border-color: #d9534f; background: #fff1f0; }
+.hint.no .hi, .hint.no .verdict { color: #c9302c; }
+.hint .verdict { display: block; font-size: 1.1em; }
 /* step cases: phone call, scene search, crossing off */
 .phone { font-size: 96px; line-height: 1; animation: ring .5s ease-in-out infinite; }
 @keyframes ring { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-14deg); } 75% { transform: rotate(14deg); } }
@@ -251,6 +256,10 @@ button.suspect { cursor: pointer; }
 .pincard.empty { background: rgba(255, 255, 255, .35); border: 2px dashed #8a6a2f; box-shadow: none; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; color: #8a6a2f; transform: none; cursor: default; }
 .pincard.empty::before { content: none; }
 .string { flex: none; width: 16px; height: 3px; background: var(--danger); }
+.waiting { background: var(--good); border-radius: 14px; padding: 8px 12px; margin-bottom: 10px; font-weight: 600; display: flex; align-items: center; gap: 10px; flex: none; }
+.waiting span { flex: 1; }
+.waiting .btn { padding: 8px 14px; font-size: 18px; }
+.waiting.flash { animation: pulse .5s ease-in-out 2; }
 .folder.soon { cursor: default; background: #f1eadb; border-style: dashed; }
 .folder.soon .stk { opacity: .5; }
 .folder.soon .fq { color: var(--muted); font-weight: 500; }
@@ -269,6 +278,7 @@ button.suspect { cursor: pointer; }
 
 /* Phones: portrait (narrow) */
 @media (max-width: 600px) {
+  .caseq { font-size: 18px; margin-bottom: 4px; }
   :root { --row-font: 20px; }
   .level-A { --row-font: 23px; }
   .screen { padding-left: max(14px, env(safe-area-inset-left)); padding-right: max(14px, env(safe-area-inset-right)); padding-top: calc(10px + env(safe-area-inset-top)); padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
@@ -454,15 +464,15 @@ const UI_AUDIO = {
   accuse: 'Kdo je bil?',
   evidence: 'Pokaži stavek, ki to dokaže.',
   evidencePair: 'Pokaži dva stavka, ki to skupaj dokažeta.',
-  h2: 'Dokaz je v enem od teh stavkov.',
-  h3: 'Samo še dva. Kateri je pravi?',
+  h2: 'Dokaz je v enem od svetlih stavkov. Poišči ga.',
+  h3: 'Samo še dva svetla stavka. Kateri je pravi?',
   h3pair: 'Oba dokaza sta med temi tremi.',
   assist: 'Poglej ta stavek in ga tapni.',
   assistPair: 'Poglej ta dva stavka in ju tapni.',
   pairHalf: 'Eden je pravi! Poišči še drugi dokaz.',
   partial: 'To je pomembno! Ali kdo kasneje reče kaj drugega?',
   partialAlibi: 'To je pomembno! Ali je res? Poišči, kaj pokaže drugače.',
-  wrongSuspect: 'Ta stavek je pomemben, ampak o kom govori?',
+  wrongSuspect: 'Stavek je pravi, osumljenec pa ne. O kom govori stavek? Zamenjaj osumljenca.',
   solved: 'Primer rešen!',
   more: 'Še en primer?',
   soon: 'Nov primer pride kmalu!',
@@ -474,9 +484,13 @@ const UI_AUDIO = {
   solve: 'Prečrtaj, kdo ni bil. Tapni stavek, nato obraz.',
   lastOne: 'Ostal je samo eden. Pokaži dokaz!',
   pickFirst: 'Najprej tapni stavek, potem obraz.',
-  notThis: 'Ta stavek tega ne dokaže. Preberi še enkrat.',
-  elimLook: 'Poglej ta stavek. O kom govori?',
-  elimAssist: 'Tapni ta stavek in ta obraz.',
+  notThis: 'Ta stavek ne pove, kdo ni bil. Izberi drug stavek.',
+  notWho: 'Ta stavek govori o nekom drugem. Preberi, o kom govori, in tapni ta obraz.',
+  elimLook: 'Preberi svetel stavek. O kom govori? Tapni ta obraz.',
+  elimAssist: 'Tapni svetel stavek, nato obraz, ki utripa.',
+  no: 'Ni prav.',
+  almost: 'Skoraj!',
+  again: 'Poskusi znova',
   newCard: 'Nov namig na tabli skrivnosti!',
   letter: 'Prišlo je pismo!',
 };
@@ -1305,14 +1319,17 @@ const need = () => S.c.type === 'pair' ? 2 : 1;
 function evFooter() {
   const r = S.run;
   const two = need() === 2;
-  return (r.wrong >= 2 ? '<button class="btn secondary" data-act="changeSuspect">Zamenjaj osumljenca</button>' : '')
+  return (r.wrong >= 2 || r.badSuspect ? '<button class="btn secondary" data-act="changeSuspect">Zamenjaj osumljenca</button>' : '')
     + (two ? `<span class="pick-count">${r.picks.length} / 2</span>` : '')
     + `<button class="btn" data-act="confirm" ${r.picks.length === need() ? '' : 'disabled'}>${two ? 'To sta dokaza! ✔' : 'To je dokaz! ✔'}</button>`;
 }
 
+// Every hint follows a wrong answer: it says so first (✖ Ni prav. / Skoraj!), then what to do.
 function hintHTML(h) {
-  return `<div class="hint" id="hint"><span>💡</span><span class="txt">${esc(h.text)}</span>${spk(h.clip)}`
-    + '<button class="btn" data-act="hintOk">V redu</button></div>';
+  const almost = h.key === 'pairHalf' || h.key === 'partial';
+  return `<div class="hint ${almost ? 'almost' : 'no'}" id="hint"><span class="hi">${almost ? '💡' : '✖'}</span>`
+    + `<span class="txt"><b class="verdict">${almost ? UI_AUDIO.almost : UI_AUDIO.no}</b> ${esc(h.text)}</span>${spk(h.clip)}`
+    + `<button class="btn" data-act="hintOk">${UI_AUDIO.again}</button></div>`;
 }
 
 // The season's corkboard: one slot per case, a pinned card for each solved case that has one.
@@ -1466,7 +1483,9 @@ const T = {
       <div class="board-head"><span class="q">${f.icon} ${esc(f.title)}</span>
         <span class="count">✔ ${done} / ${cases.length + soon}</span></div>
       ${fileDone(S.file) ? `<div class="trophy">🏅 Pustolovščina rešena! Bravo, ${esc(detName(p))}!</div>` : ''}
-      ${S.toast ? `<div class="toast">${esc(S.toast)}</div>` : ''}
+      ${S.toast && S.toast !== 'soon' ? `<div class="toast">${esc(S.toast)}</div>` : ''}
+      ${soon && done === cases.length ? `<div class="waiting ${S.toast === 'soon' ? 'flash' : ''}"><span>⏳ Primer ${cases.length + 1} pride kmalu! Medtem reši druge pustolovščine.</span>
+        <button class="btn" data-act="toFiles">🗺️ Pojdi</button></div>` : ''}
       ${f.season ? corkboard(f, cases) : ''}
       <div class="board">${cases.map(c => {
         const solved = isSolved(c), locked = isLocked(c);
@@ -1475,8 +1494,8 @@ const T = {
           <span class="stk">${locked ? '🔒' : c.sticker}</span>${c.final ? '<span class="place">⭐ Veliki primer</span>' : c.place ? `<span class="place">${esc(c.place)}</span>` : ''}
           <span class="fq">${locked ? 'Odpre se, ko rešiš ostale primere.' : esc(c.question)}</span>
           <span class="lvl">${'🔍'.repeat(c.rung)}</span></button>`;
-      }).join('')}${Array.from({ length: soon }, (_, i) => `<div class="folder soon">
-          <span class="no">${cases.length + i + 1}</span><span class="stk">❓</span><span class="fq">Kmalu nov primer</span></div>`).join('')}</div>
+      }).join('')}${Array.from({ length: soon }, (_, i) => `<button class="folder soon" data-act="soonCase">
+          <span class="no">${cases.length + i + 1}</span><span class="stk">❓</span><span class="fq">Kmalu nov primer</span></button>`).join('')}</div>
       <div class="footer"><button class="btn secondary" data-act="toFiles">← 🗺️ Pustolovščine</button>
         <span class="grow"></span><button class="btn secondary" data-act="moreNo">Dovolj za danes</button></div>
     </div>${letter ? letterHTML(letter) : ''}`;
@@ -1509,6 +1528,7 @@ const T = {
     const c = S.c, r = S.run;
     const all = c.sentences.length, done = r.found.length === all;
     return `<div class="screen scene">
+      <div class="caseq">❓ ${esc(c.question)}</div>
       ${qbar(done ? UI_AUDIO.sceneDone : UI_AUDIO.scene, done ? 'ui_sceneDone' : 'ui_scene')}
       <div class="toolbar-kid">
         <button class="tool ${r.torch ? 'on' : ''}" data-act="torch">🔦 Svetilka</button>
@@ -1533,6 +1553,7 @@ const T = {
     const left = c.suspects.filter(id => !r.crossed.includes(id));
     const t = r.assisted || r.highlight ? elimTarget() : null;
     return `<div class="screen solve ${r.hint ? 'locked' : ''}">
+      <div class="caseq">❓ ${esc(c.question)}</div>
       ${left.length === 1 ? qbar(UI_AUDIO.lastOne, 'ui_lastOne') : qbar(UI_AUDIO.solve, 'ui_solve')}
       <div class="suspects mini">${c.suspects.map(id => {
         const x = r.crossed.includes(id);
@@ -1682,6 +1703,12 @@ const ACTIONS = {
   },
   toFiles() { S.toast = null; toHome(); },
   back() { goBack('button'); },
+  // the waiting note says it already; without one (earlier cases unsolved) a toast does
+  soonCase() {
+    const cases = casesIn(S.file);
+    S.toast = cases.every(isSolved) ? 'soon' : '⏳ Ta primer še ni napisan. Pride kmalu!';
+    render();
+  },
   lockedCase() {
     S.toast = '🔒 Veliki primer se odpre, ko rešiš ostale primere te pustolovščine.';
     render();
@@ -1840,6 +1867,7 @@ const ACTIONS = {
       h = need() === 2 ? { key: 'assist', text: UI_AUDIO.assistPair, clip: 'ui_assistPair', level: 4 }
         : { key: 'assist', text: UI_AUDIO.assist, clip: 'ui_assist', level: 4 };
     } else if (isEvidence) {
+      r.badSuspect = true;
       h = { key: 'wrongSuspect', text: UI_AUDIO.wrongSuspect, clip: 'ui_wrongSuspect', level: 0 };
     } else if (hits.length) {
       h = { key: 'pairHalf', text: UI_AUDIO.pairHalf, clip: 'ui_pairHalf', level: 0 };
@@ -1960,6 +1988,8 @@ const ACTIONS = {
       h = { key: 'h2', text: UI_AUDIO.elimLook, clip: 'ui_elimLook', level: 2 };
     } else if (r.wrong === 2) {
       h = { key: 'h1', text: c.h1, clip: c.id + '_h1', level: 1 };
+    } else if (s.role === 'clear' || s.role === 'evidence') {
+      h = { key: 'notWho', text: UI_AUDIO.notWho, clip: 'ui_notWho', level: 0 };
     } else {
       h = { key: 'notThis', text: UI_AUDIO.notThis, clip: 'ui_notThis', level: 0 };
     }
