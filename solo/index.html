@@ -148,6 +148,11 @@ button.suspect { cursor: pointer; }
 .stamp-slot.got { filter: none; opacity: 1; border: 2px solid var(--danger); transform: rotate(-8deg); background: #fff; }
 .files-screen { overflow-y: auto; -webkit-overflow-scrolling: touch; gap: 12px; }
 .files-card { position: relative; display: flex; justify-content: center; }
+.who-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; width: 100%; max-width: 720px; margin: 12px 0; }
+.who-card { appearance: none; font: inherit; color: inherit; cursor: pointer; background: #fff; border: 3px solid var(--line); border-radius: 18px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.who-card .who-av { font-size: 56px; line-height: 1.1; }
+.who-card .rank, .who-card .muted { font-size: 15px; color: var(--muted); }
+.who-card.add { border-style: dashed; }
 .files-card .edit { position: absolute; bottom: 10px; right: max(10px, calc(50% - 210px)); min-height: 40px; padding: 4px 10px; font-size: 18px; }
 .file-list { display: flex; flex-direction: column; gap: 10px; }
 .file-card {
@@ -889,7 +894,7 @@ let LOG = store.read(LOG_KEY, []);
 // progress. PLAYER_KEY holds a random id (no name) that will let a future account claim this
 // device's progress without counting it twice.
 const SAVE_VERSION_KEY = 'dp_save_version';
-const SAVE_VERSION = 3; // 1: solved cases as forest numbers · 2: solved cases as "file:no"
+const SAVE_VERSION = 4; // 1: solved cases as forest numbers · 2: solved cases as "file:no" · 4: several detectives
 const PLAYER_KEY = 'dp_player_v1';
 
 function newPlayerId() {
@@ -917,6 +922,10 @@ function migrateSave() {
     const keep = ['vesolje:1', 'vesolje:2', 'vesolje:4', 'kmetija:1', 'kmetija:2', 'kmetija:4'];
     const played = store.read('dp_played_v1', []);
     store.write('dp_played_v1', played.filter(k => keep.includes(k) || String(k).startsWith('gozd:')));
+  }
+  if (from < 4 && store.read('dp_profile_v1', null) && !store.read('dp_detectives_v1', null)) {
+    // the one child so far becomes the first detective; their data stays where it is
+    store.write('dp_detectives_v1', { active: 'd1', list: [{ key: 'd1', data: null }] });
   }
   if (from !== SAVE_VERSION) store.write(SAVE_VERSION_KEY, SAVE_VERSION);
   playerInfo(); // make sure this device has an anonymous player id
@@ -1242,6 +1251,59 @@ document.body.addEventListener('click', (e) => {
   coach();
 });
 
+// ---- Several children on one device: one detective each ----
+// The active detective's data lives in the usual keys (ID card, solved cases, practice, letters,
+// anonymous player id), so the game reads it as before. The others wait in DETECTIVES_KEY as
+// copies of those keys and swap in when picked. Nothing leaves the device.
+const DETECTIVES_KEY = 'dp_detectives_v1';
+const KID_KEYS = [PROFILE_KEY, PLAYED_KEY, TUT_KEY, LETTER_KEY, PLAYER_KEY];
+const raw = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} },
+};
+function detectives() {
+  const d = store.read(DETECTIVES_KEY, null) || { active: null, list: [] };
+  if (!d.active && profile()) { d.active = 'd1'; d.list = [{ key: 'd1', data: null }]; store.write(DETECTIVES_KEY, d); }
+  return d;
+}
+const snapshot = () => Object.fromEntries(KID_KEYS.map(k => [k, raw.get(k)]));
+const nextKey = (d) => 'd' + (Math.max(0, ...d.list.map(x => Number(x.key.slice(1)) || 0)) + 1);
+// put the active detective away (or drop them, if they never finished their ID card)
+function stashActive(d) {
+  if (!d.active) return;
+  if (profile()) d.list = d.list.map(x => x.key === d.active ? { ...x, data: snapshot() } : x);
+  else d.list = d.list.filter(x => x.key !== d.active);
+}
+function switchDetective(key) {
+  const d = detectives();
+  if (key === d.active) return;
+  stashActive(d);
+  const to = d.list.find(x => x.key === key);
+  for (const k of KID_KEYS) raw.set(k, to.data ? to.data[k] : null);
+  d.active = key;
+  store.write(DETECTIVES_KEY, d);
+}
+function newDetective() {
+  const d = detectives();
+  stashActive(d);
+  for (const k of KID_KEYS) raw.set(k, null);
+  newPlayer();
+  d.active = nextKey(d);
+  d.list.push({ key: d.active, data: null });
+  store.write(DETECTIVES_KEY, d);
+}
+// the picker's cards: the active detective from the live keys, the others from their copies
+function detectiveCards() {
+  const d = detectives();
+  return d.list.map(x => {
+    const live = x.key === d.active;
+    const read = (k, def) => { const v = live ? raw.get(k) : x.data && x.data[k]; try { return v ? JSON.parse(v) : def; } catch (e) { return def; } };
+    const p = read(PROFILE_KEY, null);
+    const n = read(PLAYED_KEY, []).filter(k => ALL_KEYS.includes(k)).length;
+    return p && { key: x.key, p, n, live };
+  }).filter(Boolean);
+}
+
 // Home: a new child first makes the ID card, then plays the practice case, then picks a file.
 function toHome() {
   if (!profile()) { S.mk = { step: 1, av: null, g: null, sk: null, name: '' }; go('make'); return; }
@@ -1288,8 +1350,10 @@ function backTarget() {
   switch (S.screen) {
     case 'make':
       if (S.mk.step > 1) return () => { S.mk.step--; render(); };
-      return profile() ? () => { S.mk = null; toHome(); } : null;
+      if (profile()) return () => { S.mk = null; toHome(); };
+      return detectiveCards().length ? () => { S.mk = null; go('who'); } : null;
     case 'board': return () => { S.toast = null; toHome(); };
+    case 'who': return profile() ? toHome : 'stay';
     case 'intro':
       if (tut) return store.read(TUT_KEY, false) ? () => { S.tut = null; S.c = null; toHome(); } : () => { ACTIONS.editCard(); S.mk.step = 4; render(); };
       return S.orderMode === 'board' ? toBoard : 'stay';
@@ -1507,7 +1571,8 @@ const T = {
   // New child: three taps to a detective ID card.
   make() {
     const m = S.mk;
-    const back = m.step > 1 ? '<button class="btn secondary mk-back" data-act="mkBack">← Nazaj</button>' : '';
+    const back = m.step > 1 ? '<button class="btn secondary mk-back" data-act="mkBack">← Nazaj</button>'
+      : backTarget() ? '<button class="btn secondary mk-back" data-act="back">← Nazaj</button>' : '';
     let body;
     if (m.step === 1) {
       body = `<h1>Postani detektiv!</h1><p class="muted">Izberi svojega detektiva.</p>
@@ -1528,6 +1593,18 @@ const T = {
     return `<div class="screen center make"><div class="mk-top"><span class="steps-dots">${[1, 2, 3, 4].map(i => `<i class="${i <= m.step ? 'on' : ''}"></i>`).join('')}</span>${back}</div>${body}</div>`;
   },
 
+  // Kdo igra? One card per detective on this device, plus a new one.
+  who() {
+    const cards = detectiveCards();
+    return `<div class="screen center who">
+      <h1>Kdo igra?</h1>
+      <div class="who-list">${cards.map(x => `<button class="who-card" data-act="pickDetective" data-key="${x.key}">
+        <span class="who-av">${x.p.av}</span><b>${esc(detName(x.p))}</b><span class="rank">${rankName(rankFor(x.n), x.p)}</span><span class="muted">✔ ${solvedLabel(x.n)}</span></button>`).join('')}
+        <button class="who-card add" data-act="addDetective"><span class="who-av">➕</span><b>Nov detektiv</b><span class="muted">za drugega otroka</span></button></div>
+      ${profile() ? '<button class="btn secondary" data-act="back">← Nazaj</button>' : ''}
+    </div>`;
+  },
+
   files() {
     const p = profile();
     return `<div class="screen files-screen">
@@ -1542,6 +1619,7 @@ const T = {
       }).join('')}
         <div class="file-soon">Kmalu nove pustolovščine: ⚽ nogomet, 🏝️ Gran Canaria, 🏫 šola …</div></div>
       <div class="footer"><button class="btn secondary" data-act="tutorial">❓ Kako igram?</button>
+        <button class="btn secondary" data-act="toWho" aria-label="Kdo igra?">👥</button>
         <span class="grow"></span><button class="btn secondary" data-act="moreNo">Dovolj za danes</button></div>
     </div>`;
   },
@@ -1790,7 +1868,8 @@ const ACTIONS = {
   startAt(el) { S.startAt = Number(el.dataset.n); render(); },
   orderMode(el) { S.orderMode = el.dataset.mode; render(); },
   resetBoard() {
-    if (!confirm('Nov otrok: počistim izkaznico in vse kljukice? Zapisi v pregledu ostanejo.')) return;
+    // clears the detective who played last; the other detectives on this device stay
+    if (!confirm('Nov otrok: počistim zadnjo izkaznico in njene kljukice? Drugi detektivi in zapisi v pregledu ostanejo.')) return;
     store.write(PLAYED_KEY, []);
     store.write(TUT_KEY, false);   // a new child also gets the practice case
     store.write(PROFILE_KEY, null); // and makes their own ID card
@@ -1828,6 +1907,19 @@ const ACTIONS = {
     S.toast = null;
     if (S.c) log('more_yes');
     playCase(Number(el.dataset.no));
+  },
+  toWho() { go('who'); },
+  pickDetective(el) {
+    switchDetective(el.dataset.key);
+    S.tut = null;
+    log('detective_pick', { detectives: detectiveCards().length }); // never the name
+    toHome();
+  },
+  addDetective() {
+    newDetective();
+    S.tut = null;
+    log('detective_new', { detectives: detectiveCards().length });
+    toHome();
   },
   editCard() {
     const p = profile();
@@ -2430,7 +2522,8 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 if (KID_MODE) {
   Object.assign(S, { age: '7-8', orderMode: 'board', pilot: false });
   ACTIONS.startSession();
-  toHome(); // "Igraj!" on the start page was the start button: ID card / practice / files
+  // "Igraj!" on the start page was the start button: who plays → ID card / practice / files
+  if (detectiveCards().length > 1) go('who'); else toHome();
 } else {
   render();
 }

@@ -47,7 +47,7 @@ A **season** (`season: true` in `FILES`) is one adventure with one big mystery (
 
 Cases are grouped in **adventures** (`FILES`, *pustolovščine*): 🚀 Vesoljska postaja and 🐄 Pri babici na kmetiji, 6 cases each at level A, one per ladder step plus a twist; the 6th is a final case that opens when the others are solved. The original 14 forest cases were removed (they are in the git history). Ideas for the next adventures are in [docs/CASE_FILES.md](../docs/CASE_FILES.md).
 
-**First launch (board mode):** the child makes a detective ID card (avatar = detektiv / detektivka, sidekick, optional name; stored on the device only, the name is never logged), plays the 🎓 practice case, then picks a file. Adult "Nov otrok" in setup clears the card, the ticks and the practice.
+**First launch (board mode):** the child makes a detective ID card (avatar = detektiv / detektivka, sidekick, optional name; stored on the device only, the name is never logged), plays the 🎓 practice case, then picks a file. **Several children on one device:** 👥 on the adventures screen opens »Kdo igra?«, one card per detective (picture, name, rank, solved cases) plus »Nov detektiv«. Each detective has their own ID card, ticks, practice, letters, corkboard and anonymous player id. With two or more detectives, »Igraj!« starts with »Kdo igra?«. The active detective's data stays in the usual keys; the others wait as copies in `dp_detectives_v1` and swap in when picked. Save version 4 makes an existing child the first detective without changing their data. Adult "Nov otrok" in setup clears the card, the ticks and the practice of the detective who played last; the other detectives stay.
 
 ## Record audio
 1. `node tools/cases.mjs clips > docs/clips.tsv` gives every line as `clipId<TAB>text`.
