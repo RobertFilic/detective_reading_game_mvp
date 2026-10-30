@@ -10,12 +10,45 @@ if (process.argv[2] === 'clips') {
   process.exit(0);
 }
 
-const ROLES = new Set(['neutral', 'evidence', 'partial', 'distractor']);
+const ROLES = new Set(['neutral', 'evidence', 'partial', 'distractor', 'clear']);
 const words = (t) => t.replace(/[»«„“”"',.!?:;–—]/g, ' ').split(/\s+/).filter(Boolean).length;
 let problems = 0;
 const fail = (id, msg) => { problems++; console.log(`✘ ${id}: ${msg}`); };
 
 const inRange = (n, [lo, hi]) => n >= lo && n <= hi;
+
+// A step case (call → scene → solve): every sentence hides behind an object; every suspect
+// but the culprit has exactly one alibi sentence (role clear) that names them; the proof names
+// only the culprit; at most one object is dark; the card (corkboard) names no suspect.
+const NAME = Object.fromEntries(Object.entries(CHARACTERS).map(([id, ch]) => [id, new RegExp(`(^|[^\\p{L}])(${ch.re})(?![\\p{L}])`, 'u')]));
+for (const [id, ch] of Object.entries(CHARACTERS)) if (!ch.re) fail(id, 'character needs a name pattern (re)');
+const PRONOUN = /\b(mu|ji|njen\w*|njegov\w*|je imel|je imela)\b/;
+const named = (text) => Object.keys(NAME).filter(id => NAME[id].test(text));
+const STEPS = new Set(['call', 'scene', 'solve']);
+function checkSteps(c) {
+  const ss = c.sentences;
+  if (c.type !== 'elim') fail(c.id, 'step cases are type elim');
+  for (const st of c.steps) if (!STEPS.has(st)) fail(c.id, `unknown step ${st}`);
+  if (c.steps.includes('call') && (!CHARACTERS[c.client] || !c.call || !c.call.length)) fail(c.id, 'a call needs client and call lines');
+  if (c.client && c.suspects.includes(c.client)) fail(c.id, 'the client is not a suspect');
+  for (const s of ss) if (!s.obj || !s.label) fail(c.id, `${s.id} needs obj and label (where it is found)`);
+  if (ss.filter(s => s.dark).length > 1) fail(c.id, 'at most one dark object');
+  for (const id of c.suspects) {
+    const al = ss.filter(s => s.clears === id);
+    if (id === c.culprit && al.length) fail(c.id, 'the culprit has no true alibi');
+    if (id !== c.culprit && al.length !== 1) fail(c.id, `suspect ${id} needs exactly one alibi sentence (clears: '${id}')`);
+  }
+  for (const s of ss) {
+    if ((s.role === 'clear') !== !!s.clears) fail(c.id, `${s.id}: role clear goes with clears`);
+    if (s.clears && !named(s.text).includes(s.clears)) fail(c.id, `${s.id}: the alibi must name ${s.clears}`);
+  }
+  if (c.card) {
+    const s = ss.find(x => x.id === c.card.sid);
+    if (!s) fail(c.id, `card points at missing ${c.card.sid}`);
+    else if (named(s.text).some(id => c.suspects.includes(id))) fail(c.id, 'the corkboard card names no suspect');
+  }
+  if (c.caught === undefined && c.excuse) fail(c.id, 'excuse without caught');
+}
 for (const c of CASES) {
   const R = LEVEL_RULES[c.level];
   if (!R) { fail(c.id, `unknown level ${c.level}`); continue; }
@@ -36,6 +69,9 @@ for (const c of CASES) {
   const pair = c.type === 'pair';
   const evidence = ss.filter(s => s.role === 'evidence');
   if (evidence.length !== (pair ? 2 : 1)) fail(c.id, `${evidence.length} evidence sentences (${c.type} needs ${pair ? 2 : 1})`);
+  const lines = [c.h1, ...(c.call || []), ...(c.letter || []), ...(c.excuse ? [c.excuse] : [])];
+  for (const t of lines.flatMap(l => l.split(/(?<=[.!?…])\s+(?=\p{Lu})/u))) if (words(t) > R.maxWords) fail(c.id, `${words(t)} words (max ${R.maxWords}): ${t}`);
+  if (c.steps) { checkSteps(c); continue; }
   for (const k of ['h2', 'h3']) for (const e of evidence) if (!c[k].includes(e.id)) fail(c.id, `${k} does not include evidence ${e.id}`);
   const distractors = ss.filter(s => s.role === 'distractor').length;
   if (!inRange(distractors, R.distractors)) fail(c.id, `${distractors} distractors (level ${c.level} allows ${R.distractors.join('–')})`);
@@ -55,6 +91,13 @@ const fileIds = FILES.map(f => f.id);
 for (const c of CASES) if (!fileIds.includes(c.file)) fail(c.id, `unknown file ${c.file}`);
 for (const f of FILES) {
   const inFile = CASES.filter(c => c.file === f.id);
+  if (f.season) {
+    // a season is built case by case: numbers run 1, 2, 3, … and every case pins a card
+    inFile.forEach((c, i) => { if (c.no !== i + 1) fail(c.id, 'case numbers must run 1, 2, 3, …'); });
+    for (const c of inFile) if (!c.card) fail(c.id, 'a season case pins a card to the corkboard (card)');
+    if (!f.mystery) fail(f.id, 'a season needs its mystery question');
+    continue;
+  }
   const nos = [...new Set(inFile.map(c => c.no))].sort((x, y) => x - y);
   if (!nos.length) fail(f.id, 'file has no cases');
   nos.forEach((no, i) => { if (no !== i + 1) fail(`${f.id} ${no}`, 'case numbers must run 1, 2, 3, … without gaps'); });
@@ -102,10 +145,6 @@ for (const f of FILES) {
 // Solvability: the evidence must point at the culprit and nobody else.
 // Names are matched in any case form (Bine/Bineta/Binetu, Zala/Zalo, …). At level B the
 // evidence may use a pronoun; then the sentence just before it must name the culprit.
-const NAME = Object.fromEntries(Object.entries(CHARACTERS).map(([id, ch]) => [id, new RegExp(`(^|[^\\p{L}])(${ch.re})(?![\\p{L}])`, 'u')]));
-for (const [id, ch] of Object.entries(CHARACTERS)) if (!ch.re) fail(id, 'character needs a name pattern (re)');
-const PRONOUN = /\b(mu|ji|njen\w*|njegov\w*|je imel|je imela)\b/;
-const named = (text) => Object.keys(NAME).filter(id => NAME[id].test(text));
 for (const c of CASES) {
   const ss = c.sentences;
   for (const id of c.suspects) {

@@ -16,6 +16,7 @@ Vary the shape too: the proof early, in the middle or last; 1 → 3 decoys; 6 se
 |---|---|---|
 | 🚀 Vesoljska postaja Zvezdica | Maja, Tim, Ela, robot Robi; kapitanka Vesna, miška Kiki | fact: space ice cream · trace: the garden (water floats) · twist: the crackers (Kiki) · slip: the red button · alibi: the captain's camera · final pair: the birthday card (green marker) |
 | 🐄 Pri babici na kmetiji | Nik, Pia, Dedek, sosed Jan; Babi, poni Blisk, koza Meta | fact: the henhouse door · trace: who fed the pigs (mud) · twist: Dedek's red shirt (Meta) · slip: who rode Blisk (the saddle) · alibi: the first strawberries (the tractor) · final pair: Babi's flowers (only behind the barn) |
+| 👾 Skrivnost v zračniku (season) | Tim, Ela, Robi, miška Kiki; client kapitanka Vesna; mystery guest Bip | 1 so far: who opened the cookie cupboard (step case: call → scene with torch → cross off → proof); card: a tiny green footprint. Planned arc in [IMPROVEMENTS.md §4](IMPROVEMENTS.md). |
 
 The original 14 forest stories (Bine, Zala, Jure, Neža, incl. the Gran Canaria camel case) were removed; they are in the git history. Bine, Zala and Jure stay for the practice case.
 

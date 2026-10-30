@@ -192,6 +192,80 @@ button.suspect { cursor: pointer; }
   font-size: 26px; z-index: 10;
 }
 .hint .txt { flex: 1; }
+/* step cases: phone call, scene search, crossing off */
+.phone { font-size: 96px; line-height: 1; animation: ring .5s ease-in-out infinite; }
+@keyframes ring { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-14deg); } 75% { transform: rotate(14deg); } }
+.caller { display: flex; gap: 12px; align-items: flex-start; width: 100%; max-width: 640px; text-align: left; }
+.bubble { flex: 1; display: flex; flex-direction: column; gap: 6px; background: #fff; border: 3px solid var(--accent); border-radius: 4px 20px 20px 20px; padding: 8px; }
+.bubble .row { border: 0; min-height: 0; padding: 4px 8px; }
+.suspects.mini { gap: 8px; flex-wrap: nowrap; }
+.suspects.mini .suspect { min-width: 0; padding: 8px 10px; font-size: 18px; gap: 4px; position: relative; flex: 1 1 0; max-width: 150px; }
+.suspects.mini .avatar { width: 60px; height: 60px; font-size: 34px; }
+.suspect.crossed { opacity: .55; background: #eee; }
+.suspect.crossed .avatar { filter: grayscale(1); }
+.suspect .xmark { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 64px; color: var(--danger); font-weight: 900; }
+.suspect.justcrossed .xmark { animation: slam .35s cubic-bezier(.2, 1.6, .4, 1); }
+.suspect.pulse { animation: pulse 1.1s ease-in-out infinite; border-color: var(--sel-line); }
+.toolbar-kid { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.tool { appearance: none; font: inherit; font-size: 20px; font-weight: 700; cursor: pointer; background: var(--card); border: 3px solid var(--line); border-radius: 14px; padding: 6px 14px; }
+.tool.on { background: #fff6c2; border-color: var(--sel-line); box-shadow: 0 0 18px rgba(255, 210, 0, .7); }
+.pocket-count { margin-left: auto; font-weight: 800; color: var(--muted); }
+.objs { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin-bottom: 8px; flex: none; }
+.obj {
+  appearance: none; font: inherit; color: inherit; cursor: pointer; position: relative; background: #fff3cf; border: 2px solid #e2c98f;
+  border-radius: 14px; padding: 6px 4px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 3px 0 rgba(0, 0, 0, .12);
+}
+.obj .oe { font-size: 40px; line-height: 1.1; }
+.obj .ol { font-size: 14px; font-weight: 700; color: var(--muted); }
+.obj.got { background: #e9f6ec; border-color: #9fd3ad; }
+.obj .ok { position: absolute; top: 2px; right: 6px; color: #2e8b57; font-weight: 900; }
+.obj.dark { background: #2b2a33; border-color: #111; }
+.obj.dark .ol { color: #aaa; }
+.objs.torch .obj.dark { box-shadow: 0 0 0 4px rgba(255, 220, 0, .8), 0 0 24px rgba(255, 220, 0, .8); }
+.pocket .row.fresh { animation: drop .4s ease-out; }
+@keyframes drop { from { transform: translateY(-16px) scale(1.05); background: var(--sel); } }
+/* solved: newspaper + stamp slam, excuse, rank-up, pinned card */
+.paper { background: #fbf8f1; border: 2px solid #cfc6b0; border-radius: 6px; padding: 8px 16px 10px; box-shadow: 0 6px 18px rgba(0, 0, 0, .12);
+  display: flex; flex-direction: column; align-items: center; gap: 4px; width: min(520px, 100%); animation: spin-in .6s ease-out; }
+@keyframes spin-in { from { transform: rotate(-200deg) scale(.1); opacity: 0; } }
+.paper .mast { font-family: Georgia, "Times New Roman", serif; font-weight: 900; letter-spacing: 2px; font-size: 20px; border-bottom: 3px double #2b2a33; width: 100%; text-align: center; }
+.paper .qbar { margin: 4px 0 0; }
+.paper .pic { display: flex; align-items: center; gap: 8px; font-size: 20px; }
+.stamp.slam { animation: slam .45s .25s cubic-bezier(.2, 1.6, .4, 1) both; }
+@keyframes slam { from { transform: rotate(-8deg) scale(3); opacity: 0; } to { transform: rotate(-5deg) scale(1); opacity: 1; } }
+.avatar.caught { animation: blush 1.2s ease-in-out .9s 2; }
+@keyframes blush { 25% { transform: rotate(-10deg); box-shadow: 0 0 0 6px #ffb3b3; } 75% { transform: rotate(10deg); } }
+.rankup { background: #fff0c2; border: 3px solid var(--sel-line); border-radius: 14px; padding: 6px 14px; font-weight: 800; animation: slam .45s 1s both; }
+.excuse { display: flex; align-items: center; gap: 10px; font-style: italic; font-size: 20px; cursor: pointer; }
+.pinned { display: flex; align-items: center; gap: 10px; background: #e8c9a0; border: 3px solid #a8763f; border-radius: 12px; padding: 8px 14px; text-align: left; position: relative; cursor: pointer; animation: drop .5s 1.2s both; }
+.pinned .pin, .pincard::before { font-size: 22px; }
+.pinned .ci { font-size: 36px; }
+/* season corkboard + letters */
+.cork { background: #d9b48a; border: 6px solid #a8763f; border-radius: 14px; padding: 6px 10px 10px; margin-bottom: 10px; flex: none; }
+.cork-q { font-weight: 800; font-size: 20px; margin-bottom: 6px; }
+.pins { display: flex; align-items: center; overflow-x: auto; }
+.pincard { flex: none; width: 120px; min-height: 76px; background: #fffdf3; border-radius: 4px; padding: 14px 8px 6px; font-size: 14px; position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .25); transform: rotate(-2deg); cursor: pointer; }
+.pincard::before { content: '📌'; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); }
+.pincard .ci { display: block; font-size: 24px; }
+.pincard.empty { background: rgba(255, 255, 255, .35); border: 2px dashed #8a6a2f; box-shadow: none; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; color: #8a6a2f; transform: none; cursor: default; }
+.pincard.empty::before { content: none; }
+.string { flex: none; width: 16px; height: 3px; background: var(--danger); }
+.folder.soon { cursor: default; background: #f1eadb; border-style: dashed; }
+.folder.soon .stk { opacity: .5; }
+.folder.soon .fq { color: var(--muted); font-weight: 500; }
+.file-card.season { border-color: #8a7ad6; background: #efeaff; }
+.new-tag { font-size: 13px; font-weight: 800; color: #5a45c2; letter-spacing: .5px; }
+.id-text .rank { font-weight: 800; color: #8a6a2f; }
+.letter-wrap { position: fixed; inset: 0; background: rgba(0, 0, 0, .35); display: flex; align-items: center; justify-content: center; z-index: 30; padding: 16px; }
+.letter { background: #fffdf3; border: 2px solid #d9c08f; border-radius: 8px; padding: 14px 18px; width: min(520px, 100%); display: flex; flex-direction: column; gap: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .3); animation: spin-in .5s ease-out; }
+.letter-head { display: flex; align-items: center; gap: 10px; font-size: 26px; font-weight: 800; }
+.letter .row { border: 0; background: transparent; min-height: 0; padding: 2px 4px; font-family: "Comic Sans MS", "Chalkboard SE", cursive; }
+.letter-from { display: flex; align-items: center; gap: 8px; justify-content: flex-end; font-weight: 700; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; }
+}
 
 /* Phones: portrait (narrow) */
 @media (max-width: 600px) {
@@ -243,6 +317,31 @@ button.suspect { cursor: pointer; }
   .reveal .suspect { flex-direction: row; padding: 6px 14px; }
   .reveal .avatar { width: 44px; height: 44px; font-size: 26px; }
   .reveal .row { min-height: 0; padding: 6px 12px; font-size: 19px; }
+  .phone { font-size: 64px; }
+  .suspects.mini { gap: 6px; }
+  .suspects.mini .suspect { padding: 6px 4px; font-size: 15px; }
+  .suspects.mini .avatar { width: 44px; height: 44px; font-size: 26px; }
+  .suspect .xmark { font-size: 48px; }
+  .objs { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .obj .oe { font-size: 30px; }
+  .obj .ol { font-size: 12px; }
+  .tool { font-size: 17px; padding: 4px 10px; }
+  .paper { padding: 6px 10px 8px; }
+  .paper .mast { font-size: 16px; }
+  .excuse { font-size: 17px; }
+  .pinned { padding: 6px 10px; font-size: 16px; }
+  .pinned .ci { font-size: 28px; }
+  .cork-q { font-size: 17px; }
+  .pincard { width: 104px; min-height: 64px; font-size: 13px; }
+}
+
+/* Small phones (iPhone SE): the solved screen's explanation scrolls, "Naprej" stays on screen. */
+@media (max-height: 740px) {
+  .reveal { overflow: hidden; gap: 8px; }
+  .reveal > :first-child, .reveal > :last-child { margin-top: 0; margin-bottom: 0; }
+  .reveal .reveal-rows { flex: 1 1 auto; min-height: 0; padding-bottom: 4px; }
+  .reveal .paper, .reveal .rankup, .reveal .excuse, .reveal .pinned { flex: none; }
+  .rankup { padding: 4px 12px; font-size: 17px; }
 }
 
 /* Phones: landscape (short) */
@@ -264,6 +363,11 @@ button.suspect { cursor: pointer; }
   .reveal .sticker, .reveal .suspect { display: none; }
   .reveal .reveal-rows { flex: 1 1 auto; min-height: 0; padding-bottom: 4px; }
   .reveal .row { min-height: 0; padding: 6px 12px; font-size: 19px; }
+  .reveal .excuse, .reveal .paper .pic { display: none; }
+  .phone { font-size: 48px; }
+  .objs { grid-template-columns: repeat(7, 1fr); }
+  .obj .oe { font-size: 26px; }
+  .cork { display: none; }
 }
 
 #gate { position: fixed; top: 0; left: 0; width: 64px; height: 64px; z-index: 40; }
@@ -329,13 +433,19 @@ const CHARACTERS = {
   dedek: { name: 'Dedek', animal: '👴🏻', color: '#efe6d8', re: 'Ded(ek|ka|ku|kom|kov\\p{L}*)' },
   jan: { name: 'Jan', animal: '👨🏽‍🌾', color: '#e8f3d8', re: 'Jan(a|u|om|ov\\p{L}*)?' },
   meta: { name: 'Meta', animal: '🐐', color: '#eef0dc', re: 'Met(a|o|e|i|in\\p{L}*)' },
+  // clients: they call for help, they are never suspects
+  vesna: { name: 'Kapitanka Vesna', animal: '👩🏻‍✈️', color: '#fde8c8', re: 'Vesn(a|o|e|i|in\\p{L}*)' },
 };
 
 // Case files (shown to children as pustolovščine, adventures): one place, one cast. Every case has file + no (1, 2, … within the file).
 // A case marked final opens when the other cases of its file are solved. docs/CASE_FILES.md has the backlog of themes.
+// paper = the newspaper on the solved screen. A season (season: true) is one big mystery:
+// every case pins a card to the corkboard (mystery = its question), soon = cases still to come.
 const FILES = [
-  { id: 'vesolje', icon: '🚀', title: 'Vesoljska postaja', cast: ['maja', 'tim', 'ela', 'robi'] },
-  { id: 'kmetija', icon: '🐄', title: 'Pri babici na kmetiji', cast: ['nik', 'pia', 'dedek', 'jan'] },
+  { id: 'vesolje', icon: '🚀', title: 'Vesoljska postaja', cast: ['maja', 'tim', 'ela', 'robi'], paper: 'ZVEZDNI ČASNIK' },
+  { id: 'kmetija', icon: '🐄', title: 'Pri babici na kmetiji', cast: ['nik', 'pia', 'dedek', 'jan'], paper: 'KMEČKI GLAS' },
+  { id: 'bip', icon: '👾', title: 'Skrivnost v zračniku', cast: ['tim', 'ela', 'robi', 'kiki'], paper: 'ZVEZDNI ČASNIK',
+    season: true, mystery: 'Kaj se skriva v zračniku?', soon: 5 },
 ];
 
 // Every line the child can hear outside the stories. Clip id = "ui_" + key.
@@ -357,6 +467,18 @@ const UI_AUDIO = {
   more: 'Še en primer?',
   soon: 'Nov primer pride kmalu!',
   thanks: 'Hvala za pomoč!',
+  // investigation steps (call → scene → solve)
+  scene: 'Preišči prostor. Tapni vsako stvar.',
+  dark: 'Tu je pretemno. Vzemi svetilko!',
+  sceneDone: 'Vse je preiskano. Kdo je bil?',
+  solve: 'Prečrtaj, kdo ni bil. Tapni stavek, nato obraz.',
+  lastOne: 'Ostal je samo eden. Pokaži dokaz!',
+  pickFirst: 'Najprej tapni stavek, potem obraz.',
+  notThis: 'Ta stavek tega ne dokaže. Preberi še enkrat.',
+  elimLook: 'Poglej ta stavek. O kom govori?',
+  elimAssist: 'Tapni ta stavek in ta obraz.',
+  newCard: 'Nov namig na tabli skrivnosti!',
+  letter: 'Prišlo je pismo!',
 };
 
 // no = play order (1, 2, 3, …). type = the reasoning step, and rung follows from it (RUNG):
@@ -369,7 +491,13 @@ const UI_AUDIO = {
 // sentences: [id, text, role?]; role is evidence | partial | distractor (default neutral).
 // partial = the culprit's own claim (slip and alibi). h2 = block highlighted at hint 2
 // (3 sentences, 4 for a pair), h3 = candidates at hint 3 (2, 3 for a pair).
-const RUNG = { fact: 1, trace: 2, slip: 3, alibi: 4, pair: 5 };
+//   elim 2      investigation steps: search the scene, cross off everyone who has an alibi, prove it
+// A step case (steps) adds to sentences a 4th item: obj (the emoji it hides behind), label,
+// clears (the suspect this alibi rules out, role clear), dark (needs the 🔦 torch).
+// client + call = who phones for help; card = the sentence pinned to the season's corkboard;
+// caught = the culprit in the accusative (newspaper); excuse = the culprit's funny excuse;
+// letter = a thank-you that arrives on the next visit.
+const RUNG = { fact: 1, trace: 2, elim: 2, slip: 3, alibi: 4, pair: 5 };
 const CASES = [
   // ======== 🚀 Vesoljska postaja Zvezdica ========
   {
@@ -593,6 +721,28 @@ const CASES = [
     h2: ['s4', 's5', 's8', 's9'], h3: ['s5', 's7', 's9'],
     reveal: ['Modre rože rastejo samo za hlevom.', 'Tja je danes šel samo Nik.', 'Nik je nabral šopek za Babi.', 'Vse najboljše, Babi! 🐄'],
   },
+  // ======== 👾 Skrivnost v zračniku (season: one mystery across the cases) ========
+  {
+    id: 'b1', file: 'bip', no: 1, type: 'elim', level: 'A', sticker: '🍪', place: 'Kuhinja',
+    steps: ['call', 'scene', 'solve'],
+    client: 'vesna', call: ['Nekdo je ponoči odprl omarico s piškoti!', 'Prosim, ugotovi, kdo je bil.'],
+    question: 'Kdo je odprl omarico s piškoti?',
+    suspects: ['tim', 'ela', 'robi', 'kiki'], culprit: 'tim',
+    sentences: [
+      ['s1', 'Ročaj omarice je lepljiv od medu.', 'neutral', { obj: '🗄️', label: 'omarica' }],
+      ['s2', 'Ela je zjutraj prva prišla v kuhinjo.', 'distractor', { obj: '🚪', label: 'vrata' }],
+      ['s3', 'Kiki je premajhna za tako visoko omarico.', 'clear', { obj: '🐭', label: 'kletka', clears: 'kiki' }],
+      ['s4', 'Zvečer je Tim jedel kruh z medom.', 'evidence', { obj: '🍯', label: 'med' }],
+      ['s5', 'Robi je bil vso noč na polnilcu.', 'clear', { obj: '🔌', label: 'polnilec', clears: 'robi' }],
+      ['s6', 'V kotu je droben zelen odtis.', 'neutral', { obj: '👣', label: 'temen kot', dark: true }],
+      ['s7', 'Ela je bila vso noč zunaj pri anteni.', 'clear', { obj: '📓', label: 'dnevnik', clears: 'ela' }],
+    ],
+    h1: 'Kdo NI mogel biti? Za vsakega poišči stavek.',
+    reveal: ['Ročaj omarice je bil lepljiv od medu.', 'Zvečer je med jedel Tim.', 'Z lepljivimi prsti je odprl omarico.', 'Ampak čigav je zeleni odtis? 🤔'],
+    caught: 'Tima', excuse: 'Hotel sem samo en piškot … no, tri.',
+    card: { icon: '👣', sid: 's6' },
+    letter: ['Hvala za pomoč s piškoti!', 'Tim zdaj sam peče piškote za vse.', 'P. S. Ponoči nekaj piska v zračniku …'],
+  },
 ];
 
 // Practice case for the first-time tutorial: very easy, the answer is stated plainly.
@@ -613,7 +763,7 @@ const TUTORIAL = {
 function normalizeCases() {
   for (const c of [...CASES, TUTORIAL]) {
     c.rung = RUNG[c.type || 'fact'];
-    c.sentences = c.sentences.map(([id, text, role = 'neutral']) => ({ id, text, role }));
+    c.sentences = c.sentences.map(([id, text, role = 'neutral', more = {}]) => ({ id, text, role, ...more }));
   }
 }
 normalizeCases();
@@ -623,9 +773,12 @@ function clipList() {
   const out = Object.entries(UI_AUDIO).map(([k, t]) => ['ui_' + k, t]);
   for (const c of [TUTORIAL, ...CASES]) {
     out.push([c.id + '_q', c.question]);
+    (c.call || []).forEach((t, i) => out.push([`${c.id}_c${i + 1}`, t]));
     for (const s of c.sentences) out.push([c.id + '_' + s.id, s.text]);
     out.push([c.id + '_h1', c.h1]);
     c.reveal.forEach((t, i) => out.push([`${c.id}_r${i + 1}`, t]));
+    if (c.excuse) out.push([c.id + '_x', c.excuse]);
+    (c.letter || []).forEach((t, i) => out.push([`${c.id}_l${i + 1}`, t]));
   }
   return out;
 }
@@ -803,7 +956,9 @@ const suspectCard = (id, pickable) => pickable
 function newRun() {
   return {
     heard: new Set(), scrolledEnd: false, backArmed: false, maxTop: 0,
-    suspect: null, picks: [], wrong: 0, ladder: 0, assisted: false, hint: null, highlight: null,
+    suspect: null, picks: [], wrong: 0, ladder: 0, assisted: false, hint: null, highlight: null, rankUp: null,
+    // step cases: call answered, clues found (in order), torch on, crossed-off suspects, selected clue
+    answered: false, found: [], torch: false, crossed: [], sel: null, note: null,
   };
 }
 
@@ -828,7 +983,8 @@ function solvedKeys() {
 const isSolved = (c) => solvedKeys().includes(caseKey(c));
 // A final case opens when the rest of its file is solved.
 const isLocked = (c) => !!c.final && casesIn(c.file).some(x => !x.final && !isSolved(x));
-const fileDone = (file) => casesIn(file).every(isSolved);
+// A season with cases still to come is not done yet.
+const fileDone = (file) => !(FILES.find(f => f.id === file).soon > 0) && casesIn(file).every(isSolved);
 const ALL_KEYS = FILES.flatMap(f => casesIn(f.id).map(caseKey));
 
 // Case board: the child picks any case of the file. Solved cases get a tick, and one
@@ -846,8 +1002,71 @@ function playCase(no) {
   S.c = caseFor(S.file, no);
   S.run = newRun();
   log('case_pick', { file: S.file, no, suggested: no === S.suggest, solvedBefore: isSolved(S.c) });
-  go('intro');
+  openCaseScreen();
 }
+
+// A step case starts with the client's phone call, every other case with the intro.
+const openCaseScreen = () => go(S.c.steps ? 'call' : 'intro');
+
+// Bookkeeping when a case is solved: the tick, a rank-up to celebrate, the client's letter.
+function markSolved(c) {
+  const played = solvedKeys();
+  const before = solvedKeys().filter(k => ALL_KEYS.includes(k)).length;
+  if (!played.includes(caseKey(c))) store.write(PLAYED_KEY, [...played, caseKey(c)]);
+  const after = solvedKeys().filter(k => ALL_KEYS.includes(k)).length;
+  if (rankFor(after) !== rankFor(before)) S.run.rankUp = rankFor(after);
+  const mail = store.read(LETTER_KEY, { pending: [], read: [] });
+  if (c.letter && !mail.read.includes(c.id) && !mail.pending.some(x => x.id === c.id)) {
+    store.write(LETTER_KEY, { ...mail, pending: [...mail.pending, { id: c.id, session: S.session }] });
+  }
+}
+
+// ---------- Ranks: earned by solved cases, never lost
+const RANKS = [
+  { n: 0, i: '🔰', m: 'Vajenec', f: 'Vajenka' },
+  { n: 3, i: '🕵️', m: 'Detektiv', f: 'Detektivka' },
+  { n: 6, i: '⭐', m: 'Višji detektiv', f: 'Višja detektivka' },
+  { n: 10, i: '🎖️', m: 'Inšpektor', f: 'Inšpektorica' },
+  { n: 15, i: '👑', m: 'Glavni inšpektor', f: 'Glavna inšpektorica' },
+];
+const rankFor = (n) => RANKS.filter(r => n >= r.n).pop();
+const rankName = (r, p = profile()) => `${r.i} ${p && p.g === 'f' ? r.f : r.m}`;
+// verb forms for the child: ga('ujel', 'ujela')
+const ga = (m, f) => (profile() || {}).g === 'f' ? f : m;
+
+// ---------- Letters: a client's thank-you arrives on the next visit (a later session)
+const LETTER_KEY = 'dp_letters_v1';
+function letterDue(file) {
+  const mail = store.read(LETTER_KEY, { pending: [], read: [] });
+  const due = mail.pending.find(x => x.session !== S.session && caseById(x.id) && caseById(x.id).file === file);
+  return due ? caseById(due.id) : null;
+}
+
+// ---------- Little sounds made on the fly (no files): ring, pop, stamp, nope, tada
+let actx = null;
+let ringTimer = null;
+function sfx(name) {
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === 'suspended') actx.resume();
+    const t0 = actx.currentTime;
+    const tone = (freq, start, dur, type = 'sine', vol = 0.12) => {
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = type; o.frequency.value = freq;
+      g.gain.setValueAtTime(vol, t0 + start);
+      g.gain.exponentialRampToValueAtTime(0.001, t0 + start + dur);
+      o.connect(g).connect(actx.destination);
+      o.start(t0 + start); o.stop(t0 + start + dur + 0.02);
+    };
+    if (name === 'ring') [0, .18, .5, .68].forEach(s => tone(880, s, .14, 'square', .05));
+    if (name === 'pop') tone(660, 0, .12, 'triangle');
+    if (name === 'click') tone(1400, 0, .05, 'square', .06);
+    if (name === 'stamp') { tone(90, 0, .25, 'sine', .35); tone(140, 0, .12, 'triangle', .15); }
+    if (name === 'nope') { tone(220, 0, .15, 'sine', .1); tone(180, .12, .2, 'sine', .1); }
+    if (name === 'tada') [523, 659, 784, 1047].forEach((f, i) => tone(f, .12 + i * .1, .3, 'triangle', .1));
+  } catch (e) { /* no sound is fine */ }
+}
+function stopRing() { clearInterval(ringTimer); ringTimer = null; }
 
 // ---------- Detective ID card: avatar (also sets detektiv / detektivka), sidekick, optional name
 const PROFILE_KEY = 'dp_profile_v1';
@@ -872,7 +1091,8 @@ function idCard(p) {
     <div class="id-body">
       <span class="id-photo">${p.av}</span>
       <div class="id-text"><b>${esc(detName(p))}</b>
-        <span>Pomočnik: ${p.sk}</span><span>✔ ${solvedLabel(n)}</span></div>
+        <span class="rank">${rankName(rankFor(n), p)}</span>
+        <span>Pomočnik: ${p.sk} · ✔ ${solvedLabel(n)}</span></div>
     </div>
     <div class="id-stamps">${FILES.map(f => `<span class="stamp-slot ${fileDone(f.id) ? 'got' : ''}" title="${esc(f.title)}">${f.icon}</span>`).join('')}</div>
   </div>`;
@@ -966,13 +1186,20 @@ function startCase(n) {
   S.file = file;
   S.c = caseFor(file, Number(no));
   S.run = newRun();
-  go('intro');
+  openCaseScreen();
 }
 
 function go(screen) {
   stopAudio();
+  stopRing();
   S.screen = screen;
   render();
+  if (screen === 'call' && !S.run.answered) {
+    let rings = 0;
+    sfx('ring');
+    ringTimer = setInterval(() => { if (++rings >= 5) stopRing(); else sfx('ring'); }, 1600);
+  }
+  if (screen === 'reveal') setTimeout(() => sfx('stamp'), 350);
   if (!ADULT.has(screen)) log('screen_enter');
   if (screen === 'thanks' && !S.ended) { S.ended = true; log('session_end'); }
 }
@@ -989,6 +1216,9 @@ function backTarget() {
     case 'intro':
       if (tut) return store.read(TUT_KEY, false) ? () => { S.tut = null; S.c = null; toHome(); } : () => { ACTIONS.editCard(); S.mk.step = 4; render(); };
       return S.orderMode === 'board' ? toBoard : 'stay';
+    case 'call': return S.orderMode === 'board' ? toBoard : 'stay';
+    case 'scene': return () => go('call');
+    case 'solve': return S.run.hint ? 'stay' : () => go('scene');
     case 'story': return () => go('intro');
     case 'accuse': return () => go('story');
     case 'evidence': return S.run.hint ? 'stay' : () => { S.run.picks = []; go('accuse'); };
@@ -1083,6 +1313,36 @@ function evFooter() {
 function hintHTML(h) {
   return `<div class="hint" id="hint"><span>💡</span><span class="txt">${esc(h.text)}</span>${spk(h.clip)}`
     + '<button class="btn" data-act="hintOk">V redu</button></div>';
+}
+
+// The season's corkboard: one slot per case, a pinned card for each solved case that has one.
+function corkboard(f, cases) {
+  const slots = cases.length + (f.soon || 0);
+  return `<div class="cork"><div class="cork-q">📌 ${esc(f.mystery)}</div><div class="pins">${Array.from({ length: slots }, (_, i) => {
+    const c = cases[i];
+    const s = c && c.card && isSolved(c) ? c.sentences.find(x => x.id === c.card.sid) : null;
+    return s ? `<div class="pincard" data-act="say" data-clip="${c.id}_${s.id}"><span class="ci">${c.card.icon}</span>${esc(s.text)}</div>`
+      : '<div class="pincard empty">?</div>';
+  }).join('<span class="string"></span>')}</div></div>`;
+}
+
+function letterHTML(c) {
+  const from = CHARACTERS[c.client];
+  return `<div class="letter-wrap"><div class="letter">
+    <div class="letter-head">📬 ${esc(UI_AUDIO.letter)}${spk('ui_letter')}</div>
+    ${c.letter.map((t, i) => `<div class="row" data-act="say" data-clip="${c.id}_l${i + 1}">${esc(t)}</div>`).join('')}
+    <div class="letter-from">${avatar(c.client, 'sm')} ${esc(from.name)}</div>
+    <button class="btn big" data-act="letterOk" data-id="${c.id}">V redu</button>
+  </div></div>`;
+}
+
+// Step cases: what the child should do next (for hints): the alibi of the first suspect not
+// crossed off yet, or, when only the culprit is left, the proof.
+function elimTarget() {
+  const c = S.c, r = S.run;
+  const who = c.suspects.find(id => id !== c.culprit && !r.crossed.includes(id));
+  if (who) return { who, sid: c.sentences.find(s => s.clears === who).id };
+  return { who: c.culprit, sid: c.sentences.find(s => s.role === 'evidence').id };
 }
 
 function ladderHint(level) {
@@ -1183,11 +1443,11 @@ const T = {
       <div class="files-card">${idCard(p)}<button class="btn secondary edit" data-act="editCard" aria-label="Uredi izkaznico">✏️</button></div>
       <div class="board-head"><span class="q">🗺️ Izberi pustolovščino</span></div>
       <div class="file-list">${FILES.map(f => {
-        const cs = casesIn(f.id), done = cs.filter(isSolved).length;
-        return `<button class="file-card ${done === cs.length ? 'done' : ''}" data-act="openFile" data-file="${f.id}">
+        const cs = casesIn(f.id), done = cs.filter(isSolved).length, all = cs.length + (f.soon || 0);
+        return `<button class="file-card ${fileDone(f.id) ? 'done' : ''} ${f.season ? 'season' : ''}" data-act="openFile" data-file="${f.id}">
           <span class="fi">${f.icon}</span>
-          <span class="ft"><b>${esc(f.title)}</b><span class="cast">${f.cast.map(id => CHARACTERS[id].animal).join(' ')}</span></span>
-          <span class="fp">${done === cs.length ? '🏅' : `✔ ${done} / ${cs.length}`}</span></button>`;
+          <span class="ft">${f.season ? '<span class="new-tag">NOVO · skrivnost</span>' : ''}<b>${esc(f.title)}</b><span class="cast">${f.cast.map(id => CHARACTERS[id].animal).join(' ')}</span></span>
+          <span class="fp">${fileDone(f.id) ? '🏅' : `✔ ${done} / ${all}`}</span></button>`;
       }).join('')}
         <div class="file-soon">Kmalu nove pustolovščine: ⚽ nogomet, 🏝️ Gran Canaria, 🏫 šola …</div></div>
       <div class="footer"><button class="btn secondary" data-act="tutorial">❓ Kako igram?</button>
@@ -1200,11 +1460,14 @@ const T = {
     const cases = casesIn(S.file);
     const done = cases.filter(isSolved).length;
     const p = profile();
+    const soon = f.soon || 0;
+    const letter = letterDue(S.file);
     return `<div class="screen">
       <div class="board-head"><span class="q">${f.icon} ${esc(f.title)}</span>
-        <span class="count">✔ ${done} / ${cases.length}</span></div>
-      ${done === cases.length ? `<div class="trophy">🏅 Pustolovščina rešena! Bravo, ${esc(detName(p))}!</div>` : ''}
+        <span class="count">✔ ${done} / ${cases.length + soon}</span></div>
+      ${fileDone(S.file) ? `<div class="trophy">🏅 Pustolovščina rešena! Bravo, ${esc(detName(p))}!</div>` : ''}
       ${S.toast ? `<div class="toast">${esc(S.toast)}</div>` : ''}
+      ${f.season ? corkboard(f, cases) : ''}
       <div class="board">${cases.map(c => {
         const solved = isSolved(c), locked = isLocked(c);
         return `<button class="folder ${solved ? 'solved' : ''} ${locked ? 'locked' : ''} ${c.final ? 'final' : ''} ${c.no === S.suggest ? 'suggest' : ''}" data-act="${locked ? 'lockedCase' : 'openCase'}" data-no="${c.no}">
@@ -1212,10 +1475,75 @@ const T = {
           <span class="stk">${locked ? '🔒' : c.sticker}</span>${c.final ? '<span class="place">⭐ Veliki primer</span>' : c.place ? `<span class="place">${esc(c.place)}</span>` : ''}
           <span class="fq">${locked ? 'Odpre se, ko rešiš ostale primere.' : esc(c.question)}</span>
           <span class="lvl">${'🔍'.repeat(c.rung)}</span></button>`;
-      }).join('')}</div>
+      }).join('')}${Array.from({ length: soon }, (_, i) => `<div class="folder soon">
+          <span class="no">${cases.length + i + 1}</span><span class="stk">❓</span><span class="fq">Kmalu nov primer</span></div>`).join('')}</div>
       <div class="footer"><button class="btn secondary" data-act="toFiles">← 🗺️ Pustolovščine</button>
         <span class="grow"></span><button class="btn secondary" data-act="moreNo">Dovolj za danes</button></div>
+    </div>${letter ? letterHTML(letter) : ''}`;
+  },
+
+  // Step 1 of a step case: the phone rings, the client asks for help.
+  call() {
+    const c = S.c, r = S.run, cl = CHARACTERS[c.client];
+    if (!r.answered) {
+      return `<div class="screen center call">
+        <div class="case-no">Primer ${c.no}${c.place ? ' · ' + esc(c.place) : ''}</div>
+        <div class="phone">📞</div>
+        <h1>Zvoni!</h1>
+        <div class="suspect">${avatar(c.client)}<span>${esc(cl.name)}</span></div>
+        <button class="btn big" data-act="answer">Javi se</button>
+        ${backTarget() === 'stay' ? '' : '<button class="btn secondary" data-act="back">← Nazaj</button>'}
+      </div>`;
+    }
+    return `<div class="screen center call">
+      <div class="caller">${avatar(c.client, 'sm')}<div class="bubble">${c.call.map((t, i) =>
+        `<div class="row" data-act="say" data-clip="${c.id}_c${i + 1}">${esc(t)}</div>`).join('')}</div></div>
+      ${qbar(c.question, c.id + '_q', 'big')}
+      <div class="suspects mini">${c.suspects.map(id => suspectCard(id, false)).join('')}</div>
+      <button class="btn big" data-act="toScene">Na kraj dogodka 🔍</button>
     </div>`;
+  },
+
+  // Step 2: search the scene. Every object hides one sentence; the dark one needs the torch.
+  scene() {
+    const c = S.c, r = S.run;
+    const all = c.sentences.length, done = r.found.length === all;
+    return `<div class="screen scene">
+      ${qbar(done ? UI_AUDIO.sceneDone : UI_AUDIO.scene, done ? 'ui_sceneDone' : 'ui_scene')}
+      <div class="toolbar-kid">
+        <button class="tool ${r.torch ? 'on' : ''}" data-act="torch">🔦 Svetilka</button>
+        <span class="pocket-count">👝 ${r.found.length} / ${all}</span>
+      </div>
+      <div class="objs ${r.torch ? 'torch' : ''}">${c.sentences.map(s => {
+        const got = r.found.includes(s.id);
+        return `<button class="obj ${got ? 'got' : ''} ${s.dark && !got ? 'dark' : ''}" data-act="openClue" data-sid="${s.id}">
+          <span class="oe">${s.dark && !got ? '🌑' : s.obj}</span><span class="ol">${esc(s.label)}</span>${got ? '<span class="ok">✔</span>' : ''}</button>`;
+      }).join('')}</div>
+      ${r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
+      <div class="rows pocket">${r.found.slice().reverse().map((sid, i) =>
+        `<div class="row ${i === 0 && r.fresh ? 'fresh' : ''}" data-act="listenClue" data-sid="${sid}">${esc(sent(sid).text)}</div>`).join('')}</div>
+      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
+        <span class="grow"></span><button class="btn big" data-act="toSolve" ${done ? '' : 'disabled'}>Vem, kdo je bil!</button></div>
+    </div>`;
+  },
+
+  // Step 3: cross off everyone with an alibi (sentence + face), then prove it.
+  solve() {
+    const c = S.c, r = S.run;
+    const left = c.suspects.filter(id => !r.crossed.includes(id));
+    const t = r.assisted || r.highlight ? elimTarget() : null;
+    return `<div class="screen solve ${r.hint ? 'locked' : ''}">
+      ${left.length === 1 ? qbar(UI_AUDIO.lastOne, 'ui_lastOne') : qbar(UI_AUDIO.solve, 'ui_solve')}
+      <div class="suspects mini">${c.suspects.map(id => {
+        const x = r.crossed.includes(id);
+        return `<button class="suspect ${x ? 'crossed' : ''} ${r.assisted && t && t.who === id ? 'pulse' : ''}" data-act="cross" data-id="${id}">
+          ${avatar(id)}<span>${CHARACTERS[id].name}</span>${x ? '<span class="xmark">✖</span>' : ''}</button>`;
+      }).join('')}</div>
+      ${r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
+      <div class="rows">${c.sentences.map(s => `<div class="row ${r.sel === s.id ? 'selected' : ''}
+        ${t && t.sid !== s.id ? 'dim' : ''} ${r.assisted && t && t.sid === s.id ? 'pulse' : ''}" data-act="pickClue" data-sid="${s.id}">${esc(s.text)}</div>`).join('')}</div>
+      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span></div>
+    </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
 
   intro() {
@@ -1258,14 +1586,26 @@ const T = {
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
 
+  // Solved: a newspaper with the case closed, the culprit's excuse, the explanation, and for a
+  // season the new card for the corkboard.
   reveal() {
-    const c = S.c;
+    const c = S.c, r = S.run, p = profile();
+    const f = FILES.find(x => x.id === c.file);
+    const me = p && S.orderMode === 'board';
+    const sub = me ? (c.caught ? `${detName()} je ${ga('ujel', 'ujela')} ${c.caught}!` : `Bravo, ${detName()}!`) : '';
+    const card = c.card && sent(c.card.sid);
     return `<div class="screen center reveal">
-      <div class="qbar"><span class="stamp">${UI_AUDIO.solved}</span>${spk('ui_solved')}</div>
-      ${profile() && S.orderMode === 'board' ? `<div class="kudos">Bravo, ${esc(detName())}!</div>` : ''}
-      ${suspectCard(c.culprit, false)}
+      <div class="paper">
+        <div class="mast">${esc(f ? f.paper : 'DETEKTIVSKE NOVICE')}</div>
+        <div class="qbar"><span class="stamp slam">${UI_AUDIO.solved}</span>${spk('ui_solved')}</div>
+        <div class="pic">${me ? `<span class="avatar sm" style="background:#fff">${p.av}</span>` : ''}${avatar(c.culprit, 'sm caught')}<b>${esc(CHARACTERS[c.culprit].name)}</b></div>
+        ${me ? `<div class="kudos">${esc(sub)}</div>` : ''}
+      </div>
+      ${r && r.rankUp ? `<div class="rankup">${ga('Napredoval', 'Napredovala')} si! Zdaj si ${esc(rankName(r.rankUp))}.</div>` : ''}
+      ${c.excuse ? `<div class="excuse" data-act="say" data-clip="${c.id}_x">${avatar(c.culprit, 'sm')}<span>»${esc(c.excuse)}«</span></div>` : ''}
       <div class="rows reveal-rows">${c.reveal.map((t, i) => `<div class="row" data-act="say" data-clip="${c.id}_r${i + 1}">${esc(t)}</div>`).join('')}</div>
-      <div class="sticker">${c.sticker}</div>
+      ${card ? `<div class="pinned" data-act="say" data-clip="ui_newCard"><span class="pin">📌</span><span class="ci">${c.card.icon}</span>
+        <span><b>${UI_AUDIO.newCard}</b><br>${esc(card.text)}</span></div>` : `<div class="sticker">${c.sticker}</div>`}
       <button class="btn big" data-act="next">Naprej</button>
     </div>`;
   },
@@ -1487,8 +1827,7 @@ const ACTIONS = {
     });
     if (solved) {
       log('case_done', { assisted: r.assisted, wrong: r.wrong });
-      const played = solvedKeys();
-      if (!played.includes(caseKey(S.c))) store.write(PLAYED_KEY, [...played, caseKey(S.c)]);
+      markSolved(S.c);
       go('reveal');
       return;
     }
@@ -1521,6 +1860,119 @@ const ACTIONS = {
     if (h) h.remove();
     $('.screen').classList.remove('locked');
     log('hint_dismiss');
+  },
+  // ---- step cases
+  answer() {
+    S.run.answered = true;
+    log('call_answer');
+    render();
+    play(S.c.id + '_c1', S.c.call[0], $('.bubble .row'));
+  },
+  toScene() { go('scene'); },
+  torch() {
+    const r = S.run;
+    r.torch = !r.torch;
+    r.note = null;
+    sfx('click');
+    log('tool_use', { tool: 'torch', on: r.torch });
+    render();
+  },
+  openClue(el) {
+    const r = S.run, s = sent(el.dataset.sid);
+    if (r.found.includes(s.id)) { play(S.c.id + '_' + s.id, s.text); return; }
+    if (s.dark && !r.torch) {
+      r.note = UI_AUDIO.dark;
+      sfx('nope');
+      log('clue_dark', { sentenceId: s.id });
+      render();
+      play('ui_dark', UI_AUDIO.dark);
+      return;
+    }
+    r.found.push(s.id);
+    r.fresh = true;
+    r.note = null;
+    r.heard.add(s.id);
+    sfx('pop');
+    log('clue_open', { sentenceId: s.id, role: s.role, n: r.found.length });
+    render();
+    play(S.c.id + '_' + s.id, s.text, $('.pocket .row'));
+  },
+  listenClue(el) {
+    const s = sent(el.dataset.sid);
+    play(S.c.id + '_' + s.id, s.text, el);
+    log('listen', { sentenceId: s.id, role: s.role });
+  },
+  toSolve() {
+    S.run.note = null;
+    S.run.fresh = false;
+    go('solve');
+  },
+  pickClue(el) {
+    const r = S.run;
+    if (r.hint) return;
+    const s = sent(el.dataset.sid);
+    r.sel = r.sel === s.id ? null : s.id;
+    r.note = null;
+    log('evidence_select', { sentenceId: s.id, role: s.role });
+    render();
+    if (r.sel) play(S.c.id + '_' + s.id, s.text, document.querySelector(`.rows [data-sid="${s.id}"]`));
+  },
+  // A clue + a face: an alibi crosses the suspect off, the proof + the culprit solves the case.
+  cross(el) {
+    const r = S.run, c = S.c, id = el.dataset.id;
+    if (r.hint || r.crossed.includes(id)) return;
+    if (!r.sel) {
+      r.note = UI_AUDIO.pickFirst;
+      render();
+      play('ui_pickFirst', UI_AUDIO.pickFirst);
+      return;
+    }
+    const s = sent(r.sel);
+    const proof = s.role === 'evidence' && id === c.culprit;
+    const alibi = s.role === 'clear' && s.clears === id;
+    log('evidence_confirm', { sentenceId: s.id, sentenceIds: [s.id], role: s.role, suspectId: id, correct: proof || alibi, suspectCorrect: id === c.culprit, kind: proof ? 'proof' : 'cross' });
+    r.sel = null;
+    if (alibi) {
+      r.crossed.push(id);
+      r.highlight = null;
+      sfx('stamp');
+      render();
+      const x = document.querySelector(`.suspect[data-id="${id}"]`);
+      if (x) x.classList.add('justcrossed');
+      return;
+    }
+    if (proof) {
+      r.crossed = c.suspects.filter(x => x !== c.culprit);
+      log('case_done', { assisted: r.assisted, wrong: r.wrong });
+      markSolved(c);
+      sfx('tada');
+      go('reveal');
+      return;
+    }
+    r.wrong++;
+    sfx('nope');
+    let h;
+    if (r.assisted || r.wrong >= 4) {
+      if (!r.assisted) { r.assisted = true; log('assisted'); }
+      h = { key: 'assist', text: UI_AUDIO.elimAssist, clip: 'ui_elimAssist', level: 4 };
+    } else if (r.wrong === 3) {
+      r.highlight = true;
+      h = { key: 'h2', text: UI_AUDIO.elimLook, clip: 'ui_elimLook', level: 2 };
+    } else if (r.wrong === 2) {
+      h = { key: 'h1', text: c.h1, clip: c.id + '_h1', level: 1 };
+    } else {
+      h = { key: 'notThis', text: UI_AUDIO.notThis, clip: 'ui_notThis', level: 0 };
+    }
+    r.hint = h;
+    log('hint_shown', { hint: h.key, hintLevel: h.level });
+    render();
+  },
+  letterOk(el) {
+    const mail = store.read(LETTER_KEY, { pending: [], read: [] });
+    const id = el.dataset.id;
+    store.write(LETTER_KEY, { pending: mail.pending.filter(x => x.id !== id), read: [...mail.read, id] });
+    log('letter_read', { letter: id });
+    render();
   },
   changeSuspect() {
     log('suspect_change');
@@ -1752,7 +2204,7 @@ function sessionHTML(s) {
     const row = `<tr class="clickable" data-act="timeline" data-key="${key}">
       <td>${m.pos || m.no}. ${m.id} <span class="muted">(st. ${m.rung})</span></td>
       <td class="${outCls}">${outLabel}</td>
-      <td>${fmtDur(m.time.story || 0)} / ${fmtDur(m.time.evidence || 0)}</td>
+      <td>${fmtDur(m.time.story || m.time.scene || 0)} / ${fmtDur(m.time.evidence || m.time.solve || 0)}</td>
       <td>${m.listens}</td>
       <td class="${m.rereads ? 'c-good' : 'c-warn'}">${m.rereads}</td>
       <td>${m.firstLatency == null ? '–' : fmtDur(m.firstLatency)}</td>
@@ -1782,6 +2234,7 @@ const EVENT_LABEL = {
   hint_shown: 'namig', hint_dismiss: 'zapre namig', assisted: 'vodeno', suspect_change: 'zamenja osumljenca',
   case_done: 'primer rešen', case_pick: 'izbere primer na tabli', more_yes: 'še en primer', more_no: 'dovolj', fake_door: 'vrata »nov primer«',
   adult_gate: 'odrasli pregled', session_end: 'konec seje', session_start: 'začetek seje',
+  call_answer: 'se javi na telefon', tool_use: 'svetilka', clue_open: 'odpre sled', clue_dark: 'pretemno', letter_read: 'prebere pismo',
 };
 
 function timelineHTML(s, caseId) {

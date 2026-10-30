@@ -35,6 +35,15 @@ Every case has a `type`, a step on the reasoning ladder, and its difficulty (�
 
 The checker tests, per case: word limits, sentence, suspect and decoy counts, the evidence count for the type (2 for a pair), that slip and alibi cases have the culprit's own claim (`partial`), and hint references. Solvability: every suspect appears in the story; the evidence names the culprit and no other suspect; in a pair one proof names the culprit and the other names no suspect. Per adventure, it checks the ladder (starts with a fact case, rungs never go down, ends with a final two-proof case) and **variety**, so a child can't learn a pattern instead of reading: the proof sits early, in the middle and late across the adventure; no two cases have the same shape; the decoy sits straight before the proof in at most one case; the number of decoys changes; the final case is the longest.
 
+**Step cases (`steps`, type `elim`)** are played as an investigation instead of a story list. The plan behind them is in [docs/IMPROVEMENTS.md](../docs/IMPROVEMENTS.md).
+1. 📞 **call:** the phone rings and a client (`client`, `call`) asks for help.
+2. 🔍 **scene:** every sentence hides behind an object (`obj`, `label`); the child opens them all into the pocket 👝. A `dark: true` object needs the 🔦 torch.
+3. ❌ **solve:** the child taps a sentence, then a face. An alibi (`role: 'clear'`, `clears: 'robi'`) crosses that suspect off; the proof plus the culprit solves the case. Hints come after wrong pairs: »ne dokaže« → `h1` → the next sentence lights up → the sentence and the face pulse.
+
+On the solved screen: a newspaper (`paper` of the file) with »… je ujela Tima!« (`caught`), the culprit's excuse (`excuse`), and a rank-up. Ranks are 🔰 Vajenec (0 solved) → 🕵️ Detektiv (3) → ⭐ Višji detektiv (6) → 🎖️ Inšpektor (10) → 👑 Glavni inšpektor (15); they show on the ID card and are never lost. The client's thank-you `letter` arrives on the next visit (a later session). The checker tests step cases too: every innocent suspect has exactly one alibi that names them, the culprit has none, there is at most one dark object, and the corkboard card names no suspect.
+
+A **season** (`season: true` in `FILES`) is one adventure with one big mystery (`mystery`). Every case pins a `card` to the 📌 corkboard on the board, and `soon` shows the cases still to come. The first one is 👾 Skrivnost v zračniku, which has case 1 so far.
+
 Cases are grouped in **adventures** (`FILES`, *pustolovščine*): 🚀 Vesoljska postaja and 🐄 Pri babici na kmetiji, 6 cases each at level A, one per ladder step plus a twist; the 6th is a final case that opens when the others are solved. The original 14 forest cases were removed (they are in the git history). Ideas for the next adventures are in [docs/CASE_FILES.md](../docs/CASE_FILES.md).
 
 **First launch (board mode):** the child makes a detective ID card (avatar = detektiv / detektivka, sidekick, optional name; stored on the device only, the name is never logged), plays the 🎓 practice case, then picks a file. Adult "Nov otrok" in setup clears the card, the ticks and the practice.
