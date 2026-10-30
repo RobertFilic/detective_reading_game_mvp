@@ -17,21 +17,29 @@ const fail = (id, msg) => { problems++; console.log(`✘ ${id}: ${msg}`); };
 
 const inRange = (n, [lo, hi]) => n >= lo && n <= hi;
 
-// A step case (call → scene → solve): every sentence hides behind an object; every suspect
+// A step case (call → scene or ask → solve): in a scene every sentence hides behind an object; every suspect
 // but the culprit has exactly one alibi sentence (role clear) that names them; the proof names
 // only the culprit; at most one object is dark; the card (corkboard) names no suspect.
 const NAME = Object.fromEntries(Object.entries(CHARACTERS).map(([id, ch]) => [id, new RegExp(`(^|[^\\p{L}])(${ch.re})(?![\\p{L}])`, 'u')]));
 for (const [id, ch] of Object.entries(CHARACTERS)) if (!ch.re) fail(id, 'character needs a name pattern (re)');
 const PRONOUN = /\b(mu|ji|njen\w*|njegov\w*|je imel|je imela)\b/;
 const named = (text) => Object.keys(NAME).filter(id => NAME[id].test(text));
-const STEPS = new Set(['call', 'scene', 'solve']);
+const STEPS = new Set(['call', 'scene', 'ask', 'solve']);
 function checkSteps(c) {
   const ss = c.sentences;
   if (c.type !== 'elim') fail(c.id, 'step cases are type elim');
   for (const st of c.steps) if (!STEPS.has(st)) fail(c.id, `unknown step ${st}`);
   if (c.steps.includes('call') && (!CHARACTERS[c.client] || !c.call || !c.call.length)) fail(c.id, 'a call needs client and call lines');
   if (c.client && c.suspects.includes(c.client)) fail(c.id, 'the client is not a suspect');
-  for (const s of ss) if (!s.obj || !s.label) fail(c.id, `${s.id} needs obj and label (where it is found)`);
+  if (c.steps.includes('scene')) for (const s of ss) if (!s.obj || !s.label) fail(c.id, `${s.id} needs obj and label (where it is found)`);
+  // questioning: every answer has who said it and the question; everyone gets asked
+  if (c.steps.includes('ask')) {
+    for (const s of ss) {
+      if (!c.suspects.includes(s.who) || !s.ask) fail(c.id, `${s.id} needs who (a suspect) and ask (the question)`);
+      else if (words(s.ask) > LEVEL_RULES[c.level].maxWords) fail(c.id, `${s.id}: the question is too long`);
+    }
+    for (const id of c.suspects) if (!ss.some(s => s.who === id)) fail(c.id, `nobody asks ${id} anything`);
+  }
   if (ss.filter(s => s.dark).length > 1) fail(c.id, 'at most one dark object');
   for (const id of c.suspects) {
     const al = ss.filter(s => s.clears === id);

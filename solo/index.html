@@ -215,6 +215,14 @@ button.suspect { cursor: pointer; }
 .tool { appearance: none; font: inherit; font-size: 20px; font-weight: 700; cursor: pointer; background: var(--card); border: 3px solid var(--line); border-radius: 14px; padding: 6px 14px; }
 .tool.on { background: #fff6c2; border-color: var(--sel-line); box-shadow: 0 0 18px rgba(255, 210, 0, .7); }
 .pocket-count { margin-left: auto; font-weight: 800; color: var(--muted); }
+.ask .suspect.on { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent); }
+.ask .suspect .ok { position: absolute; top: 4px; right: 6px; color: #2e9d57; font-weight: 800; }
+.ask .suspect { position: relative; }
+.qs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 8px 0; flex: none; }
+.qbtn { appearance: none; font: inherit; font-size: 20px; font-weight: 600; cursor: pointer; background: #fff; border: 3px solid var(--accent); border-radius: 16px; padding: 8px 14px; }
+.qbtn.got { border-color: var(--line); color: var(--muted); }
+.answer { margin: 0 auto 8px; flex: none; }
+.row .who { font-weight: 700; color: var(--muted); }
 .objs { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin-bottom: 8px; flex: none; }
 .obj {
   appearance: none; font: inherit; color: inherit; cursor: pointer; position: relative; background: #fff3cf; border: 2px solid #e2c98f;
@@ -455,7 +463,7 @@ const FILES = [
   { id: 'vesolje', icon: '🚀', title: 'Vesoljska postaja', cast: ['maja', 'tim', 'ela', 'robi'], paper: 'ZVEZDNI ČASNIK' },
   { id: 'kmetija', icon: '🐄', title: 'Pri babici na kmetiji', cast: ['nik', 'pia', 'dedek', 'jan'], paper: 'KMEČKI GLAS' },
   { id: 'bip', icon: '👾', title: 'Skrivnost v zračniku', cast: ['tim', 'ela', 'robi', 'kiki'], paper: 'ZVEZDNI ČASNIK',
-    season: true, mystery: 'Kaj se skriva v zračniku?', soon: 5 },
+    season: true, mystery: 'Kaj se skriva v zračniku?', soon: 4 },
 ];
 
 // Every line the child can hear outside the stories. Clip id = "ui_" + key.
@@ -481,6 +489,9 @@ const UI_AUDIO = {
   scene: 'Preišči prostor. Tapni vsako stvar.',
   dark: 'Tu je pretemno. Vzemi svetilko!',
   sceneDone: 'Vse je preiskano. Kdo je bil?',
+  ask: 'Zasliši vse. Tapni obraz, nato vprašanje.',
+  askDone: 'Vsi so odgovorili. Kdo je bil?',
+  selfClaim: 'To trdi o sebi. Ali je res? Poišči dokaz.',
   solve: 'Prečrtaj, kdo ni bil. Tapni stavek, nato obraz.',
   lastOne: 'Ostal je samo eden. Pokaži dokaz!',
   pickFirst: 'Najprej tapni stavek, potem obraz.',
@@ -508,6 +519,7 @@ const UI_AUDIO = {
 //   elim 2      investigation steps: search the scene, cross off everyone who has an alibi, prove it
 // A step case (steps) adds to sentences a 4th item: obj (the emoji it hides behind), label,
 // clears (the suspect this alibi rules out, role clear), dark (needs the 🔦 torch).
+// In an ask step (questioning) a sentence is an answer instead: who says it and ask, the question.
 // client + call = who phones for help; card = the sentence pinned to the season's corkboard;
 // caught = the culprit in the accusative (newspaper); excuse = the culprit's funny excuse;
 // letter = a thank-you that arrives on the next visit.
@@ -757,6 +769,27 @@ const CASES = [
     card: { icon: '👣', sid: 's6' },
     letter: ['Hvala za pomoč s piškoti!', 'Tim zdaj sam peče piškote za vse.', 'P. S. Ponoči nekaj piska v zračniku …'],
   },
+  {
+    id: 'b2', file: 'bip', no: 2, type: 'elim', level: 'A', sticker: '💡', place: 'Strojnica',
+    steps: ['call', 'ask', 'solve'],
+    client: 'maja', call: ['Ponoči so ugasnile vse luči!', 'Nekdo je izvlekel velik vtikač.'],
+    question: 'Kdo je izvlekel velik vtikač?',
+    suspects: ['tim', 'ela', 'robi', 'kiki'], culprit: 'robi',
+    sentences: [
+      ['s1', '»Z Elo sva gledala zvezde.«', 'clear', { who: 'tim', ask: 'Kje si bil ponoči?', clears: 'ela' }],
+      ['s2', '»Iz zračnika je piskalo: pip-pip.«', 'neutral', { who: 'tim', ask: 'Kaj si slišal?' }],
+      ['s3', '»S Timom sva gledala zvezde.«', 'clear', { who: 'ela', ask: 'Kje si bila ponoči?', clears: 'tim' }],
+      ['s4', '»Pri vtikaču je zjutraj ležal Robijev kabel.«', 'evidence', { who: 'ela', ask: 'Kaj si videla zjutraj?' }],
+      ['s5', '»Vso noč sem bil na polnilcu.«', 'distractor', { who: 'robi', ask: 'Kje si bil ponoči?' }],
+      ['s6', '»Kiki je spala v zaprti kletki.«', 'clear', { who: 'robi', ask: 'Kaj si videl?', clears: 'kiki' }],
+      ['s7', '»Pi-pi! Pi?«', 'neutral', { who: 'kiki', ask: 'Kaj si videla?' }],
+    ],
+    h1: 'Kdo NI mogel biti? Kdo govori o sebi?',
+    reveal: ['Robiju je zmanjkalo baterije.', 'Izvlekel je velik vtikač za svoj kabel.', 'Zato so ugasnile vse luči.', 'Ampak kdo je piskal v zračniku? 🤔'],
+    caught: 'Robija', excuse: 'Bil sem tako lačen elektrike!',
+    card: { icon: '🔊', sid: 's2' },
+    letter: ['Hvala! Luči spet svetijo.', 'Robi ima zdaj svoj močan polnilec.', 'P. S. Iz kuhinje je izginil moj sir! 🧀'],
+  },
 ];
 
 // Practice case for the first-time tutorial: very easy, the answer is stated plainly.
@@ -789,6 +822,7 @@ function clipList() {
     out.push([c.id + '_q', c.question]);
     (c.call || []).forEach((t, i) => out.push([`${c.id}_c${i + 1}`, t]));
     for (const s of c.sentences) out.push([c.id + '_' + s.id, s.text]);
+    for (const s of c.sentences) if (s.ask) out.push([`${c.id}_${s.id}q`, s.ask]);
     out.push([c.id + '_h1', c.h1]);
     c.reveal.forEach((t, i) => out.push([`${c.id}_r${i + 1}`, t]));
     if (c.excuse) out.push([c.id + '_x', c.excuse]);
@@ -951,6 +985,8 @@ const app = document.getElementById('app');
 const esc = (s) => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
 const pad = (n) => String(n).padStart(2, '0');
 const sent = (sid) => S.c.sentences.find(s => s.id === sid);
+// a sentence as shown in a list: an answer (ask step) shows who said it
+const sayHTML = (s) => s.who ? `<span><b class="who">${CHARACTERS[s.who].animal} ${CHARACTERS[s.who].name}:</b> ${esc(s.text)}</span>` : esc(s.text);
 const caseById = (id) => CASES.find(c => c.id === id);
 const fmtDur = (ms) => { const s = Math.round(ms / 1000); return `${Math.floor(s / 60)}:${pad(s % 60)}`; };
 const fmtDate = (ts) => { const d = new Date(ts); return `${d.getDate()}. ${d.getMonth() + 1}. ${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`; };
@@ -972,7 +1008,7 @@ function newRun() {
     heard: new Set(), scrolledEnd: false, backArmed: false, maxTop: 0,
     suspect: null, picks: [], wrong: 0, ladder: 0, assisted: false, hint: null, highlight: null, rankUp: null,
     // step cases: call answered, clues found (in order), torch on, crossed-off suspects, selected clue
-    answered: false, found: [], torch: false, crossed: [], sel: null, note: null,
+    answered: false, found: [], who: null, said: null, torch: false, crossed: [], sel: null, note: null,
   };
 }
 
@@ -1231,8 +1267,8 @@ function backTarget() {
       if (tut) return store.read(TUT_KEY, false) ? () => { S.tut = null; S.c = null; toHome(); } : () => { ACTIONS.editCard(); S.mk.step = 4; render(); };
       return S.orderMode === 'board' ? toBoard : 'stay';
     case 'call': return S.orderMode === 'board' ? toBoard : 'stay';
-    case 'scene': return () => go('call');
-    case 'solve': return S.run.hint ? 'stay' : () => go('scene');
+    case 'scene': case 'ask': return () => go('call');
+    case 'solve': return S.run.hint ? 'stay' : () => go(S.c.steps[1]);
     case 'story': return () => go('intro');
     case 'accuse': return () => go('story');
     case 'evidence': return S.run.hint ? 'stay' : () => { S.run.picks = []; go('accuse'); };
@@ -1519,7 +1555,31 @@ const T = {
         `<div class="row" data-act="say" data-clip="${c.id}_c${i + 1}">${esc(t)}</div>`).join('')}</div></div>
       ${qbar(c.question, c.id + '_q', 'big')}
       <div class="suspects mini">${c.suspects.map(id => suspectCard(id, false)).join('')}</div>
-      <button class="btn big" data-act="toScene">Na kraj dogodka 🔍</button>
+      <button class="btn big" data-act="toScene">${c.steps[1] === 'ask' ? 'Zasliši osumljence 🗣️' : 'Na kraj dogodka 🔍'}</button>
+    </div>`;
+  },
+
+  // Step 2 (instead of the scene): question the suspects. Every question gives one answer.
+  ask() {
+    const c = S.c, r = S.run;
+    const all = c.sentences.length, done = r.found.length === all;
+    const qs = r.who ? c.sentences.filter(s => s.who === r.who) : [];
+    const said = r.said && sent(r.said);
+    return `<div class="screen scene ask">
+      <div class="caseq">❓ ${esc(c.question)}</div>
+      ${qbar(done ? UI_AUDIO.askDone : UI_AUDIO.ask, done ? 'ui_askDone' : 'ui_ask')}
+      <div class="suspects mini">${c.suspects.map(id => {
+        const left = c.sentences.filter(s => s.who === id && !r.found.includes(s.id)).length;
+        return `<button class="suspect ${r.who === id ? 'on' : ''}" data-act="askWho" data-id="${id}">
+          ${avatar(id)}<span>${CHARACTERS[id].name}</span>${left ? '' : '<span class="ok">✔</span>'}</button>`;
+      }).join('')}</div>
+      ${qs.length ? `<div class="qs">${qs.map(s => `<button class="qbtn ${r.found.includes(s.id) ? 'got' : ''}" data-act="askQ" data-sid="${s.id}">🗣️ ${esc(s.ask)}</button>`).join('')}</div>` : ''}
+      ${said ? `<div class="caller answer">${avatar(said.who, 'sm')}<div class="bubble"><div class="row" data-act="listenClue" data-sid="${said.id}">${esc(said.text)}</div></div></div>` : ''}
+      <div class="rows pocket">${r.found.slice().reverse().filter(sid => sid !== r.said).map(sid =>
+        `<div class="row" data-act="listenClue" data-sid="${sid}">${sayHTML(sent(sid))}</div>`).join('')}</div>
+      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
+        <span class="pocket-count">👝 ${r.found.length} / ${all}</span>
+        <span class="grow"></span><button class="btn big" data-act="toSolve" ${done ? '' : 'disabled'}>Vem, kdo je bil!</button></div>
     </div>`;
   },
 
@@ -1562,7 +1622,7 @@ const T = {
       }).join('')}</div>
       ${r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
       <div class="rows">${c.sentences.map(s => `<div class="row ${r.sel === s.id ? 'selected' : ''}
-        ${t && t.sid !== s.id ? 'dim' : ''} ${r.assisted && t && t.sid === s.id ? 'pulse' : ''}" data-act="pickClue" data-sid="${s.id}">${esc(s.text)}</div>`).join('')}</div>
+        ${t && t.sid !== s.id ? 'dim' : ''} ${r.assisted && t && t.sid === s.id ? 'pulse' : ''}" data-act="pickClue" data-sid="${s.id}">${sayHTML(s)}</div>`).join('')}</div>
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span></div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
@@ -1896,7 +1956,26 @@ const ACTIONS = {
     render();
     play(S.c.id + '_c1', S.c.call[0], $('.bubble .row'));
   },
-  toScene() { go('scene'); },
+  toScene() { go(S.c.steps[1]); },
+  askWho(el) {
+    const r = S.run;
+    r.who = el.dataset.id;
+    r.note = null;
+    sfx('click');
+    render();
+  },
+  askQ(el) {
+    const r = S.run, s = sent(el.dataset.sid);
+    r.said = s.id;
+    if (!r.found.includes(s.id)) {
+      r.found.push(s.id);
+      r.heard.add(s.id);
+      sfx('pop');
+      log('ask_q', { suspectId: s.who, sentenceId: s.id, role: s.role, n: r.found.length });
+    }
+    render();
+    play(S.c.id + '_' + s.id, s.text, $('.answer'));
+  },
   torch() {
     const r = S.run;
     r.torch = !r.torch;
@@ -1988,6 +2067,8 @@ const ACTIONS = {
       h = { key: 'h2', text: UI_AUDIO.elimLook, clip: 'ui_elimLook', level: 2 };
     } else if (r.wrong === 2) {
       h = { key: 'h1', text: c.h1, clip: c.id + '_h1', level: 1 };
+    } else if (s.who === id && s.role !== 'clear') {
+      h = { key: 'selfClaim', text: UI_AUDIO.selfClaim, clip: 'ui_selfClaim', level: 0 };
     } else if (s.role === 'clear' || s.role === 'evidence') {
       h = { key: 'notWho', text: UI_AUDIO.notWho, clip: 'ui_notWho', level: 0 };
     } else {
@@ -2234,7 +2315,7 @@ function sessionHTML(s) {
     const row = `<tr class="clickable" data-act="timeline" data-key="${key}">
       <td>${m.pos || m.no}. ${m.id} <span class="muted">(st. ${m.rung})</span></td>
       <td class="${outCls}">${outLabel}</td>
-      <td>${fmtDur(m.time.story || m.time.scene || 0)} / ${fmtDur(m.time.evidence || m.time.solve || 0)}</td>
+      <td>${fmtDur(m.time.story || m.time.scene || m.time.ask || 0)} / ${fmtDur(m.time.evidence || m.time.solve || 0)}</td>
       <td>${m.listens}</td>
       <td class="${m.rereads ? 'c-good' : 'c-warn'}">${m.rereads}</td>
       <td>${m.firstLatency == null ? '–' : fmtDur(m.firstLatency)}</td>
@@ -2264,7 +2345,7 @@ const EVENT_LABEL = {
   hint_shown: 'namig', hint_dismiss: 'zapre namig', assisted: 'vodeno', suspect_change: 'zamenja osumljenca',
   case_done: 'primer rešen', case_pick: 'izbere primer na tabli', more_yes: 'še en primer', more_no: 'dovolj', fake_door: 'vrata »nov primer«',
   adult_gate: 'odrasli pregled', session_end: 'konec seje', session_start: 'začetek seje',
-  call_answer: 'se javi na telefon', tool_use: 'svetilka', clue_open: 'odpre sled', clue_dark: 'pretemno', letter_read: 'prebere pismo',
+  call_answer: 'se javi na telefon', tool_use: 'svetilka', clue_open: 'odpre sled', clue_dark: 'pretemno', ask_q: 'vpraša', letter_read: 'prebere pismo',
 };
 
 function timelineHTML(s, caseId) {
