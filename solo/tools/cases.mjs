@@ -55,6 +55,9 @@ function checkSteps(c) {
     if (!s) fail(c.id, `card points at missing ${c.card.sid}`);
     else if (named(s.text).some(id => c.suspects.includes(id))) fail(c.id, 'the corkboard card names no suspect');
   }
+  const proof = ss.find(s => s.role === 'evidence');
+  if (proof && named(proof.text).filter(id => c.suspects.includes(id)).join() !== c.culprit) fail(c.id, `${proof.id}: the proof names the culprit and no other suspect`);
+  if (c.film && (!c.steps.includes('scene') && !c.steps.includes('ask') || c.film.some(f => !f[0] || !f[1]))) fail(c.id, 'film frames are [emoji, caption]');
   if (c.caught === undefined && c.excuse) fail(c.id, 'excuse without caught');
 }
 for (const c of CASES) {
@@ -77,7 +80,7 @@ for (const c of CASES) {
   const pair = c.type === 'pair';
   const evidence = ss.filter(s => s.role === 'evidence');
   if (evidence.length !== (pair ? 2 : 1)) fail(c.id, `${evidence.length} evidence sentences (${c.type} needs ${pair ? 2 : 1})`);
-  const lines = [c.h1, ...(c.call || []), ...(c.letter || []), ...(c.excuse ? [c.excuse] : []), ...(c.card && c.card.think ? [c.card.think] : [])];
+  const lines = [c.h1, ...(c.call || []), ...(c.film || []).map(f => f[1]), ...(c.letter || []), ...(c.excuse ? [c.excuse] : []), ...(c.card && c.card.think ? [c.card.think] : [])];
   for (const t of lines.flatMap(l => l.split(/(?<=[.!?…])\s+(?=\p{Lu})/u))) if (words(t) > R.maxWords) fail(c.id, `${words(t)} words (max ${R.maxWords}): ${t}`);
   if (c.steps) { checkSteps(c); continue; }
   for (const k of ['h2', 'h3']) for (const e of evidence) if (!c[k].includes(e.id)) fail(c.id, `${k} does not include evidence ${e.id}`);
@@ -104,6 +107,11 @@ for (const f of FILES) {
     inFile.forEach((c, i) => { if (c.no !== i + 1) fail(c.id, 'case numbers must run 1, 2, 3, …'); });
     for (const c of inFile) if (!c.card) fail(c.id, 'a season case pins a card to the corkboard (card)');
     if (!f.mystery) fail(f.id, 'a season needs its mystery question');
+    if (f.guess) {
+      const R = LEVEL_RULES.A;
+      for (const t of [f.guess.q, ...f.guess.options.map(o => o[2])]) if (words(t) > R.maxWords) fail(f.id, `guess: ${words(t)} words (max ${R.maxWords}): ${t}`);
+      if (f.guess.options.length < 2 || f.guess.after > inFile.length + (f.soon || 0)) fail(f.id, 'guess needs 2+ options and a case it follows');
+    }
     continue;
   }
   const nos = [...new Set(inFile.map(c => c.no))].sort((x, y) => x - y);
