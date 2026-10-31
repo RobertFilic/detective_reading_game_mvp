@@ -10,6 +10,7 @@ self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
+  if (new URL(e.request.url).origin !== location.origin) return;   // the analytics beacon goes straight to the network
   e.respondWith(
     fetch(e.request)
       .then((res) => {

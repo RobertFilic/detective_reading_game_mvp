@@ -68,4 +68,4 @@ Cases are grouped in **adventures** (`FILES`, *pustolovščine*): 🚀 Vesoljska
 3. Adult access during or after play: hold the top-left corner for 3 seconds, then answer the sum.
 4. In "Pregled": per-child table (tap a row for the event timeline), age-group summary against the plan thresholds, **Izvozi JSON** after every session, "Nova seja" for the next child.
 
-Logs stay in this browser's storage on the device; nothing is sent anywhere.
+Logs, names and game progress stay in this browser's storage on the device. The only thing sent is Cloudflare Web Analytics on every page: anonymous visit counts (no cookies, no names, no game data). Offline, it simply doesn't count.
