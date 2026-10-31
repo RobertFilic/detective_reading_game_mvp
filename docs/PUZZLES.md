@@ -268,7 +268,7 @@ Checker points for the writer:
 
 ### Build order
 
-**Status:** 🔤 Iskanka is built and playable in 👾 Skrivnost v zračniku, case 4 (`steps: ['call', 'words', 'scene', 'solve']`), with general step navigation, so a case can have 4+ steps. Case 4 plants the code 3-1-4 for a 🔐 lock in case 5.
+**Status:** 🔤 Iskanka is built and playable in 👾 Skrivnost v zračniku, case 4 (`steps: ['call', 'words', 'scene', 'solve']`), with general step navigation, so a case can have 4+ steps. Case 4 plants the code 3-1-4, and case 5 opens the storeroom with the 🔐 code lock (`steps: ['call', 'lock', 'scene', 'solve']`); its last hint says the code, so skipping case 4 never blocks the child.
 
 1. **🔐 The shared reward (lock + "card into the pocket").**
    - Every puzzle ends the same way: the lock clicks, and the output (a sentence, an opened object or a letter) flies into the pocket 👝 or onto the corkboard.

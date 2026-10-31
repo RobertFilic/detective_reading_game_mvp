@@ -24,7 +24,7 @@ const NAME = Object.fromEntries(Object.entries(CHARACTERS).map(([id, ch]) => [id
 for (const [id, ch] of Object.entries(CHARACTERS)) if (!ch.re) fail(id, 'character needs a name pattern (re)');
 const PRONOUN = /\b(mu|ji|njen\w*|njegov\w*|je imel|je imela)\b/;
 const named = (text) => Object.keys(NAME).filter(id => NAME[id].test(text));
-const STEPS = new Set(['call', 'scene', 'ask', 'words', 'solve']);
+const STEPS = new Set(['call', 'scene', 'ask', 'words', 'lock', 'solve']);
 // 🔤 word search: Slovenian capitals only (Č/Š/Ž one cell; no Q W X Y), equal rows, every word exactly
 // once and only → or ↓, and no rude word by chance in any row or column (either direction).
 const SL_CAPS = /^[ABCČDEFGHIJKLMNOPRSŠTUVZŽ]+$/u;
@@ -59,6 +59,13 @@ function checkSteps(c) {
     for (const id of c.suspects) if (!ss.some(s => s.who === id)) fail(c.id, `nobody asks ${id} anything`);
   }
   if (c.steps.includes('words')) checkWords(c);
+  // 🔐 code lock: 3–5 digits; h2 gives the code away (fair play when the earlier case was skipped)
+  if (c.steps.includes('lock')) {
+    const k = c.lock || {};
+    if (!/^\d{3,5}$/.test(k.code || '') || !k.note || !k.h1 || !k.h2) fail(c.id, 'a lock step needs lock: { note, code (3–5 digits), h1, h2 }');
+    else if (k.h2.replace(/\D/g, '') !== k.code) fail(c.id, 'lock h2 must say the code');
+    for (const t of [k.note, k.h1, k.h2].filter(Boolean)) if (words(t) > LEVEL_RULES[c.level].maxWords) fail(c.id, `lock: ${words(t)} words (max): ${t}`);
+  }
   if (c.steps[0] !== 'call' || c.steps[c.steps.length - 1] !== 'solve' || !c.steps.some(st => st === 'scene' || st === 'ask')) fail(c.id, 'steps go call → … → solve, with a scene or ask');
   if (ss.filter(s => s.dark).length > 1) fail(c.id, 'at most one dark object');
   for (const id of c.suspects) {
