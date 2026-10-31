@@ -24,7 +24,7 @@ const NAME = Object.fromEntries(Object.entries(CHARACTERS).map(([id, ch]) => [id
 for (const [id, ch] of Object.entries(CHARACTERS)) if (!ch.re) fail(id, 'character needs a name pattern (re)');
 const PRONOUN = /\b(mu|ji|njen\w*|njegov\w*|je imel|je imela)\b/;
 const named = (text) => Object.keys(NAME).filter(id => NAME[id].test(text));
-const STEPS = new Set(['call', 'scene', 'ask', 'words', 'lock', 'solve']);
+const STEPS = new Set(['call', 'scene', 'ask', 'words', 'lock', 'order', 'solve']);
 // 🔤 word search: Slovenian capitals only (Č/Š/Ž one cell; no Q W X Y), equal rows, every word exactly
 // once and only → or ↓, and no rude word by chance in any row or column (either direction).
 const SL_CAPS = /^[ABCČDEFGHIJKLMNOPRSŠTUVZŽ]+$/u;
@@ -65,6 +65,20 @@ function checkSteps(c) {
     if (!/^\d{3,5}$/.test(k.code || '') || !k.note || !k.h1 || !k.h2) fail(c.id, 'a lock step needs lock: { note, code (3–5 digits), h1, h2 }');
     else if (k.h2.replace(/\D/g, '') !== k.code) fail(c.id, 'lock h2 must say the code');
     for (const t of [k.note, k.h1, k.h2].filter(Boolean)) if (words(t) > LEVEL_RULES[c.level].maxWords) fail(c.id, `lock: ${words(t)} words (max): ${t}`);
+  }
+  // 🕐 timeline: 3–5 cards [emoji, text] in the right order, each with its own first word, so
+  // the time words (najprej, potem, na koncu …) tell the order
+  if (c.steps.includes('order')) {
+    const o = c.order || {};
+    if (!o.cards || !inRange(o.cards.length, [3, 5]) || o.cards.some(k => !k[0] || !k[1]) || !o.note || !o.h1 || !o.h2 || !o.done) {
+      fail(c.id, 'an order step needs order: { note, cards: 3–5 × [emoji, text], h1, h2, done }');
+    } else {
+      const first = o.cards.map(k => k[1].split(' ')[0].toLowerCase());
+      if (new Set(first).size !== first.length) fail(c.id, 'timeline cards start with different words');
+      for (const t of [o.note, o.h1, o.h2, o.done, ...o.cards.map(k => k[1])].flatMap(l => l.split(/(?<=[.!?…])\s+(?=\p{Lu})/u))) {
+        if (words(t) > LEVEL_RULES[c.level].maxWords) fail(c.id, `order: ${words(t)} words (max): ${t}`);
+      }
+    }
   }
   if (c.steps[0] !== 'call' || c.steps[c.steps.length - 1] !== 'solve' || !c.steps.some(st => st === 'scene' || st === 'ask')) fail(c.id, 'steps go call → … → solve, with a scene or ask');
   if (ss.filter(s => s.dark).length > 1) fail(c.id, 'at most one dark object');
@@ -139,6 +153,15 @@ for (const f of FILES) {
       for (const t of [f.guess.q, ...f.guess.options.map(o => o[2])]) if (words(t) > R.maxWords) fail(f.id, `guess: ${words(t)} words (max ${R.maxWords}): ${t}`);
       if (f.guess.options.length < 2 || f.guess.after > inFile.length + (f.soon || 0)) fail(f.id, 'guess needs 2+ options and a case it follows');
     }
+    // the answer comes with the final case: the last one, its culprit unmasked (real), one of the guesses
+    if (f.answer) {
+      const last = inFile[inFile.length - 1];
+      if (f.soon || !last || !last.final) fail(f.id, 'the answer comes with the final case (final: true, no soon)');
+      else if (!CHARACTERS[last.culprit].real) fail(last.id, 'the final culprit is the mystery guest (a character with real)');
+      if (f.guess && !f.guess.options.some(o => o[0] === f.answer.id)) fail(f.id, 'the answer is one of the guess options');
+      if (words(f.answer.text) > LEVEL_RULES.A.maxWords) fail(f.id, `answer: ${words(f.answer.text)} words (max)`);
+    }
+    if (inFile.some((c, i) => c.final && i !== inFile.length - 1)) fail(f.id, 'the final case must be the last one');
     continue;
   }
   const nos = [...new Set(inFile.map(c => c.no))].sort((x, y) => x - y);
