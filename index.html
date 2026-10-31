@@ -132,23 +132,14 @@ h1 { font-size: 40px; margin: 0; }
     <span class="hero-btn">Igraj!</span>
     <span class="hero-note">3 pustolovščine · 18 primerov · 👾 Kdo je v zračniku? Veliki primer je tu!</span>
   </a>
-  <button class="more-games" id="moreGames" aria-expanded="false">Druge igre ▾</button>
+  <button class="more-games" id="moreGames" aria-expanded="false">Za odrasle ▾</button>
   <div class="games" id="otherGames" hidden>
     <a class="game" href="solo/">
       <span class="icon">🕵️</span>
       <span class="name">Igraj sam</span>
       <span class="who">z nastavitvami za odrasle</span>
     </a>
-    <a class="game" href="za-dva/">
-      <span class="icon">🕵️🕵️</span>
-      <span class="name">Igrajta v dvoje</span>
-      <span class="who">dva detektiva, en iPad</span>
-    </a>
-    <a class="game" href="pekarna/">
-      <span class="icon">🥐</span>
-      <span class="name">Pekarna</span>
-      <span class="who">štej, plačaj, vrni drobiž</span>
-    </a>
+    <!-- for now only solo play: Igrajta v dvoje (za-dva/) and Pekarna (pekarna/) are hidden; their pages still work -->
   </div>
   <button class="reopen" id="reopen" hidden data-i="reopen"></button>
 </main>
@@ -170,7 +161,7 @@ h1 { font-size: 40px; margin: 0; }
   </div>
 </div>
 <script>
-// "Druge igre": the other games stay one tap away for adults.
+// "Za odrasle": the solo game with its adult setup stays one tap away.
 document.getElementById('moreGames').onclick = (e) => {
   const g = document.getElementById('otherGames');
   g.hidden = !g.hidden;

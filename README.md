@@ -11,7 +11,7 @@ Slovenian detective reading games for children aged 6–9, built as validation p
 | [`docs/PLAN.md`](docs/PLAN.md) | Plan for the solo game. The co-op plan is in [za-dva/docs/PLAN.md](za-dva/docs/PLAN.md). |
 
 ## Sharing with kids
-Send <https://robertfilic.github.io/detective_reading_game_mvp/>. The start page shows only the detective game: **Igraj!** opens `solo/?play`, which skips the adult setup and goes straight to the case board at level A (`KID_LEVEL` in `solo/index.html`). Solved cases keep their ✔ on that phone. Nothing is sent anywhere. The other games are under "Druge igre"; `solo/` without `?play` still opens the adult setup.
+Send <https://robertfilic.github.io/detective_reading_game_mvp/>. The start page shows only the detective game: **Igraj!** opens `solo/?play`, which skips the adult setup and goes straight to the case board at level A (`KID_LEVEL` in `solo/index.html`). Solved cases keep their ✔ on that phone. Names and progress stay on the device; the start page and the solo game send only anonymous Cloudflare visit counts. "Za odrasle" has "Igraj sam" (`solo/` without `?play`, which opens the adult setup). For now the start page offers only solo play: the links to `za-dva/` and `pekarna/` are hidden, and their pages still work by direct link (without analytics).
 
 ## On the iPad
 The repo is published with GitHub Pages at <https://robertfilic.github.io/detective_reading_game_mvp/>. Add that address to the Home Screen once: it opens the start page, and from there either game. Open both games once while online, so they also work offline.
