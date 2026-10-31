@@ -24,7 +24,25 @@ const NAME = Object.fromEntries(Object.entries(CHARACTERS).map(([id, ch]) => [id
 for (const [id, ch] of Object.entries(CHARACTERS)) if (!ch.re) fail(id, 'character needs a name pattern (re)');
 const PRONOUN = /\b(mu|ji|njen\w*|njegov\w*|je imel|je imela)\b/;
 const named = (text) => Object.keys(NAME).filter(id => NAME[id].test(text));
-const STEPS = new Set(['call', 'scene', 'ask', 'solve']);
+const STEPS = new Set(['call', 'scene', 'ask', 'words', 'solve']);
+// 🔤 word search: Slovenian capitals only (Č/Š/Ž one cell; no Q W X Y), equal rows, every word exactly
+// once and only → or ↓, and no rude word by chance in any row or column (either direction).
+const SL_CAPS = /^[ABCČDEFGHIJKLMNOPRSŠTUVZŽ]+$/u;
+const BLOCK = ['PIZD', 'KURC', 'KURAC', 'RIT', 'SRAT', 'SRAN', 'JEBI', 'FUK', 'DREK', 'TURD', 'SHIT', 'FUCK', 'PENIS', 'SEKS'];
+function checkWords(c) {
+  const w = c.words;
+  if (!w || !w.grid || !w.find || !w.note || !w.h1) return fail(c.id, 'a words step needs words: { note, grid, find, h1 }');
+  const rows = w.grid.map(r => [...r]), n = rows[0].length;
+  if (rows.some(r => r.length !== n || !SL_CAPS.test(r.join('')))) fail(c.id, 'word grid: equal rows of Slovenian capitals');
+  const lines = [...rows.map(r => r.join('')), ...rows[0].map((_, x) => rows.map(r => r[x]).join(''))];
+  const count = (word) => lines.reduce((k, l) => k + l.split(word).length - 1, 0);
+  for (const [e, word] of w.find) {
+    if (!e || !SL_CAPS.test(word)) fail(c.id, `word ${word}: [emoji, CAPITALS]`);
+    else if (count(word) !== 1) fail(c.id, `word ${word} appears ${count(word)} times (→ and ↓), needs exactly 1`);
+  }
+  for (const bad of BLOCK) for (const l of lines) if (l.includes(bad) || [...l].reverse().join('').includes(bad)) fail(c.id, `word grid hides "${bad}"`);
+  for (const t of [w.note, w.h1].flatMap(l => l.split(/(?<=[.!?…])\s+(?=\p{Lu})/u))) if (words(t) > LEVEL_RULES[c.level].maxWords) fail(c.id, `words: ${words(t)} words (max): ${t}`);
+}
 function checkSteps(c) {
   const ss = c.sentences;
   if (c.type !== 'elim') fail(c.id, 'step cases are type elim');
@@ -40,6 +58,8 @@ function checkSteps(c) {
     }
     for (const id of c.suspects) if (!ss.some(s => s.who === id)) fail(c.id, `nobody asks ${id} anything`);
   }
+  if (c.steps.includes('words')) checkWords(c);
+  if (c.steps[0] !== 'call' || c.steps[c.steps.length - 1] !== 'solve' || !c.steps.some(st => st === 'scene' || st === 'ask')) fail(c.id, 'steps go call → … → solve, with a scene or ask');
   if (ss.filter(s => s.dark).length > 1) fail(c.id, 'at most one dark object');
   for (const id of c.suspects) {
     const al = ss.filter(s => s.clears === id);

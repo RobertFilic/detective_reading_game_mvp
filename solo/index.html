@@ -323,6 +323,18 @@ button.suspect { cursor: pointer; }
 .guess-opts { display: flex; flex-wrap: wrap; gap: 6px; }
 .guess-opts .btn { flex: 1 1 auto; padding: 8px 10px; font-size: 18px; }
 .guess.done { font-weight: 700; font-size: 17px; padding: 6px 12px; }
+/* 🔤 word search */
+.wnote { margin: 0 0 8px; font-weight: 600; }
+.wwrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: flex-start; }
+.wgrid { --cell: min(72px, calc((100vw - 48px) / var(--n)), calc((100dvh - 330px) / var(--n))); display: grid; grid-template-columns: repeat(var(--n), max(40px, var(--cell))); gap: 4px; touch-action: manipulation; }
+.wcell { appearance: none; aspect-ratio: 1; border: 2px solid var(--line); border-radius: 10px; background: #fff; font-size: clamp(22px, calc(var(--cell) * .5), 34px); font-weight: 800; line-height: 1; font-family: inherit; color: var(--ink); cursor: pointer; padding: 0; }
+.wcell.hl { background: #fff4c2; border-color: var(--sel-line); }
+.wcell.sel { background: var(--sel); border-color: var(--sel-line); transform: scale(1.08); }
+.wcell.got { background: #c9efd3; border-color: #5cb97a; }
+.wcell.pulse { animation: pulse 1.1s ease-in-out infinite; border-color: var(--sel-line); }
+.wlist { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 340px; }
+.wword { background: #fff; border: 2px solid var(--line); border-radius: 999px; padding: 4px 12px; font-weight: 800; font-size: 20px; letter-spacing: 1px; }
+.wword.got { background: #c9efd3; border-color: #5cb97a; text-decoration: line-through; }
 .folder.soon { cursor: default; background: #f1eadb; border-style: dashed; }
 .folder.soon .stk { opacity: .5; }
 .folder.soon .fq { color: var(--muted); font-weight: 500; }
@@ -441,6 +453,11 @@ button.suspect { cursor: pointer; }
   .objs { grid-template-columns: repeat(7, 1fr); }
   .obj .oe { font-size: 26px; }
   .cork { display: none; }
+  .wordsearch .caseq { display: none; }
+  .wgrid { --cell: min(52px, calc((100dvh - 180px) / var(--n))); grid-template-columns: repeat(var(--n), max(36px, var(--cell))); gap: 3px; }
+  .wordsearch .wnote { margin-bottom: 4px; }
+  .wcell { font-size: 22px; }
+  .wnote { padding: 6px 12px; min-height: 0; }
   /* while the camera plays, the call and the suspects step aside (both were just read) */
   .call:has(.film) .suspects, .call:has(.film) .caller { display: none; }
   .film-pic { font-size: 40px; padding: 0; }
@@ -523,7 +540,7 @@ const FILES = [
   { id: 'vesolje', icon: '🚀', title: 'Vesoljska postaja', cast: ['maja', 'tim', 'ela', 'robi'], paper: 'ZVEZDNI ČASNIK' },
   { id: 'kmetija', icon: '🐄', title: 'Pri babici na kmetiji', cast: ['nik', 'pia', 'dedek', 'jan'], paper: 'KMEČKI GLAS' },
   { id: 'bip', icon: '👾', title: 'Skrivnost v zračniku', cast: ['tim', 'ela', 'robi', 'kiki'], paper: 'ZVEZDNI ČASNIK',
-    season: true, mystery: 'Kaj se skriva v zračniku?', soon: 3,
+    season: true, mystery: 'Kaj se skriva v zračniku?', soon: 2,
     // after case 3 the child guesses what is in the vent; the final case shows who was right
     guess: { after: 3, q: 'Kaj misliš, kdo je v zračniku?', options: [['mouse', '🐭', 'še ena miška'], ['robot', '🤖', 'mali robot'], ['alien', '👽', 'bitje iz vesolja']] } },
 ];
@@ -553,6 +570,9 @@ const UI_AUDIO = {
   sceneDone: 'Vse je preiskano. Kdo je bil?',
   ask: 'Zasliši vse. Tapni obraz, nato vprašanje.',
   askDone: 'Vsi so odgovorili. Kdo je bil?',
+  wordNo: 'To ni beseda s seznama. Tapni prvo in zadnjo črko.',
+  wordLook: 'Beseda je v svetli vrsti.',
+  wordAssist: 'Tapni prvo črko, nato zadnjo. Utripata.',
   selfClaim: 'To trdi o sebi. Ali je res? Poišči dokaz.',
   solve: 'Prečrtaj, kdo ni bil. Tapni stavek, nato obraz.',
   lastOne: 'Ostal je samo eden. Pokaži dokaz!',
@@ -583,7 +603,8 @@ const UI_AUDIO = {
 // clears (the suspect this alibi rules out, role clear), dark (needs the 🔦 torch).
 // In an ask step (questioning) a sentence is an answer instead: who says it and ask, the question.
 // client + call = who phones for help; film = security-camera frames [emoji, caption, 'blur'?]
-// the child steps through on the call screen before the scene; card = the sentence pinned to the season's corkboard
+// the child steps through on the call screen before the scene; words = a word search (step 'words')
+// whose words name the objects to search; card = the sentence pinned to the season's corkboard
 // (think = the detective's thought when it is pinned);
 // caught = the culprit in the accusative (newspaper); excuse = the culprit's funny excuse;
 // letter = a thank-you that arrives on the next visit.
@@ -882,6 +903,34 @@ const CASES = [
     card: { icon: '🥄', sid: 's6', think: 'Spet zelen odtis … in bleščeča žlička. Kdo jo je vzel? 🤔' },
     letter: ['Hvala! Kiki zdaj dobi svoj košček sira.', 'Žlička pa je še vedno izginila.', 'P. S. Ela ne najde srebrne žice …'],
   },
+  {
+    id: 'b4', file: 'bip', no: 4, type: 'elim', level: 'A', sticker: '📡', place: 'Streha',
+    steps: ['call', 'words', 'scene', 'solve'],
+    client: 'vesna', call: ['Nekdo je zvil našo anteno!', 'Robi ti je natisnil, kje iskati.'],
+    // 🔤 iskanka: capitals, Č/Š/Ž one cell, only → and ↓, each word exactly once; [emoji, WORD]
+    words: {
+      note: 'Robijev tiskalnik je pomešal črke. Poišči štiri besede.',
+      grid: ['ANTENA', 'KLUBER', 'OPRSTM', 'ŠUGELI', 'JOKNOZ', 'VECRBA'],
+      find: [['📡', 'ANTENA'], ['🗑️', 'KOŠ'], ['🪟', 'OKNO'], ['🍽️', 'MIZA']],
+      h1: 'Besede gredo samo → in ↓.',
+    },
+    question: 'Kdo je zvil anteno?',
+    suspects: ['tim', 'ela', 'robi', 'kiki'], culprit: 'ela',
+    sentences: [
+      ['s1', 'Tim je ves dan pekel piškote.', 'clear', { obj: '🍪', label: 'pečica', clears: 'tim' }],
+      ['s2', 'Ela pravi: »Antene se nisem dotaknila.«', 'distractor', { obj: '🍽️', label: 'miza' }],
+      ['s3', 'Z antene manjka srebrna žica.', 'neutral', { obj: '🪟', label: 'okno' }],
+      ['s4', 'Robi je ves dan stal na polnilcu.', 'clear', { obj: '🔌', label: 'polnilec', clears: 'robi' }],
+      ['s5', 'Pod anteno je Elina rokavica.', 'evidence', { obj: '📡', label: 'antena' }],
+      ['s6', 'Kiki je spala v kletki s sirom.', 'clear', { obj: '🐭', label: 'kletka', clears: 'kiki' }],
+      ['s7', 'Na dnu koša je listek: 3-1-4.', 'neutral', { obj: '🗑️', label: 'koš', dark: true }],
+    ],
+    h1: 'Kdo NI mogel biti? Kaj leži pod anteno?',
+    reveal: ['Pod anteno je bila Elina rokavica.', 'Ela je obrnila anteno proti zvezdam.', 'Žice pa ni vzela ona.', 'Kdo zbira bleščeče stvari? 🤔'],
+    caught: 'Elo', excuse: 'Hotela sem videti več zvezd!',
+    card: { icon: '➰', sid: 's3', think: 'Odtis, piskanje, žlička, žica … Vse se sveti! 🤔' },
+    letter: ['Hvala! Antena spet gleda proti Zemlji.', 'Ela ima zdaj svoj teleskop.', 'P. S. Kaj pomeni 3-1-4? 🔐'],
+  },
 ];
 
 // Practice case for the first-time tutorial: very easy, the answer is stated plainly.
@@ -914,6 +963,7 @@ function clipList() {
     out.push([c.id + '_q', c.question]);
     (c.call || []).forEach((t, i) => out.push([`${c.id}_c${i + 1}`, t]));
     (c.film || []).forEach((f, i) => out.push([`${c.id}_f${i + 1}`, f[1]]));
+    if (c.words) out.push([c.id + '_wn', c.words.note], [c.id + '_wh', c.words.h1]);
     for (const s of c.sentences) out.push([c.id + '_' + s.id, s.text]);
     for (const s of c.sentences) if (s.ask) out.push([`${c.id}_${s.id}q`, s.ask]);
     out.push([c.id + '_h1', c.h1]);
@@ -1111,6 +1161,8 @@ function newRun() {
     suspect: null, picks: [], wrong: 0, ladder: 0, assisted: false, hint: null, highlight: null, rankUp: null,
     // step cases: call answered, clues found (in order), torch on, crossed-off suspects, selected clue
     answered: false, found: [], who: null, typing: null, torch: false, crossed: [], sel: null, note: null,
+    // word search: words found, the first letter tapped, wrong tries
+    words: [], wsel: null, wwrong: 0,
   };
 }
 
@@ -1450,8 +1502,8 @@ function backTarget() {
       if (tut) return store.read(TUT_KEY, false) ? () => { S.tut = null; S.c = null; toHome(); } : () => { ACTIONS.editCard(); S.mk.step = 4; render(); };
       return S.orderMode === 'board' ? toBoard : 'stay';
     case 'call': return S.orderMode === 'board' ? toBoard : 'stay';
-    case 'scene': case 'ask': return () => go('call');
-    case 'solve': return S.run.hint ? 'stay' : () => go(S.c.steps[1]);
+    case 'scene': case 'ask': case 'words': return S.run.hint ? 'stay' : () => go(stepNext(-1));
+    case 'solve': return S.run.hint ? 'stay' : () => go(stepNext(-1));
     case 'story': return () => go('intro');
     case 'accuse': return () => go('story');
     case 'evidence': return S.run.hint ? 'stay' : () => { S.run.picks = []; go('accuse'); };
@@ -1555,6 +1607,26 @@ function hintHTML(h) {
     + `<button class="btn" data-act="hintOk">${UI_AUDIO.again}</button></div>`;
 }
 
+// Where each word of a word search sits: { WORD: { cells: [grid indexes], down, n } }, → and ↓ only.
+function wordSpots(w) {
+  const rows = w.grid.map(r => [...r]), n = rows[0].length, out = {};
+  for (const [, word] of w.find) {
+    const L = [...word];
+    for (let y = 0; y < rows.length && !out[word]; y++) for (let x = 0; x < n && !out[word]; x++) {
+      for (const down of [false, true]) {
+        const cells = L.map((_, k) => down ? (y + k) * n + x : y * n + x + k);
+        if ((down ? y + L.length <= rows.length : x + L.length <= n) && L.every((ch, k) => rows[down ? y + k : y][down ? x : x + k] === ch)) { out[word] = { cells, down, n }; break; }
+      }
+    }
+  }
+  return out;
+}
+
+// Step cases: the step after (or before, d = -1) the current screen, and the button that goes on.
+const stepNext = (d = 1) => S.c.steps[S.c.steps.indexOf(S.screen) + d];
+const STEP_LABEL = { ask: 'Zasliši osumljence 🗣️', words: 'Preberi listek 🔤', scene: 'Na kraj dogodka 🔍' };
+const stepLabel = () => STEP_LABEL[stepNext()];
+
 // The security camera on the call screen: one frame at a time, the child taps on (no timer).
 function filmHTML(c, r) {
   if (r.film === undefined) return '<button class="btn big film-play" data-act="filmPlay">📹 Poglej posnetek</button>';
@@ -1563,7 +1635,7 @@ function filmHTML(c, r) {
     <div class="film-pic ${fx || ''}" data-act="say" data-clip="${c.id}_f${r.film + 1}">${pic}</div>
     <div class="row" data-act="say" data-clip="${c.id}_f${r.film + 1}">${esc(text)}</div>
     <div class="film-nav"><span class="steps-dots">${c.film.map((_, i) => `<i class="${i <= r.film ? 'on' : ''}"></i>`).join('')}</span>
-      ${last ? '<button class="btn secondary" data-act="filmPlay" aria-label="Še enkrat">↺</button><button class="btn" data-act="toScene">Na kraj dogodka 🔍</button>'
+      ${last ? '<button class="btn secondary" data-act="filmPlay" aria-label="Še enkrat">↺</button><button class="btn" data-act="toScene">' + stepLabel() + '</button>'
         : '<button class="btn" data-act="filmNext">Naprej ▶</button>'}</div></div>`;
 }
 
@@ -1789,8 +1861,33 @@ const T = {
         `<div class="row" data-act="say" data-clip="${c.id}_c${i + 1}">${esc(t)}</div>`).join('')}</div></div>
       ${qbar(c.question, c.id + '_q', 'big')}
       <div class="suspects mini">${c.suspects.map(id => suspectCard(id, false)).join('')}</div>
-      ${c.film ? filmHTML(c, r) : `<button class="btn big" data-act="toScene">${c.steps[1] === 'ask' ? 'Zasliši osumljence 🗣️' : 'Na kraj dogodka 🔍'}</button>`}
+      ${c.film ? filmHTML(c, r) : `<button class="btn big" data-act="toScene">${stepLabel()}</button>`}
     </div>`;
+  },
+
+  // A puzzle step: 🔤 word search. Tap the first letter, then the last; the found words name
+  // the places to search in the scene.
+  words() {
+    const c = S.c, r = S.run, w = c.words, spots = wordSpots(w);
+    const done = r.words.length === w.find.length;
+    const next = w.find.map(f => f[1]).find(x => !r.words.includes(x));
+    const look = !done && r.wwrong >= 4 ? spots[next] : null;
+    const line = look ? (look.down ? (i) => i % look.n === look.cells[0] % look.n : (i) => Math.floor(i / look.n) === Math.floor(look.cells[0] / look.n)) : () => false;
+    const ends = look && r.wwrong >= 6 ? [look.cells[0], look.cells[look.cells.length - 1]] : [];
+    const got = new Set(r.words.flatMap(x => spots[x].cells));
+    const letters = w.grid.flatMap(row => [...row]);
+    return `<div class="screen scene wordsearch ${r.hint ? 'locked' : ''}">
+      <div class="caseq">❓ ${esc(c.question)}</div>
+      <div class="row wnote" data-act="say" data-clip="${c.id}_wn">📃 ${esc(w.note)}</div>
+      <div class="wwrap">
+        <div class="wgrid" style="--n:${[...w.grid[0]].length}">${letters.map((ch, i) => `<button class="wcell
+          ${got.has(i) ? 'got' : ''} ${r.wsel === i ? 'sel' : ''} ${line(i) ? 'hl' : ''} ${ends.includes(i) ? 'pulse' : ''}" data-act="wordTap" data-i="${i}">${ch}</button>`).join('')}</div>
+        <div class="wlist">${w.find.map(([e, x]) => `<span class="wword ${r.words.includes(x) ? 'got' : ''}">${e} ${x}</span>`).join('')}</div>
+      </div>
+      ${r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
+      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
+        <span class="grow"></span><button class="btn big" data-act="toScene" ${done ? '' : 'disabled'}>${stepLabel()}</button></div>
+    </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
 
   // Step 2 (instead of the scene): question the suspects. Every question gives one answer.
@@ -2217,7 +2314,34 @@ const ACTIONS = {
     render();
     play(S.c.id + '_c1', S.c.call[0], $('.bubble .row'));
   },
-  toScene() { go(S.c.steps[1]); },
+  toScene() { go(stepNext()); },
+  // word search: the first tap marks a letter, the second closes the word (either end first)
+  wordTap(el) {
+    const r = S.run, w = S.c.words, i = Number(el.dataset.i);
+    if (r.hint) return;
+    r.note = null;
+    if (r.wsel === null || r.wsel === i) { r.wsel = r.wsel === i ? null : i; sfx('click'); render(); return; }
+    const [a, b] = [Math.min(r.wsel, i), Math.max(r.wsel, i)];
+    r.wsel = null;
+    const spots = wordSpots(w);
+    const word = Object.keys(spots).find(x => !r.words.includes(x) && spots[x].cells[0] === a && spots[x].cells[spots[x].cells.length - 1] === b);
+    log('puzzle_word', { correct: !!word, word: word || null });
+    if (word) {
+      r.words.push(word);
+      if (r.words.length === w.find.length) { sfx('tada'); log('puzzle_done', { wrong: r.wwrong }); } else sfx('pop');
+      render();
+      return;
+    }
+    r.wwrong++;
+    sfx('nope');
+    let h = null;
+    if (r.wwrong >= 6) h = { key: 'wordAssist', text: UI_AUDIO.wordAssist, clip: 'ui_wordAssist', level: 3 };
+    else if (r.wwrong === 4) h = { key: 'wordLook', text: UI_AUDIO.wordLook, clip: 'ui_wordLook', level: 2 };
+    else if (r.wwrong === 2) h = { key: 'h1', text: w.h1, clip: S.c.id + '_wh', level: 1 };
+    if (h && r.wwrong <= 6) { r.hint = h; log('puzzle_hint', { hint: h.key, hintLevel: h.level }); }
+    else r.note = UI_AUDIO.wordNo;
+    render();
+  },
   filmPlay() { S.run.film = 0; log('film_play'); render(); ACTIONS.filmSay(); },
   filmNext() { S.run.film++; render(); ACTIONS.filmSay(); },
   filmSay() { const r = S.run; play(`${S.c.id}_f${r.film + 1}`, S.c.film[r.film][1], $('.film .row')); },
