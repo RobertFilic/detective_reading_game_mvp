@@ -1724,8 +1724,11 @@ function solvedKeys() {
   return store.read(PLAYED_KEY, []);
 }
 const isSolved = (c) => solvedKeys().includes(caseKey(c));
-// A final case opens when the rest of its file is solved.
-const isLocked = (c) => !!c.final && casesIn(c.file).some(x => !x.final && !isSolved(x));
+// A final case opens when the rest of its file is solved. In a season (one story) every case opens
+// when the one before it is solved; a case already solved never locks again (older saves).
+const isSeason = (c) => !!(FILES.find(f => f.id === c.file) || {}).season;
+const isLocked = (c) => !isSolved(c) && (isSeason(c) ? casesIn(c.file).some(x => x.no < c.no && !isSolved(x))
+  : !!c.final && casesIn(c.file).some(x => !x.final && !isSolved(x)));
 // A season with cases still to come is not done yet.
 const fileDone = (file) => !(FILES.find(f => f.id === file).soon > 0) && casesIn(file).every(isSolved);
 const ALL_KEYS = FILES.flatMap(f => casesIn(f.id).map(caseKey));
@@ -2457,7 +2460,7 @@ const T = {
         return `<button class="folder ${solved ? 'solved' : ''} ${locked ? 'locked' : ''} ${c.final ? 'final' : ''} ${c.no === S.suggest ? 'suggest' : ''}" data-act="${locked ? 'lockedCase' : 'openCase'}" data-no="${c.no}">
           <span class="no">${c.no}</span>${solved ? '<span class="tick">✔</span>' : ''}
           <span class="stk">${locked ? '🔒' : c.sticker}</span>${c.final ? '<span class="place">⭐ Veliki primer</span>' : c.place ? `<span class="place">${esc(c.place)}</span>` : ''}
-          <span class="fq">${locked ? 'Odpre se, ko rešiš ostale primere.' : esc(c.question)}</span>
+          <span class="fq">${!locked ? esc(c.question) : isSeason(c) ? `Odpre se po primeru ${c.no - 1}.` : 'Odpre se, ko rešiš ostale primere.'}</span>
           <span class="lvl">${'🔍'.repeat(c.rung)}</span></button>`;
       }).join('')}${Array.from({ length: soon }, (_, i) => `<button class="folder soon" data-act="soonCase">
           <span class="no">${cases.length + i + 1}</span><span class="stk">❓</span><span class="fq">Kmalu nov primer</span></button>`).join('')}</div>
@@ -2902,8 +2905,10 @@ const ACTIONS = {
     S.toast = cases.every(isSolved) ? 'soon' : '⏳ Ta primer še ni napisan. Pride kmalu!';
     render();
   },
-  lockedCase() {
-    S.toast = '🔒 Veliki primer se odpre, ko rešiš ostale primere te pustolovščine.';
+  lockedCase(el) {
+    const c = caseFor(S.file, Number(el.dataset.no));
+    S.toast = isSeason(c) ? `🔒 Zgodba gre po vrsti. Ta primer se odpre, ko rešiš primer ${c.no - 1}.`
+      : '🔒 Veliki primer se odpre, ko rešiš ostale primere te pustolovščine.';
     render();
   },
   openCase(el) {
