@@ -1,0 +1,9 @@
+{
+  "name": "detektivska-pisarna-tools",
+  "private": true,
+  "type": "module",
+  "description": "Screenshots for the UX review (shots.mjs). The checker (cases.mjs) needs no install.",
+  "devDependencies": {
+    "puppeteer-core": "^23.11.1"
+  }
+}

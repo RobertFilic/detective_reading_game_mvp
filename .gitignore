@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# screenshots from solo/tools/shots.mjs
+shots/

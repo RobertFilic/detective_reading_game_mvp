@@ -9,6 +9,7 @@ A Slovenian detective reading game for children aged 6–9. The child accuses a 
 | `audio/` | One recording per line, named `<clipId>.m4a` (empty until recorded). |
 | `tools/cases.mjs` | Checks the cases against the template rules; `clips` lists every line to record. |
 | `tools/build.mjs` | Inlines `audio/` into `dist/index.html` and copies `sw.js`. |
+| `tools/shots.mjs` | Screenshots of every screen of a case on iPhone SE, iPad and a landscape phone, and flags overflow or an off-screen main button: `node tools/shots.mjs b6` (once: `cd tools && npm install`; needs Google Chrome). |
 | `sw.js` | Offline cache for the hosted version. |
 
 ## Run locally
