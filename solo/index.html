@@ -200,6 +200,7 @@ button.suspect { cursor: pointer; }
 .pick .pe { font-size: 56px; line-height: 1.1; }
 .name-in { font-size: 28px; padding: 10px 16px; border: 3px solid var(--line); border-radius: 16px; width: min(320px, 100%); text-align: center; background: #fff; }
 .name-in:focus { outline: none; border-color: var(--accent); }
+.trophy .btn { min-height: 40px; padding: 4px 12px; font-size: 17px; margin-left: 6px; }
 .trophy { background: var(--good); border-radius: 14px; padding: 8px 14px; font-weight: 700; margin-bottom: 10px; text-align: center; }
 .hint {
   position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom));
@@ -211,6 +212,7 @@ button.suspect { cursor: pointer; }
 .hint .hi { font-size: 34px; line-height: 1; }
 .hint.no { border-color: #d9534f; background: #fff1f0; }
 .hint.no .hi, .hint.no .verdict { color: #c9302c; }
+.hint.tip { border-color: var(--sel-line); }
 .hint .verdict { display: block; font-size: 1.1em; }
 /* step cases: phone call, scene search, crossing off */
 .phone { font-size: 96px; line-height: 1; animation: ring .5s ease-in-out infinite; }
@@ -301,7 +303,7 @@ button.suspect { cursor: pointer; }
 .vent .eyes { font-size: 16px; animation: blink 4s infinite; display: inline-block; }
 @keyframes blink { 0%, 60%, 100% { opacity: 0; } 66%, 90% { opacity: 1; } 93% { opacity: .2; } }
 .vent.peek .eyes { animation: none; opacity: 1; }
-.vent.peek::after { content: 'pip-pip!'; position: absolute; top: -26px; right: -6px; background: #fff; border-radius: 10px; padding: 0 6px; font-size: 14px; font-weight: 700; animation: fadein .2s both; }
+.vent.peek::after { content: attr(data-say); position: absolute; top: -26px; right: -6px; background: #fff; border-radius: 10px; padding: 0 6px; font-size: 14px; font-weight: 700; animation: fadein .2s both; }
 .waiting { background: var(--good); border-radius: 14px; padding: 8px 12px; margin-bottom: 10px; font-weight: 600; display: flex; align-items: center; gap: 10px; flex: none; }
 .waiting span { flex: 1; }
 .waiting .btn { padding: 8px 14px; font-size: 18px; }
@@ -372,6 +374,85 @@ button.suspect { cursor: pointer; }
 .wlist { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 340px; }
 .wword { background: #fff; border: 2px solid var(--line); border-radius: 999px; padding: 4px 12px; font-weight: 800; font-size: 20px; letter-spacing: 1px; }
 .wword.got { background: #c9efd3; border-color: #5cb97a; text-decoration: line-through; }
+/* 🔤 the geslo: the letters left over glow, then spell a sentence in a strip under the grid */
+.wcell.left { background: #fff4c2; border-color: var(--sel-line); animation: glowcell .5s both; }
+@keyframes glowcell { from { background: #fff; transform: scale(1); } 60% { transform: scale(1.15); } }
+.geslo { display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: center; align-items: center; max-width: 360px; font-size: 26px; font-weight: 900; letter-spacing: 2px; }
+.geslo .gw { white-space: nowrap; }
+.geslo .gl { display: inline-block; animation: flyin .4s both; color: #8a5a00; }
+/* ✉️ cipher: the key, the message in cells (symbol over letter), the letter tiles */
+.ckey { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 560px; }
+.cchip { display: flex; flex-direction: column; align-items: center; min-width: 46px; background: #fff; border: 2px solid var(--line); border-radius: 10px; padding: 2px 4px; font-size: 22px; line-height: 1.15; }
+.cchip b { font-size: 20px; }
+.cchip.hl { background: #fff4c2; border-color: var(--sel-line); animation: pulse 1.1s ease-in-out infinite; }
+.cmsg { display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: center; max-width: 620px; }
+.cword { display: flex; gap: 3px; align-items: flex-end; }
+.ccell { appearance: none; font: inherit; color: inherit; cursor: pointer; width: 44px; display: flex; flex-direction: column; align-items: center; background: #fff; border: 2px solid var(--line); border-radius: 10px; padding: 2px 0; }
+.ccell .cs { font-size: 22px; line-height: 1.2; }
+.cipherstep > .footer, .tornstep > .footer { margin-top: auto; align-self: stretch; flex-wrap: nowrap; }
+.ccell .cl { font-size: 26px; font-weight: 900; min-height: 34px; line-height: 34px; border-top: 2px dashed var(--line); width: 80%; }
+.ccell.ring { border-color: var(--sel-line); background: var(--sel); box-shadow: 0 0 0 3px rgba(224, 168, 0, .45); }
+.ccell.got { background: #c9efd3; border-color: #5cb97a; }
+.cplain { font-size: 26px; font-weight: 900; align-self: flex-end; padding-bottom: 4px; }
+.ctiles { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 420px; }
+.ctile { appearance: none; font: inherit; width: 52px; height: 52px; border-radius: 12px; border: 3px solid var(--accent); background: #fff; color: var(--accent); font-size: 26px; font-weight: 900; cursor: pointer; }
+.ctile:disabled { opacity: .3; }
+.ctile.pulse { animation: pulse 1.1s ease-in-out infinite; border-color: var(--sel-line); }
+.ctile.wobble, .row.wobble { animation: wobble .3s; }
+.cdone, .tdone { font-weight: 700; background: var(--good); border-color: #6fc287; }
+/* 📜 torn note: slots along one line, torn paper strips */
+.pslots, .pdeck { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 620px; }
+.pslots { background: #efe3c8; border: 2px solid #d9c08f; border-radius: 12px; padding: 10px; width: 100%; }
+.pdeck { padding-top: 4px; }
+.pslot { min-width: 88px; min-height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-weight: 800; color: var(--muted); }
+.pslot.empty { border: 3px dashed var(--line); }
+.strip { appearance: none; font: inherit; font-size: 24px; font-weight: 700; color: var(--ink); cursor: pointer; background: #fffdf3; border: 0; padding: 10px 18px; min-height: 52px;
+  box-shadow: inset 0 0 0 2px #cdb98d; filter: drop-shadow(0 3px 2px rgba(0, 0, 0, .25)); clip-path: polygon(0 0, 100% 0, 96% 20%, 100% 40%, 96% 60%, 100% 80%, 96% 100%, 0 100%, 4% 80%, 0 60%, 4% 40%, 0 20%); }
+.pslot.good .strip { background: var(--good); }
+.strip.pulse { animation: pulse 1.1s ease-in-out infinite; background: var(--sel); }
+.tornstep.done .wnote { display: none; }
+/* ❗ UGOVOR: claims as speech bubbles, the sentences below (beside them on a landscape phone) */
+.liestep { gap: 0; }
+.lwrap { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.lleft { flex: none; display: flex; flex-direction: column; gap: 8px; }
+.claims { display: flex; flex-direction: column; gap: 8px; }
+.claim { appearance: none; font: inherit; color: inherit; text-align: left; cursor: pointer; position: relative; display: flex; align-items: center; gap: 10px; width: 100%;
+  background: #fff; border: 3px solid var(--accent); border-radius: 4px 20px 20px 20px; padding: 8px 12px; min-height: 60px; font-size: var(--row-font); line-height: 1.3; }
+.claim .who { display: block; font-size: 16px; color: var(--muted); }
+.claim .who i { font-style: normal; background: var(--heard); border-radius: 8px; padding: 0 6px; margin-left: 4px; }
+.claim.selected { background: var(--sel); border-color: var(--sel-line); }
+.claim.pulse { animation: pulse 1.1s ease-in-out infinite; border-color: var(--sel-line); }
+.claim.caught { border-color: var(--danger); background: #fff5f3; cursor: default; }
+.cav { position: relative; flex: none; }
+.blush { position: absolute; right: -10px; bottom: -8px; font-size: 24px; }
+.blush.pop { animation: slam .4s .6s both; }
+.lstamp { position: absolute; right: -4px; top: -20px; font-size: 16px; border-width: 3px; padding: 0 8px; background: #fff; pointer-events: none; }
+.claim.caught { padding-top: 14px; }
+.liestep .lnote { min-height: 44px; display: flex; align-items: center; margin-bottom: 8px; }
+.liestep.shake { animation: wobble .3s 2; }
+.row.broke { border-color: var(--danger); animation: flashred .6s 2; }
+@keyframes flashred { 50% { background: var(--bad); } }
+.ltruth .mtxt { border-color: #6fc287; background: var(--good); }
+.liestep .toast { margin: 0; }
+.row .ltag { margin-left: auto; flex: none; padding-left: 8px; font-size: 14px; font-weight: 900; color: var(--danger); transform: rotate(-6deg); }
+.row .ltag.truth { color: inherit; font-size: 20px; transform: none; }
+.row.proof { border-color: #5cb97a; background: var(--good); }
+.shout-wrap { position: fixed; inset: 0; background: rgba(20, 24, 40, .6); z-index: 30; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.shout { background: #fff; border-radius: 24px; padding: 18px; display: flex; flex-direction: column; align-items: center; gap: 14px; width: min(460px, 100%); text-align: center; animation: spin-in .4s ease-out; }
+.shout .row { border: 0; font-weight: 700; justify-content: center; text-align: center; }
+.btn.ugovor { background: var(--danger); width: 170px; height: 170px; border-radius: 50%; font-size: 26px; font-weight: 900; padding: 0; box-shadow: 0 8px 0 #8e2a20; animation: pulse 1.1s infinite;
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
+/* 📖 the book cover with the detective's name */
+.bcover { width: min(300px, 80vw); aspect-ratio: 3 / 4; border-radius: 6px 16px 16px 6px; background: linear-gradient(160deg, #2f5fb8, #1d3c78); color: #fff; padding: 18px 14px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; box-shadow: inset 10px 0 0 rgba(0, 0, 0, .25), 0 10px 24px rgba(0, 0, 0, .3); animation: spin-in .7s ease-out; }
+.bcover .bav { font-size: 72px; line-height: 1; background: #fff; border-radius: 50%; width: 110px; height: 110px; display: grid; place-items: center; }
+.bcover .btitle { font-size: 26px; line-height: 1.15; }
+.bcover .bsub { font-size: 20px; font-weight: 700; }
+.bcover .bby { font-size: 16px; opacity: .85; margin-top: auto; }
+.bcover .bstar { font-size: 28px; }
+.reveal.final .pinned { display: none; }   /* the mystery is solved: no new clue */
+.pincard.page { font-family: "Courier New", ui-monospace, monospace; background: #fff; border-radius: 1px; }
+.guess-opts .btn.before { border-style: dashed; }
 .folder.soon { cursor: default; background: #f1eadb; border-style: dashed; }
 .folder.soon .stk { opacity: .5; }
 .folder.soon .fq { color: var(--muted); font-weight: 500; }
@@ -470,6 +551,22 @@ button.suspect { cursor: pointer; }
   .tn { flex-basis: 28px; height: 28px; }
   .tcard { padding: 5px 10px; font-size: 19px; }
   .tslots, .tdeck { gap: 5px; }
+  .liestep .caseq, .cipherstep .caseq, .tornstep .caseq, .gesloed .caseq, .gesloed .toast.good { display: none; }
+  .gesloed .geslo { font-size: 22px; }
+  .cipherstep, .tornstep { gap: 10px; }
+  .claim { min-height: 52px; padding: 6px 10px; font-size: 19px; }
+  .claim .who { font-size: 14px; }
+  .ccell { width: 36px; }
+  .ccell .cs { font-size: 19px; }
+  .ccell .cl { font-size: 21px; min-height: 28px; line-height: 28px; }
+  .cplain { font-size: 21px; }
+  .cchip { min-width: 40px; font-size: 18px; }
+  .cchip b { font-size: 17px; }
+  .ctile { width: 46px; height: 46px; font-size: 22px; }
+  .strip { font-size: 20px; padding: 8px 14px; min-height: 46px; }
+  .pslot { min-width: 70px; min-height: 48px; }
+  .bcover { width: min(240px, 70vw); }
+  .bcover .bav { width: 90px; height: 90px; font-size: 56px; }
 }
 
 /* Phones: landscape (short) */
@@ -495,7 +592,36 @@ button.suspect { cursor: pointer; }
   .phone { font-size: 48px; }
   .objs { grid-template-columns: repeat(7, 1fr); }
   .obj .oe { font-size: 26px; }
-  .cork { display: none; }
+  .solve { display: grid; grid-template-columns: minmax(220px, 34%) 1fr; grid-template-rows: auto auto minmax(0, 1fr) auto; column-gap: 12px; }
+  .solve .caseq { display: none; }
+  .solve .qbar { grid-column: 1 / -1; grid-row: 1; margin-bottom: 4px; }
+  .solve .toast { grid-column: 1 / -1; grid-row: 2; margin-bottom: 4px; }
+  .solve .suspects.mini { grid-column: 1; grid-row: 3; flex-wrap: wrap; align-content: flex-start; overflow-y: auto; }
+  .solve .suspects.mini .suspect { flex: 1 1 calc(50% - 6px); max-width: none; }
+  .solve .rows { grid-column: 2; grid-row: 3; }
+  .solve .footer { grid-column: 1 / -1; grid-row: 4; padding-top: 4px; }
+  .cork:not(.asking) { display: none; }
+  .cork.asking .pins, .cork.asking .think { display: none; }
+  .cork.asking { padding: 4px 8px 6px; }
+  .liestep .caseq, .cipherstep .caseq, .tornstep .caseq, .cipherstep .toast.good, .tornstep .toast.good, .wordsearch .toast.good { display: none; }
+  .liestep .qbar { margin-bottom: 4px; }
+  .lwrap { flex-direction: row; }
+  .lleft { flex: 0 0 40%; overflow-y: auto; }
+  .lwrap .rows { flex: 1 1 60%; }
+  .claim { min-height: 0; padding: 6px 10px; font-size: 18px; }
+  .cipherstep, .tornstep { gap: 6px; }
+  .ckey { max-width: none; flex-wrap: nowrap; }
+  .cchip { min-width: 36px; font-size: 17px; padding: 0 3px; }
+  .ccell .cl { min-height: 26px; line-height: 26px; font-size: 20px; }
+  .ccell .cs { font-size: 14px; }
+  .ccell { width: 34px; }
+  .ctile { width: 44px; height: 44px; font-size: 20px; }
+  .ctiles { max-width: none; }
+  .bookstep .sticker { display: none; }
+  .bcover { width: auto; height: 62vh; aspect-ratio: 3 / 4; padding: 8px; gap: 4px; }
+  .bcover .bav { width: 64px; height: 64px; font-size: 40px; }
+  .bcover .btitle { font-size: 19px; }
+  .bcover .bsub { font-size: 15px; }
   .wordsearch .caseq { display: none; }
   .wgrid { --cell: min(52px, calc((100dvh - 180px) / var(--n))); grid-template-columns: repeat(var(--n), max(36px, var(--cell))); gap: 3px; }
   .wordsearch .wnote { margin-bottom: 4px; }
@@ -591,7 +717,15 @@ const CHARACTERS = {
   dedek: { name: 'Dedek', animal: '👴🏻', color: '#efe6d8', re: 'Ded(ek|ka|ku|kom|kov\\p{L}*)' },
   jan: { name: 'Jan', animal: '👨🏽‍🌾', color: '#e8f3d8', re: 'Jan(a|u|om|ov\\p{L}*)?' },
   meta: { name: 'Meta', animal: '🐐', color: '#eef0dc', re: 'Met(a|o|e|i|in\\p{L}*)' },
+  // 🦔 Skrivnost hotela Galeb (Gusti the seagull is a she: she lays eggs; the sea is a suspect in one case)
+  luka: { name: 'Luka', animal: '👦🏼', color: '#dff0ff', re: 'Luk(a|e|i|o|ov\\p{L}*)' },
+  hana: { name: 'Hana', animal: '👧🏽', color: '#ffe3ea', re: 'Han(a|e|i|o|in\\p{L}*)' },
+  bepi: { name: 'Bepi', animal: '👴🏻', color: '#e2ecf6', re: 'Bepi(ja|ju|jem|jev\\p{L}*)?' },
+  vera: { name: 'Vera', animal: '👵🏼', color: '#efe3f7', re: 'Ver(a|e|i|o|in\\p{L}*)' },
+  gusti: { name: 'Gusti', animal: '🐦', color: '#eef4f8', re: 'Gusti(n\\p{L}*|jin\\p{L}*)?' },
+  morje: { name: 'Morje', animal: '🌊', color: '#d8f0fb', re: '[Mm]orj(e|a|u|em)' },
   // clients: they call for help, they are never suspects
+  rozi: { name: 'Gospa Rozi', animal: '💁🏻‍♀️', color: '#fde8c8', re: 'Roz(i|in\\p{L}*|ij\\p{L}*)' },
   vesna: { name: 'Kapitanka Vesna', animal: '👩🏻‍✈️', color: '#fde8c8', re: 'Vesn(a|o|e|i|in\\p{L}*)' },
 };
 
@@ -599,14 +733,23 @@ const CHARACTERS = {
 // A case marked final opens when the other cases of its file are solved. docs/CASE_FILES.md has the backlog of themes.
 // paper = the newspaper on the solved screen. A season (season: true) is one big mystery:
 // every case pins a card to the corkboard (mystery = its question), soon = cases still to come.
+// peek = something that blinks from the corkboard once 2 cards are up; pages = the cards are typed pages;
+// guess.again = the case after which the child may change the guess (q2); book = the final's book cover.
 const FILES = [
   { id: 'vesolje', icon: '🚀', title: 'Vesoljska postaja', cast: ['maja', 'tim', 'ela', 'robi'], paper: 'ZVEZDNI ČASNIK' },
   { id: 'kmetija', icon: '🐄', title: 'Pri babici na kmetiji', cast: ['nik', 'pia', 'dedek', 'jan'], paper: 'KMEČKI GLAS' },
   { id: 'bip', icon: '👾', title: 'Skrivnost v zračniku', cast: ['tim', 'ela', 'robi', 'kiki'], paper: 'ZVEZDNI ČASNIK',
-    season: true, mystery: 'Kaj se skriva v zračniku?',
+    season: true, mystery: 'Kaj se skriva v zračniku?', peek: { icon: '👀', label: 'zračnik', say: 'pip-pip!' },
     // after case 3 the child guesses what is in the vent; the final case shows who was right (answer)
     guess: { after: 3, q: 'Kaj misliš, kdo je v zračniku?', options: [['mouse', '🐭', 'še ena miška'], ['robot', '🤖', 'mali robot'], ['alien', '👽', 'bitje iz vesolja']] },
     answer: { id: 'alien', icon: '👾', text: 'V zračniku je bil Bip, mali vesoljček!' } },
+  { id: 'galeb', icon: '🦔', title: 'Skrivnost hotela Galeb', cast: ['luka', 'hana', 'bepi', 'vera', 'gusti'], paper: 'PIRANSKI GALEB',
+    season: true, mystery: 'Kdo v hotelu piše knjige o Ježku?', pages: true,
+    // after case 3 the child guesses the author; after case 5 they may change their mind once
+    guess: { after: 3, again: 5, q: 'Kaj misliš, kdo piše knjige o Ježku?', q2: 'Ali še vedno tako misliš?',
+      options: [['hana', '👧🏽', 'Hana, ki ima vse knjige'], ['bepi', '👴🏻', 'kapitan Bepi, ki pripoveduje zgodbe'], ['vera', '👵🏼', 'gospa Vera, ki gleda z balkona']] },
+    answer: { id: 'vera', icon: '🦔', text: 'Knjige o Ježku piše gospa Vera!' },
+    book: { q: 'Ali smem napisati knjigo o tebi?', title: 'in skrivnost hotela Galeb', by: '🦔 Ježek' } },
 ];
 
 // Every line the child can hear outside the stories. Clip id = "ui_" + key.
@@ -644,6 +787,37 @@ const UI_AUDIO = {
   guessRight: 'Prav si ugibal! 🎉',
   guessRightF: 'Prav si ugibala! 🎉',
   guessWrong: 'Tokrat ni bilo prav. Nič hudega!',
+  guessChanged: 'Spremenil si mnenje in imel prav! 🎉',
+  guessChangedF: 'Spremenila si mnenje in imela prav! 🎉',
+  guessFirst: 'Najprej si imel prav! Nič hudega.',
+  guessFirstF: 'Najprej si imela prav! Nič hudega.',
+  // ❗ UGOVOR (step lie): catch the claim that isn't true
+  lie: 'Je vse res? Tapni trditev, nato stavek.',
+  lieClaimFirst: 'Najprej tapni, kaj kdo trdi. 💬',
+  lieBoth: 'Oba sta lahko res. Poišči drug stavek.',
+  lieHalf: 'Eden je pravi! Poišči še drugega.',
+  lieH1: 'To trdi. Ali je res? Poišči stavek, ki pove drugače.',
+  lieLook: 'Preberi svetel stavek. Se ujema s trditvijo?',
+  lieAssist: 'Tapni trditev, nato stavek, ki utripa.',
+  lieShout: 'To ni res! Zakliči na glas: UGOVOR!',
+  lieStamp: 'UGOVOR!',
+  lieTruth: 'Zdaj pove resnico.',
+  lieDone: 'Resnica je v žepu! 👝',
+  lieBroken: 'Ta stavek ni res. Na njem je žig.',
+  truthLead: 'Dobra sled! Kateri stavek to dokaže?',
+  liarCaught: 'Laž je že ujeta! Poišči stavek, ki to dokaže.',
+  liarNotCulprit: 'Kdor ne pove resnice, ni nujno kriv.',
+  coachLie1: 'Nekdo nekaj trdi. Ali je res? Tapni to.',
+  coachLie2: 'Kateri stavek pove drugače? Tapni ga.',
+  // ✉️ cipher, 📜 torn note, 🔤 the word search's secret message
+  cipherNo: 'Ta črka ni prava. Poglej ključ.',
+  cipherLook: 'Poišči svetel znak v ključu.',
+  cipherAssist: 'Tapni črko, ki utripa.',
+  cipherDone: 'Preberi listek!',
+  tornNo: 'Še ni prav. Preberi ga na glas.',
+  tornAssist: 'Ta košček pride naslednji. Utripa.',
+  tornDone: 'Listek je cel!',
+  geslo: 'Ostale črke povedo skrivnost!',
   selfClaim: 'To trdi o sebi. Ali je res? Poišči dokaz.',
   solve: 'Prečrtaj, kdo ni bil. Tapni stavek, nato obraz.',
   lastOne: 'Ostal je samo eden. Pokaži dokaz!',
@@ -676,7 +850,14 @@ const UI_AUDIO = {
 // client + call = who phones for help; film = security-camera frames [emoji, caption, 'blur'?]
 // the child steps through on the call screen before the scene; words = a word search (step 'words')
 // whose words name the objects to search; lock = a code lock (step 'lock'): wheels, »Odpri«, no auto-check;
-// order = a timeline (step 'order'): cards [emoji, text] in the right order, shown mixed; card = the sentence pinned to the season's corkboard
+// order = a timeline (step 'order'): cards [emoji, text] in the right order, shown mixed;
+// cipher = a coded note (step 'cipher'): key { symbol: 'LETTER' }, missing (a symbol shown as ?), extra (decoy tiles);
+// torn = a torn note (step 'torn'): parts in the right order; words.geslo = the sentence the letters left over spell.
+// A puzzle gives a sentence (gives / geslo): that sentence has from: '<step>' and lands in the pocket when it is solved.
+// lie = ❗ UGOVOR (step 'lie', just before solve): claims (💬, each with who), claim (the one that isn't true),
+// breaks (sets of 1–2 sentences that show it), truth (from: 'lie', what the liar then says), hmm (near misses
+// [claim, sentence, note]), h1. A step case may have two proofs (a pair): one names the culprit, one names nobody.
+// card = the sentence pinned to the season's corkboard
 // (think = the detective's thought when it is pinned);
 // caught = the culprit in the accusative (newspaper); excuse = the culprit's funny excuse;
 // letter = a thank-you that arrives on the next visit.
@@ -1065,6 +1246,206 @@ const CASES = [
     card: { icon: '⭐', sid: 's5', think: 'Vse sledi so vodile do Bipa! 🎉' },
     letter: ['Hvala! Bip je poklical svojo mamo.', 'Ponj je priletel leteči krožnik.', 'P. S. Bip ti pošilja zeleno zvezdico! 💚'],
   },
+  // ======== 🦔 Skrivnost hotela Galeb ========
+  {
+    id: 'g1', file: 'galeb', no: 1, type: 'elim', level: 'A', sticker: '🐍', place: 'Plaža',
+    steps: ['call', 'scene', 'lie', 'solve'],
+    client: 'rozi', call: ['Cin-cin! Brisače so zvezane v kačo!', 'Popoldne bo tekma peščenih gradov.'],
+    question: 'Kdo je zvezal vse brisače?',
+    suspects: ['hana', 'gusti', 'luka', 'bepi'], culprit: 'luka',
+    sentences: [
+      ['s2', 'Bepi zna vezati mornarske vozle.', 'distractor', { obj: '🪢', label: 'vrv' }],
+      ['s3', 'Vera je z balkona videla Bepija na morju.', 'clear', { obj: '🏨', label: 'hotel', clears: 'bepi' }],
+      ['s1', '»Vse dopoldne sem plaval v morju.«', 'distractor', { obj: '⛱️', label: 'senčnik', who: 'luka' }],
+      ['s4', 'Kača iz brisač se vije okoli Lukovega gradu.', 'evidence', { obj: '🏰', label: 'grad' }],
+      ['s5', 'Gusti ne zna vezati vozlov.', 'clear', { obj: '🛟', label: 'obroč', clears: 'gusti' }],
+      ['s6', 'Lukove kopalke so čisto suhe.', 'neutral', { obj: '🩳', label: 'kopalke' }],
+      ['s7', 'Pod ležalnikom je stran nove knjige o Ježku.', 'neutral', { obj: '🏖️', label: 'ležalnik' }],
+      ['s8', 'Hana je bila dopoldne z mamo v akvariju.', 'clear', { obj: '🎟️', label: 'vstopnica', clears: 'hana' }],
+      ['s9', '»No ja … Ves čas sem gradil grad.«', 'neutral', { from: 'lie', who: 'luka' }],
+    ],
+    // ❗ the first UGOVOR: one claim, the breaker in the same scene; the proof is a third sentence
+    lie: { claims: ['s1'], claim: 's1', breaks: [['s6']], truth: 's9', h1: 'Kaj je mokro, če plavaš v morju?' },
+    h1: 'Kdo NI mogel biti? Kje se vije kača?',
+    reveal: ['Luka je rekel, da je plaval v morju.', 'Lukove kopalke pa so bile čisto suhe.', 'Kača iz brisač je krasila Lukov grad.', 'Luka bi rad zmagal z najdaljšo kačo.'],
+    caught: 'Luko', excuse: 'Rad bi zmagal! Moja kača je najdaljša na svetu!',
+    card: { icon: '📄', sid: 's7', think: 'Nova stran o Ježku? Kdo jo je napisal? 🤔' },
+    letter: ['Hvala! Luka se je vsem opravičil.', 'Z Bepijem sta razvozlala vse brisače.', 'P. S. Hana pravi: pisatelj knjig o Ježku je tu!'],
+  },
+  {
+    id: 'g2', file: 'galeb', no: 2, type: 'elim', level: 'A', sticker: '🪣', place: 'Hodnik',
+    steps: ['call', 'ask', 'cipher', 'lie', 'solve'],
+    client: 'rozi', call: ['Cin-cin! Pred vsemi vrati je pesek!', 'Zvečer je bil hodnik še čist.'],
+    question: 'Kdo je posul pesek pred vsa vrata?',
+    suspects: ['bepi', 'hana', 'gusti', 'luka'], culprit: 'hana',
+    sentences: [
+      ['s1', '»Ves večer sem bila v sobi.«', 'distractor', { who: 'hana', ask: 'Kje si bila zvečer?' }],
+      ['s2', '»Kriii!« Gusti prinese Lukovo lopatko.', 'distractor', { who: 'gusti', ask: 'Kaj si našla na hodniku?' }],
+      ['s3', '»Zvečer je Hana na plaži nabirala pesek.«', 'evidence', { who: 'bepi', ask: 'Koga si videl zvečer?' }],
+      ['s4', '»Luka je na barki smrčal kot medved!«', 'clear', { who: 'bepi', ask: 'Kdo je bil ponoči s teboj?', clears: 'luka' }],
+      ['s5', '»Gusti je ponoči na barki kradla ribe.«', 'clear', { who: 'bepi', ask: 'Kaj je ponoči delala Gusti?', clears: 'gusti' }],
+      ['s8', '»Moja lopatka je izginila že včeraj.«', 'neutral', { who: 'luka', ask: 'Je to tvoja lopatka?' }],
+      ['s6', 'Bepi je lovil ribe.', 'clear', { from: 'cipher', clears: 'bepi' }],
+      ['s7', '»Ponoči je nekdo tipkal: tik-tak-klink!«', 'neutral', { from: 'lie', who: 'hana' }],
+    ],
+    // ✉️ the first coded note, from the hidden author (signed 🦔): the whole key is given
+    cipher: {
+      note: 'Listek z ježkom! Hana ima ključ za Ježkovo pisavo.',
+      key: { '🐚': 'B', '🌊': 'E', '⚓': 'P', '⭐': 'I', '🦀': 'J', '🐟': 'L', '🌙': 'O', '⛵': 'V', '🐙': 'R' },
+      gives: 's6',
+      h1: 'Vsak znak ima svojo črko. Poglej ključ.',
+    },
+    // ❗ a witness's answer breaks the culprit's claim; the truth is the corkboard card
+    lie: { claims: ['s1'], claim: 's1', breaks: [['s3']], truth: 's7', h1: 'Kdo je zvečer videl Hano? Kje?' },
+    h1: 'Kdo NI mogel biti? Kdo je nabiral pesek?',
+    reveal: ['Hana je rekla, da je bila v sobi.', 'Bepi pa je Hano videl na plaži.', 'Pesek je bil past za pisateljeve stopinje.', 'Tik-tak-klink je bil pisalni stroj. Z njim se piše.'],
+    caught: 'Hano', excuse: 'Rada bi ujela pisatelja! Ujela pa sem samo Rozi.',
+    card: { icon: '⌨️', sid: 's7', think: 'Kdo tipka ponoči? Kdo je takrat buden? 🤔' },
+    letter: ['Hvala! Hana je pometla ves hodnik.', 'Pesek je nesla nazaj na plažo.', 'P. S. Luka pravi, da zjutraj pridejo delfini.'],
+  },
+  {
+    id: 'g3', file: 'galeb', no: 3, type: 'elim', level: 'A', sticker: '🔔', place: 'Terasa',
+    steps: ['call', 'ask', 'scene', 'lie', 'solve'],
+    client: 'rozi', call: ['Cin-cin! Ob zori je zazvonil ladijski zvon!', 'Zbudil je ves hotel. Kdo je zvonil?'],
+    question: 'Kdo je ob zori zvonil z ladijskim zvonom?',
+    suspects: ['hana', 'vera', 'bepi', 'luka'], culprit: 'luka',
+    sentences: [
+      ['s1', '»Hana je spala pri babici v Kopru.«', 'clear', { who: 'luka', ask: 'Kje je bila Hana ponoči?', clears: 'hana' }],
+      ['s2', '»Ob zori sem še spal.«', 'distractor', { who: 'bepi', ask: 'Kje si bil ob zori?' }],
+      ['s3', '»Zvon je Bepijev, torej je zvonil Bepi!«', 'distractor', { who: 'hana', ask: 'Kaj misliš, kdo je zvonil?' }],
+      // the plant: Vera's claim looks harmless here; only the final can break it
+      ['s4', '»Ob devetih že spim.«', 'neutral', { who: 'vera', ask: 'Kdaj greste spat?' }],
+      ['s5', 'Bepijevi rokavčki so še mokri.', 'neutral', { obj: '🏊', label: 'bazen' }],
+      ['s6', 'Ob zori je eno okno še svetilo.', 'neutral', { obj: '📄', label: 'pod mizo', dark: true }],
+      ['s7', 'Pod zvonom stoji Lukovo vedro.', 'evidence', { obj: '🔔', label: 'zvon' }],
+      ['s8', 'Vera je bila ob zori v sobi 7.', 'clear', { obj: '🚪', label: 'soba 7', clears: 'vera' }],
+      ['s10', 'Na stolu je Bepijev moder pleten pulover.', 'neutral', { obj: '🧥', label: 'stol' }],
+      // the liar is innocent: his truth is his alibi, backed by the wet armbands on screen
+      ['s9', '»Ja … Ob zori sem se učil plavati.«', 'clear', { from: 'lie', who: 'bepi', clears: 'bepi' }],
+    ],
+    // ❗ two claims from the questioning, the breaker in the scene; Vera's claim + the lit window is a near miss
+    lie: { claims: ['s2', 's4'], claim: 's2', breaks: [['s5']], truth: 's9',
+      hmm: [['s4', 's6', 'Hmm … Čigavo okno je to? Bomo videli!'], ['s2', 's3', 'Hmm … Hana samo ugiba. Poglej na kraj dogodka!']],
+      h1: 'Kaj je mokro? Čigavo je?' },
+    h1: 'Kdo NI mogel zvoniti? Kaj stoji pod zvonom?',
+    reveal: ['Pod zvonom je stalo Lukovo vedro.', 'Luka je ob zori videl delfine.', 'Stopil je na vedro in zazvonil za vse.', 'Mokri rokavčki? Bepi se je učil plavati!'],
+    caught: 'Luko', excuse: 'Delfini! Vsi bi jih morali videti!',
+    card: { icon: '🪟', sid: 's6', think: 'Kdo je pisal do jutra? 🤔' },
+    letter: ['Cin-cin! Hvala, vsi smo videli delfine!', 'Luka zdaj uči Bepija plavati.', 'P. S. Bepijeva kapa je izginila!'],
+  },
+  {
+    id: 'g4', file: 'galeb', no: 4, type: 'elim', level: 'A', sticker: '🧢', place: 'Pomol',
+    steps: ['call', 'torn', 'ask', 'lie', 'solve'],
+    client: 'bepi', call: ['Moja kapitanska kapa je izginila!', 'Zjutraj je visela na moji barki.'],
+    question: 'Kdo je vzel Bepijevo kapitansko kapo?',
+    suspects: ['luka', 'gusti', 'vera', 'hana'], culprit: 'gusti',
+    // 📜 the first torn note: Rozi's note, the breaker for Hana's lie two steps later
+    torn: {
+      note: 'Veter je raztrgal Rozin listek. Sestavi ga.',
+      parts: ['Zjutraj je', 'Gusti kričala', 'na naši', 'strehi.'],
+      gives: 's1',
+      h1: 'Pika je na koncu. Tudi ime ima veliko črko.',
+      h2: 'Kdo je kričal? Kje je kričal?',
+    },
+    sentences: [
+      ['s1', 'Zjutraj je Gusti kričala na naši strehi.', 'neutral', { from: 'torn' }],
+      ['s2', '»Kapo sem nosil samo včeraj.«', 'distractor', { who: 'luka', ask: 'Si ti nosil Bepijevo kapo?' }],
+      ['s3', '»Hana je zjutraj z Rozi zalivala rože.«', 'clear', { who: 'luka', ask: 'Kaj je delala Hana zjutraj?', clears: 'hana' }],
+      ['s4', '»Gospa Vera je zjutraj gledala ptice z balkona.«', 'clear', { who: 'luka', ask: 'Koga si še videl zjutraj?', clears: 'vera' }],
+      // a lie about someone else, told to protect her
+      ['s5', '»Gusti je bila zjutraj pri svetilniku.«', 'distractor', { who: 'hana', ask: 'Kje je bila Gusti zjutraj?' }],
+      // once this season, »rada« is a real clue, not the decoy
+      ['s6', '»Gusti zelo rada zbira mehke stvari.«', 'neutral', { who: 'hana', ask: 'Kaj veš o Gusti?' }],
+      ['s7', '»Luka je zjutraj Bepija učil plavati.«', 'clear', { who: 'vera', ask: 'Kaj ste videli zjutraj?', clears: 'luka' }],
+      ['s8', '»Gusti sedi v Bepijevi kapi na dimniku.«', 'evidence', { who: 'vera', ask: 'Kaj vidite z daljnogledom?' }],
+      ['s9', '»V gnezdu sta modra volna in natipkan listek.«', 'neutral', { who: 'vera', ask: 'Kaj je še na dimniku?' }],
+      ['s10', '»Kriii! Kriii!«', 'neutral', { who: 'gusti', ask: 'Gusti, kje je kapa?' }],
+      ['s11', '»Na dimniku je gnezdo. Ne podrite ga!«', 'neutral', { from: 'lie', who: 'hana' }],
+    ],
+    // ❗ the breaker came from the puzzle; the liar is innocent (a protector)
+    lie: { claims: ['s2', 's5'], claim: 's5', about: 'gusti', breaks: [['s1']], truth: 's11',
+      hmm: [['s5', 's8', 'Hmm … Zdaj je na dimniku. Kje pa zjutraj?']],
+      h1: 'Preberi Rozin listek. Kje je kričala Gusti?' },
+    h1: 'Kdo NI mogel biti? Kje je zdaj kapa?',
+    reveal: ['Vera je videla Gusti v Bepijevi kapi.', 'Gusti rada zbira mehke stvari.', 'V kapi je naredila gnezdo s tremi jajci.', 'Hana je samo varovala gnezdo. 🥚'],
+    caught: 'Gusti', excuse: 'Kriii! Za moje mladičke samo najmehkejše!',
+    card: { icon: '🧶', sid: 's9', think: 'Modra volna … Kot Bepijev pulover? 🤔' },
+    letter: ['Hvala! Gusti lahko obdrži mojo kapo.', 'Trije mladički! Veliki so kot barka! 🐣', 'P. S. Luka gradi največji grad na plaži.'],
+  },
+  {
+    id: 'g5', file: 'galeb', no: 5, type: 'elim', level: 'A', sticker: '🏰', place: 'Plaža',
+    steps: ['call', 'scene', 'words', 'lie', 'solve'],
+    client: 'luka', call: ['Moj veliki grad je podrt!', 'Včeraj je bil še največji na plaži.'],
+    question: 'Kaj je ponoči podrlo Lukov grad?',
+    suspects: ['hana', 'bepi', 'morje', 'gusti'], culprit: 'morje',
+    sentences: [
+      ['s2', 'Na gradu je Gustino pero.', 'distractor', { obj: '🪶', label: 'pesek' }],
+      ['s3', 'Mama je Hano ponoči dvakrat pokrila z odejo.', 'clear', { obj: '🛏️', label: 'soba', clears: 'hana' }],
+      ['s4', 'Brisače na ležalnikih so ostale suhe.', 'neutral', { obj: '🏖️', label: 'ležalnik' }],
+      ['s1', '»Ponoči je prišel val, visok kot hotel!«', 'neutral', { obj: '⚓', label: 'pomol', who: 'bepi' }],
+      ['s5', '»Prvo knjigo o Ježku je brala že babica.«', 'neutral', { obj: '📚', label: 'knjige', who: 'hana' }],
+      ['s6', 'Po vsem gradu ležijo mokre alge iz morja.', 'evidence', { obj: '🏰', label: 'grad' }],
+      ['s7', 'Bepijeva barka je priplula z morja šele zjutraj.', 'clear', { obj: '⛵', label: 'barka', clears: 'bepi' }],
+      ['s10', 'Gospa Vera na balkonu plete moder šal.', 'neutral', { obj: '🧶', label: 'balkon' }],
+      ['s8', 'Ponoči Gusti greje jajca.', 'clear', { from: 'words', clears: 'gusti' }],
+      ['s9', '»No ja … Majhen val pa je bil!«', 'neutral', { from: 'lie', who: 'bepi' }],
+    ],
+    // 🔤 iskanka with a geslo: the 21 letters no word uses spell Gusti's alibi (answers the feather)
+    words: {
+      note: 'Hana ti je narisala iskanko. Ostale črke so skrivnost.',
+      grid: ['PONAOČ', 'GIVLGU', 'RSAGTP', 'AILEGE', 'DREJER', 'JAJCAO'],
+      find: [['🏰', 'GRAD'], ['🌊', 'VAL'], ['🌿', 'ALGE'], ['🪶', 'PERO']],
+      geslo: 's8',
+      h1: 'Besede gredo samo → in ↓.',
+    },
+    // ❗ a tall tale: throw away the part that isn't true (the size), keep the part that is (a wave)
+    lie: { claims: ['s1', 's5'], claim: 's1', breaks: [['s4']], truth: 's9',
+      hmm: [['s1', 's6', 'Val je res bil. Ampak kako visok?']],
+      h1: 'Velik val zmoči vse. Kaj je suho?' },
+    h1: 'Kdo NI mogel biti? Od kod so alge?',
+    reveal: ['Ponoči je morje naraslo. Temu rečemo plima.', 'Majhen val je podrl Lukov grad.', 'Zato so po gradu alge iz morja.', 'Gusti je pristala na gradu šele zjutraj.'],
+    caught: 'morje', excuse: 'Šššš … Samo grad sem želelo videti!',
+    card: { icon: '📚', sid: 's5', think: 'Knjige so stare. Je tudi pisatelj star? 🤔' },
+    letter: ['Hvala! Nov grad gradimo višje na plaži.', 'Bepi pomaga. Grad bo velik kot hotel! 😄', 'P. S. Bepi pravi: eno okno sveti do jutra.'],
+  },
+  {
+    id: 'g6', file: 'galeb', no: 6, final: true, type: 'elim', level: 'A', sticker: '🦔', place: 'Recepcija',
+    steps: ['call', 'cipher', 'ask', 'lie', 'solve'],
+    client: 'rozi', call: ['Cin-cin! Zadnji listek z ježkom!', 'Ugotovi, kdo piše knjige o Ježku!'],
+    question: 'Kdo piše knjige o Ježku?',
+    suspects: ['hana', 'bepi', 'luka', 'vera'], culprit: 'vera',
+    sentences: [
+      ['s1', '»Ob devetih že spim.«', 'distractor', { who: 'vera', ask: 'Kdaj greste spat?' }],
+      ['s2', '»Prebrala sem vse knjige o Ježku!«', 'distractor', { who: 'hana', ask: 'Kaj rada bereš?' }],
+      ['s3', '»Ponoči je v sobi 7 gorela luč.«', 'neutral', { who: 'bepi', ask: 'Kaj si videl ponoči z morja?' }],
+      ['s4', '»Hana je dobila pismo od Ježka.«', 'clear', { who: 'luka', ask: 'Zakaj je Hana tako vesela?', clears: 'hana' }],
+      ['s5', '»Bepi stanuje na barki, ne v hotelu.«', 'clear', { who: 'hana', ask: 'Kje stanuje kapitan Bepi?', clears: 'bepi' }],
+      ['s6', '»Pletem moder šal. Dolg je že kot hodnik!«', 'neutral', { who: 'vera', ask: 'Kaj pletete?' }],
+      ['s7', '»Luka še ne zna tipkati.«', 'clear', { who: 'bepi', ask: 'Zna Luka tipkati?', clears: 'luka' }],
+      // the proof pair: this half names the culprit (it comes first, as the checker reads the first proof) …
+      ['s8', '»Gospa Vera stanuje v sobi 7.«', 'evidence', { who: 'hana', ask: 'Kaj si zapisala v zvezek?' }],
+      // … and the coded note names nobody
+      ['s9', 'Pišem v sobi 7. 🦔', 'evidence', { from: 'cipher' }],
+      ['s10', '»No ja … Ponoči sem res budna.«', 'neutral', { from: 'lie', who: 'vera' }],
+    ],
+    // ✉️ the author's last note, one notch up: 🦑 has no pair (»PI?EM« can only be PIŠEM), Č and Ž are decoys
+    cipher: {
+      note: 'Zadnji listek z ježkom. En znak manjka!',
+      key: { '⚓': 'P', '⭐': 'I', '🌊': 'E', '🐬': 'M', '⛵': 'V', '🐢': 'S', '🌙': 'O', '🐚': 'B', '🦑': 'Š' },
+      missing: '🦑', extra: ['Č', 'Ž'], gives: 's9',
+      h1: 'Preberi prvo besedo. Katera črka manjka?',
+      h2: 'Manjka Š. Prva beseda je PIŠEM.',
+    },
+    // ❗ the plant from case 3 breaks only with a pair: a light in room 7 at night + whose room it is
+    lie: { claims: ['s1', 's2'], claim: 's1', breaks: [['s3', 's8']], truth: 's10',
+      hmm: [['s1', 's9', 'Hmm … Kdaj pa piše? Kaj je bilo ponoči?']],
+      h1: 'Kaj je bilo ponoči v sobi 7? Čigava je?' },
+    h1: 'Kdo NI mogel biti? Kje piše Ježek?',
+    reveal: ['Ježek piše v sobi 7, kjer stanuje Vera.', 'Ponoči je tipkala, zato je gorela luč.', 'Volna v gnezdu je bila z njenega šala.', 'Gospa Vera piše knjige o Ježku! 🦔'],
+    caught: 'gospo Vero', excuse: 'Ježki so pač ponoči budni!',
+    card: { icon: '🦔', sid: 's9', think: 'Vse strani so vodile v sobo 7! 🦔' },
+    letter: ['Gospa Vera ti je spletla modri šal!', 'Pravi, da je za zimske primere. 🧣', 'P. S. Vera sprašuje: »Pozimi grem v gore. Prideš?«'],
+  },
 ];
 
 // Practice case for the first-time tutorial: very easy, the answer is stated plainly.
@@ -1103,6 +1484,12 @@ function clipList() {
       out.push([c.id + '_on', c.order.note], [c.id + '_oh1', c.order.h1], [c.id + '_oh2', c.order.h2], [c.id + '_od', c.order.done]);
       c.order.cards.forEach((k, i) => out.push([`${c.id}_o${i + 1}`, k[1]]));
     }
+    if (c.cipher) out.push([c.id + '_cn', c.cipher.note], [c.id + '_ch1', c.cipher.h1], ...(c.cipher.h2 ? [[c.id + '_ch2', c.cipher.h2]] : []));
+    if (c.torn) out.push([c.id + '_pn', c.torn.note], [c.id + '_ph1', c.torn.h1], [c.id + '_ph2', c.torn.h2]);
+    if (c.lie) {
+      if (c.lie.h1) out.push([c.id + '_lh1', c.lie.h1]);
+      (c.lie.hmm || []).forEach((m, i) => out.push([`${c.id}_lm${i + 1}`, m[2]]));
+    }
     for (const s of c.sentences) out.push([c.id + '_' + s.id, s.text]);
     for (const s of c.sentences) if (s.ask) out.push([`${c.id}_${s.id}q`, s.ask]);
     out.push([c.id + '_h1', c.h1]);
@@ -1114,7 +1501,9 @@ function clipList() {
   for (const f of FILES) if (f.guess) {
     out.push([f.id + '_gq', f.guess.q]);
     for (const [id, , t] of f.guess.options) out.push([`${f.id}_g_${id}`, t]);
+    if (f.guess.q2) out.push([f.id + '_gq2', f.guess.q2]);
     if (f.answer) out.push([f.id + '_a', f.answer.text]);
+    if (f.book) out.push([f.id + '_bq', f.book.q]);
   }
   return out;
 }
@@ -1307,6 +1696,12 @@ function newRun() {
     wheels: null, open: false, kwrong: 0,
     // timeline: the cards as shown (mixed), the slots filled so far, wrong checks, done
     deck: null, slots: [], good: [], owrong: 0, ordered: false,
+    // cipher: letters solved, the ringed cell, wrong taps (and at the missing symbol)
+    cgot: [], cring: null, cwrong: 0, cmiss: 0,
+    // ❗ UGOVOR: the claim and sentences tapped, wrong tries, caught, the catch's phase (shout → stamp → done)
+    lclaim: null, lorder: null, lrows: [], lbroke: [], lwrong: 0, llook: false, lassisted: false, caught: false, lphase: null, lcoach: undefined,
+    // a two-proof step case: the proof already shown
+    proofs: [],
   };
 }
 
@@ -1471,6 +1866,12 @@ function endTutorial() {
 // What Babica says on each screen, and which element glows.
 function coachStep() {
   const t = S.tut, r = S.run;
+  // the first UGOVOR ever: the owl shows the two taps (a finger only when there is one claim to point at)
+  if (S.screen === 'lie' && r && r.lcoach && !r.caught && !r.hint) {
+    const one = S.c.lie.claims.length === 1;
+    return r.lcoach === 1 ? { text: UI_AUDIO.coachLie1, sel: one ? '.claim' : '.claims', point: one }
+      : { text: UI_AUDIO.coachLie2, sel: '.liestep .rows', point: false };
+  }
   if (!t) return null;
   if (S.screen === 'files') return t.board ? { text: 'Zdaj izberi pustolovščino in reši svoj primer!', sel: '.file-card', ok: true } : null;
   if (S.screen === 'board') return null;
@@ -1544,8 +1945,9 @@ document.body.addEventListener('click', (e) => {
 // anonymous player id), so the game reads it as before. The others wait in DETECTIVES_KEY as
 // copies of those keys and swap in when picked. Nothing leaves the device.
 const DETECTIVES_KEY = 'dp_detectives_v1';
-const GUESS_KEY = 'dp_guess_v1';   // { fileId: the option the child guessed }
-const KID_KEYS = [PROFILE_KEY, PLAYED_KEY, TUT_KEY, LETTER_KEY, PLAYER_KEY, GUESS_KEY];
+const GUESS_KEY = 'dp_guess_v1';   // { fileId: the option the child guessed now, 'fileId:first', 'fileId:again' }
+const UGOVOR_KEY = 'dp_ugovor_v1'; // the detective has shouted UGOVOR once (the owl and the shout come only the first time)
+const KID_KEYS = [PROFILE_KEY, PLAYED_KEY, TUT_KEY, LETTER_KEY, PLAYER_KEY, GUESS_KEY, UGOVOR_KEY];
 const raw = {
   get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
   set(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} },
@@ -1647,12 +2049,14 @@ function backTarget() {
       if (tut) return store.read(TUT_KEY, false) ? () => { S.tut = null; S.c = null; toHome(); } : () => { ACTIONS.editCard(); S.mk.step = 4; render(); };
       return S.orderMode === 'board' ? toBoard : 'stay';
     case 'call': return S.orderMode === 'board' ? toBoard : 'stay';
-    case 'scene': case 'ask': case 'words': case 'lock': case 'order': return S.run.hint ? 'stay' : () => go(stepNext(-1));
+    case 'scene': case 'ask': case 'words': case 'lock': case 'order': case 'cipher': case 'torn': return S.run.hint ? 'stay' : () => go(stepNext(-1));
+    case 'lie': return S.run.hint || S.run.lphase === 'shout' || S.run.lphase === 'stamp' ? 'stay' : () => go(stepNext(-1));
     case 'solve': return S.run.hint ? 'stay' : () => go(stepNext(-1));
     case 'story': return () => go('intro');
     case 'accuse': return () => go('story');
     case 'evidence': return S.run.hint ? 'stay' : () => { S.run.picks = []; go('accuse'); };
     case 'reveal': return tut ? endTutorial : S.orderMode === 'board' ? toBoard : 'stay';
+    case 'book': return S.run && S.run.fromBoard ? toBoard : () => go('reveal');
     case 'soon': return () => go('more');
     case 'thanks': return KID_MODE ? ACTIONS.backToBoard : 'stay';
     case 'title': return ACTIONS.toSetup;
@@ -1746,9 +2150,9 @@ function evFooter() {
 
 // Every hint follows a wrong answer: it says so first (✖ Ni prav. / Skoraj!), then what to do.
 function hintHTML(h) {
-  const almost = h.key === 'pairHalf' || h.key === 'partial';
-  return `<div class="hint ${almost ? 'almost' : 'no'}" id="hint"><span class="hi">${almost ? '💡' : '✖'}</span>`
-    + `<span class="txt"><b class="verdict">${almost ? UI_AUDIO.almost : UI_AUDIO.no}</b> ${esc(h.text)}</span>${spk(h.clip)}`
+  const almost = ['pairHalf', 'partial', 'liarCaught', 'truthLead'].includes(h.key), tip = !almost && h.level >= 1;
+  return `<div class="hint ${almost ? 'almost' : tip ? 'tip' : 'no'}" id="hint"><span class="hi">${almost || tip ? '💡' : '✖'}</span>`
+    + `<span class="txt">${tip ? '' : `<b class="verdict">${almost ? UI_AUDIO.almost : UI_AUDIO.no}</b> `}${esc(h.text)}</span>${spk(h.clip)}`
     + `<button class="btn" data-act="hintOk">${UI_AUDIO.again}</button></div>`;
 }
 
@@ -1769,8 +2173,57 @@ function wordSpots(w) {
 
 // Step cases: the step after (or before, d = -1) the current screen, and the button that goes on.
 const stepNext = (d = 1) => S.c.steps[S.c.steps.indexOf(S.screen) + d];
-const STEP_LABEL = { ask: 'Zasliši osumljence 🗣️', words: 'Preberi listek 🔤', lock: 'K vratom 🔐', order: 'Poglej slike 🕐', scene: 'Na kraj dogodka 🔍' };
-const stepLabel = () => STEP_LABEL[stepNext()];
+const STEP_LABEL = { ask: 'Zasliši osumljence 🗣️', words: 'Preberi listek 🔤', lock: 'K vratom 🔐', order: 'Poglej slike 🕐', scene: 'Na kraj dogodka 🔍',
+  cipher: 'Skrivni listek ✉️', torn: 'Raztrgan listek 📜', lie: 'Je vse res? ❗' };
+const stepLabel = () => STEP_LABEL[stepNext()] || 'Vem, kdo je bil!';
+
+// Where a sentence of a step case is found: a puzzle or UGOVOR gives it (from), an answer in the
+// questioning (ask), or else an object in the scene. A step counts only its own sentences.
+const stepOf = (s) => s.from || (s.ask ? 'ask' : 'scene');
+const own = (step) => S.c.sentences.filter(s => stepOf(s) === step);
+function deliver(sid) {
+  if (!S.run.found.includes(sid)) S.run.found.push(sid);
+}
+const unq = (t) => t.replace(/^»|«$/g, '');
+const liarOf = (c = S.c) => c.lie && c.sentences.find(s => s.id === c.lie.claim).who;
+
+// The lie is caught: the first time ever the child shouts UGOVOR (a big red button), then the stamp
+// slams onto the claim, the liar blushes and "types", and the truth arrives and goes into the pocket.
+function lieCatch() {
+  const r = S.run, liar = liarOf();
+  r.caught = true;
+  r.lbroke = r.lrows;
+  r.lrows = [];
+  r.note = null;
+  log('lie_done', { wrong: r.lwrong, assisted: r.lassisted, liar, liarIsCulprit: liar === S.c.culprit });
+  if (store.read(UGOVOR_KEY, false)) { lieStamp(); return; }
+  r.lphase = 'shout';
+  render();
+  play('ui_lieShout', UI_AUDIO.lieShout, $('.shout .row'));
+}
+function lieStamp() {
+  const r = S.run, c = S.c, s = sent(c.lie.truth);
+  r.lphase = 'stamp';
+  render();
+  sfx('stamp');
+  play('ui_lieStamp', UI_AUDIO.lieStamp);
+  const scr = $('.liestep');
+  if (scr && !matchMedia('(prefers-reduced-motion: reduce)').matches) scr.classList.add('shake');
+  setTimeout(() => {
+    if (S.screen !== 'lie' || S.run !== r || r.lphase !== 'stamp') return;
+    r.lphase = 'done';
+    deliver(s.id);
+    sfx('pop');
+    render();
+    play(c.id + '_' + s.id, s.text, $('.ltruth .mtxt'));
+  }, 1700);
+}
+
+// ✉️ The coded note is the sentence it gives, in capitals, word by word: a letter has its symbol (e), the rest shows plain.
+function cipherCells(k) {
+  const sym = Object.fromEntries(Object.entries(k.key).map(([e, l]) => [l, e]));
+  return sent(k.gives).text.toUpperCase().split(' ').map(w => [...w].map(ch => /\p{L}/u.test(ch) ? { ch, e: sym[ch] } : { ch }));
+}
 
 // The security camera on the call screen: one frame at a time, the child taps on (no timer).
 function filmHTML(c, r) {
@@ -1785,22 +2238,34 @@ function filmHTML(c, r) {
 }
 
 // After case f.guess.after the child guesses what is in the vent (kept per detective).
+// With guess.again, after that case the child may keep the guess or change it, once (S.reguess = choosing again).
 function guessHTML(f, pinned) {
   if (!f.guess || pinned < f.guess.after) return '';
   if (f.answer && fileDone(f.id)) return answerHTML(f);
-  const g = f.guess, mine = store.read(GUESS_KEY, {})[f.id];
+  const g = f.guess, all = store.read(GUESS_KEY, {}), mine = all[f.id];
   const pick = g.options.find(o => o[0] === mine);
-  if (pick) return `<div class="guess done">🤔 Tvoje ugibanje: ${pick[1]} ${esc(pick[2])}. Bomo videli!</div>`;
-  return `<div class="guess"><div class="row" data-act="say" data-clip="${f.id}_gq">🤔 ${esc(g.q)}</div>
+  const again = pick && g.again && pinned >= g.again && !all[f.id + ':again'];
+  const opts = (q, clip) => `<div class="guess asking"><div class="row" data-act="say" data-clip="${clip}">🤔 ${esc(q)}</div>
     <div class="guess-opts">${g.options.map(([id, e, t]) =>
-      `<button class="btn secondary" data-act="ventGuess" data-id="${id}">${e} ${esc(t)}</button>`).join('')}</div></div>`;
+      `<button class="btn secondary ${id === mine ? 'before' : ''}" data-act="ventGuess" data-id="${id}">${e} ${esc(t)}${id === mine ? ' <small>(prej)</small>' : ''}</button>`).join('')}</div></div>`;
+  if (again && S.reguess) return opts(g.q, f.id + '_gq');
+  if (again) return `<div class="guess asking"><div class="row" data-act="say" data-clip="${f.id}_gq2">🤔 ${esc(g.q2)}</div>
+    <div class="gres">Tvoje ugibanje: ${pick[1]} ${esc(pick[2])}.</div>
+    <div class="guess-opts"><button class="btn secondary" data-act="guessKeep">👍 Da</button><button class="btn secondary" data-act="guessChange">🔄 Spremenim</button></div></div>`;
+  if (pick) return `<div class="guess done">🤔 Tvoje ugibanje: ${pick[1]} ${esc(pick[2])}. Bomo videli!</div>`;
+  return opts(g.q, f.id + '_gq');
 }
 
-// The season is solved: what was in the vent, and whether the child's guess was right.
+// The season is solved: what the answer was, and whether the child's guess was right
+// (and, if the child changed it, whether the change was).
 function answerHTML(f) {
-  const pick = f.guess && f.guess.options.find(o => o[0] === store.read(GUESS_KEY, {})[f.id]);
+  const all = store.read(GUESS_KEY, {});
+  const pick = f.guess && f.guess.options.find(o => o[0] === all[f.id]);
+  const first = all[f.id + ':first'], changed = pick && first && first !== pick[0];
   const right = pick && pick[0] === f.answer.id;
-  const verdict = !pick ? null : right ? ['ui_guessRight' + ga('', 'F'), ga(UI_AUDIO.guessRight, UI_AUDIO.guessRightF)] : ['ui_guessWrong', UI_AUDIO.guessWrong];
+  const line = (k) => ['ui_' + k + ga('', 'F'), ga(UI_AUDIO[k], UI_AUDIO[k + 'F'])];
+  const verdict = !pick ? null : right ? line(changed ? 'guessChanged' : 'guessRight')
+    : changed && first === f.answer.id ? line('guessFirst') : ['ui_guessWrong', UI_AUDIO.guessWrong];
   return `<div class="guess done answer ${right ? 'right' : ''}">
     <div class="row" data-act="say" data-clip="${f.id}_a">${f.answer.icon} ${esc(f.answer.text)}</div>
     ${pick ? `<div class="gres">🤔 Tvoje ugibanje: ${pick[1]} ${esc(pick[2])}.
@@ -1819,13 +2284,14 @@ function corkboard(f, cases) {
     const s = c && c.card && isSolved(c) ? c.sentences.find(x => x.id === c.card.sid) : null;
     const isNew = fresh && c === fresh;
     return (i ? `<span class="string ${isNew ? 'draw' : ''}"></span>` : '')
-      + (s ? `<div class="pincard ${isNew ? 'new' : ''}" data-act="say" data-clip="${c.id}_${s.id}"><span class="ci">${c.card.icon}</span>${esc(s.text)}</div>`
+      + (s ? `<div class="pincard ${isNew ? 'new' : ''} ${f.pages ? 'page' : ''}" data-act="say" data-clip="${c.id}_${s.id}"><span class="ci">${c.card.icon}</span>${esc(s.text)}</div>`
         : '<div class="pincard empty">?</div>');
   }).join('');
-  return `<div class="cork"><div class="cork-q">📌 ${esc(f.mystery)}${pinned >= 2 ? `<button class="vent" data-act="vent" aria-label="zračnik"><span class="eyes">${f.answer && fileDone(f.id) ? f.answer.icon : '👀'}</span></button>` : ''}</div>
+  const guess = guessHTML(f, pinned);
+  return `<div class="cork ${guess.includes('asking') ? 'asking' : ''}"><div class="cork-q">📌 ${esc(f.mystery)}${f.peek && pinned >= 2 ? `<button class="vent" data-act="vent" data-say="${esc(f.peek.say)}" aria-label="${esc(f.peek.label)}"><span class="eyes">${f.answer && fileDone(f.id) ? f.answer.icon : f.peek.icon}</span></button>` : ''}</div>
     <div class="pins">${pins}</div>
     ${fresh && fresh.card.think ? `<div class="think" data-act="say" data-clip="${fresh.id}_t">💭 ${esc(fresh.card.think)}</div>` : ''}
-    ${guessHTML(f, pinned)}</div>`;
+    ${guess}</div>`;
 }
 
 function letterHTML(c) {
@@ -1844,7 +2310,7 @@ function elimTarget() {
   const c = S.c, r = S.run;
   const who = c.suspects.find(id => id !== c.culprit && !r.crossed.includes(id));
   if (who) return { who, sid: c.sentences.find(s => s.clears === who).id };
-  return { who: c.culprit, sid: c.sentences.find(s => s.role === 'evidence').id };
+  return { who: c.culprit, sid: c.sentences.find(s => s.role === 'evidence' && !r.proofs.includes(s.id)).id };
 }
 
 function ladderHint(level) {
@@ -1981,7 +2447,7 @@ const T = {
     return `<div class="screen">
       <div class="board-head"><span class="q">${f.icon} ${esc(f.title)}</span>
         <span class="count">✔ ${done} / ${cases.length + soon}</span></div>
-      ${fileDone(S.file) ? `<div class="trophy">🏅 Pustolovščina rešena! Bravo, ${esc(detName(p))}!</div>` : ''}
+      ${fileDone(S.file) ? `<div class="trophy">🏅 Pustolovščina rešena! Bravo, ${esc(detName(p))}!${f.book ? ' <button class="btn secondary" data-act="openBook">📖 Moja knjiga</button>' : ''}</div>` : ''}
       ${S.toast && S.toast !== 'soon' ? `<div class="toast">${esc(S.toast)}</div>` : ''}
       ${soon && done === cases.length ? `<div class="waiting ${S.toast === 'soon' ? 'flash' : ''}"><span>⏳ Primer ${cases.length + 1} pride kmalu! Medtem reši druge pustolovščine.</span>
         <button class="btn" data-act="toFiles">🗺️ Pojdi</button></div>` : ''}
@@ -2079,34 +2545,132 @@ const T = {
     const ends = look && r.wwrong >= 6 ? [look.cells[0], look.cells[look.cells.length - 1]] : [];
     const got = new Set(r.words.flatMap(x => spots[x].cells));
     const letters = w.grid.flatMap(row => [...row]);
-    return `<div class="screen scene wordsearch ${r.hint ? 'locked' : ''}">
+    // the geslo: once every word is found, the letters left over glow and spell a sentence, in order
+    const geslo = done && w.geslo;
+    let k = 0;
+    const strip = geslo && `<div class="geslo">${sent(w.geslo).text.toUpperCase().split(' ').map(x => `<span class="gw">${[...x].map(ch =>
+      /\p{L}/u.test(ch) ? `<span class="gl" style="animation-delay:${k++ * 80}ms">${ch}</span>` : `<span>${esc(ch)}</span>`).join('')}</span>`).join('')}${spk(c.id + '_' + w.geslo)}</div>`;
+    let j = 0;
+    return `<div class="screen scene wordsearch ${geslo ? 'gesloed' : ''} ${r.hint ? 'locked' : ''}">
       <div class="caseq">❓ ${esc(c.question)}</div>
       <div class="row wnote" data-act="say" data-clip="${c.id}_wn">📃 ${esc(w.note)}</div>
       <div class="wwrap">
         <div class="wgrid" style="--n:${[...w.grid[0]].length}">${letters.map((ch, i) => `<button class="wcell
-          ${got.has(i) ? 'got' : ''} ${r.wsel === i ? 'sel' : ''} ${line(i) ? 'hl' : ''} ${ends.includes(i) ? 'pulse' : ''}" data-act="wordTap" data-i="${i}">${ch}</button>`).join('')}</div>
-        <div class="wlist">${w.find.map(([e, x]) => `<span class="wword ${r.words.includes(x) ? 'got' : ''}">${e} ${x}</span>`).join('')}</div>
+          ${got.has(i) ? 'got' : geslo ? 'left' : ''} ${r.wsel === i ? 'sel' : ''} ${line(i) ? 'hl' : ''} ${ends.includes(i) ? 'pulse' : ''}" data-act="wordTap" data-i="${i}"
+          ${geslo && !got.has(i) ? `style="animation-delay:${j++ * 80}ms"` : ''}>${ch}</button>`).join('')}</div>
+        ${strip || `<div class="wlist">${w.find.map(([e, x]) => `<span class="wword ${r.words.includes(x) ? 'got' : ''}">${e} ${x}</span>`).join('')}</div>`}
       </div>
-      ${r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
+      ${geslo ? `<div class="toast good">🔤 ${UI_AUDIO.geslo}</div>` : r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
         <span class="grow"></span><button class="btn big" data-act="toScene" ${done ? '' : 'disabled'}>${stepLabel()}</button></div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
 
+  // A puzzle step: ✉️ coded note. The ringed cell takes the tapped letter; a right letter fills every
+  // cell with its symbol. The key may hide one pair (?) that the word gives away; extra tiles are decoys.
+  cipher() {
+    const c = S.c, r = S.run, k = c.cipher, words = cipherCells(k), flat = words.flat();
+    const done = flat.every(x => !x.e || r.cgot.includes(x.ch));
+    const open = (i) => flat[i] && flat[i].e && !r.cgot.includes(flat[i].ch);
+    r.cring = done ? null : open(r.cring) ? r.cring : flat.findIndex((x, i) => open(i));
+    const want = done ? null : flat[r.cring];
+    const tiles = [...new Set([...flat.filter(x => x.e).map(x => x.ch), ...(k.extra || [])])].sort((a, b) => a.localeCompare(b, 'sl'));
+    const lit = want && r.cwrong >= 4 && want.e !== k.missing ? want.e : null;
+    const pulse = want && (r.cwrong >= 6 || (want.e === k.missing && r.cmiss >= 3)) ? want.ch : null;
+    let i = 0;
+    const msg = words.map(w => `<span class="cword">${w.map(x => {
+      const n = i++;
+      return x.e ? `<button class="ccell ${r.cgot.includes(x.ch) ? 'got' : ''} ${n === r.cring ? 'ring' : ''}" data-act="cipherCell" data-i="${n}"><span class="cs">${x.e}</span><span class="cl">${r.cgot.includes(x.ch) ? x.ch : ''}</span></button>`
+        : `<span class="cplain">${esc(x.ch)}</span>`;
+    }).join('')}</span>`).join('');
+    return `<div class="screen center cipherstep ${done ? 'done' : ''} ${r.hint ? 'locked' : ''}">
+      <div class="caseq">❓ ${esc(c.question)}</div>
+      <div class="row wnote" data-act="say" data-clip="${c.id}_cn">✉️ ${esc(k.note)}</div>
+      <div class="ckey">${Object.entries(k.key).map(([e, l]) => `<span class="cchip ${e === lit ? 'hl' : ''}"><span>${e}</span><b>${e === k.missing ? '?' : l}</b></span>`).join('')}</div>
+      <div class="cmsg">${msg}</div>
+      ${done ? `<div class="row cdone" data-act="listenClue" data-sid="${k.gives}">📃 ${sayHTML(sent(k.gives))}</div>`
+        : `<div class="ctiles">${tiles.map(l => `<button class="ctile ${l === pulse ? 'pulse' : ''}" data-act="cipherTile" data-l="${l}" ${r.cgot.includes(l) ? 'disabled' : ''}>${l}</button>`).join('')}</div>`}
+      ${done ? `<div class="toast good">✅ ${UI_AUDIO.cipherDone}</div>` : r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
+      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
+        <button class="btn big" data-act="toScene" ${done ? '' : 'disabled'}>${stepLabel()}</button></div>
+    </div>${r.hint ? hintHTML(r.hint) : ''}`;
+  },
+
+  // A puzzle step: 📜 torn note. Like the timeline (place, unplace, checkOrder), but the strips make one
+  // sentence along a line; when it is whole it goes into the pocket.
+  torn() {
+    const c = S.c, r = S.run, t = c.torn, n = t.parts.length;
+    if (!r.deck) {
+      do r.deck = t.parts.map((_, i) => i).sort(() => Math.random() - .5); while (r.deck.every((k, i) => k === i));
+      r.slots = Array(n).fill(null);
+    }
+    const placed = new Set(r.slots.filter(k => k !== null)), full = placed.size === n;
+    const next = r.owrong >= 4 && !r.ordered ? r.slots.indexOf(null) : -1;
+    const strip = (k, act, more) => `<button class="strip ${k === next ? 'pulse' : ''}" data-act="${act}" ${more}>${esc(t.parts[k])}</button>`;
+    return `<div class="screen center tornstep ${r.ordered ? 'done' : ''} ${r.hint ? 'locked' : ''}">
+      <div class="caseq">❓ ${esc(c.question)}</div>
+      <div class="row wnote" data-act="say" data-clip="${c.id}_pn">📜 ${esc(t.note)}</div>
+      ${r.ordered ? `<div class="row tdone" data-act="listenClue" data-sid="${t.gives}">🩹 ${sayHTML(sent(t.gives))}</div>`
+        : `<div class="pslots">${r.slots.map((k, i) => `<span class="pslot ${k === null ? 'empty' : ''} ${r.good.includes(i) ? 'good' : ''}">${
+          k === null ? i + 1 : strip(k, 'unplace', `data-i="${i}"`)}</span>`).join('')}</div>
+        ${full ? '' : `<div class="pdeck">${r.deck.filter(k => !placed.has(k)).map(k => strip(k, 'place', `data-k="${k}"`)).join('')}</div>`}`}
+      ${r.ordered ? `<div class="toast good">✅ ${UI_AUDIO.tornDone}</div>` : r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
+      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
+        ${r.ordered ? `<button class="btn big" data-act="toScene">${stepLabel()}</button>` : `<button class="btn big" data-act="checkOrder" ${full ? '' : 'disabled'}>Preveri ✔</button>`}</div>
+    </div>${r.hint ? hintHTML(r.hint) : ''}`;
+  },
+
+  // ❗ UGOVOR: tap a claim (💬), then the sentence that shows it isn't true. The stamp slams onto the
+  // claim, the liar blushes and tells the truth, which goes into the pocket. Then on to solve.
+  lie() {
+    const c = S.c, r = S.run, L = c.lie;
+    if (r.lcoach === undefined) r.lcoach = store.read(UGOVOR_KEY, false) ? 0 : 1;
+    const breakers = new Set(L.breaks.flat()), look = !r.caught && (r.llook || r.lassisted);
+    const rows = c.sentences.filter(s => !L.claims.includes(s.id) && s.id !== L.truth);
+    // the claims show in a new order each time, so the lie is not always the top bubble
+    if (!r.lorder) r.lorder = [...L.claims].sort(() => Math.random() - .5);
+    const shown = r.caught ? [L.claim] : r.lorder;
+    const stamped = r.caught && r.lphase !== 'shout';
+    const bubble = (s) => {
+      const liar = stamped && s.id === L.claim;
+      return `<button class="claim ${!r.caught && r.lclaim === s.id ? 'selected' : ''} ${liar ? 'caught' : ''} ${r.lassisted && !r.caught && s.id === L.claim ? 'pulse' : ''}" data-act="lieClaim" data-sid="${s.id}">
+        <span class="cav">${avatar(s.who, 'sm')}${liar ? `<span class="blush ${r.lphase === 'stamp' ? 'pop' : ''}">😳</span>` : ''}</span>
+        <span class="ctx"><b class="who">${esc(CHARACTERS[s.who].name)} <i>💬 trdi</i></b>${esc(s.text)}</span>
+        ${liar ? `<span class="stamp lstamp ${r.lphase === 'stamp' ? 'slam' : ''}">${UI_AUDIO.lieStamp}</span>` : ''}</button>`;
+    };
+    const tr = sent(L.truth), trWho = CHARACTERS[tr.who];
+    const truth = r.lphase === 'stamp' ? `<div class="msg them"><span class="mav">${trWho.animal}</span><span class="mtxt typing"><i></i><i></i><i></i></span></div>`
+      : r.lphase === 'done' ? `<div class="msg them ltruth"><span class="mav">${trWho.animal}</span><span class="mtxt" data-act="listenClue" data-sid="${tr.id}">${esc(unq(tr.text))}</span></div>` : '';
+    const note = r.lphase === 'stamp' ? UI_AUDIO.lieTruth : r.lphase === 'done' ? UI_AUDIO.lieDone : r.note;
+    return `<div class="screen liestep ${r.caught ? 'done' : ''} ${r.hint ? 'locked' : ''}">
+      <div class="caseq">❓ ${esc(c.question)}</div>
+      ${note ? `<div class="toast lnote ${r.lphase === 'done' ? 'good' : ''}">${esc(note)}</div>` : qbar(UI_AUDIO.lie, 'ui_lie')}
+      <div class="lwrap">
+        <div class="lleft"><div class="claims">${shown.map(sid => bubble(sent(sid))).join('')}</div>${truth}</div>
+        <div class="rows">${rows.map(s => `<div class="row ${r.lrows.includes(s.id) ? 'selected' : ''} ${look && !breakers.has(s.id) ? 'dim' : ''}
+          ${r.lassisted && !r.caught && breakers.has(s.id) && !r.lrows.includes(s.id) ? 'pulse' : ''} ${stamped && r.lbroke.includes(s.id) ? 'broke' : ''}" data-act="lieRow" data-sid="${s.id}">${sayHTML(s)}</div>`).join('')}</div>
+      </div>
+      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
+        <button class="btn big" data-act="toScene" ${r.lphase === 'done' ? '' : 'disabled'}>Vem, kdo je bil!</button></div>
+    </div>${r.lphase === 'shout' ? `<div class="shout-wrap"><div class="shout">
+      <div class="row" data-act="say" data-clip="ui_lieShout">${esc(UI_AUDIO.lieShout)}</div>
+      <button class="btn ugovor" data-act="lieShout"><span>❕</span>UGOVOR!</button></div></div>` : ''}${r.hint ? hintHTML(r.hint) : ''}`;
+  },
+
   // Step 2 (instead of the scene): question the suspects. Every question gives one answer.
   ask() {
     const c = S.c, r = S.run;
-    const all = c.sentences.length, done = r.found.length === all;
-    const qs = r.who ? c.sentences.filter(s => s.who === r.who) : [];
-    const chat = r.found.map(sent).filter(s => s.who === r.who);
+    const mine = own('ask'), all = mine.length;
+    const got = mine.filter(s => r.found.includes(s.id)).length, done = got === all;
+    const qs = r.who ? mine.filter(s => s.who === r.who) : [];
+    const chat = r.found.map(sent).filter(s => s.ask && s.who === r.who);
     const open = qs.filter(s => !r.found.includes(s.id));
     const me = profile() ? profile().av : '🕵️';
-    const unq = (t) => t.replace(/^»|«$/g, '');
     return `<div class="screen scene ask">
       <div class="caseq">❓ ${esc(c.question)}</div>
       ${qbar(done ? UI_AUDIO.askDone : UI_AUDIO.ask, done ? 'ui_askDone' : 'ui_ask')}
       <div class="suspects mini">${c.suspects.map(id => {
-        const left = c.sentences.filter(s => s.who === id && !r.found.includes(s.id)).length;
+        const left = mine.filter(s => s.who === id && !r.found.includes(s.id)).length;
         return `<button class="suspect ${r.who === id ? 'on' : ''}" data-act="askWho" data-id="${id}">
           ${avatar(id)}<span>${CHARACTERS[id].name}</span>${left ? '' : '<span class="ok">✔</span>'}</button>`;
       }).join('')}</div>
@@ -2117,32 +2681,33 @@ const T = {
       </div>
       ${open.length && !r.typing ? `<div class="qs">${open.map(s => `<button class="qbtn" data-act="askQ" data-sid="${s.id}">${esc(s.ask)}</button>`).join('')}</div>` : ''}
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
-        <span class="pocket-count">👝 ${r.found.length} / ${all}</span>
-        <span class="grow"></span><button class="btn big" data-act="toSolve" ${done ? '' : 'disabled'}>Vem, kdo je bil!</button></div>
+        <span class="pocket-count">👝 ${got} / ${all}</span>
+        <span class="grow"></span><button class="btn big" data-act="toSolve" ${done ? '' : 'disabled'}>${stepLabel()}</button></div>
     </div>`;
   },
 
   // Step 2: search the scene. Every object hides one sentence; the dark one needs the torch.
   scene() {
     const c = S.c, r = S.run;
-    const all = c.sentences.length, done = r.found.length === all;
+    const mine = own('scene'), all = mine.length;
+    const found = r.found.filter(sid => stepOf(sent(sid)) === 'scene'), done = found.length === all;
     return `<div class="screen scene">
       <div class="caseq">❓ ${esc(c.question)}</div>
       ${qbar(done ? UI_AUDIO.sceneDone : UI_AUDIO.scene, done ? 'ui_sceneDone' : 'ui_scene')}
       <div class="toolbar-kid">
         <button class="tool ${r.torch ? 'on' : ''}" data-act="torch">🔦 Svetilka</button>
-        <span class="pocket-count">👝 ${r.found.length} / ${all}</span>
+        <span class="pocket-count">👝 ${found.length} / ${all}</span>
       </div>
-      <div class="objs ${r.torch ? 'torch' : ''}">${c.sentences.map(s => {
+      <div class="objs ${r.torch ? 'torch' : ''}">${mine.map(s => {
         const got = r.found.includes(s.id);
         return `<button class="obj ${got ? 'got' : ''} ${s.dark && !got ? 'dark' : ''}" data-act="openClue" data-sid="${s.id}">
           <span class="oe">${s.dark && !got ? '🌑' : s.obj}</span><span class="ol">${esc(s.label)}</span>${got ? '<span class="ok">✔</span>' : ''}</button>`;
       }).join('')}</div>
       ${r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
-      <div class="rows pocket">${r.found.slice().reverse().map((sid, i) =>
-        `<div class="row ${i === 0 && r.fresh ? 'fresh' : ''}" data-act="listenClue" data-sid="${sid}">${esc(sent(sid).text)}</div>`).join('')}</div>
+      <div class="rows pocket">${found.slice().reverse().map((sid, i) =>
+        `<div class="row ${i === 0 && r.fresh ? 'fresh' : ''}" data-act="listenClue" data-sid="${sid}">${sayHTML(sent(sid))}</div>`).join('')}</div>
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
-        <span class="grow"></span><button class="btn big" data-act="toSolve" ${done ? '' : 'disabled'}>Vem, kdo je bil!</button></div>
+        <span class="grow"></span><button class="btn big" data-act="toSolve" ${done ? '' : 'disabled'}>${stepLabel()}</button></div>
     </div>`;
   },
 
@@ -2160,8 +2725,9 @@ const T = {
           ${avatar(id)}<span>${CHARACTERS[id].name}</span>${x ? '<span class="xmark">✖</span>' : ''}</button>`;
       }).join('')}</div>
       ${r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
-      <div class="rows">${c.sentences.map(s => `<div class="row ${r.sel === s.id ? 'selected' : ''}
-        ${t && t.sid !== s.id ? 'dim' : ''} ${r.assisted && t && t.sid === s.id ? 'pulse' : ''}" data-act="pickClue" data-sid="${s.id}">${sayHTML(s)}</div>`).join('')}</div>
+      <div class="rows">${c.sentences.map(s => `<div class="row ${r.sel === s.id ? 'selected' : ''} ${r.proofs.includes(s.id) ? 'proof' : ''}
+        ${t && t.sid !== s.id ? 'dim' : ''} ${r.assisted && t && t.sid === s.id ? 'pulse' : ''}" data-act="pickClue" data-sid="${s.id}">${sayHTML(s)}${
+        c.lie && r.caught && s.id === c.lie.claim ? '<span class="ltag">UGOVOR!</span>' : c.lie && s.id === c.lie.truth ? '<span class="ltag truth">✨</span>' : ''}</div>`).join('')}</div>
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span></div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
@@ -2234,6 +2800,20 @@ const T = {
     </div>`;
   },
 
+  // After the final of a season with a book: the author asks to write about the detective, and on
+  // »Da« the cover shows the child's ID picture and name (from the ID card, on this device only).
+  book() {
+    const c = S.c, f = FILES.find(x => x.id === c.file), p = profile() || {};
+    const yes = S.run && S.run.bookYes;
+    return `<div class="screen center bookstep">
+      <div class="caller">${avatar(c.culprit, 'sm')}<div class="bubble"><div class="row" data-act="say" data-clip="${f.id}_bq">${esc(f.book.q)}</div></div></div>
+      ${yes ? `<div class="bcover"><span class="bstar">⭐</span><span class="bav">${p.av || '🕵️'}</span>
+          <b class="btitle">${esc(detName())}</b><span class="bsub">${esc(f.book.title)}</span><span class="bby">${esc(f.book.by)}</span></div>
+        <button class="btn big" data-act="next">Naprej</button>`
+        : `<div class="sticker">📖</div><button class="btn big" data-act="bookYes">Da! 📖</button>`}
+    </div>`;
+  },
+
   more() {
     return `<div class="screen center">
       ${qbar(UI_AUDIO.more, 'ui_more', 'big')}
@@ -2296,6 +2876,7 @@ const ACTIONS = {
     store.write(TUT_KEY, false);   // a new child also gets the practice case
     store.write(PROFILE_KEY, null); // and makes their own ID card
     store.write(GUESS_KEY, {});
+    store.write(UGOVOR_KEY, false);
     newPlayer();                    // and is a new anonymous player
     render();
   },
@@ -2562,7 +3143,7 @@ const ACTIONS = {
     r.note = null;
     sfx('pop');
     render();
-    play(`${c.id}_o${k + 1}`, c.order.cards[k][1]);
+    if (S.screen === 'order') play(`${c.id}_o${k + 1}`, c.order.cards[k][1]);   // a torn strip is half a sentence: read, not heard
   },
   unplace(el) {
     const r = S.run, i = Number(el.dataset.i);
@@ -2572,17 +3153,19 @@ const ACTIONS = {
     sfx('click');
     render();
   },
+  // the timeline and the torn note: the right ones stay, the others go back
   checkOrder() {
-    const r = S.run, c = S.c, o = c.order;
+    const r = S.run, c = S.c, torn = S.screen === 'torn', o = torn ? c.torn : c.order, p = c.id + (torn ? '_p' : '_o');
     if (r.hint || r.ordered || r.slots.includes(null)) return;
     const right = r.slots.map((k, i) => k === i ? i : -1).filter(i => i >= 0);
     const ok = right.length === r.slots.length;
-    log('puzzle_order', { correct: ok, right: right.length });
+    log(torn ? 'puzzle_torn' : 'puzzle_order', { correct: ok, right: right.length });
     if (ok) {
       r.ordered = true;
       r.note = null;
       sfx('tada');
       log('puzzle_done', { wrong: r.owrong });
+      if (torn) { deliver(o.gives); render(); return; }
       render();
       play(c.id + '_od', o.done);
       return;
@@ -2591,16 +3174,17 @@ const ACTIONS = {
     r.good = right;
     r.slots = r.slots.map((k, i) => right.includes(i) ? k : null);
     sfx('nope');
-    const h = r.owrong === 4 ? { key: 'orderAssist', text: UI_AUDIO.orderAssist, clip: 'ui_orderAssist', level: 3 }
-      : r.owrong === 3 ? { key: 'h2', text: o.h2, clip: c.id + '_oh2', level: 2 }
-      : r.owrong === 2 ? { key: 'h1', text: o.h1, clip: c.id + '_oh1', level: 1 } : null;
+    const assist = torn ? 'tornAssist' : 'orderAssist';
+    const h = r.owrong === 4 ? { key: assist, text: UI_AUDIO[assist], clip: 'ui_' + assist, level: 3 }
+      : r.owrong === 3 ? { key: 'h2', text: o.h2, clip: p + 'h2', level: 2 }
+      : r.owrong === 2 ? { key: 'h1', text: o.h1, clip: p + 'h1', level: 1 } : null;
     if (h) { r.hint = h; log('puzzle_hint', { hint: h.key, hintLevel: h.level }); }
-    else r.note = UI_AUDIO.orderNo;
+    else r.note = torn ? UI_AUDIO.tornNo : UI_AUDIO.orderNo;
     render();
   },
   wordTap(el) {
     const r = S.run, w = S.c.words, i = Number(el.dataset.i);
-    if (r.hint) return;
+    if (r.hint || r.words.length === w.find.length) return;
     r.note = null;
     if (r.wsel === null || r.wsel === i) { r.wsel = r.wsel === i ? null : i; sfx('click'); render(); return; }
     const [a, b] = [Math.min(r.wsel, i), Math.max(r.wsel, i)];
@@ -2610,7 +3194,11 @@ const ACTIONS = {
     log('puzzle_word', { correct: !!word, word: word || null });
     if (word) {
       r.words.push(word);
-      if (r.words.length === w.find.length) { sfx('tada'); log('puzzle_done', { wrong: r.wwrong }); } else sfx('pop');
+      if (r.words.length === w.find.length) {
+        sfx('tada');
+        log('puzzle_done', { wrong: r.wwrong });
+        if (w.geslo) deliver(w.geslo);
+      } else sfx('pop');
       render();
       return;
     }
@@ -2628,11 +3216,147 @@ const ACTIONS = {
   filmNext() { S.run.film++; render(); ACTIONS.filmSay(); },
   filmSay() { const r = S.run; play(`${S.c.id}_f${r.film + 1}`, S.c.film[r.film][1], $('.film .row')); },
   ventGuess(el) {
-    const g = store.read(GUESS_KEY, {});
-    store.write(GUESS_KEY, { ...g, [S.file]: el.dataset.id });
-    log('vent_guess', { file: S.file, guess: el.dataset.id });
+    const g = store.read(GUESS_KEY, {}), to = el.dataset.id;
+    if (S.reguess) {
+      const from = g[S.file];
+      store.write(GUESS_KEY, { ...g, [S.file]: to, [S.file + ':first']: from, [S.file + ':again']: from === to ? 'kept' : 'changed' });
+      log('guess_again', { file: S.file, kept: from === to, from, to });
+      S.reguess = false;
+    } else {
+      store.write(GUESS_KEY, { ...g, [S.file]: to });
+      log('vent_guess', { file: S.file, guess: to });
+    }
     sfx('beep');
     render();
+  },
+  guessKeep() {
+    const g = store.read(GUESS_KEY, {});
+    store.write(GUESS_KEY, { ...g, [S.file + ':first']: g[S.file], [S.file + ':again']: 'kept' });
+    log('guess_again', { file: S.file, kept: true, from: g[S.file], to: g[S.file] });
+    sfx('beep');
+    render();
+  },
+  guessChange() { S.reguess = true; sfx('click'); render(); },
+  openBook() {
+    S.c = casesIn(S.file).find(c => c.final);
+    S.run = { ...newRun(), bookYes: true, fromBoard: true };
+    log('book_open');
+    go('book');
+  },
+  bookYes() {
+    S.run.bookYes = true;
+    log('book_yes');
+    sfx('tada');
+    render();
+  },
+  // ✉️ cipher: tap a cell to ring it, a tile to fill it
+  cipherCell(el) {
+    if (S.run.hint) return;
+    S.run.cring = Number(el.dataset.i);
+    sfx('click');
+    render();
+  },
+  cipherTile(el) {
+    const r = S.run, c = S.c, k = c.cipher;
+    if (r.hint) return;
+    const flat = cipherCells(k).flat(), want = flat[r.cring];
+    if (!want || !want.e) return;
+    const ok = el.dataset.l === want.ch;
+    log('puzzle_cipher', { correct: ok, n: r.cgot.length });
+    r.note = null;
+    if (ok) {
+      r.cgot.push(want.ch);
+      if (flat.every(x => !x.e || r.cgot.includes(x.ch))) { sfx('tada'); log('puzzle_done', { wrong: r.cwrong }); deliver(k.gives); } else sfx('pop');
+      render();
+      return;
+    }
+    r.cwrong++;
+    sfx('nope');
+    // the missing pair has its own ladder: read the word (h1), the letter (h2), then the tile pulses
+    let h = null;
+    if (want.e === k.missing) {
+      r.cmiss++;
+      h = r.cmiss === 1 ? { key: 'h1', text: k.h1, clip: c.id + '_ch1', level: 1 } : r.cmiss === 2 ? { key: 'h2', text: k.h2, clip: c.id + '_ch2', level: 2 }
+        : r.cmiss === 3 ? { key: 'cipherAssist', text: UI_AUDIO.cipherAssist, clip: 'ui_cipherAssist', level: 3 } : null;
+    } else if (r.cwrong === 6) h = { key: 'cipherAssist', text: UI_AUDIO.cipherAssist, clip: 'ui_cipherAssist', level: 3 };
+    else if (r.cwrong === 4) h = { key: 'cipherLook', text: UI_AUDIO.cipherLook, clip: 'ui_cipherLook', level: 2 };
+    else if (r.cwrong === 2) h = { key: 'h1', text: k.h1, clip: c.id + '_ch1', level: 1 };
+    if (h) { r.hint = h; log('puzzle_hint', { hint: h.key, hintLevel: h.level }); }
+    else r.note = UI_AUDIO.cipherNo;
+    render();
+    const t = document.querySelector(`.ctile[data-l="${el.dataset.l}"]`);
+    if (t) t.classList.add('wobble');
+  },
+  // ❗ UGOVOR: a claim, then the sentence(s) that break it; checked from the first sentence on
+  lieClaim(el) {
+    const r = S.run, s = sent(el.dataset.sid);
+    play(S.c.id + '_' + s.id, s.text, el);
+    if (r.hint || r.caught) return;
+    r.lclaim = s.id;
+    r.lrows = r.lrows.filter(x => S.c.lie.breaks.some(set => set.length === 2 && set.includes(x)) && s.id === S.c.lie.claim);
+    r.note = null;
+    if (r.lcoach === 1) r.lcoach = 2;
+    sfx('click');
+    render();
+  },
+  lieRow(el) {
+    const r = S.run, c = S.c, L = c.lie, s = sent(el.dataset.sid);
+    if (r.hint) return;
+    if (r.caught) { play(c.id + '_' + s.id, s.text, el); return; }
+    if (!r.lclaim) {
+      if (L.claims.length > 1) {
+        r.note = UI_AUDIO.lieClaimFirst;
+        log('lie_try', { claimId: null, sentenceIds: [s.id], correct: false, kind: 'noClaim' });
+        render();
+        play('ui_lieClaimFirst', UI_AUDIO.lieClaimFirst);
+        return;
+      }
+      r.lclaim = L.claims[0];
+    }
+    play(c.id + '_' + s.id, s.text);
+    if (r.lrows.includes(s.id)) { r.lrows = r.lrows.filter(x => x !== s.id); render(); return; }
+    r.lrows.push(s.id);
+    if (r.lcoach) r.lcoach = 0;
+    const right = r.lclaim === L.claim;
+    const same = (set) => set.length === r.lrows.length && set.every(x => r.lrows.includes(x));
+    const halfOf = (x) => right && L.breaks.some(set => set.length === 2 && set.includes(x));
+    const hmm = (L.hmm || []).findIndex(([cl, sid]) => cl === r.lclaim && sid === s.id);
+    const kind = right && L.breaks.some(same) ? 'break' : r.lrows.length === 1 && halfOf(s.id) ? 'half' : hmm >= 0 ? 'hmm' : 'both';
+    log('lie_try', { claimId: r.lclaim, sentenceIds: [...r.lrows], correct: kind === 'break', kind });
+    r.note = null;
+    if (kind === 'break') { lieCatch(); return; }
+    if (kind === 'half') { r.note = UI_AUDIO.lieHalf; render(); return; }
+    if (kind === 'hmm') {
+      r.lrows = r.lrows.filter(halfOf);
+      r.note = L.hmm[hmm][2];
+      render();
+      play(`${c.id}_lm${hmm + 1}`, L.hmm[hmm][2]);
+      return;
+    }
+    r.lwrong++;
+    r.lrows = r.lrows.filter(halfOf);   // a right half of a pair stays
+    sfx('nope');
+    let h = null;
+    if (r.lassisted || r.lwrong >= 4) {
+      if (!r.lassisted) { r.lassisted = true; log('lie_assisted'); }
+      r.lclaim = L.claim;
+      h = { key: 'lieAssist', text: UI_AUDIO.lieAssist, clip: 'ui_lieAssist', level: 3 };
+    } else if (r.lwrong === 3) {
+      r.llook = true;
+      r.lclaim = L.claim;
+      h = { key: 'lieLook', text: UI_AUDIO.lieLook, clip: 'ui_lieLook', level: 2 };
+    } else if (r.lwrong === 2) {
+      h = L.h1 ? { key: 'h1', text: L.h1, clip: c.id + '_lh1', level: 1 } : { key: 'h1', text: UI_AUDIO.lieH1, clip: 'ui_lieH1', level: 1 };
+    } else r.note = UI_AUDIO.lieBoth;
+    if (h) { r.hint = h; log('lie_hint', { hint: h.key, hintLevel: h.level }); }
+    render();
+    const x = document.querySelector(`.liestep .row[data-sid="${s.id}"]`);
+    if (x) x.classList.add('wobble');
+  },
+  lieShout() {
+    store.write(UGOVOR_KEY, true);
+    log('lie_shout', { first: true });
+    lieStamp();
   },
   askWho(el) {
     const r = S.run;
@@ -2695,7 +3419,7 @@ const ACTIONS = {
   toSolve() {
     S.run.note = null;
     S.run.fresh = false;
-    go('solve');
+    go(stepNext());
   },
   pickClue(el) {
     const r = S.run;
@@ -2717,11 +3441,22 @@ const ACTIONS = {
       play('ui_pickFirst', UI_AUDIO.pickFirst);
       return;
     }
-    const s = sent(r.sel);
+    const s = sent(r.sel), L = c.lie, liar = liarOf();
     const proof = s.role === 'evidence' && id === c.culprit;
     const alibi = s.role === 'clear' && s.clears === id;
-    log('evidence_confirm', { sentenceId: s.id, sentenceIds: [s.id], role: s.role, suspectId: id, correct: proof || alibi, suspectCorrect: id === c.culprit, kind: proof ? 'proof' : 'cross' });
+    // a two-proof case: the first proof + the culprit is half of it
+    const pair = c.sentences.filter(x => x.role === 'evidence').length === 2;
+    const half = proof && pair && (!r.proofs.length || r.proofs.includes(s.id));
+    log('evidence_confirm', { sentenceId: s.id, sentenceIds: [s.id], role: s.role, suspectId: id, correct: proof || alibi, suspectCorrect: id === c.culprit,
+      kind: half ? 'half' : proof ? 'proof' : 'cross', ...(liar && id === liar ? { liar: true } : {}) });
     r.sel = null;
+    if (half) {
+      if (!r.proofs.includes(s.id)) r.proofs.push(s.id);
+      r.hint = { key: 'pairHalf', text: UI_AUDIO.pairHalf, clip: 'ui_pairHalf', level: 0 };
+      log('hint_shown', { hint: 'pairHalf', hintLevel: 0 });
+      render();
+      return;
+    }
     if (alibi) {
       r.crossed.push(id);
       r.highlight = null;
@@ -2750,6 +3485,14 @@ const ACTIONS = {
       h = { key: 'h2', text: UI_AUDIO.elimLook, clip: 'ui_elimLook', level: 2 };
     } else if (r.wrong === 2) {
       h = { key: 'h1', text: c.h1, clip: c.id + '_h1', level: 1 };
+    } else if (L && id === liar && liar !== c.culprit && (s.id === L.claim || s.id === L.truth || L.breaks.flat().includes(s.id))) {
+      h = { key: 'liarNotCulprit', text: UI_AUDIO.liarNotCulprit, clip: 'ui_liarNotCulprit', level: 0 };
+    } else if (L && id === liar && (s.id === L.claim || L.breaks.flat().includes(s.id))) {
+      h = { key: 'liarCaught', text: UI_AUDIO.liarCaught, clip: 'ui_liarCaught', level: 0 };   // right person, the lie is no proof
+    } else if (L && r.caught && s.id === L.claim) {
+      h = { key: 'lieBroken', text: UI_AUDIO.lieBroken, clip: 'ui_lieBroken', level: 0 };
+    } else if (L && s.id === L.truth && id === c.culprit) {
+      h = { key: 'truthLead', text: UI_AUDIO.truthLead, clip: 'ui_truthLead', level: 0 };
     } else if (s.who === id && s.role !== 'clear') {
       h = { key: 'selfClaim', text: UI_AUDIO.selfClaim, clip: 'ui_selfClaim', level: 0 };
     } else if (s.role === 'clear' || s.role === 'evidence') {
@@ -2775,7 +3518,13 @@ const ACTIONS = {
   },
   next() {
     if (S.tut) { endTutorial(); return; }
-    if (S.c && S.c.card) S.pinNew = S.c.id;
+    const f = S.c && FILES.find(x => x.id === S.c.file);
+    if (S.screen === 'reveal' && S.c.final && f && f.book) {
+      go('book');
+      play(f.id + '_bq', f.book.q, $('.bookstep .row'));
+      return;
+    }
+    if (S.c && S.c.card && !(S.run && S.run.fromBoard)) S.pinNew = S.c.id;
     if (S.orderMode === 'board') toBoard(); else go('more');
   },
   moreYes() {
@@ -2851,6 +3600,8 @@ function newMetrics(id) {
     listens: 0, rereads: 0, confirms: 0, wrong: 0, distractorWrong: 0, partialWrong: 0,
     hints: 0, maxHint: 0, assisted: false, guess: 0, firstLatency: null, firstEvidence: null,
     anchor: null, early: 0, suspectChanges: 0, done: false, more: null,
+    // ❗ UGOVOR (counted apart from the solve's hints): wrong tries, hints, an innocent liar blamed
+    lie: !!(c && c.lie), lieWrong: 0, lieHints: 0, lieAssisted: false, liarBlamed: 0,
   };
 }
 
@@ -2892,6 +3643,7 @@ function analyzeSession(evs) {
         const recent = m.confirmTs.filter(t => e.ts - t <= 15000).length;
         if ((m.anchor != null && e.ts - m.anchor < 4000) || recent >= 2) m.guess++;
         m.confirmTs.push(e.ts);
+        if (e.liar && !e.correct) m.liarBlamed++;
         if (!e.correct) {
           m.wrong++;
           if (e.role === 'distractor') m.distractorWrong++;
@@ -2901,6 +3653,9 @@ function analyzeSession(evs) {
       }
       case 'hint_shown': m.hints++; m.maxHint = Math.max(m.maxHint, e.hintLevel || 0); break;
       case 'hint_dismiss': m.anchor = e.ts; break;
+      case 'lie_try': if (e.kind === 'both') m.lieWrong++; break;
+      case 'lie_hint': m.lieHints++; break;
+      case 'lie_assisted': m.lieAssisted = true; break;
       case 'assisted': m.assisted = true; break;
       case 'case_done': m.done = true; break;
       case 'more_yes': m.more = 'yes'; break;
@@ -3008,16 +3763,17 @@ function sessionHTML(s) {
       <td class="${guessCls}">${m.guess}/${m.confirms}</td>
       <td class="${m.early ? 'c-warn' : ''}">${m.early ? 'da' : 'ne'}</td>
       <td>${MORE[m.more] || '–'}</td>
+      <td class="${m.liarBlamed ? 'c-warn' : ''}">${m.lie ? `${m.lieWrong} / ${m.lieHints}${m.lieAssisted ? ' (vodeno)' : ''}${m.liarBlamed ? ` · ${m.liarBlamed}× kriv lažnivec` : ''}` : '–'}</td>
     </tr>`;
-    return row + (S.open === key ? `<tr><td colspan="11">${timelineHTML(s, m.id)}</td></tr>` : '');
+    return row + (S.open === key ? `<tr><td colspan="12">${timelineHTML(s, m.id)}</td></tr>` : '');
   }).join('');
   return `<section class="card">
     <p><b>${esc(s.child)}</b> · ${esc(s.age)} let · raven ${esc(s.level)} · ${fmtDate(s.start)}
       ${s.pilot ? '<span class="tag">pilot</span>' : ''} · rešenih ${s.doneCount} · želi še: ${s.wantMore ? 'da' : 'ne'}</p>
     <div class="tablewrap"><table>
       <tr><th>Primer</th><th>Izid</th><th>Čas zgodba / dokaz</th><th>Poslušanja</th><th>Ponovna branja</th><th>1. potrditev</th>
-        <th>Napačne</th><th>Namigi</th><th>Ugibanja</th><th>Prezgodaj</th><th>Še?</th></tr>
-      ${rows || '<tr><td colspan="11" class="muted">Ni začetih primerov.</td></tr>'}
+        <th>Napačne</th><th>Namigi</th><th>Ugibanja</th><th>Prezgodaj</th><th>Še?</th><th title="napačni poskusi / namigi; kolikokrat je obtožil nedolžnega, ki je lagal">Ugovor</th></tr>
+      ${rows || '<tr><td colspan="12" class="muted">Ni začetih primerov.</td></tr>'}
     </table></div>
   </section>`;
 }
@@ -3030,6 +3786,8 @@ const EVENT_LABEL = {
   case_done: 'primer rešen', case_pick: 'izbere primer na tabli', more_yes: 'še en primer', more_no: 'dovolj', fake_door: 'vrata »nov primer«',
   adult_gate: 'odrasli pregled', session_end: 'konec seje', session_start: 'začetek seje',
   call_answer: 'se javi na telefon', tool_use: 'svetilka', clue_open: 'odpre sled', clue_dark: 'pretemno', ask_q: 'vpraša', letter_read: 'prebere pismo',
+  lie_try: 'ugovor: poskus', lie_hint: 'ugovor: namig', lie_assisted: 'ugovor: vodeno', lie_shout: 'zakliče UGOVOR', lie_done: 'ujame laž',
+  puzzle_cipher: 'šifra', puzzle_torn: 'raztrgan listek', guess_again: 'ponovno ugiba', book_yes: 'knjiga: da',
 };
 
 function timelineHTML(s, caseId) {
@@ -3041,7 +3799,9 @@ function timelineHTML(s, caseId) {
     if (e.type === 'screen_enter') parts.push(e.screen);
     if (e.sentenceId && c) { const st = c.sentences.find(x => x.id === e.sentenceId); parts.push('»' + esc(st ? st.text : e.sentenceId) + '«'); }
     if (e.role && e.role !== 'neutral') parts.push('[' + e.role + ']');
-    if (e.type === 'evidence_confirm') parts.push(e.correct ? '✔' : '✘');
+    if (e.type === 'evidence_confirm' || e.type === 'lie_try') parts.push(e.correct ? '✔' : '✘');
+    if (e.type === 'lie_try') parts.push(e.kind);
+    if (e.liar) parts.push('lažnivec');
     if (e.suspectId) parts.push(esc(CHARACTERS[e.suspectId] ? CHARACTERS[e.suspectId].name : e.suspectId));
     if (e.hint) parts.push(e.hint);
     if (e.clip) parts.push(e.clip);

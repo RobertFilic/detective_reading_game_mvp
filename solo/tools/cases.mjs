@@ -24,7 +24,13 @@ const NAME = Object.fromEntries(Object.entries(CHARACTERS).map(([id, ch]) => [id
 for (const [id, ch] of Object.entries(CHARACTERS)) if (!ch.re) fail(id, 'character needs a name pattern (re)');
 const PRONOUN = /\b(mu|ji|njen\w*|njegov\w*|je imel|je imela)\b/;
 const named = (text) => Object.keys(NAME).filter(id => NAME[id].test(text));
-const STEPS = new Set(['call', 'scene', 'ask', 'words', 'lock', 'order', 'solve']);
+const STEPS = new Set(['call', 'scene', 'ask', 'words', 'lock', 'order', 'cipher', 'torn', 'lie', 'solve']);
+const PUZZLES = ['words', 'lock', 'order', 'cipher', 'torn'];
+// where a sentence is found: a puzzle or UGOVOR gives it (from), an answer (ask), else an object in the scene
+const stepOf = (s) => s.from || (s.ask ? 'ask' : 'scene');
+const sentencesOf = (t) => t.split(/(?<=[.!?…])\s+(?=\p{Lu})/u);
+const tooLong = (c, what, lines) => { for (const t of lines.filter(Boolean).flatMap(sentencesOf)) if (words(t) > LEVEL_RULES[c.level].maxWords) fail(c.id, `${what}: ${words(t)} words (max): ${t}`); };
+const letters = (t) => [...t.toUpperCase()].filter(ch => /\p{L}/u.test(ch)).join('');
 // 🔤 word search: Slovenian capitals only (Č/Š/Ž one cell; no Q W X Y), equal rows, every word exactly
 // once and only → or ↓, and no rude word by chance in any row or column (either direction).
 const SL_CAPS = /^[ABCČDEFGHIJKLMNOPRSŠTUVZŽ]+$/u;
@@ -40,24 +46,119 @@ function checkWords(c) {
     if (!e || !SL_CAPS.test(word)) fail(c.id, `word ${word}: [emoji, CAPITALS]`);
     else if (count(word) !== 1) fail(c.id, `word ${word} appears ${count(word)} times (→ and ↓), needs exactly 1`);
   }
+  // the geslo: the letters no word uses, in reading order, spell the sentence it gives
+  if (w.geslo) {
+    const used = new Set();
+    for (const [, word] of w.find) for (let y = 0; y < rows.length; y++) for (let x = 0; x < n; x++) for (const down of [false, true]) {
+      const L = [...word];
+      if ((down ? y + L.length <= rows.length : x + L.length <= n) && L.every((ch, k) => rows[down ? y + k : y][down ? x : x + k] === ch)) L.forEach((_, k) => used.add(down ? (y + k) * n + x : y * n + x + k));
+    }
+    const left = rows.flat().filter((_, i) => !used.has(i)).join('');
+    const g = c.sentences.find(s => s.id === w.geslo);
+    if (!g || g.from !== 'words') fail(c.id, `words.geslo ${w.geslo} must be a sentence with from: 'words'`);
+    else if (left !== letters(g.text)) fail(c.id, `the letters left over read ${left}, the geslo needs ${letters(g.text)}`);
+  }
   for (const bad of BLOCK) for (const l of lines) if (l.includes(bad) || [...l].reverse().join('').includes(bad)) fail(c.id, `word grid hides "${bad}"`);
+  // no suspect's name readable in the grid before the words are found (it would spoil a geslo or tempt a wrong try)
+  for (const id of c.suspects) { const nm = CHARACTERS[id].name.toUpperCase();
+    if (nm.length >= 4 && lines.some(l => l.includes(nm) || [...l].reverse().join('').includes(nm))) fail(c.id, `word grid shows the name ${nm}`); }
   for (const t of [w.note, w.h1].flatMap(l => l.split(/(?<=[.!?…])\s+(?=\p{Lu})/u))) if (words(t) > LEVEL_RULES[c.level].maxWords) fail(c.id, `words: ${words(t)} words (max): ${t}`);
+}
+// ✉️ cipher: one symbol per letter and one letter per symbol; the message is the sentence it gives, in capitals
+const CIPHER_KEYS = {};
+function checkCipher(c) {
+  const k = c.cipher;
+  if (!k || !k.note || !k.key || !k.gives || !k.h1) return fail(c.id, 'a cipher step needs cipher: { note, key, gives, h1 }');
+  const g = c.sentences.find(s => s.id === k.gives);
+  if (!g) return;
+  const msg = letters(g.text), used = new Set(msg), vals = Object.values(k.key);
+  if (new Set(vals).size !== vals.length) fail(c.id, 'cipher: two symbols for one letter');
+  for (const ch of used) if (!vals.includes(ch)) fail(c.id, `cipher: no symbol for ${ch}`);
+  for (const [e, l] of Object.entries(k.key)) {
+    if (!used.has(l)) fail(c.id, `cipher: ${e} = ${l} is not in the message`);
+    if (CIPHER_KEYS[e] && CIPHER_KEYS[e][0] !== l) fail(c.id, `cipher: ${e} is ${l} here but ${CIPHER_KEYS[e][0]} in ${CIPHER_KEYS[e][1]} (one alphabet per file)`);
+    CIPHER_KEYS[e] = CIPHER_KEYS[e] || [l, c.id];
+  }
+  if (msg.length > 20 || used.size > 9) fail(c.id, `cipher: ${msg.length} letters, ${used.size} different (max 20 and 9)`);
+  if ((k.extra || []).length > 2 || (k.extra || []).some(l => used.has(l))) fail(c.id, 'cipher: up to 2 extra tiles, none of them in the message');
+  if (k.missing && (!k.key[k.missing] || !k.h2 || !k.h2.includes(k.key[k.missing]))) fail(c.id, 'cipher: the missing symbol is in the key, and h2 says its letter');
+  tooLong(c, 'cipher', [k.note, k.h1, k.h2]);
+}
+// 📜 torn note: the parts in order make the sentence it gives
+function checkTorn(c) {
+  const t = c.torn;
+  if (!t || !t.note || !t.parts || !t.gives || !t.h1 || !t.h2) return fail(c.id, 'a torn step needs torn: { note, parts, gives, h1, h2 }');
+  const g = c.sentences.find(s => s.id === t.gives);
+  if (!inRange(t.parts.length, [3, 4])) fail(c.id, 'torn: 3–4 parts');
+  if (g && t.parts.join(' ') !== g.text) fail(c.id, `torn: the parts make »${t.parts.join(' ')}«, the sentence is »${g.text}«`);
+  if (new Set(t.parts).size !== t.parts.length) fail(c.id, 'torn: two parts are the same');
+  tooLong(c, 'torn', [t.note, t.h1, t.h2]);
+}
+// ❗ UGOVOR: the claims, the lie, what breaks it and the truth after it
+function checkLie(c) {
+  const L = c.lie, ss = c.sentences, get = (sid) => ss.find(s => s.id === sid);
+  if (!L || !L.claims || !L.claim || !L.breaks || !L.truth) return fail(c.id, 'a lie step needs lie: { claims, claim, breaks, truth }');
+  const st = c.steps;
+  if (!st.includes('lie') || st.indexOf('lie') !== st.length - 2) fail(c.id, 'the lie step comes right before solve');
+  if (ss.some(s => s.role === 'partial')) fail(c.id, 'a case with UGOVOR has no partial sentence');
+  if (!inRange(L.claims.length, [1, 3]) || new Set(L.claims).size !== L.claims.length) fail(c.id, 'lie: 1–3 different claims');
+  for (const sid of L.claims) {
+    const s = get(sid);
+    if (!s) { fail(c.id, `lie: claim ${sid} is missing`); continue; }
+    if (!c.suspects.includes(s.who)) fail(c.id, `lie: claim ${sid} needs who (a suspect)`);
+    if (!s.text.includes('»')) fail(c.id, `lie: claim ${sid} is a quote (» «)`);
+    if (s.role === 'clear' || s.role === 'evidence') fail(c.id, `lie: claim ${sid} is not an alibi or the proof`);
+  }
+  if (!L.claims.includes(L.claim)) fail(c.id, 'lie: claim is one of claims');
+  if (!inRange(L.breaks.length, [1, 3])) fail(c.id, 'lie: 1–3 sets in breaks');
+  for (const set of L.breaks) {
+    if (!inRange(set.length, [1, 2])) fail(c.id, 'lie: a set in breaks has 1 or 2 sentences');
+    for (const sid of set) {
+      const s = get(sid);
+      if (!s) fail(c.id, `lie: breaker ${sid} is missing`);
+      else if (L.claims.includes(sid) || s.from === 'lie') fail(c.id, `lie: ${sid} can't break the claim (it is a claim or the truth)`);
+    }
+  }
+  const t = get(L.truth), liar = get(L.claim) && get(L.claim).who;
+  if (!t || t.from !== 'lie' || t.who !== liar || !t.text.includes('»') || t.role === 'evidence') fail(c.id, 'lie: the truth has from: \'lie\', the liar\'s who, is a quote, and is never the proof');
+  if (ss.filter(s => s.from === 'lie').length !== 1) fail(c.id, 'lie: exactly one sentence has from: \'lie\'');
+  if (L.about && (!get(L.claim) || !named(get(L.claim).text).includes(L.about) || L.about === liar)) fail(c.id, 'lie: about is named in the claim, and is not the liar');
+  for (const m of L.hmm || []) {
+    if (!L.claims.includes(m[0]) || !get(m[1]) || L.breaks.flat().includes(m[1]) || !m[2]) fail(c.id, 'lie: hmm is [a claim, a sentence that is not a breaker, a note]');
+  }
+  tooLong(c, 'lie', [L.h1, ...(L.hmm || []).map(m => m[2])]);
 }
 function checkSteps(c) {
   const ss = c.sentences;
   if (c.type !== 'elim') fail(c.id, 'step cases are type elim');
   for (const st of c.steps) if (!STEPS.has(st)) fail(c.id, `unknown step ${st}`);
+  if (new Set(c.steps).size !== c.steps.length) fail(c.id, 'a step comes once');
   if (c.steps.includes('call') && (!CHARACTERS[c.client] || !c.call || !c.call.length)) fail(c.id, 'a call needs client and call lines');
   if (c.client && c.suspects.includes(c.client)) fail(c.id, 'the client is not a suspect');
-  if (c.steps.includes('scene')) for (const s of ss) if (!s.obj || !s.label) fail(c.id, `${s.id} needs obj and label (where it is found)`);
-  // questioning: every answer has who said it and the question; everyone gets asked
+  for (const s of ss) {
+    const st = stepOf(s);
+    if (!c.steps.includes(st)) fail(c.id, `${s.id} is found in step ${st}, which the case doesn't have (obj → scene, ask → ask, from → that step)`);
+    if (st === 'scene' && (!s.obj || !s.label)) fail(c.id, `${s.id} needs obj and label (where it is found)`);
+    if (s.who && !CHARACTERS[s.who]) fail(c.id, `${s.id}: unknown who ${s.who}`);
+  }
+  // questioning: every answer has who said it and the question; every suspect gets asked
   if (c.steps.includes('ask')) {
-    for (const s of ss) {
-      if (!c.suspects.includes(s.who) || !s.ask) fail(c.id, `${s.id} needs who (a suspect) and ask (the question)`);
+    for (const s of ss.filter(x => stepOf(x) === 'ask')) {
+      if (!c.suspects.includes(s.who)) fail(c.id, `${s.id} needs who (a suspect)`);
       else if (words(s.ask) > LEVEL_RULES[c.level].maxWords) fail(c.id, `${s.id}: the question is too long`);
     }
-    for (const id of c.suspects) if (!ss.some(s => s.who === id)) fail(c.id, `nobody asks ${id} anything`);
+    for (const id of c.suspects) if (!ss.some(s => s.ask && s.who === id)) fail(c.id, `nobody asks ${id} anything`);
   }
+  // a sentence a puzzle (or UGOVOR) gives: named by its step, and its step comes before lie and solve
+  const gives = { cipher: c.cipher && c.cipher.gives, torn: c.torn && c.torn.gives, words: c.words && c.words.geslo, lie: c.lie && c.lie.truth };
+  for (const s of ss.filter(x => x.from)) {
+    if (gives[s.from] !== s.id) fail(c.id, `${s.id} has from: '${s.from}', but that step doesn't give it`);
+    if (s.from !== 'lie' && c.steps.includes('lie') && c.steps.indexOf(s.from) > c.steps.indexOf('lie')) fail(c.id, `${s.id}: its puzzle comes after UGOVOR`);
+  }
+  for (const [st, sid] of Object.entries(gives)) if (sid && !ss.some(s => s.id === sid && s.from === st)) fail(c.id, `${st} gives ${sid}: it needs a sentence ${sid} with from: '${st}'`);
+  if (c.steps.includes('cipher')) checkCipher(c);
+  if (c.steps.includes('torn')) checkTorn(c);
+  if (c.steps.includes('lie') || c.lie) checkLie(c);
   if (c.steps.includes('words')) checkWords(c);
   // 🔐 code lock: 3–5 digits; h2 gives the code away (fair play when the earlier case was skipped)
   if (c.steps.includes('lock')) {
@@ -81,6 +182,7 @@ function checkSteps(c) {
     }
   }
   if (c.steps[0] !== 'call' || c.steps[c.steps.length - 1] !== 'solve' || !c.steps.some(st => st === 'scene' || st === 'ask')) fail(c.id, 'steps go call → … → solve, with a scene or ask');
+  for (const st of PUZZLES) if (c.steps.includes(st) !== !!c[st]) fail(c.id, `${st}: the step and its data come together`);
   if (ss.filter(s => s.dark).length > 1) fail(c.id, 'at most one dark object');
   for (const id of c.suspects) {
     const al = ss.filter(s => s.clears === id);
@@ -89,15 +191,23 @@ function checkSteps(c) {
   }
   for (const s of ss) {
     if ((s.role === 'clear') !== !!s.clears) fail(c.id, `${s.id}: role clear goes with clears`);
-    if (s.clears && !named(s.text).includes(s.clears)) fail(c.id, `${s.id}: the alibi must name ${s.clears}`);
+    // the one exception: the truth after UGOVOR clears its own speaker, when a breaker on screen backs it
+    const ownTruth = s.from === 'lie' && s.who === s.clears;
+    if (ownTruth && !c.lie.breaks.flat().some(sid => { const b = ss.find(x => x.id === sid); return b && named(b.text).includes(s.clears); })) {
+      fail(c.id, `${s.id}: a truth may clear its speaker only when a breaker names ${s.clears}`);
+    }
+    if (s.clears && !ownTruth && !named(s.text).includes(s.clears)) fail(c.id, `${s.id}: the alibi must name ${s.clears}`);
   }
   if (c.card) {
     const s = ss.find(x => x.id === c.card.sid);
     if (!s) fail(c.id, `card points at missing ${c.card.sid}`);
     else if (named(s.text).some(id => c.suspects.includes(id))) fail(c.id, 'the corkboard card names no suspect');
   }
-  const proof = ss.find(s => s.role === 'evidence');
-  if (proof && named(proof.text).filter(id => c.suspects.includes(id)).join() !== c.culprit) fail(c.id, `${proof.id}: the proof names the culprit and no other suspect`);
+  // one proof names the culprit and no other suspect; a second proof (a pair) names no suspect at all
+  const proofs = ss.filter(s => s.role === 'evidence');
+  const naming = proofs.map(s => named(s.text).filter(id => c.suspects.includes(id)));
+  if (proofs.length === 1 && naming[0].join() !== c.culprit) fail(c.id, `${proofs[0].id}: the proof names the culprit and no other suspect`);
+  if (proofs.length === 2 && (naming.filter(w => w.length).length !== 1 || naming.flat().join() !== c.culprit)) fail(c.id, 'a proof pair: one names only the culprit, the other names no suspect');
   if (c.film && (!c.steps.includes('scene') && !c.steps.includes('ask') || c.film.some(f => !f[0] || !f[1]))) fail(c.id, 'film frames are [emoji, caption]');
   if (c.caught === undefined && c.excuse) fail(c.id, 'excuse without caught');
 }
@@ -120,7 +230,7 @@ for (const c of CASES) {
 
   const pair = c.type === 'pair';
   const evidence = ss.filter(s => s.role === 'evidence');
-  if (evidence.length !== (pair ? 2 : 1)) fail(c.id, `${evidence.length} evidence sentences (${c.type} needs ${pair ? 2 : 1})`);
+  if (c.steps ? !inRange(evidence.length, [1, 2]) : evidence.length !== (pair ? 2 : 1)) fail(c.id, `${evidence.length} evidence sentences (${c.steps ? 'a step case has 1, or a pair of 2' : `${c.type} needs ${pair ? 2 : 1}`})`);
   const lines = [c.h1, ...(c.call || []), ...(c.film || []).map(f => f[1]), ...(c.letter || []), ...(c.excuse ? [c.excuse] : []), ...(c.card && c.card.think ? [c.card.think] : [])];
   for (const t of lines.flatMap(l => l.split(/(?<=[.!?…])\s+(?=\p{Lu})/u))) if (words(t) > R.maxWords) fail(c.id, `${words(t)} words (max ${R.maxWords}): ${t}`);
   if (c.steps) { checkSteps(c); continue; }
@@ -149,15 +259,28 @@ for (const f of FILES) {
     for (const c of inFile) if (!c.card) fail(c.id, 'a season case pins a card to the corkboard (card)');
     if (!f.mystery) fail(f.id, 'a season needs its mystery question');
     if (f.guess) {
-      const R = LEVEL_RULES.A;
-      for (const t of [f.guess.q, ...f.guess.options.map(o => o[2])]) if (words(t) > R.maxWords) fail(f.id, `guess: ${words(t)} words (max ${R.maxWords}): ${t}`);
-      if (f.guess.options.length < 2 || f.guess.after > inFile.length + (f.soon || 0)) fail(f.id, 'guess needs 2+ options and a case it follows');
+      const R = LEVEL_RULES.A, g = f.guess;
+      for (const t of [g.q, g.q2, ...g.options.map(o => o[2])].filter(Boolean)) if (words(t) > R.maxWords) fail(f.id, `guess: ${words(t)} words (max ${R.maxWords}): ${t}`);
+      if (g.options.length < 2 || g.after > inFile.length + (f.soon || 0)) fail(f.id, 'guess needs 2+ options and a case it follows');
+      if (g.again && (!g.q2 || g.again <= g.after || g.again >= inFile.length + (f.soon || 0))) fail(f.id, 'guess.again comes after guess.after and before the final, with q2');
     }
+    if (f.book && (!f.book.q || !f.book.title || !f.book.by || words(f.book.q) > LEVEL_RULES.A.maxWords)) fail(f.id, 'book: { q (≤ 8 words), title, by }');
+    // puzzles vary: no puzzle type in two cases in a row
+    inFile.forEach((c, i) => { const prev = inFile[i - 1];
+      if (prev && c.steps && prev.steps) for (const st of PUZZLES) if (c.steps.includes(st) && prev.steps.includes(st)) fail(c.id, `${st} again, right after ${prev.id}`); });
+    // the culprit's face moves: never first in more than 2 cases, not in the same place in two cases in a row
+    const at = inFile.map(c => c.suspects.indexOf(c.culprit));
+    if (at.filter(i => i === 0).length > 2) fail(f.id, `the culprit is the first face in ${at.filter(i => i === 0).length} cases`);
+    at.forEach((i, k) => { if (k && i === at[k - 1]) fail(inFile[k].id, `the culprit is face ${i + 1} again, as in ${inFile[k - 1].id}`); });
+    // UGOVOR across the season: the liar is often not the culprit, and not the same person twice in a row
+    const lies = inFile.filter(c => c.lie && c.sentences.some(s => s.id === c.lie.claim));
+    const liarIn = (c) => c.sentences.find(s => s.id === c.lie.claim).who;
+    if (lies.length >= 3 && lies.filter(c => liarIn(c) !== c.culprit).length < 2) fail(f.id, 'the liar is not the culprit in at least 2 cases');
+    lies.forEach((c, i) => { if (i && lies[i - 1].no === c.no - 1 && liarIn(lies[i - 1]) === liarIn(c)) fail(c.id, `${liarIn(c)} lies again, right after ${lies[i - 1].id}`); });
     // the answer comes with the final case: the last one, its culprit unmasked (real), one of the guesses
     if (f.answer) {
       const last = inFile[inFile.length - 1];
       if (f.soon || !last || !last.final) fail(f.id, 'the answer comes with the final case (final: true, no soon)');
-      else if (!CHARACTERS[last.culprit].real) fail(last.id, 'the final culprit is the mystery guest (a character with real)');
       if (f.guess && !f.guess.options.some(o => o[0] === f.answer.id)) fail(f.id, 'the answer is one of the guess options');
       if (words(f.answer.text) > LEVEL_RULES.A.maxWords) fail(f.id, `answer: ${words(f.answer.text)} words (max)`);
     }
@@ -224,7 +347,8 @@ for (const c of CASES) {
     if (who.some(w => w.some(id => id !== c.culprit))) fail(c.id, `a proof names [${who.flat().join(', ')}], expected only ${c.culprit}`);
     if (who.filter(w => w.length).length !== 1) fail(c.id, 'in a pair exactly one proof names the culprit, the other names no suspect');
   }
-  const ev = c.type === 'pair' ? null : ss.find(s => s.role === 'evidence');
+  // (a step case with a proof pair is checked in checkSteps: one names the culprit, the other nobody)
+  const ev = c.type === 'pair' || ss.filter(s => s.role === 'evidence').length === 2 ? null : ss.find(s => s.role === 'evidence');
   if (ev) {
     const inEv = named(ev.text).filter(id => c.suspects.includes(id));
     if (inEv.length) {

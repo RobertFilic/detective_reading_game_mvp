@@ -9,3 +9,7 @@ Read before every task. Add up to 3 lessons after every task: the rule, then —
 - Lines that address the child in the past tense need both genders (`ga(m, f)`), or a phrasing without gender: »Prav si ugibal / ugibala«. — Bip 6 guess result.
 - Two singular subjects take the dual: »Žlička in žica sta skriti« / »sta bili«. — Bip 6.
 - `caught` is read inside »Detektivka Ana je ujela ___!«: check the accusative there (Tima, Elo, Kiki, Bipa). — all Bip cases.
+- The checker counts »…« as a word (`words()` doesn't strip it): »No ja … « already costs 3 of the 8. Count before adding a word. — Galeb g5 (»… pa je res bil« went to 9).
+- Feminine names in -i (Rozi, Gusti): keep the noun undeclined (z Rozi, ujela Gusti, o Gusti). The producer (native speaker) chose the possessive **Rozin listek**, not Rozijin (2026-11-01, Galeb); use the short -in form for such names. — Galeb.
+- The child addresses old ladies with **Vi** (»Kdaj greste spat?«, »Kaj ste videli?«): the producer's choice for gospa Vera (2026-11-01). Other adults stay »ti« unless the producer says otherwise. — Galeb.
+- Swap colloquial forms for standard ones in child text (»ne paše« → »ni prava«, »s tabo« → »s teboj«), and check that a simile makes sense (»Hodnik škriplje kot plaža«: a beach doesn't creak). — Galeb g2, UI.

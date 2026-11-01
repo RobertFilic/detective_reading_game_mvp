@@ -24,6 +24,14 @@ The memory of the studio, so no season is a copy of the last. The showrunner che
 | 👾 b4 | elim, scene | Ela | turned the antenna to the stars | her glove under it | her own claim »se nisem dotaknila« | 🔤 word search |
 | 👾 b5 | elim, scene | Tim | hid a birthday present | his present behind the boxes | »Robi rad zbira vijake« (likes it) | 🔐 lock 3-1-4 |
 | 👾 b6 | elim, final | Bip 👾 | calling home | the spoon and wire are in the vent | »Robi zna piskati« | 🕐 timeline |
+| 🦔 g1 | elim, scene, ❗ lie (about himself) | Luka | to win the sandcastle contest | trace: towel snake round his castle | Bepi knows sailor knots (a skill) | – |
+| 🦔 g2 | elim, ask, ❗ lie (a witness breaks it) | Hana | a sand trap to catch the author | witness: Bepi saw her gather sand | Luka's spade in the corridor | ✉️ cipher |
+| 🦔 g3 | elim, ask + scene, ❗ lie (innocent liar) | Luka | to share the dolphins | trace: his bucket under the bell | Bepi's own bell + Hana's accusation + Bepi's lie | – |
+| 🦔 g4 | elim, ask, ❗ lie (about someone else) | Gusti 🐦 | a nest for her eggs | seen: she sits in the cap | Luka wore the cap yesterday | 📜 torn note |
+| 🦔 g5 | elim, scene, ❗ lie (tall tale) | the sea 🌊 (nobody) | – (the tide) | trace: seaweed all over the castle | Gusti's feather on the castle | 🔤 word search + geslo |
+| 🦔 g6 | elim, final, ❗ lie (pair breaker) | Vera | to write in peace | pair: »Pišem v sobi 7« + Vera lives in room 7 | Hana read every book; Vera »sleeps at nine« | ✉️ cipher (one pair missing) |
+
+(🦔 rows: drafted, in review 2026-11-01; update them if the cases change before they ship.)
 
 ## Worn out: avoid or vary next season
 
@@ -33,6 +41,9 @@ The memory of the studio, so no season is a copy of the last. The showrunner che
 - **Food as motive**: about a third of the cases. Use other wishes: to help, to surprise, to fix, to see, to win, to hide a mistake.
 - **The proof always names the culprit plainly.** Next skill rungs need proofs that point through a trace, a time or a missing thing.
 - **Every question starts »Kdo je …?«.** Fine for now; a later season can ask »Kaj se je zgodilo?« or »Zakaj …?«.
+- **The culprit as the first face.** The faces show in `suspects` order (no shuffle); in 🦔 g1–g4 the culprit was the leftmost face four cases running. Keep one cast order for the season (as Bip did) or spread the culprit's place.
+- **The lie as the top claim bubble.** Claims show in `lie.claims` order; in 🦔 g3–g6 (every case with two claims) the lie was first. Vary it.
+- **The proof under the object the question names** (👾 b4 antenna, 🦔 g3 bell, g5 castle, g1 castle from the call). Once a season, hide it somewhere else.
 
 ## Used once: fine to reuse, but change it
 

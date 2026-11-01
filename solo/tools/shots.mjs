@@ -53,7 +53,7 @@ for (const [name, w, h] of VIEWS) {
   }, id);
   if (!steps) { console.log(`✘ no case ${id}`); process.exit(1); }
   const shoot = async (label) => {
-    await new Promise(r => setTimeout(r, 250));
+    await new Promise(r => setTimeout(r, label === 'reveal' ? 2200 : 250));   // the solved screen settles after its animations
     const bad = await p.evaluate(() => {
       const W = document.documentElement.clientWidth, out = [];
       document.querySelectorAll('#app *').forEach(el => { if (el.closest('.pins')) return; const r = el.getBoundingClientRect(); if (r.width && (r.right > W + 1 || r.left < -1)) out.push('overflow: ' + (el.className || el.tagName)); });
