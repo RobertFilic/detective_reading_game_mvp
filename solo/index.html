@@ -171,7 +171,16 @@ button.suspect { cursor: pointer; }
   appearance: none; font: inherit; color: inherit; cursor: pointer; display: flex; align-items: center; gap: 14px; text-align: left;
   background: #fff3cf; border: 2px solid #e2c98f; border-radius: 18px; padding: 12px 16px; box-shadow: 0 3px 0 rgba(0, 0, 0, .12);
 }
-.file-card.done { background: #e9f6ec; border-color: #9fd3ad; }
+.file-card.hero { padding: 16px 18px; border-width: 3px; box-shadow: 0 5px 0 rgba(0, 0, 0, .14); }
+.file-card.hero .fi { font-size: 60px; }
+.file-card .go { align-self: flex-start; margin-top: 6px; background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 22px; border-radius: 14px; padding: 6px 18px; }
+.shelf { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.shelf-head { font-weight: 800; font-size: 18px; color: #8a6a2f; }
+.medals { display: flex; flex-wrap: wrap; gap: 10px; }
+.medal { appearance: none; font: inherit; cursor: pointer; position: relative; width: 64px; height: 64px; border-radius: 16px; background: #e9f6ec; border: 2px solid #9fd3ad; box-shadow: 0 3px 0 rgba(0, 0, 0, .12); font-size: 34px; display: flex; align-items: center; justify-content: center; }
+.medal .mm { position: absolute; right: -6px; bottom: -6px; font-size: 22px; }
+.medal.arrive { animation: arrive .8s .3s both; }
+@keyframes arrive { from { transform: translateY(-120px) scale(1.6); opacity: 0; } 70% { transform: translateY(6px) scale(.95); opacity: 1; } }
 .file-card .fi { font-size: 48px; line-height: 1; }
 .file-card .ft { flex: 1; display: flex; flex-direction: column; }
 .file-card .ft b { font-size: 22px; }
@@ -514,6 +523,7 @@ button.suspect { cursor: pointer; }
   .id-text b { font-size: 20px; }
   .file-card { padding: 10px 12px; gap: 10px; }
   .file-card .fi { font-size: 38px; }
+  .file-card.hero .fi { font-size: 50px; }
   .file-card .ft b { font-size: 19px; }
   .file-card .cast { font-size: 20px; }
   .coach { font-size: 18px; padding: 8px 10px; gap: 8px; }
@@ -1735,6 +1745,31 @@ const isLocked = (c) => !isSolved(c) && (isSeason(c) ? casesIn(c.file).some(x =>
 const fileDone = (file) => !(FILES.find(f => f.id === file).soon > 0) && casesIn(file).every(isSolved);
 const ALL_KEYS = FILES.flatMap(f => casesIn(f.id).map(caseKey));
 
+// Start screen order, worked out from the saves so nothing moves unless the child did something:
+// one hero (the adventure played last that still has a case to solve; else the first adventure
+// for a new detective, the newest unstarted one for the others), then started, then unstarted,
+// then ones waiting for new cases. Finished adventures go on the medal shelf.
+function fileOrder() {
+  const started = (f) => casesIn(f.id).some(isSolved);
+  const open = (f) => casesIn(f.id).some(c => !isSolved(c));
+  const keys = solvedKeys();
+  const last = [...keys].reverse().map(k => FILES.find(f => f.id === k.split(':')[0])).find(f => f && open(f));
+  const fresh = FILES.filter(f => !started(f));
+  const hero = last || (keys.length ? fresh[fresh.length - 1] : fresh[0]);
+  const rest = FILES.filter(f => f !== hero && !fileDone(f.id));
+  const cards = [...(hero ? [[hero, true]] : []),
+    ...[rest.filter(f => started(f) && open(f)), rest.filter(f => !started(f)), rest.filter(f => !open(f))].flat().map(f => [f, false])];
+  return { cards, shelf: FILES.filter(f => fileDone(f.id)) };
+}
+// A medal that is new since this screen was last shown flies onto the shelf.
+function shelfHTML(shelf) {
+  if (!shelf.length) return '';
+  const pid = (profile() || {}).id, seen = S.shelfSeen && S.shelfSeen.pid === pid && S.shelfSeen.ids;
+  S.shelfSeen = { pid, ids: shelf.map(f => f.id) };
+  return `<div class="shelf"><div class="shelf-head">🏅 Moje medalje</div><div class="medals">${shelf.map(f =>
+    `<button class="medal ${seen && !seen.includes(f.id) ? 'arrive' : ''}" data-act="openFile" data-file="${f.id}" aria-label="${esc(f.title)}"><span class="mi">${f.icon}</span><span class="mm">🏅</span></button>`).join('')}</div></div>`;
+}
+
 // Case board: the child picks any case of the file. Solved cases get a tick, and one
 // unsolved case glows as a suggestion: a random one among the easiest still open.
 function pickSuggestion() {
@@ -2428,13 +2463,16 @@ const T = {
     return `<div class="screen files-screen">
       <div class="files-card">${idCard(p)}<button class="btn secondary edit" data-act="editCard" aria-label="Uredi izkaznico">✏️</button></div>
       <div class="board-head"><span class="q">🗺️ Izberi pustolovščino</span></div>
-      <div class="file-list">${FILES.map(f => {
+      <div class="file-list">${fileOrder().cards.map(([f, hero]) => {
         const cs = casesIn(f.id), done = cs.filter(isSolved).length, all = cs.length + (f.soon || 0);
-        return `<button class="file-card ${fileDone(f.id) ? 'done' : ''} ${f.season ? 'season' : ''}" data-act="openFile" data-file="${f.id}">
+        const tags = [done ? '' : 'NOVO', f.season ? '🔎 skrivnost' : ''].filter(Boolean).join(' · ');
+        return `<button class="file-card ${hero ? 'hero' : ''} ${f.season ? 'season' : ''}" data-act="openFile" data-file="${f.id}">
           <span class="fi">${f.icon}</span>
-          <span class="ft">${f.season ? '<span class="new-tag">NOVO · skrivnost</span>' : ''}<b>${esc(f.title)}</b><span class="cast">${f.cast.map(id => CHARACTERS[id].animal).join(' ')}</span></span>
-          <span class="fp">${fileDone(f.id) ? '🏅' : `✔ ${done} / ${all}`}</span></button>`;
+          <span class="ft">${tags ? `<span class="new-tag">${tags}</span>` : ''}<b>${esc(f.title)}</b><span class="cast">${f.cast.map(id => CHARACTERS[id].animal).join(' ')}</span>
+            ${hero ? `<span class="go">${done ? '▶ Nadaljuj' : '▶ Začni'}</span>` : ''}</span>
+          ${done ? `<span class="fp">✔ ${done} / ${all}</span>` : ''}</button>`;
       }).join('')}
+        ${shelfHTML(fileOrder().shelf)}
         <div class="file-soon">Kmalu nove pustolovščine: ⚽ nogomet, 🏝️ Gran Canaria, 🏫 šola …</div></div>
       <div class="footer"><button class="btn secondary" data-act="tutorial">❓ Kako igram?</button>
         <button class="btn secondary" data-act="toWho" aria-label="Kdo igra?">👥</button>
