@@ -12,6 +12,8 @@
 <title>Detektivska pisarna</title>
 <style>
 :root {
+  /* iOS blurs a strip below the status bar (Safari 26), so the top inset gets half again as much room. */
+  --safe-top: calc(env(safe-area-inset-top) * 1.5);
   --bg: #fdf6e9; --ink: #2b2a33; --muted: #6b6876; --card: #fff; --line: #e6dcc8;
   --accent: #3d6fd8; --accent-ink: #fff; --heard: #eef3ff; --sel: #ffe9a8; --sel-line: #e0a800;
   --good: #dff3e6; --warn: #fff1cc; --bad: #fbe0dc; --danger: #c0392b;
@@ -30,7 +32,7 @@ input { -webkit-user-select: text; user-select: text; font: inherit; }
 #app { height: 100%; height: 100dvh; display: flex; flex-direction: column; }
 .screen {
   flex: 1; display: flex; flex-direction: column; min-height: 0; width: 100%; max-width: 900px; margin: 0 auto;
-  padding: calc(16px + env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+  padding: calc(16px + var(--safe-top)) max(24px, env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
 }
 /* Centred screens scroll when the content is taller than the screen (small phones), instead of cutting off the top. */
 .center { justify-content: flex-start; align-items: center; text-align: center; gap: 24px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -126,7 +128,7 @@ button.suspect { cursor: pointer; }
   display: flex; gap: 12px; align-items: center; background: #fff; border: 3px solid var(--accent); border-radius: 20px;
   padding: 10px 14px; font-size: 22px; font-weight: 600; box-shadow: 0 10px 30px rgba(0, 0, 0, .2); animation: coachIn .3s ease-out;
 }
-.coach.top { top: calc(10px + env(safe-area-inset-top)); }
+.coach.top { top: calc(10px + var(--safe-top)); }
 .coach.bottom { bottom: calc(10px + env(safe-area-inset-bottom)); }
 .coach .owl { font-size: 44px; line-height: 1; flex: none; }
 .coach .say { flex: 1; }
@@ -474,7 +476,7 @@ button.suspect { cursor: pointer; }
   .caseq { font-size: 18px; margin-bottom: 4px; }
   :root { --row-font: 20px; }
   .level-A { --row-font: 23px; }
-  .screen { padding-left: max(14px, env(safe-area-inset-left)); padding-right: max(14px, env(safe-area-inset-right)); padding-top: calc(10px + env(safe-area-inset-top)); padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+  .screen { padding-left: max(14px, env(safe-area-inset-left)); padding-right: max(14px, env(safe-area-inset-right)); padding-top: calc(10px + var(--safe-top)); padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
   .center { gap: 14px; }
   h1 { font-size: 30px; }
   .qbar { gap: 8px; margin-bottom: 8px; }
@@ -545,7 +547,7 @@ button.suspect { cursor: pointer; }
   .reveal .reveal-rows { flex: 1 1 auto; min-height: 0; padding-bottom: 4px; }
   .reveal .paper, .reveal .rankup, .reveal .excuse, .reveal .pinned, .reveal .guess { flex: none; }
   .rankup { padding: 4px 12px; font-size: 17px; }
-  .orderstep .caseq { display: none; }
+  .orderstep .caseq, .wordsearch .caseq { display: none; }
   .orderstep { gap: 10px; }
   .tslot { min-height: 30px; }
   .tn { flex-basis: 28px; height: 28px; }
@@ -571,7 +573,7 @@ button.suspect { cursor: pointer; }
 
 /* Phones: landscape (short) */
 @media (max-height: 500px) {
-  .screen { padding-top: calc(8px + env(safe-area-inset-top)); padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
+  .screen { padding-top: calc(8px + var(--safe-top)); padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
   .center { gap: 10px; }
   h1 { font-size: 28px; }
   .qbar.big .q { font-size: 26px; }
@@ -582,7 +584,7 @@ button.suspect { cursor: pointer; }
   .hint { font-size: 20px; padding: 10px 14px; }
   .folder { min-height: 120px; }
   /* Solved screen: the explanation scrolls, "Naprej" stays on screen. */
-  .reveal { overflow: hidden; gap: 6px; padding-top: calc(14px + env(safe-area-inset-top)); }
+  .reveal { overflow: hidden; gap: 6px; padding-top: calc(14px + var(--safe-top)); }
   .reveal .stamp { font-size: 24px; border-width: 4px; padding: 2px 14px; }
   .reveal > :first-child, .reveal > :last-child { margin-top: 0; margin-bottom: 0; }
   .reveal .sticker, .reveal .suspect { display: none; }
