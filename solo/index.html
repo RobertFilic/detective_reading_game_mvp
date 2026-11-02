@@ -19,6 +19,9 @@
   --good: #dff3e6; --warn: #fff1cc; --bad: #fbe0dc; --danger: #c0392b;
   --row-font: 24px;
 }
+/* In the Safari browser (not from the home screen) the inset is 0, but the blur still reaches about 30 px
+   into the page; a phone held upright always keeps that much room on top. */
+@media (pointer: coarse) and (orientation: portrait) { :root { --safe-top: max(calc(env(safe-area-inset-top) * 1.5), 32px); } }
 .level-A { --row-font: 30px; }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; height: 100%; }
@@ -29,7 +32,7 @@ body {
   -webkit-touch-callout: none; touch-action: manipulation;
 }
 input { -webkit-user-select: text; user-select: text; font: inherit; }
-#app { height: 100%; height: 100dvh; display: flex; flex-direction: column; }
+#app { height: 100%; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }   /* a slam animation never widens the page */
 .screen {
   flex: 1; display: flex; flex-direction: column; min-height: 0; width: 100%; max-width: 900px; margin: 0 auto;
   padding: calc(16px + var(--safe-top)) max(24px, env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
@@ -241,6 +244,13 @@ button.suspect { cursor: pointer; }
 .note-back { position: fixed; inset: 0; z-index: 19; background: rgba(43, 42, 51, .25); }
 .hint.note { z-index: 20; animation: notein .3s both; }
 .hint.note .txt { font-weight: 600; }
+.hint.good { border-color: #6fc287; background: #effaf2; }
+.brief-wrap.later, .brief-wrap.later .brief { animation-delay: 1.6s; }
+.brief-wrap.later { animation: fadein .3s 1.6s both; }
+.brief.excuse-card { border-color: var(--danger); }
+.brief.excuse-card .btitle .avatar { flex: none; }
+.brief.excuse-card .bnote { font-size: calc(var(--row-font, 20px) + 2px); font-style: italic; }
+.row.used { text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: var(--danger); opacity: .55; pointer-events: none; }
 @keyframes notein { from { transform: translateX(-50%) translateY(24px); opacity: 0; } }
 .hint.note.nudge { animation: nudge .45s; }
 @keyframes nudge { 20%, 60% { transform: translateX(calc(-50% - 10px)); } 40%, 80% { transform: translateX(calc(-50% + 10px)); } }
@@ -875,6 +885,7 @@ const UI_AUDIO = {
   howLie: 'Nekdo nekaj trdi. 💬 Je to res? Tapni 💬, nato stavek, ki pove drugače.',
   howSolve: 'Prečrtaj, kdo ni bil. Tapni stavek, nato obraz. Na koncu pokaži dokaz.',
   truthTells: 'pove resnico:',
+  excuseSays: 'pravi:',
   selfClaim: 'To trdi o sebi. Ali je res? Poišči dokaz.',
   solve: 'Prečrtaj, kdo ni bil. Tapni stavek, nato obraz.',
   lastOne: 'Ostal je samo eden. Pokaži dokaz!',
@@ -1765,7 +1776,9 @@ function newRun() {
     // a two-proof step case: the proof already shown
     proofs: [],
     // »Najprej navodilo«: steps whose card was read (»Razumem«), when the open card came, the truth card read
-    briefed: [], briefAt: null, truthOk: false,
+    briefed: [], briefAt: null, truthOk: false, excuseOk: false,
+    // solve: the sentences that crossed someone off (struck through)
+    used: [],
   };
 }
 
@@ -1959,7 +1972,7 @@ function endTutorial() {
 function coachStep() {
   const t = S.tut, r = S.run;
   // the first UGOVOR ever: the owl shows the two taps (a finger only when there is one claim to point at)
-  if (briefOpen() || truthOpen() || (stepCase() && r.note)) return null;
+  if (briefOpen() || truthOpen() || excuseOpen() || (stepCase() && r.note)) return null;
   if (S.screen === 'lie' && r && r.lcoach && !r.caught && !r.hint) {
     const one = S.c.lie.claims.length === 1;
     return r.lcoach === 1 ? { text: UI_AUDIO.coachLie1, sel: one ? '.claim' : '.claims', point: one }
@@ -2185,6 +2198,7 @@ function render() {
   app.innerHTML = T[S.screen]();
   if (briefOpen()) app.insertAdjacentHTML('beforeend', briefHTML());
   else if (truthOpen()) app.insertAdjacentHTML('beforeend', truthHTML());
+  else if (excuseOpen()) app.insertAdjacentHTML('beforeend', excuseHTML());
   else if (stepCase() && S.run.note && !S.run.hint) app.insertAdjacentHTML('beforeend', noteHTML());
   const chat = $('.chat');
   if (chat) chat.scrollTop = chat.scrollHeight;
@@ -2303,13 +2317,24 @@ function truthHTML() {
     <div class="row bnote" data-act="listenClue" data-sid="${tr.id}">${names(unq(tr.text))}</div>
     <button class="btn big" data-act="truthOk">Razumem ✓</button></div></div>`;
 }
+// On the solved screen the culprit's excuse comes on a card after the stamp: as a line it was never read.
+const excuseOpen = () => S.screen === 'reveal' && !!(S.c && S.c.excuse && S.run) && !S.run.excuseOk;
+function excuseHTML() {
+  const c = S.c, who = { ...CHARACTERS[c.culprit], ...CHARACTERS[c.culprit].real };
+  if (!S.run.briefAt) S.run.briefAt = Date.now();
+  return `<div class="brief-wrap later"><div class="brief excuse-card">
+    <div class="btitle">${avatar(c.culprit, 'sm', who)}${esc(who.name)} ${UI_AUDIO.excuseSays}</div>
+    <div class="row bnote" data-act="say" data-clip="${c.id}_x">»${esc(c.excuse)}«</div>
+    <button class="btn big" data-act="excuseOk">Razumem ✓</button></div></div>`;
+}
 // A new message during a step comes as a card at the bottom; the screen waits for »V redu«.
 function noteHTML() {
   const r = S.run, hmm = S.c.lie ? (S.c.lie.hmm || []).findIndex(m => m[2] === r.note) : -1;
   const key = Object.keys(UI_AUDIO).find(k => UI_AUDIO[k] === r.note);
   const almost = hmm >= 0 || r.note === UI_AUDIO.lieHalf;
-  return `<div class="note-back" data-act="noteNudge"></div><div class="hint note ${almost ? 'almost' : 'tip'}" id="note">
-    <span class="hi">${almost ? '💡' : '💬'}</span><span class="txt">${almost ? `<b class="verdict">${UI_AUDIO.almost}</b> ` : ''}${esc(r.note)}</span>
+  const good = [UI_AUDIO.lastOne, UI_AUDIO.sceneDone, UI_AUDIO.askDone].includes(r.note);
+  return `<div class="note-back" data-act="noteNudge"></div><div class="hint note ${almost ? 'almost' : good ? 'good' : 'tip'}" id="note">
+    <span class="hi">${almost ? '💡' : good ? '✅' : '💬'}</span><span class="txt">${almost ? `<b class="verdict">${UI_AUDIO.almost}</b> ` : ''}${esc(r.note)}</span>
     ${spk(hmm >= 0 ? `${S.c.id}_lm${hmm + 1}` : 'ui_' + key)}<button class="btn" data-act="noteOk">V redu</button></div>`;
 }
 const qbarB = (text, clip) => `<div class="qbar"><span class="q bq" data-act="brief">${esc(text)}</span>${spk(clip)}</div>`;
@@ -2862,7 +2887,7 @@ const T = {
         return `<button class="suspect ${x ? 'crossed' : ''} ${r.assisted && t && t.who === id ? 'pulse' : ''}" data-act="cross" data-id="${id}">
           ${avatar(id)}<span>${CHARACTERS[id].name}</span>${x ? '<span class="xmark">✖</span>' : ''}</button>`;
       }).join('')}</div>
-      <div class="rows">${c.sentences.map(s => `<div class="row ${r.sel === s.id ? 'selected' : ''} ${r.proofs.includes(s.id) ? 'proof' : ''}
+      <div class="rows">${c.sentences.map(s => `<div class="row ${r.sel === s.id ? 'selected' : ''} ${r.proofs.includes(s.id) ? 'proof' : ''} ${r.used.includes(s.id) ? 'used' : ''}
         ${t && t.sid !== s.id ? 'dim' : ''} ${r.assisted && t && t.sid === s.id ? 'pulse' : ''}" data-act="pickClue" data-sid="${s.id}">${sayHTML(s)}${
         c.lie && r.caught && s.id === c.lie.claim ? '<span class="ltag">UGOVOR!</span>' : c.lie && s.id === c.lie.truth ? '<span class="ltag truth">✨</span>' : ''}</div>`).join('')}</div>
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span></div>
@@ -3249,6 +3274,14 @@ const ACTIONS = {
     r.briefAt = null;
     render();
   },
+  excuseOk() {
+    const r = S.run;
+    stopAudio();
+    log('brief_ok', { step: 'excuse', ms: Date.now() - r.briefAt });
+    r.excuseOk = true;
+    r.briefAt = null;
+    render();
+  },
   noteOk() { S.run.note = null; stopAudio(); render(); },
   // a tap beside the message card: it wiggles, it doesn't go away
   noteNudge() {
@@ -3543,6 +3576,7 @@ const ACTIONS = {
     setTimeout(() => {
       if (S.screen !== 'ask' || r.typing !== s.id) return;
       r.typing = null;
+      if (own('ask').every(x => r.found.includes(x.id))) r.note = UI_AUDIO.askDone;
       sfx('pop');
       render();
     }, 900);
@@ -3568,7 +3602,7 @@ const ACTIONS = {
     }
     r.found.push(s.id);
     r.fresh = true;
-    r.note = null;
+    r.note = own('scene').every(x => r.found.includes(x.id)) ? UI_AUDIO.sceneDone : null;
     r.heard.add(s.id);
     sfx('pop');
     log('clue_open', { sentenceId: s.id, role: s.role, n: r.found.length });
@@ -3621,7 +3655,9 @@ const ACTIONS = {
     }
     if (alibi) {
       r.crossed.push(id);
+      r.used.push(s.id);
       r.highlight = null;
+      if (c.suspects.length - r.crossed.length === 1) r.note = UI_AUDIO.lastOne;
       sfx('stamp');
       render();
       const x = document.querySelector(`.suspect[data-id="${id}"]`);
