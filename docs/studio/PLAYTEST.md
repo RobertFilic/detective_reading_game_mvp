@@ -25,3 +25,11 @@ Names are not written here: use »child 1«, »child 2« and an age.
 - Did the coded note, the torn note and the word search's secret message feel like part of the story?
 - Did they change their guess after case 5? Did seeing their own name on the book cover land?
 - Language: does »ti« to old Vera and Bepi sound odd to you? »Rozijin listek« or »Rozin listek«?
+
+## 2026-11-02 · 🦔 Skrivnost hotela Galeb · first play (producer + child)
+
+- **The children skip instructions.** They go straight to the main text without knowing what to do, and at UGOVOR they missed the new message (it changed quietly at the top). → Built »Najprej navodilo«: an instruction card with »Razumem ✓« at the start of every step, message cards with »V redu«, and the truth after UGOVOR on its own card. The debrief's »Navodila hitro« column shows cards closed in under 3 s.
+- **Case 1 was not fair:** Luka or Bepi? »Vera je z balkona videla Bepija na morju« didn't say when or how long, and Bepi can tie knots. → The call now says »Dopoldne …«, and Bepi's alibi is »Vera je vse dopoldne gledala Bepija na čolnu.«
+- **Names are hard to find in the sentences.** → Names are bold in every sentence (also in their cases: **Bepija**, **Lukove**).
+- **The phone read every sentence aloud on tap.** → Nothing is read by itself any more; tapping a sentence that is there to read still reads it.
+- *Next time:* do they read the instruction card, or tap »Razumem« at once? (Check »Navodila hitro«.) Does the blue ? on top get used?

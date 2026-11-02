@@ -225,6 +225,30 @@ button.suspect { cursor: pointer; }
 .hint.no .hi, .hint.no .verdict { color: #c9302c; }
 .hint.tip { border-color: var(--sel-line); }
 .hint .verdict { display: block; font-size: 1.1em; }
+/* »Najprej navodilo«: the step's instruction card, the truth after UGOVOR, the message card */
+.brief-wrap { position: fixed; inset: 0; background: rgba(43, 42, 51, .45); display: flex; align-items: center; justify-content: center; z-index: 25;
+  padding: calc(16px + var(--safe-top)) 16px calc(16px + env(safe-area-inset-bottom)); }
+.brief { background: #fffdf3; border: 3px solid var(--sel-line); border-radius: 22px; padding: 18px; width: min(560px, 100%); max-height: 100%; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, .25); animation: briefin .35s both; }
+.brief .btitle { display: flex; align-items: center; gap: 10px; font-size: 26px; font-weight: 800; }
+.brief .bi { font-size: 44px; line-height: 1; }
+.brief .row { margin: 0; }
+.brief .bhow { background: #fff6d6; border-color: var(--sel-line); font-weight: 600; }
+.brief .btn.big { align-self: stretch; }
+.brief.truth { border-color: #7a5cd6; }
+.brief.truth .bnote { font-size: calc(var(--row-font, 20px) + 2px); }
+@keyframes briefin { from { transform: translateY(24px) scale(.96); opacity: 0; } }
+.note-back { position: fixed; inset: 0; z-index: 19; background: rgba(43, 42, 51, .25); }
+.hint.note { z-index: 20; animation: notein .3s both; }
+.hint.note .txt { font-weight: 600; }
+@keyframes notein { from { transform: translateX(-50%) translateY(24px); opacity: 0; } }
+.hint.note.nudge { animation: nudge .45s; }
+@keyframes nudge { 20%, 60% { transform: translateX(calc(-50% - 10px)); } 40%, 80% { transform: translateX(calc(-50% + 10px)); } }
+.qbar .bq, .row.wnote { cursor: pointer; }
+.row.wnote { position: relative; }
+.qbar .bq::after, .row.wnote::after { content: '?'; display: inline-flex; align-items: center; justify-content: center; width: 1.3em; height: 1.3em;
+  margin-left: 8px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: .7em; font-weight: 800; vertical-align: middle; }
+.row.wnote::after { position: absolute; right: -8px; top: -8px; margin: 0; box-shadow: 0 0 0 3px var(--bg); }
 /* step cases: phone call, scene search, crossing off */
 .phone { font-size: 96px; line-height: 1; animation: ring .5s ease-in-out infinite; }
 @keyframes ring { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-14deg); } 75% { transform: rotate(14deg); } }
@@ -261,6 +285,7 @@ button.suspect { cursor: pointer; }
 .qs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin: 4px 0 8px; flex: none; }
 .qbtn { appearance: none; font: inherit; font-size: 20px; font-weight: 600; cursor: pointer; background: #fff; color: var(--accent); border: 3px solid var(--accent); border-radius: 20px; padding: 8px 14px; }
 .row .who { font-weight: 700; color: var(--muted); }
+.nm { font-weight: 800; }
 .objs { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin-bottom: 8px; flex: none; }
 .obj {
   appearance: none; font: inherit; color: inherit; cursor: pointer; position: relative; background: #fff3cf; border: 2px solid #e2c98f;
@@ -656,6 +681,15 @@ button.suspect { cursor: pointer; }
   .digit { font-size: 34px; }
   /* while the camera plays, the call and the suspects step aside (both were just read) */
   .call:has(.film) .suspects, .call:has(.film) .caller { display: none; }
+  .brief { width: min(760px, 100%); padding: 10px 16px; gap: 8px; }
+  .brief .btitle { font-size: 20px; }
+  .brief .bi { font-size: 30px; }
+  .brief .row { font-size: 18px; padding: 6px 12px; }
+  .brief .btn.big { font-size: 22px; padding: 8px 20px; min-height: 48px; }
+  /* a two-line call still leaves room for the button */
+  .call.center { gap: 8px; }
+  .call .bubble .row { font-size: 18px; }
+  .call .qbar.big .q { font-size: 26px; }
   .film-pic { font-size: 40px; padding: 0; }
   .film .row { margin: 4px 0; min-height: 0; padding: 6px 12px; }
   .film-nav .btn { padding: 6px 14px; min-height: 44px; }
@@ -830,6 +864,17 @@ const UI_AUDIO = {
   tornAssist: 'Ta košček pride naslednji. Utripa.',
   tornDone: 'Listek je cel!',
   geslo: 'Ostale črke povedo skrivnost!',
+  // »Najprej navodilo«: what to do, on the card at the start of every step
+  howScene: 'Preišči prostor. Tapni vsako stvar in preberi, kaj najdeš.',
+  howAsk: 'Zasliši vse. Tapni obraz, nato vprašanje. Preberi odgovor.',
+  howWords: 'Poišči besede s seznama. Tapni prvo črko, nato zadnjo.',
+  howLock: 'Obračaj kolesca ▲ ▼. Ko je šifra prava, tapni »Odpri«.',
+  howOrder: 'Kaj je bilo najprej? Tapni listke po vrsti. Nato tapni »Preveri«.',
+  howCipher: 'Vsak znak je ena črka. Poglej ključ in tapni pravo črko.',
+  howTorn: 'Sestavi listek. Tapni koščke po vrsti, nato »Preveri«.',
+  howLie: 'Nekdo nekaj trdi. 💬 Je to res? Tapni 💬, nato stavek, ki pove drugače.',
+  howSolve: 'Prečrtaj, kdo ni bil. Tapni stavek, nato obraz. Na koncu pokaži dokaz.',
+  truthTells: 'pove resnico:',
   selfClaim: 'To trdi o sebi. Ali je res? Poišči dokaz.',
   solve: 'Prečrtaj, kdo ni bil. Tapni stavek, nato obraz.',
   lastOne: 'Ostal je samo eden. Pokaži dokaz!',
@@ -1262,12 +1307,12 @@ const CASES = [
   {
     id: 'g1', file: 'galeb', no: 1, type: 'elim', level: 'A', sticker: '🐍', place: 'Plaža',
     steps: ['call', 'scene', 'lie', 'solve'],
-    client: 'rozi', call: ['Cin-cin! Brisače so zvezane v kačo!', 'Popoldne bo tekma peščenih gradov.'],
+    client: 'rozi', call: ['Cin-cin! Dopoldne je nekdo zvezal brisače v kačo!', 'Popoldne bo tekma peščenih gradov.'],
     question: 'Kdo je zvezal vse brisače?',
     suspects: ['hana', 'gusti', 'luka', 'bepi'], culprit: 'luka',
     sentences: [
       ['s2', 'Bepi zna vezati mornarske vozle.', 'distractor', { obj: '🪢', label: 'vrv' }],
-      ['s3', 'Vera je z balkona videla Bepija na morju.', 'clear', { obj: '🏨', label: 'hotel', clears: 'bepi' }],
+      ['s3', 'Vera je vse dopoldne gledala Bepija na čolnu.', 'clear', { obj: '🏨', label: 'hotel', clears: 'bepi' }],
       ['s1', '»Vse dopoldne sem plaval v morju.«', 'distractor', { obj: '⛱️', label: 'senčnik', who: 'luka' }],
       ['s4', 'Kača iz brisač se vije okoli Lukovega gradu.', 'evidence', { obj: '🏰', label: 'grad' }],
       ['s5', 'Gusti ne zna vezati vozlov.', 'clear', { obj: '🛟', label: 'obroč', clears: 'gusti' }],
@@ -1676,10 +1721,15 @@ function play(id, text, el) {
 const $ = (sel) => document.querySelector(sel);
 const app = document.getElementById('app');
 const esc = (s) => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
+// Names in the sentences are bold, so a child finds who a sentence is about. Only names that start
+// with a capital: the sea (»morje«) and a mystery guest's hiding place stay plain.
+let nameRe;
+const names = (t) => '<span>' + esc(t).replace(nameRe ||= new RegExp(`(?<!\\p{L})(?:${Object.values(CHARACTERS)
+  .filter(ch => /^\p{Lu}/u.test(ch.re)).map(ch => ch.re).join('|')})(?!\\p{L})`, 'gu'), m => `<b class="nm">${m}</b>`) + '</span>';
 const pad = (n) => String(n).padStart(2, '0');
 const sent = (sid) => S.c.sentences.find(s => s.id === sid);
 // a sentence as shown in a list: an answer (ask step) shows who said it
-const sayHTML = (s) => s.who ? `<span><b class="who">${CHARACTERS[s.who].animal} ${CHARACTERS[s.who].name}:</b> ${esc(s.text)}</span>` : esc(s.text);
+const sayHTML = (s) => s.who ? `<span><b class="who">${CHARACTERS[s.who].animal} ${CHARACTERS[s.who].name}:</b> ${names(s.text)}</span>` : names(s.text);
 const caseById = (id) => CASES.find(c => c.id === id);
 const fmtDur = (ms) => { const s = Math.round(ms / 1000); return `${Math.floor(s / 60)}:${pad(s % 60)}`; };
 const fmtDate = (ts) => { const d = new Date(ts); return `${d.getDate()}. ${d.getMonth() + 1}. ${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`; };
@@ -1714,6 +1764,8 @@ function newRun() {
     lclaim: null, lorder: null, lrows: [], lbroke: [], lwrong: 0, llook: false, lassisted: false, caught: false, lphase: null, lcoach: undefined,
     // a two-proof step case: the proof already shown
     proofs: [],
+    // »Najprej navodilo«: steps whose card was read (»Razumem«), when the open card came, the truth card read
+    briefed: [], briefAt: null, truthOk: false,
   };
 }
 
@@ -1907,6 +1959,7 @@ function endTutorial() {
 function coachStep() {
   const t = S.tut, r = S.run;
   // the first UGOVOR ever: the owl shows the two taps (a finger only when there is one claim to point at)
+  if (briefOpen() || truthOpen() || (stepCase() && r.note)) return null;
   if (S.screen === 'lie' && r && r.lcoach && !r.caught && !r.hint) {
     const one = S.c.lie.claims.length === 1;
     return r.lcoach === 1 ? { text: UI_AUDIO.coachLie1, sel: one ? '.claim' : '.claims', point: one }
@@ -2130,6 +2183,9 @@ addEventListener('popstate', () => {
 function render() {
   app.className = 'level-' + (S.level || 'B');
   app.innerHTML = T[S.screen]();
+  if (briefOpen()) app.insertAdjacentHTML('beforeend', briefHTML());
+  else if (truthOpen()) app.insertAdjacentHTML('beforeend', truthHTML());
+  else if (stepCase() && S.run.note && !S.run.hint) app.insertAdjacentHTML('beforeend', noteHTML());
   const chat = $('.chat');
   if (chat) chat.scrollTop = chat.scrollHeight;
   const pin = $('.pincard.new'), pins = $('.pins');   // the card that flies in is in view
@@ -2142,7 +2198,7 @@ function render() {
 }
 
 function rowsHTML(act) {
-  return S.c.sentences.map(s => `<div class="row" data-act="${act}" data-sid="${s.id}">${esc(s.text)}</div>`).join('');
+  return S.c.sentences.map(s => `<div class="row" data-act="${act}" data-sid="${s.id}">${names(s.text)}</div>`).join('');
 }
 
 function refreshRows() {
@@ -2217,6 +2273,47 @@ const STEP_LABEL = { ask: 'Zasliši osumljence 🗣️', words: 'Preberi listek 
   cipher: 'Skrivni listek ✉️', torn: 'Raztrgan listek 📜', lie: 'Je vse res? ❗' };
 const stepLabel = () => STEP_LABEL[stepNext()] || 'Vem, kdo je bil!';
 
+// »Najprej navodilo«: every step opens with a card that says what to do (a puzzle's card has the
+// case's note first). The screen behind waits for »Razumem«; tapping the instruction on top opens it
+// again. [icon, title, how, the case field with the note, the note's clip]
+const BRIEF = {
+  scene: ['🔍', 'Na kraju dogodka', 'howScene'], ask: ['🗣️', 'Zaslišanje', 'howAsk'],
+  words: ['🔤', 'Iskanka', 'howWords', 'words', 'wn'], lock: ['🔐', 'Ključavnica', 'howLock', 'lock', 'kn'],
+  order: ['🕐', 'Po vrsti', 'howOrder', 'order', 'on'], cipher: ['✉️', 'Skrivni listek', 'howCipher', 'cipher', 'cn'],
+  torn: ['📜', 'Raztrgan listek', 'howTorn', 'torn', 'pn'], lie: ['❗', 'Je vse res?', 'howLie'], solve: ['🕵️', 'Kdo je bil?', 'howSolve'],
+};
+const stepCase = () => !!(S.c && S.c.steps && S.run);
+const briefOpen = () => stepCase() && !!BRIEF[S.screen] && !S.run.briefed.includes(S.screen);
+const truthOpen = () => stepCase() && S.screen === 'lie' && S.run.lphase === 'done' && !S.run.truthOk;
+function briefHTML() {
+  const [icon, title, how, part, clip] = BRIEF[S.screen], c = S.c, r = S.run;
+  if (!r.briefAt) { r.briefAt = Date.now(); log('brief_show', { step: S.screen }); }
+  return `<div class="brief-wrap"><div class="brief">
+    <div class="btitle"><span class="bi">${icon}</span>${esc(title)}</div>
+    ${part ? `<div class="row bnote" data-act="say" data-clip="${c.id}_${clip}">${esc(c[part].note)}</div>` : ''}
+    <div class="row bhow" data-act="say" data-clip="ui_${how}">👉 ${esc(UI_AUDIO[how])}</div>
+    <button class="btn big" data-act="briefOk">Razumem ✓</button></div></div>`;
+}
+// After UGOVOR the truth comes on its own card, so it can't be missed.
+function truthHTML() {
+  const tr = sent(S.c.lie.truth), who = CHARACTERS[tr.who];
+  if (!S.run.briefAt) S.run.briefAt = Date.now();
+  return `<div class="brief-wrap"><div class="brief truth">
+    <div class="btitle"><span class="bi">${who.animal}</span>${esc(who.name)} ${UI_AUDIO.truthTells}</div>
+    <div class="row bnote" data-act="listenClue" data-sid="${tr.id}">${names(unq(tr.text))}</div>
+    <button class="btn big" data-act="truthOk">Razumem ✓</button></div></div>`;
+}
+// A new message during a step comes as a card at the bottom; the screen waits for »V redu«.
+function noteHTML() {
+  const r = S.run, hmm = S.c.lie ? (S.c.lie.hmm || []).findIndex(m => m[2] === r.note) : -1;
+  const key = Object.keys(UI_AUDIO).find(k => UI_AUDIO[k] === r.note);
+  const almost = hmm >= 0 || r.note === UI_AUDIO.lieHalf;
+  return `<div class="note-back" data-act="noteNudge"></div><div class="hint note ${almost ? 'almost' : 'tip'}" id="note">
+    <span class="hi">${almost ? '💡' : '💬'}</span><span class="txt">${almost ? `<b class="verdict">${UI_AUDIO.almost}</b> ` : ''}${esc(r.note)}</span>
+    ${spk(hmm >= 0 ? `${S.c.id}_lm${hmm + 1}` : 'ui_' + key)}<button class="btn" data-act="noteOk">V redu</button></div>`;
+}
+const qbarB = (text, clip) => `<div class="qbar"><span class="q bq" data-act="brief">${esc(text)}</span>${spk(clip)}</div>`;
+
 // Where a sentence of a step case is found: a puzzle or UGOVOR gives it (from), an answer in the
 // questioning (ask), or else an object in the scene. A step counts only its own sentences.
 const stepOf = (s) => s.from || (s.ask ? 'ask' : 'scene');
@@ -2255,7 +2352,6 @@ function lieStamp() {
     deliver(s.id);
     sfx('pop');
     render();
-    play(c.id + '_' + s.id, s.text, $('.ltruth .mtxt'));
   }, 1700);
 }
 
@@ -2324,7 +2420,7 @@ function corkboard(f, cases) {
     const s = c && c.card && isSolved(c) ? c.sentences.find(x => x.id === c.card.sid) : null;
     const isNew = fresh && c === fresh;
     return (i ? `<span class="string ${isNew ? 'draw' : ''}"></span>` : '')
-      + (s ? `<div class="pincard ${isNew ? 'new' : ''} ${f.pages ? 'page' : ''}" data-act="say" data-clip="${c.id}_${s.id}"><span class="ci">${c.card.icon}</span>${esc(s.text)}</div>`
+      + (s ? `<div class="pincard ${isNew ? 'new' : ''} ${f.pages ? 'page' : ''}" data-act="say" data-clip="${c.id}_${s.id}"><span class="ci">${c.card.icon}</span>${names(s.text)}</div>`
         : '<div class="pincard empty">?</div>');
   }).join('');
   const guess = guessHTML(f, pinned);
@@ -2539,7 +2635,7 @@ const T = {
     r.wheels = r.wheels || [...k.code].map(() => 0);
     return `<div class="screen center lockstep ${r.hint ? 'locked' : ''}">
       <div class="caseq">❓ ${esc(c.question)}</div>
-      <div class="row wnote" data-act="say" data-clip="${c.id}_kn">🚪 ${esc(k.note)}</div>
+      <div class="row wnote" data-act="brief">🚪 ${esc(k.note)}</div>
       <div class="padlock ${r.open ? 'open' : ''}">
         <div class="shackle"></div>
         <div class="lockbody">${r.wheels.map((d, i) => `<div class="wheel">
@@ -2547,7 +2643,7 @@ const T = {
           <span class="digit">${d}</span>
           <button class="wbtn" data-act="wheel" data-i="${i}" data-d="-1" aria-label="dol" ${r.open ? 'disabled' : ''}>▼</button></div>`).join('')}</div>
       </div>
-      ${r.open ? `<div class="toast good">🔓 ${UI_AUDIO.lockOpen}</div>` : r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
+      ${r.open ? `<div class="toast good">🔓 ${UI_AUDIO.lockOpen}</div>` : ''}
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
         ${r.open ? `<button class="btn big" data-act="toScene">${stepLabel()}</button>` : '<button class="btn big" data-act="tryLock">Odpri 🔓</button>'}</div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
@@ -2567,13 +2663,13 @@ const T = {
     const card = (k, act, more) => `<button class="tcard ${k === next ? 'pulse' : ''}" data-act="${act}" ${more}><span class="te">${o.cards[k][0]}</span><span>${esc(o.cards[k][1])}</span></button>`;
     return `<div class="screen center orderstep ${r.ordered ? 'done' : ''} ${r.hint ? 'locked' : ''}">
       <div class="caseq">❓ ${esc(c.question)}</div>
-      <div class="row wnote" data-act="say" data-clip="${c.id}_on">📸 ${esc(o.note)}</div>
+      <div class="row wnote" data-act="brief">📸 ${esc(o.note)}</div>
       <div class="twrap ${placed.size ? 'started' : ''}">
         <ol class="tslots">${r.slots.map((k, i) => `<li class="tslot ${k === null ? 'empty' : ''} ${r.ordered || r.good.includes(i) ? 'good' : ''}">
           <span class="tn">${i + 1}</span>${k === null ? '' : card(k, 'unplace', `data-i="${i}" ${r.ordered ? 'disabled' : ''}`)}</li>`).join('')}</ol>
         ${full ? '' : `<div class="tdeck">${r.deck.filter(k => !placed.has(k)).map(k => card(k, 'place', `data-k="${k}"`)).join('')}</div>`}
       </div>
-      ${r.ordered ? `<div class="toast good" data-act="say" data-clip="${c.id}_od">✅ ${esc(o.done)}</div>` : r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
+      ${r.ordered ? `<div class="toast good" data-act="say" data-clip="${c.id}_od">✅ ${esc(o.done)}</div>` : ''}
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
         ${r.ordered ? `<button class="btn big" data-act="toScene">${stepLabel()}</button>` : `<button class="btn big" data-act="checkOrder" ${full ? '' : 'disabled'}>Preveri ✔</button>`}</div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
@@ -2596,14 +2692,14 @@ const T = {
     let j = 0;
     return `<div class="screen scene wordsearch ${geslo ? 'gesloed' : ''} ${r.hint ? 'locked' : ''}">
       <div class="caseq">❓ ${esc(c.question)}</div>
-      <div class="row wnote" data-act="say" data-clip="${c.id}_wn">📃 ${esc(w.note)}</div>
+      <div class="row wnote" data-act="brief">📃 ${esc(w.note)}</div>
       <div class="wwrap">
         <div class="wgrid" style="--n:${[...w.grid[0]].length}">${letters.map((ch, i) => `<button class="wcell
           ${got.has(i) ? 'got' : geslo ? 'left' : ''} ${r.wsel === i ? 'sel' : ''} ${line(i) ? 'hl' : ''} ${ends.includes(i) ? 'pulse' : ''}" data-act="wordTap" data-i="${i}"
           ${geslo && !got.has(i) ? `style="animation-delay:${j++ * 80}ms"` : ''}>${ch}</button>`).join('')}</div>
         ${strip || `<div class="wlist">${w.find.map(([e, x]) => `<span class="wword ${r.words.includes(x) ? 'got' : ''}">${e} ${x}</span>`).join('')}</div>`}
       </div>
-      ${geslo ? `<div class="toast good">🔤 ${UI_AUDIO.geslo}</div>` : r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
+      ${geslo ? `<div class="toast good">🔤 ${UI_AUDIO.geslo}</div>` : ''}
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
         <span class="grow"></span><button class="btn big" data-act="toScene" ${done ? '' : 'disabled'}>${stepLabel()}</button></div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
@@ -2628,12 +2724,12 @@ const T = {
     }).join('')}</span>`).join('');
     return `<div class="screen center cipherstep ${done ? 'done' : ''} ${r.hint ? 'locked' : ''}">
       <div class="caseq">❓ ${esc(c.question)}</div>
-      <div class="row wnote" data-act="say" data-clip="${c.id}_cn">✉️ ${esc(k.note)}</div>
+      <div class="row wnote" data-act="brief">✉️ ${esc(k.note)}</div>
       <div class="ckey">${Object.entries(k.key).map(([e, l]) => `<span class="cchip ${e === lit ? 'hl' : ''}"><span>${e}</span><b>${e === k.missing ? '?' : l}</b></span>`).join('')}</div>
       <div class="cmsg">${msg}</div>
       ${done ? `<div class="row cdone" data-act="listenClue" data-sid="${k.gives}">📃 ${sayHTML(sent(k.gives))}</div>`
         : `<div class="ctiles">${tiles.map(l => `<button class="ctile ${l === pulse ? 'pulse' : ''}" data-act="cipherTile" data-l="${l}" ${r.cgot.includes(l) ? 'disabled' : ''}>${l}</button>`).join('')}</div>`}
-      ${done ? `<div class="toast good">✅ ${UI_AUDIO.cipherDone}</div>` : r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
+      ${done ? `<div class="toast good">✅ ${UI_AUDIO.cipherDone}</div>` : ''}
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
         <button class="btn big" data-act="toScene" ${done ? '' : 'disabled'}>${stepLabel()}</button></div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
@@ -2652,12 +2748,12 @@ const T = {
     const strip = (k, act, more) => `<button class="strip ${k === next ? 'pulse' : ''}" data-act="${act}" ${more}>${esc(t.parts[k])}</button>`;
     return `<div class="screen center tornstep ${r.ordered ? 'done' : ''} ${r.hint ? 'locked' : ''}">
       <div class="caseq">❓ ${esc(c.question)}</div>
-      <div class="row wnote" data-act="say" data-clip="${c.id}_pn">📜 ${esc(t.note)}</div>
+      <div class="row wnote" data-act="brief">📜 ${esc(t.note)}</div>
       ${r.ordered ? `<div class="row tdone" data-act="listenClue" data-sid="${t.gives}">🩹 ${sayHTML(sent(t.gives))}</div>`
         : `<div class="pslots">${r.slots.map((k, i) => `<span class="pslot ${k === null ? 'empty' : ''} ${r.good.includes(i) ? 'good' : ''}">${
           k === null ? i + 1 : strip(k, 'unplace', `data-i="${i}"`)}</span>`).join('')}</div>
         ${full ? '' : `<div class="pdeck">${r.deck.filter(k => !placed.has(k)).map(k => strip(k, 'place', `data-k="${k}"`)).join('')}</div>`}`}
-      ${r.ordered ? `<div class="toast good">✅ ${UI_AUDIO.tornDone}</div>` : r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
+      ${r.ordered ? `<div class="toast good">✅ ${UI_AUDIO.tornDone}</div>` : ''}
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
         ${r.ordered ? `<button class="btn big" data-act="toScene">${stepLabel()}</button>` : `<button class="btn big" data-act="checkOrder" ${full ? '' : 'disabled'}>Preveri ✔</button>`}</div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
@@ -2678,23 +2774,23 @@ const T = {
       const liar = stamped && s.id === L.claim;
       return `<button class="claim ${!r.caught && r.lclaim === s.id ? 'selected' : ''} ${liar ? 'caught' : ''} ${r.lassisted && !r.caught && s.id === L.claim ? 'pulse' : ''}" data-act="lieClaim" data-sid="${s.id}">
         <span class="cav">${avatar(s.who, 'sm')}${liar ? `<span class="blush ${r.lphase === 'stamp' ? 'pop' : ''}">😳</span>` : ''}</span>
-        <span class="ctx"><b class="who">${esc(CHARACTERS[s.who].name)} <i>💬 trdi</i></b>${esc(s.text)}</span>
+        <span class="ctx"><b class="who">${esc(CHARACTERS[s.who].name)} <i>💬 trdi</i></b>${names(s.text)}</span>
         ${liar ? `<span class="stamp lstamp ${r.lphase === 'stamp' ? 'slam' : ''}">${UI_AUDIO.lieStamp}</span>` : ''}</button>`;
     };
     const tr = sent(L.truth), trWho = CHARACTERS[tr.who];
     const truth = r.lphase === 'stamp' ? `<div class="msg them"><span class="mav">${trWho.animal}</span><span class="mtxt typing"><i></i><i></i><i></i></span></div>`
-      : r.lphase === 'done' ? `<div class="msg them ltruth"><span class="mav">${trWho.animal}</span><span class="mtxt" data-act="listenClue" data-sid="${tr.id}">${esc(unq(tr.text))}</span></div>` : '';
-    const note = r.lphase === 'stamp' ? UI_AUDIO.lieTruth : r.lphase === 'done' ? UI_AUDIO.lieDone : r.note;
+      : r.lphase === 'done' ? `<div class="msg them ltruth"><span class="mav">${trWho.animal}</span><span class="mtxt" data-act="listenClue" data-sid="${tr.id}">${names(unq(tr.text))}</span></div>` : '';
+    const note = r.lphase === 'stamp' ? UI_AUDIO.lieTruth : r.lphase === 'done' ? UI_AUDIO.lieDone : null;
     return `<div class="screen liestep ${r.caught ? 'done' : ''} ${r.hint ? 'locked' : ''}">
       <div class="caseq">❓ ${esc(c.question)}</div>
-      ${note ? `<div class="toast lnote ${r.lphase === 'done' ? 'good' : ''}">${esc(note)}</div>` : qbar(UI_AUDIO.lie, 'ui_lie')}
+      ${note ? `<div class="toast lnote ${r.lphase === 'done' ? 'good' : ''}">${esc(note)}</div>` : qbarB(UI_AUDIO.lie, 'ui_lie')}
       <div class="lwrap">
         <div class="lleft"><div class="claims">${shown.map(sid => bubble(sent(sid))).join('')}</div>${truth}</div>
         <div class="rows">${rows.map(s => `<div class="row ${r.lrows.includes(s.id) ? 'selected' : ''} ${look && !breakers.has(s.id) ? 'dim' : ''}
           ${r.lassisted && !r.caught && breakers.has(s.id) && !r.lrows.includes(s.id) ? 'pulse' : ''} ${stamped && r.lbroke.includes(s.id) ? 'broke' : ''}" data-act="lieRow" data-sid="${s.id}">${sayHTML(s)}</div>`).join('')}</div>
       </div>
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
-        <button class="btn big" data-act="toScene" ${r.lphase === 'done' ? '' : 'disabled'}>Vem, kdo je bil!</button></div>
+        <button class="btn big" data-act="toScene" ${r.lphase === 'done' && r.truthOk ? '' : 'disabled'}>Vem, kdo je bil!</button></div>
     </div>${r.lphase === 'shout' ? `<div class="shout-wrap"><div class="shout">
       <div class="row" data-act="say" data-clip="ui_lieShout">${esc(UI_AUDIO.lieShout)}</div>
       <button class="btn ugovor" data-act="lieShout"><span>❕</span>UGOVOR!</button></div></div>` : ''}${r.hint ? hintHTML(r.hint) : ''}`;
@@ -2711,7 +2807,7 @@ const T = {
     const me = profile() ? profile().av : '🕵️';
     return `<div class="screen scene ask">
       <div class="caseq">❓ ${esc(c.question)}</div>
-      ${qbar(done ? UI_AUDIO.askDone : UI_AUDIO.ask, done ? 'ui_askDone' : 'ui_ask')}
+      ${qbarB(done ? UI_AUDIO.askDone : UI_AUDIO.ask, done ? 'ui_askDone' : 'ui_ask')}
       <div class="suspects mini">${c.suspects.map(id => {
         const left = mine.filter(s => s.who === id && !r.found.includes(s.id)).length;
         return `<button class="suspect ${r.who === id ? 'on' : ''}" data-act="askWho" data-id="${id}">
@@ -2720,7 +2816,7 @@ const T = {
       <div class="chat">${r.who ? `<div class="chat-head">💬 ${CHARACTERS[r.who].name}</div>` : ''}${chat.map(s => `
         <div class="msg me"><span class="mtxt">${esc(s.ask)}</span><span class="mav">${me}</span></div>
         ${r.typing === s.id ? `<div class="msg them"><span class="mav">${CHARACTERS[s.who].animal}</span><span class="mtxt typing"><i></i><i></i><i></i></span></div>`
-          : `<div class="msg them"><span class="mav">${CHARACTERS[s.who].animal}</span><span class="mtxt" data-act="listenClue" data-sid="${s.id}">${esc(unq(s.text))}</span></div>`}`).join('')}
+          : `<div class="msg them"><span class="mav">${CHARACTERS[s.who].animal}</span><span class="mtxt" data-act="listenClue" data-sid="${s.id}">${names(unq(s.text))}</span></div>`}`).join('')}
       </div>
       ${open.length && !r.typing ? `<div class="qs">${open.map(s => `<button class="qbtn" data-act="askQ" data-sid="${s.id}">${esc(s.ask)}</button>`).join('')}</div>` : ''}
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
@@ -2736,7 +2832,7 @@ const T = {
     const found = r.found.filter(sid => stepOf(sent(sid)) === 'scene'), done = found.length === all;
     return `<div class="screen scene">
       <div class="caseq">❓ ${esc(c.question)}</div>
-      ${qbar(done ? UI_AUDIO.sceneDone : UI_AUDIO.scene, done ? 'ui_sceneDone' : 'ui_scene')}
+      ${qbarB(done ? UI_AUDIO.sceneDone : UI_AUDIO.scene, done ? 'ui_sceneDone' : 'ui_scene')}
       <div class="toolbar-kid">
         <button class="tool ${r.torch ? 'on' : ''}" data-act="torch">🔦 Svetilka</button>
         <span class="pocket-count">👝 ${found.length} / ${all}</span>
@@ -2746,7 +2842,6 @@ const T = {
         return `<button class="obj ${got ? 'got' : ''} ${s.dark && !got ? 'dark' : ''}" data-act="openClue" data-sid="${s.id}">
           <span class="oe">${s.dark && !got ? '🌑' : s.obj}</span><span class="ol">${esc(s.label)}</span>${got ? '<span class="ok">✔</span>' : ''}</button>`;
       }).join('')}</div>
-      ${r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
       <div class="rows pocket">${found.slice().reverse().map((sid, i) =>
         `<div class="row ${i === 0 && r.fresh ? 'fresh' : ''}" data-act="listenClue" data-sid="${sid}">${sayHTML(sent(sid))}</div>`).join('')}</div>
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
@@ -2761,13 +2856,12 @@ const T = {
     const t = r.assisted || r.highlight ? elimTarget() : null;
     return `<div class="screen solve ${r.hint ? 'locked' : ''}">
       <div class="caseq">❓ ${esc(c.question)}</div>
-      ${left.length === 1 ? qbar(UI_AUDIO.lastOne, 'ui_lastOne') : qbar(UI_AUDIO.solve, 'ui_solve')}
+      ${left.length === 1 ? qbarB(UI_AUDIO.lastOne, 'ui_lastOne') : qbarB(UI_AUDIO.solve, 'ui_solve')}
       <div class="suspects mini">${c.suspects.map(id => {
         const x = r.crossed.includes(id);
         return `<button class="suspect ${x ? 'crossed' : ''} ${r.assisted && t && t.who === id ? 'pulse' : ''}" data-act="cross" data-id="${id}">
           ${avatar(id)}<span>${CHARACTERS[id].name}</span>${x ? '<span class="xmark">✖</span>' : ''}</button>`;
       }).join('')}</div>
-      ${r.note ? `<div class="toast">${esc(r.note)}</div>` : ''}
       <div class="rows">${c.sentences.map(s => `<div class="row ${r.sel === s.id ? 'selected' : ''} ${r.proofs.includes(s.id) ? 'proof' : ''}
         ${t && t.sid !== s.id ? 'dim' : ''} ${r.assisted && t && t.sid === s.id ? 'pulse' : ''}" data-act="pickClue" data-sid="${s.id}">${sayHTML(s)}${
         c.lie && r.caught && s.id === c.lie.claim ? '<span class="ltag">UGOVOR!</span>' : c.lie && s.id === c.lie.truth ? '<span class="ltag truth">✨</span>' : ''}</div>`).join('')}</div>
@@ -2836,7 +2930,7 @@ const T = {
       ${r && r.rankUp ? `<div class="rankup">${ga('Napredoval', 'Napredovala')} si! Zdaj si ${esc(rankName(r.rankUp))}.</div>` : ''}
       ${c.final && f && f.answer ? answerHTML(f) : ''}
       ${c.excuse ? `<div class="excuse" data-act="say" data-clip="${c.id}_x">${avatar(c.culprit, 'sm', who)}<span>»${esc(c.excuse)}«</span></div>` : ''}
-      <div class="rows reveal-rows">${c.reveal.map((t, i) => `<div class="row" data-act="say" data-clip="${c.id}_r${i + 1}">${esc(t)}</div>`).join('')}</div>
+      <div class="rows reveal-rows">${c.reveal.map((t, i) => `<div class="row" data-act="say" data-clip="${c.id}_r${i + 1}">${names(t)}</div>`).join('')}</div>
       ${card ? `<div class="pinned" data-act="say" data-clip="ui_newCard"><span class="pin">📌</span><span class="ci">${c.card.icon}</span>
         <span><b>${UI_AUDIO.newCard}</b><br>${esc(card.text)}</span></div>` : `<div class="sticker">${c.sticker}</div>`}
       <button class="btn big" data-act="next">Naprej</button>
@@ -3073,7 +3167,6 @@ const ACTIONS = {
     // tap again to take a pick back; a new pick past the limit replaces the oldest
     if (r.picks.includes(s.id)) r.picks = r.picks.filter(id => id !== s.id);
     else r.picks = [...r.picks, s.id].slice(-need());
-    play(S.c.id + '_' + s.id, s.text, el);
     log('evidence_select', { sentenceId: s.id, role: s.role });
     r.heard.add(s.id);
     refreshRows();
@@ -3132,6 +3225,39 @@ const ACTIONS = {
     }
     showHint(h);
   },
+  // »Najprej navodilo«
+  briefOk() {
+    const r = S.run;
+    stopAudio();
+    log('brief_ok', { step: S.screen, ms: Date.now() - r.briefAt });
+    r.briefed.push(S.screen);
+    r.briefAt = null;
+    render();
+  },
+  brief() {
+    const r = S.run;
+    if (r.hint || r.note) return;
+    r.briefed = r.briefed.filter(x => x !== S.screen);
+    log('brief_reopen', { step: S.screen });
+    render();
+  },
+  truthOk() {
+    const r = S.run;
+    stopAudio();
+    log('brief_ok', { step: 'truth', ms: Date.now() - r.briefAt });
+    r.truthOk = true;
+    r.briefAt = null;
+    render();
+  },
+  noteOk() { S.run.note = null; stopAudio(); render(); },
+  // a tap beside the message card: it wiggles, it doesn't go away
+  noteNudge() {
+    const n = $('#note');
+    if (!n) return;
+    n.classList.remove('nudge');
+    void n.offsetWidth;
+    n.classList.add('nudge');
+  },
   hintOk() {
     S.run.hint = null;
     stopAudio();
@@ -3145,7 +3271,6 @@ const ACTIONS = {
     S.run.answered = true;
     log('call_answer');
     render();
-    play(S.c.id + '_c1', S.c.call[0], $('.bubble .row'));
   },
   toScene() { go(stepNext()); },
   // word search: the first tap marks a letter, the second closes the word (either end first)
@@ -3188,7 +3313,6 @@ const ACTIONS = {
     r.note = null;
     sfx('pop');
     render();
-    if (S.screen === 'order') play(`${c.id}_o${k + 1}`, c.order.cards[k][1]);   // a torn strip is half a sentence: read, not heard
   },
   unplace(el) {
     const r = S.run, i = Number(el.dataset.i);
@@ -3212,7 +3336,6 @@ const ACTIONS = {
       log('puzzle_done', { wrong: r.owrong });
       if (torn) { deliver(o.gives); render(); return; }
       render();
-      play(c.id + '_od', o.done);
       return;
     }
     r.owrong++;
@@ -3335,7 +3458,6 @@ const ACTIONS = {
   // ❗ UGOVOR: a claim, then the sentence(s) that break it; checked from the first sentence on
   lieClaim(el) {
     const r = S.run, s = sent(el.dataset.sid);
-    play(S.c.id + '_' + s.id, s.text, el);
     if (r.hint || r.caught) return;
     r.lclaim = s.id;
     r.lrows = r.lrows.filter(x => S.c.lie.breaks.some(set => set.length === 2 && set.includes(x)) && s.id === S.c.lie.claim);
@@ -3358,7 +3480,6 @@ const ACTIONS = {
       }
       r.lclaim = L.claims[0];
     }
-    play(c.id + '_' + s.id, s.text);
     if (r.lrows.includes(s.id)) { r.lrows = r.lrows.filter(x => x !== s.id); render(); return; }
     r.lrows.push(s.id);
     if (r.lcoach) r.lcoach = 0;
@@ -3375,7 +3496,6 @@ const ACTIONS = {
       r.lrows = r.lrows.filter(halfOf);
       r.note = L.hmm[hmm][2];
       render();
-      play(`${c.id}_lm${hmm + 1}`, L.hmm[hmm][2]);
       return;
     }
     r.lwrong++;
@@ -3425,7 +3545,6 @@ const ACTIONS = {
       r.typing = null;
       sfx('pop');
       render();
-      play(S.c.id + '_' + s.id, s.text, document.querySelector(`.msg [data-sid="${s.id}"]`));
     }, 900);
   },
   torch() {
@@ -3438,7 +3557,7 @@ const ACTIONS = {
   },
   openClue(el) {
     const r = S.run, s = sent(el.dataset.sid);
-    if (r.found.includes(s.id)) { play(S.c.id + '_' + s.id, s.text); return; }
+    if (r.found.includes(s.id)) return;
     if (s.dark && !r.torch) {
       r.note = UI_AUDIO.dark;
       sfx('nope');
@@ -3454,7 +3573,6 @@ const ACTIONS = {
     sfx('pop');
     log('clue_open', { sentenceId: s.id, role: s.role, n: r.found.length });
     render();
-    play(S.c.id + '_' + s.id, s.text, $('.pocket .row'));
   },
   listenClue(el) {
     const s = sent(el.dataset.sid);
@@ -3474,7 +3592,6 @@ const ACTIONS = {
     r.note = null;
     log('evidence_select', { sentenceId: s.id, role: s.role });
     render();
-    if (r.sel) play(S.c.id + '_' + s.id, s.text, document.querySelector(`.rows [data-sid="${s.id}"]`));
   },
   // A clue + a face: an alibi crosses the suspect off, the proof + the culprit solves the case.
   cross(el) {
@@ -3566,7 +3683,6 @@ const ACTIONS = {
     const f = S.c && FILES.find(x => x.id === S.c.file);
     if (S.screen === 'reveal' && S.c.final && f && f.book) {
       go('book');
-      play(f.id + '_bq', f.book.q, $('.bookstep .row'));
       return;
     }
     if (S.c && S.c.card && !(S.run && S.run.fromBoard)) S.pinNew = S.c.id;
@@ -3647,9 +3763,12 @@ function newMetrics(id) {
     anchor: null, early: 0, suspectChanges: 0, done: false, more: null,
     // ❗ UGOVOR (counted apart from the solve's hints): wrong tries, hints, an innocent liar blamed
     lie: !!(c && c.lie), lieWrong: 0, lieHints: 0, lieAssisted: false, liarBlamed: 0,
+    // »Najprej navodilo«: instruction cards read, and how many were closed in under 3 s (not read)
+    briefs: 0, briefFast: 0,
   };
 }
 
+const BRIEF_FAST = 3000;   // an instruction card closed sooner was not read
 const BOUNDARY = new Set(['screen_enter', 'adult_gate', 'session_end']);
 
 function analyzeSession(evs) {
@@ -3700,6 +3819,7 @@ function analyzeSession(evs) {
       case 'hint_dismiss': m.anchor = e.ts; break;
       case 'lie_try': if (e.kind === 'both') m.lieWrong++; break;
       case 'lie_hint': m.lieHints++; break;
+      case 'brief_ok': m.briefs++; if (e.ms < BRIEF_FAST) m.briefFast++; break;
       case 'lie_assisted': m.lieAssisted = true; break;
       case 'assisted': m.assisted = true; break;
       case 'case_done': m.done = true; break;
@@ -3809,15 +3929,16 @@ function sessionHTML(s) {
       <td class="${m.early ? 'c-warn' : ''}">${m.early ? 'da' : 'ne'}</td>
       <td>${MORE[m.more] || '–'}</td>
       <td class="${m.liarBlamed ? 'c-warn' : ''}">${m.lie ? `${m.lieWrong} / ${m.lieHints}${m.lieAssisted ? ' (vodeno)' : ''}${m.liarBlamed ? ` · ${m.liarBlamed}× kriv lažnivec` : ''}` : '–'}</td>
+      <td class="${m.briefFast * 2 > m.briefs ? 'c-warn' : ''}">${m.briefs ? `${m.briefFast} / ${m.briefs}` : '–'}</td>
     </tr>`;
-    return row + (S.open === key ? `<tr><td colspan="12">${timelineHTML(s, m.id)}</td></tr>` : '');
+    return row + (S.open === key ? `<tr><td colspan="13">${timelineHTML(s, m.id)}</td></tr>` : '');
   }).join('');
   return `<section class="card">
     <p><b>${esc(s.child)}</b> · ${esc(s.age)} let · raven ${esc(s.level)} · ${fmtDate(s.start)}
       ${s.pilot ? '<span class="tag">pilot</span>' : ''} · rešenih ${s.doneCount} · želi še: ${s.wantMore ? 'da' : 'ne'}</p>
     <div class="tablewrap"><table>
       <tr><th>Primer</th><th>Izid</th><th>Čas zgodba / dokaz</th><th>Poslušanja</th><th>Ponovna branja</th><th>1. potrditev</th>
-        <th>Napačne</th><th>Namigi</th><th>Ugibanja</th><th>Prezgodaj</th><th>Še?</th><th title="napačni poskusi / namigi; kolikokrat je obtožil nedolžnega, ki je lagal">Ugovor</th></tr>
+        <th>Napačne</th><th>Namigi</th><th>Ugibanja</th><th>Prezgodaj</th><th>Še?</th><th title="napačni poskusi / namigi; kolikokrat je obtožil nedolžnega, ki je lagal">Ugovor</th><th title="kartice z navodilom, zaprte prej kot v 3 s / vse">Navodila hitro</th></tr>
       ${rows || '<tr><td colspan="12" class="muted">Ni začetih primerov.</td></tr>'}
     </table></div>
   </section>`;
