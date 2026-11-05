@@ -208,3 +208,22 @@ Cost: L, about 3–4 evenings. Do it after §2–§6 have shown what the kids li
 3. **How far to change the existing 12 cases:** rewrite the space cases into the season (recommended) and fix only the tells on the farm until its season comes?
 4. **Parent mode:** do you want the "Glavni inšpektor" moment, where you act a witness?
 5. **Siblings:** do both kids play on one device sometimes? If yes, "Dva detektiva" moves up.
+
+## 13. More ideas from a board- and video-game list (2026-11-05)
+
+A list of well-known detective games was checked against this doc and PUZZLES.md. Most of it is already covered: Ace Attorney → UGOVOR!, Golden Idol → the thinking screen and the timeline, Chronicles of Crime → Zasliši, Cluedo → crossing off and the logic grid, Obra Dinn's "confirm only when all are right" → the morning mix-up (case 5). These five ideas are new:
+
+| Idea | What the child does | Reading skill | Inspired by | Cost |
+|---|---|---|---|---|
+| 🗺️ **Izberi sled** (choose a lead) | A small map with 4–5 places, each with one line (»Pekarna: gospa Mojca vidi vse, kar se zgodi na trgu.«). The child reads them and picks where to go. Only 2–3 places matter. | reading to choose, judging what is relevant | Sherlock Holmes Consulting Detective | M |
+| ❓ **Dodatna vprašanja** (bonus questions) | After the solve, 1–2 optional questions about details (»Kaj je imela pekarka na predpasniku?«). They never block the solve. | close reading, recall | Consulting Detective | S |
+| 🏠 **Domači primer** (home case) | The parent prints 4–5 clue cards and hides them in the house. Each card has a number the child types into the app to unlock its sentence. | reading in the real world, following clues | Exit / Unlock!, Chronicles of Crime | M + a print-and-play PDF |
+| 🔮 **Videnje** (a vision) | A dreamy emoji picture shows part of what happened. The child taps the story sentence that matches it. | picture → text comprehension | Mysterium | S |
+| 📓 **Detektivski dnevnik** (detective's diary) | Key facts are saved automatically. Later cases, even in a later session, ask for them with no reminder. | remembering what was read | Outer Wilds | M |
+
+Notes:
+- **No Holmes score.** Consulting Detective scores you on using fewer leads than Holmes. That clashes with §9 (no scores). At most, keep a gentle comparison: »Sherlock Pes je obiskal 3 kraje. Ti 4!«
+- **Domači primer uses typed numbers, not QR codes.** iPhone Safari has no built-in QR reader in a web page. The parent hides the cards but must not explain them.
+- **Dnevnik** extends the Kartoteka (§6) and the code reuse in the space season (case 2 → case 4). The showrunner should decide how seasons use it.
+- **Parent as the forensic scientist** (from Deception: Murder in Hong Kong): a tweak to Glavni inšpektor (§8). The parent may only help by picking one of 3 printed hint tiles, never by talking, so a parent who plays along can't give the answer away.
+- **Next step:** the puzzle-designer ranks these and writes specs for the ones worth building.
