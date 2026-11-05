@@ -3,7 +3,7 @@
 //   node tools/cases.mjs clips    print "clipId<TAB>text" for every line to record
 import { loadData } from './lib.mjs';
 
-const { LEVEL_RULES, CHARACTERS, CASES, FILES, RUNG, clipList } = loadData();
+const { LEVEL_RULES, CHARACTERS, CASES, FILES, COMING, RUNG, clipList } = loadData();
 
 if (process.argv[2] === 'clips') {
   for (const [id, text] of clipList()) console.log(`${id}\t${text}`);
@@ -250,6 +250,12 @@ for (const c of CASES) {
 // climb (never go down), from a fact case to a final two-proof case. A twist (an animal
 // of the place did it) appears at most once per file; otherwise the culprit is one of the cast.
 const fileIds = FILES.map(f => f.id);
+// Release dates and teasers: a date the game can compare, a teaser line a child can read, one id per adventure.
+for (const f of [...FILES, ...COMING]) {
+  if (f.opens && !/^\d{4}-\d{2}-\d{2}$/.test(f.opens)) fail(f.id, `opens must be YYYY-MM-DD: ${f.opens}`);
+  if ((f.opens || COMING.includes(f)) && (!f.teaser || words(f.teaser) > LEVEL_RULES.A.maxWords)) fail(f.id, 'a teaser card needs its line (teaser, ≤ 8 words)');
+}
+for (const f of COMING) if (fileIds.includes(f.id) || COMING.filter(x => x.id === f.id).length > 1) fail(f.id, 'teaser id used twice');
 for (const c of CASES) if (!fileIds.includes(c.file)) fail(c.id, `unknown file ${c.file}`);
 for (const f of FILES) {
   const inFile = CASES.filter(c => c.file === f.id);

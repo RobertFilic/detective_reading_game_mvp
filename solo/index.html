@@ -189,7 +189,13 @@ button.suspect { cursor: pointer; }
 .file-card .ft b { font-size: 22px; }
 .file-card .cast { font-size: 24px; letter-spacing: 2px; }
 .file-card .fp { font-weight: 800; color: var(--muted); font-size: 18px; white-space: nowrap; }
-.file-soon { color: var(--muted); text-align: center; font-size: 16px; padding: 4px; }
+.soon-head { font-weight: 800; font-size: 18px; color: var(--muted); margin-top: 6px; }
+.file-card.teaser { cursor: default; background: #f6f3ee; border: 2px dashed #cfc6b6; box-shadow: none; }
+.file-card.teaser .fi { filter: saturate(.7); }
+.file-card .tz { font-size: 17px; color: var(--muted); }
+.file-card .when { font-weight: 800; font-size: 17px; color: #8a6a2f; background: #fff3cf; border-radius: 12px; padding: 4px 10px; white-space: nowrap; }
+.file-card.teaser.wiggle { animation: wiggle .4s; }
+@keyframes wiggle { 25% { transform: rotate(-2deg); } 75% { transform: rotate(2deg); } }
 .folder.final { background: #fff0f6; border-color: #f0b8d0; }
 .folder.locked { cursor: pointer; }
 .folder.locked .stk { filter: grayscale(1); opacity: .6; }
@@ -791,6 +797,8 @@ const CHARACTERS = {
 // every case pins a card to the corkboard (mystery = its question), soon = cases still to come.
 // peek = something that blinks from the corkboard once 2 cards are up; pages = the cards are typed pages;
 // guess.again = the case after which the child may change the guess (q2); book = the final's book cover.
+// opens = the release date (YYYY-MM-DD, the device's own date): until then the file is only a teaser card
+// on the start screen (its line: teaser), and its cases stay out of the game.
 const FILES = [
   { id: 'vesolje', icon: '🚀', title: 'Vesoljska postaja', cast: ['maja', 'tim', 'ela', 'robi'], paper: 'ZVEZDNI ČASNIK' },
   { id: 'kmetija', icon: '🐄', title: 'Pri babici na kmetiji', cast: ['nik', 'pia', 'dedek', 'jan'], paper: 'KMEČKI GLAS' },
@@ -806,6 +814,13 @@ const FILES = [
       options: [['hana', '👧🏽', 'Hana, ki ima vse knjige'], ['bepi', '👴🏻', 'kapitan Bepi, ki pripoveduje zgodbe'], ['vera', '👵🏼', 'gospa Vera, ki gleda z balkona']] },
     answer: { id: 'vera', icon: '🦔', text: 'Knjige o Ježku piše gospa Vera!' },
     book: { q: 'Ali smem napisati knjigo o tebi?', title: 'in skrivnost hotela Galeb', by: '🦔 Ježek' } },
+];
+// Adventures announced but not written yet: the same teaser card. When one is written, it moves into
+// FILES with its teaser line (and opens, if it has a date).
+const COMING = [
+  { id: 'muzej', icon: '🦕', title: 'Duh v muzeju', teaser: 'Kdo ponoči premika dinozavra?' },
+  { id: 'pokal', icon: '⚽', title: 'Skrivnost zlatega pokala', teaser: 'Kam je izginil zlati pokal?', opens: '2026-11-12' },
+  { id: 'sneg', icon: '❄️', title: 'Sneženi možje brez sledi', teaser: 'Kdo ponoči dela snežene može?', opens: '2026-11-19' },
 ];
 
 // Every line the child can hear outside the stories. Clip id = "ui_" + key.
@@ -1788,6 +1803,21 @@ function caseFor(file, no) {
   return CASES.find(c => c.file === file && c.no === no && c.level === S.level)
     || CASES.find(c => c.file === file && c.no === no && c.level === 'A');
 }
+// Release dates: a file whose day hasn't come leaves FILES and CASES and waits with the COMING teasers.
+const TODAY = ((d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)(new Date());
+const SOON = [...FILES.filter(f => f.opens > TODAY), ...COMING];
+for (const list of [FILES, CASES]) list.splice(0, list.length,
+  ...list.filter(x => !SOON.some(f => f.id === (x.file || x.id))));
+// »Še 6 dni«, counted in calendar days on the device; a teaser without a date says only »Kmalu«.
+function soonLabel(f) {
+  if (!f.opens) return 'Kmalu';
+  const n = Math.round((Date.parse(f.opens) - Date.parse(TODAY)) / 864e5);
+  return n <= 1 ? 'Jutri!' : `Še ${n} ${n === 2 ? 'dneva' : n < 5 ? 'dnevi' : 'dni'}`;
+}
+const teasersHTML = () => SOON.length ? `<div class="soon-head">📅 Kmalu nove pustolovščine</div>${SOON.map(f =>
+  `<button class="file-card teaser" data-act="teaser" aria-label="${esc(f.title)}: ${soonLabel(f)}"><span class="fi">${f.icon}</span>
+    <span class="ft"><b>${esc(f.title)}</b><span class="tz">${esc(f.teaser)}</span></span><span class="when">⏳ ${soonLabel(f)}</span></button>`).join('')}` : '';
+
 const casesIn = (file) => [...new Set(CASES.filter(c => c.file === file).map(c => c.no))].sort((a, b) => a - b).map(no => caseFor(file, no));
 const caseKey = (c) => `${c.file}:${c.no}`;
 
@@ -2594,7 +2624,7 @@ const T = {
           ${done ? `<span class="fp">✔ ${done} / ${all}</span>` : ''}</button>`;
       }).join('')}
         ${shelfHTML(fileOrder().shelf)}
-        <div class="file-soon">Kmalu nove pustolovščine: ⚽ nogomet, 🏝️ Gran Canaria, 🏫 šola …</div></div>
+        ${teasersHTML()}</div>
       <div class="footer"><button class="btn secondary" data-act="tutorial">❓ Kako igram?</button>
         <button class="btn secondary" data-act="toWho" aria-label="Kdo igra?">👥</button>
         <span class="grow"></span><button class="btn secondary" data-act="moreNo">Dovolj za danes</button></div>
@@ -3284,6 +3314,12 @@ const ACTIONS = {
   },
   noteOk() { S.run.note = null; stopAudio(); render(); },
   // a tap beside the message card: it wiggles, it doesn't go away
+  // a teaser card isn't open yet: it wiggles, and the countdown on it says when
+  teaser(el) {
+    el.classList.remove('wiggle');
+    void el.offsetWidth;
+    el.classList.add('wiggle');
+  },
   noteNudge() {
     const n = $('#note');
     if (!n) return;
