@@ -16,14 +16,16 @@ You are a **case writer** for Detektivska pisarna, a Slovenian detective reading
 A case is one object in `CASES` in `solo/index.html`, between `// CASES-BEGIN` and `// CASES-END`:
 - `id`, `file` (the season id in `FILES`), `no` (1…6), `type: 'elim'`, `level: 'A'`, `sticker` (one emoji), `place`; `final: true` on the last case.
 - `steps`: `'call'` first, `'solve'` last, and a `'scene'` or `'ask'` between; puzzles (`'words'`, `'lock'`, `'order'`) go where the plan says.
-- `client` (never a suspect) and `call`: 1–2 lines; optional `film` frames.
+- `client` (never a suspect, except a final's caller) and `call`: 1–3 short lines (about 35 characters each); optional `film` frames.
 - `question`, `suspects` (3–4 ids from `CHARACTERS`), `culprit`.
-- `sentences: [id, text, role, more]`, 6–11 of them. Roles: `'evidence'` (the proof: names the culprit and no other suspect), `'clear'` (an alibi with `clears: '<id>'`, it must name that suspect; **every innocent suspect has exactly one**, the culprit none), `'distractor'` (the decoy), `'neutral'`. In a scene each has `obj` (emoji) and `label` (where it is found); at most one `dark: true` (needs the torch). In an ask step each has `who` and `ask` (the question).
+- `sentences: [id, text, role, more]`, 6–11 of them. Roles: `'evidence'` (the proof: names the culprit and no other suspect), `'clear'` (an alibi with `clears: '<id>'`, it must name that suspect; **every innocent suspect has one**, the culprit none; a second `clear` only when another on-screen sentence truly clears them too, so a child who uses it is not told they are wrong), `'distractor'` (the decoy), `'neutral'`. In a scene each has `obj` (emoji) and `label` (where it is found); at most one `dark: true` (needs the torch). In an ask step each has `who` and `ask` (the question); the solve screen shows only »Name: answer«, so a time or place an alibi needs goes in the answer, not in `ask`. Every alibi covers the deed's whole time (say when in the call or question; in an older story case the first sentence does the call's job).
 - `h1` (first hint), `reveal` (3–4 lines that explain it), `caught` (the culprit in the accusative: »Tima«), `excuse` (the culprit's funny line), `card` (`icon`, `sid` of a sentence that names no suspect, `think`), `letter` (2–3 lines, a P. S. that hooks the next case).
 - Level A: **every line ≤ 8 words**: sentences, call, film captions, hints, reveal, excuse, think, letter, puzzle texts.
 - A new character goes in `CHARACTERS` with a name pattern `re` matching every case form and possessive (look at `kiki`, `ela`).
 
-After writing, run from `solo/`: `node tools/cases.mjs`. Fix every ✘ before you report. The checker catches the format, not the craft; the craft is on you.
+Counting: in an ask step every suspect and every witness needs at least one answer, and those answers count toward the 11 sentences; plan the speakers first. A sentence names someone only in its text: `who` (the speaker) does not count, and kin words (»dedkov«) can match another character's pattern. Two engine facts: on the solve screen a suspect is crossed off only with their `clear` sentence (so a plain sentence that also clears someone will be called wrong; make other sentences traces), and a cipher text allows at most 9 different letters and 20 letters (so its time word often has to come from another sentence).
+
+After writing, run from `solo/`: `node tools/cases.mjs`, and `node tools/shots.mjs <caseId>` to look at the call and the scene (an object's emoji must not look like a tool button; labels one short word). Fix every ✘ before you report. The checker catches the format, not the craft; the craft is on you.
 
 ## Craft (what makes a great case)
 - **Read like a story, not a list.** The sentences, in order, should feel like walking through the room. The child should *want* to open the next object.

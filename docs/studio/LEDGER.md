@@ -30,8 +30,14 @@ The memory of the studio, so no season is a copy of the last. The showrunner che
 | 🦔 g4 | elim, ask, ❗ lie (about someone else) | Gusti 🐦 | a nest for her eggs | seen: she sits in the cap | Luka wore the cap yesterday | 📜 torn note |
 | 🦔 g5 | elim, scene, ❗ lie (tall tale) | the sea 🌊 (nobody) | – (the tide) | trace: seaweed all over the castle | Gusti's feather on the castle | 🔤 word search + geslo |
 | 🦔 g6 | elim, final, ❗ lie (pair breaker) | Vera | to write in peace | pair: »Pišem v sobi 7« + Vera lives in room 7 | Hana read every book; Vera »sleeps at nine« | ✉️ cipher (one pair missing) |
+| 🦕 m1 | elim, scene, 🧭 (1 clue) | Lan | to see the crystals glow | trace: his new sticker on the switch | Rado's torch under the switch (left there that morning) | – |
+| 🦕 m2 | elim, ask + 👁️, 🧭 (1 clue) | Zoja | her drawing as a present | the cat brings her painted paw slipper | cat paw prints → Fosil (costume paws) | 📜 torn (Fosil's alibi) |
+| 🦕 m3 | elim, ask + scene, ❗ lie (innocent, mistaken witness) | Ivo | to polish the tooth for the birthday | the tooth on his desk | Lan »saw Rado« (only a big shadow) | – |
+| 🦕 m4 | elim, scene, 🧭 (2 clues, one true) | Lan | to help (mixed up the labels) | old labels in his bag (the true clue) | Ivo's magnifier on the case (lost since Tuesday) | 🔐 lock 5432 (the countdown) |
+| 🦕 m5 | elim, scene, ❗ lie (culprit), no 🧭 (»Preveč lahko?«) | Zoja | rehearsing for the parade | her dinosaur tail behind the curtain | the biggest torch is Rado's | 🔤 word search + geslo |
+| 🦕 m6 | elim, final, 🧭 (2 clues at Rado) | Mila | Dinoples, a birthday surprise | pair: Mila lost a red slipper + the slipper behind Rex | keys only Rado has; Rado's cap on Rex | 🕐 timeline (the week's poses) |
 
-(🦔 rows: drafted, in review 2026-11-01; update them if the cases change before they ship.)
+(🦔 rows: drafted, in review 2026-11-01; update them if the cases change before they ship.) 🦕 rows: written and reviewed 2026-11-05.
 
 ## Worn out: avoid or vary next season
 
@@ -44,6 +50,8 @@ The memory of the studio, so no season is a copy of the last. The showrunner che
 - **The culprit as the first face.** The faces show in `suspects` order (no shuffle); in 🦔 g1–g4 the culprit was the leftmost face four cases running. Keep one cast order for the season (as Bip did) or spread the culprit's place.
 - **The lie as the top claim bubble.** Claims show in `lie.claims` order; in 🦔 g3–g6 (every case with two claims) the lie was first. Vary it.
 - **The proof under the object the question names** (👾 b4 antenna, 🦔 g3 bell, g5 castle, g1 castle from the call). Once a season, hide it somewhere else.
+- **The proof as the culprit's possessive** (»Lanova nalepka«, »Zojin copat«, »Ivovi mizi«, »Lanovi torbi«, »Zojinega kostuma«): 5 of 6 🦕 cases, while alibis never use one. Once the decoy is stamped NAPAČNA SLED, »the other sentence with a suspect's -ov/-in« is the proof. Vary: a proof that names nobody (a pair), a time, a missing thing.
+- **The proof in the bottom two rows** of the solve list (rows follow `sentences` order): 🦕 m2, m3, m4, m6. Put it in the upper half sometimes.
 
 ## Used once: fine to reuse, but change it
 

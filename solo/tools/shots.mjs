@@ -3,7 +3,7 @@
 //   node tools/shots.mjs b6 --out dir  where the PNGs go (default: shots/, git-ignored)
 // Serves the repo itself, opens the game with a ready-made detective, and renders each step
 // of the case (as the child first sees it) plus the solved screen and the board, on
-// iPhone SE, iPad and a landscape phone. Prints any screen that overflows sideways or
+// iPhone 14, iPad and a landscape phone. Prints any screen that overflows sideways or
 // pushes its main button off-screen. Needs Google Chrome (CHROME=path to override).
 import http from 'node:http';
 import fs from 'node:fs';
@@ -32,7 +32,7 @@ const base = `http://localhost:${server.address().port}`;
 
 const CHROME = process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: true });
-const VIEWS = [['se', 375, 667], ['ipad', 820, 1180], ['land', 852, 393]];
+const VIEWS = [['iphone14', 390, 844], ['ipad', 820, 1180], ['land', 852, 393]];   // the producer's family plays on an iPhone 14
 let problems = 0;
 for (const [name, w, h] of VIEWS) {
   const p = await browser.newPage();

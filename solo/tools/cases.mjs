@@ -24,7 +24,7 @@ const NAME = Object.fromEntries(Object.entries(CHARACTERS).map(([id, ch]) => [id
 for (const [id, ch] of Object.entries(CHARACTERS)) if (!ch.re) fail(id, 'character needs a name pattern (re)');
 const PRONOUN = /\b(mu|ji|njen\w*|njegov\w*|je imel|je imela)\b/;
 const named = (text) => Object.keys(NAME).filter(id => NAME[id].test(text));
-const STEPS = new Set(['call', 'scene', 'ask', 'words', 'lock', 'order', 'cipher', 'torn', 'lie', 'solve']);
+const STEPS = new Set(['call', 'scene', 'ask', 'words', 'lock', 'order', 'cipher', 'torn', 'lie', 'herring', 'solve']);
 const PUZZLES = ['words', 'lock', 'order', 'cipher', 'torn'];
 // where a sentence is found: a puzzle or UGOVOR gives it (from), an answer (ask), else an object in the scene
 const stepOf = (s) => s.from || (s.ask ? 'ask' : 'scene');
@@ -128,13 +128,49 @@ function checkLie(c) {
   }
   tooLong(c, 'lie', [L.h1, ...(L.hmm || []).map(m => m[2])]);
 }
+// 🧭 Kam kaže sled?: clues with an arrow to a face, the sentences that explain the misleading ones
+function checkHerring(c) {
+  const H = c.herring, ss = c.sentences, get = (sid) => ss.find(s => s.id === sid);
+  if (!H || !H.clues || !H.points || !H.explains) return fail(c.id, 'a herring step needs herring: { clues, points, explains }');
+  const st = c.steps;
+  if (st.indexOf('herring') !== st.length - 2) fail(c.id, 'the herring step comes right before solve');
+  if (st.includes('lie')) fail(c.id, 'never 🧭 and ❗ in one case');
+  if (!inRange(H.clues.length, [1, 2]) || new Set(H.clues).size !== H.clues.length) fail(c.id, 'herring: 1–2 different clues');
+  const wrong = Object.keys(H.explains);
+  if (!wrong.length || wrong.some(x => !H.clues.includes(x))) fail(c.id, 'herring: at least one misleading clue, and every key of explains is a clue');
+  for (const sid of H.clues) {
+    const s = get(sid), who = H.points[sid];
+    if (!s) { fail(c.id, `herring: clue ${sid} is missing`); continue; }
+    if (!c.suspects.includes(who)) fail(c.id, `herring: clue ${sid} points at a suspect (points)`);
+    if (!named(s.text).includes(who)) fail(c.id, `herring: clue ${sid} names the face it points at (${who})`);
+    if (wrong.includes(sid)) {
+      if (who === c.culprit) fail(c.id, `herring: misleading clue ${sid} points at an innocent, not the culprit`);
+      if (s.role === 'evidence' || s.role === 'clear') fail(c.id, `herring: misleading clue ${sid} is not the proof or an alibi`);
+      for (const set of H.explains[sid]) {
+        if (!inRange(set.length, [1, 2])) fail(c.id, 'herring: an explanation is 1 or 2 sentences');
+        for (const x of set) {
+          const e = get(x);
+          if (!e) fail(c.id, `herring: explanation ${x} is missing`);
+          else if (H.clues.includes(x)) fail(c.id, `herring: ${x} is a clue, not an explanation`);
+          else if (e.clears === who) fail(c.id, `herring: ${x} is ${who}'s alibi; one sentence, one job`);
+          else if (e.role === 'evidence') fail(c.id, `herring: ${x} is the proof, not an explanation`);
+        }
+      }
+    } else if (s.role !== 'evidence' || who !== c.culprit) fail(c.id, `herring: a clue that is not misleading (${sid}) is the proof and points at the culprit`);
+  }
+  for (const m of H.hmm || []) if (!wrong.includes(m[0]) || !get(m[1]) || !m[2]) fail(c.id, 'herring: hmm is [a misleading clue, a sentence, a note]');
+  tooLong(c, 'herring', [H.h1, ...(H.hmm || []).map(m => m[2])]);
+}
 function checkSteps(c) {
   const ss = c.sentences;
   if (c.type !== 'elim') fail(c.id, 'step cases are type elim');
   for (const st of c.steps) if (!STEPS.has(st)) fail(c.id, `unknown step ${st}`);
   if (new Set(c.steps).size !== c.steps.length) fail(c.id, 'a step comes once');
   if (c.steps.includes('call') && (!CHARACTERS[c.client] || !c.call || !c.call.length)) fail(c.id, 'a call needs client and call lines');
-  if (c.client && c.suspects.includes(c.client)) fail(c.id, 'the client is not a suspect');
+  if (c.client && c.suspects.includes(c.client) && !c.final) fail(c.id, 'the client is not a suspect (only in a final, where he asks for help himself)');
+  const witnesses = c.witnesses || [];
+  for (const w of witnesses) if (!CHARACTERS[w] || c.suspects.includes(w) || w === c.culprit) fail(c.id, `witness ${w}: a known character who is not a suspect`);
+  if (witnesses.length && !c.steps.includes('ask')) fail(c.id, 'witnesses answer in an ask step');
   for (const s of ss) {
     const st = stepOf(s);
     if (!c.steps.includes(st)) fail(c.id, `${s.id} is found in step ${st}, which the case doesn't have (obj → scene, ask → ask, from → that step)`);
@@ -144,10 +180,10 @@ function checkSteps(c) {
   // questioning: every answer has who said it and the question; every suspect gets asked
   if (c.steps.includes('ask')) {
     for (const s of ss.filter(x => stepOf(x) === 'ask')) {
-      if (!c.suspects.includes(s.who)) fail(c.id, `${s.id} needs who (a suspect)`);
+      if (!c.suspects.includes(s.who) && !witnesses.includes(s.who)) fail(c.id, `${s.id} needs who (a suspect or a witness)`);
       else if (words(s.ask) > LEVEL_RULES[c.level].maxWords) fail(c.id, `${s.id}: the question is too long`);
     }
-    for (const id of c.suspects) if (!ss.some(s => s.ask && s.who === id)) fail(c.id, `nobody asks ${id} anything`);
+    for (const id of [...c.suspects, ...witnesses]) if (!ss.some(s => s.ask && s.who === id)) fail(c.id, `nobody asks ${id} anything`);
   }
   // a sentence a puzzle (or UGOVOR) gives: named by its step, and its step comes before lie and solve
   const gives = { cipher: c.cipher && c.cipher.gives, torn: c.torn && c.torn.gives, words: c.words && c.words.geslo, lie: c.lie && c.lie.truth };
@@ -159,6 +195,8 @@ function checkSteps(c) {
   if (c.steps.includes('cipher')) checkCipher(c);
   if (c.steps.includes('torn')) checkTorn(c);
   if (c.steps.includes('lie') || c.lie) checkLie(c);
+  if (c.steps.includes('herring') || c.herring) checkHerring(c);
+  for (const s of ss.filter(x => x.points)) if (!c.suspects.includes(s.points) || s.points === c.culprit) fail(c.id, `${s.id}: points at an innocent suspect`);
   if (c.steps.includes('words')) checkWords(c);
   // 🔐 code lock: 3–5 digits; h2 gives the code away (fair play when the earlier case was skipped)
   if (c.steps.includes('lock')) {
@@ -187,7 +225,8 @@ function checkSteps(c) {
   for (const id of c.suspects) {
     const al = ss.filter(s => s.clears === id);
     if (id === c.culprit && al.length) fail(c.id, 'the culprit has no true alibi');
-    if (id !== c.culprit && al.length !== 1) fail(c.id, `suspect ${id} needs exactly one alibi sentence (clears: '${id}')`);
+    // two alibis only when both truly clear (a sentence a careful child would rightly use must be accepted)
+    if (id !== c.culprit && (al.length < 1 || al.length > 2)) fail(c.id, `suspect ${id} needs one alibi sentence, at most two (clears: '${id}')`);
   }
   for (const s of ss) {
     if ((s.role === 'clear') !== !!s.clears) fail(c.id, `${s.id}: role clear goes with clears`);
@@ -244,6 +283,8 @@ for (const c of CASES) {
   if (c.h3.length !== (pair ? 3 : 2)) fail(c.id, `h3 must list ${pair ? 3 : 2} sentences`);
   for (const k of ['h2', 'h3']) for (const id of c[k]) if (!ids.has(id)) fail(c.id, `${k} references missing ${id}`);
   if (!c.question || !c.h1 || !c.reveal || !c.reveal.length) fail(c.id, 'question, h1 and reveal are required');
+  // the solved screen's lines are read too: the same limit (each sentence of a line)
+  if (c.steps) tooLong(c, 'reveal/excuse/letter', [...(c.reveal || []), c.excuse, ...(c.letter || []), c.card && c.card.think]);
 }
 
 // Play order and the ladder, per file: case numbers run 1, 2, 3, … without gaps; the rungs

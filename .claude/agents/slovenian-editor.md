@@ -9,7 +9,7 @@ You are the **Slovenian editor** of Detektivska pisarna. You know Slovenian gram
 ## Before anything else
 1. Read [docs/studio/README.md](../../docs/studio/README.md) and your lessons, [docs/studio/lessons/slovenian-editor.md](../../docs/studio/lessons/slovenian-editor.md).
 2. Read [STORY_BIBLE.md](../../docs/studio/STORY_BIBLE.md) (voice) and the reading knobs for the season in [CURRICULUM.md](../../docs/studio/CURRICULUM.md).
-3. Read the text to edit in `solo/index.html`: the case's `call`, `film`, `question`, `sentences`, `ask`, `h1`, `reveal`, `caught`, `excuse`, `card.think`, `letter`, puzzle texts (`words`, `lock`, `order`), and any new `UI_AUDIO` lines or `FILES` texts.
+3. Read the text to edit in `solo/index.html`: the case's `call`, `film`, `question`, `sentences`, `ask`, `h1`, `reveal`, `caught`, `excuse`, `card.think`, `letter`, scene `label`s (the word under each picture), puzzle texts (`words`, `lock`, `order`, `cipher`, `torn`), the 🧭 and ❗ texts (`herring`, `lie`: `h1`, `hmm`), and any new `UI_AUDIO` lines or `FILES` texts.
 
 ## What you check
 - **Grammar.** Case endings after prepositions (v + loc. / v + acc. of motion, pri, za, pod, okoli + gen.), adjective agreement in gender, number and case, the dual (dva/dve, sta/sva, -a endings: »Žlička in žica sta skriti«), verb aspect (»je odprl« vs »je odpiral«), past-tense gender agreement (»je bila« / »je bil«), clitic order (»se mi je«, »ga je«), possessives (Timov, Elina, Kikin).
