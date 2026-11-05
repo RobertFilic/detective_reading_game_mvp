@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fdf6e9">
+<link rel="manifest" href="../manifest.webmanifest">
+<title>Detektivska pisarna</title>
+<!-- The manifest's start_url: every launch from the Home Screen icon passes here, so Cloudflare counts it
+     as a visit to /home/, then the start page opens. A visit in the browser never comes through this page. -->
+<style>html, body { margin: 0; height: 100%; background: #fdf6e9; }</style>
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6412abd4f3ce49da8e9b0654e8158f3d"}'></script>
+</head>
+<body>
+<script>
+// Leave once the beacon has run (it sends its visit on the way out); offline it fails at once, and 1.5 s is the most anyone waits.
+const go = () => location.replace('../');
+addEventListener('load', () => setTimeout(go, 300));
+setTimeout(go, 1500);
+</script>
+</body>
+</html>

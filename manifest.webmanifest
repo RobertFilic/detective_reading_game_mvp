@@ -3,7 +3,7 @@
   "short_name": "Detektiv",
   "description": "Igre za otroke: detektivski primeri, igra v dvoje in Pekarna.",
   "lang": "sl",
-  "start_url": "./",
+  "start_url": "./home/",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
