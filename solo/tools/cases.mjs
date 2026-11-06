@@ -24,7 +24,7 @@ const NAME = Object.fromEntries(Object.entries(CHARACTERS).map(([id, ch]) => [id
 for (const [id, ch] of Object.entries(CHARACTERS)) if (!ch.re) fail(id, 'character needs a name pattern (re)');
 const PRONOUN = /\b(mu|ji|njen\w*|njegov\w*|je imel|je imela)\b/;
 const named = (text) => Object.keys(NAME).filter(id => NAME[id].test(text));
-const STEPS = new Set(['call', 'scene', 'ask', 'words', 'lock', 'order', 'cipher', 'torn', 'lie', 'herring', 'solve']);
+const STEPS = new Set(['call', 'scene', 'ask', 'words', 'lock', 'order', 'cipher', 'torn', 'lie', 'herring', 'when', 'solve']);
 const PUZZLES = ['words', 'lock', 'order', 'cipher', 'torn'];
 // where a sentence is found: a puzzle or UGOVOR gives it (from), an answer (ask), else an object in the scene
 const stepOf = (s) => s.from || (s.ask ? 'ask' : 'scene');
@@ -46,6 +46,15 @@ function checkWords(c) {
     if (!e || !SL_CAPS.test(word)) fail(c.id, `word ${word}: [emoji, CAPITALS]`);
     else if (count(word) !== 1) fail(c.id, `word ${word} appears ${count(word)} times (→ and ↓), needs exactly 1`);
   }
+  // riddles (a third item): every word has one or none does; a question, short, without its own word or a suspect's name
+  const rid = w.find.filter(f => f[2]);
+  if (rid.length && rid.length !== w.find.length) fail(c.id, 'words: every word has a riddle, or none does');
+  for (const [, word, q] of rid) {
+    if (!q.trim().endsWith('?')) fail(c.id, `riddle for ${word} is a question (?)`);
+    if (letters(q).includes(word)) fail(c.id, `riddle for ${word} gives the word away`);
+    if (named(q).some(id => c.suspects.includes(id))) fail(c.id, `riddle for ${word} names a suspect`);
+  }
+  tooLong(c, 'riddle', rid.map(f => f[2]));
   // the geslo: the letters no word uses, in reading order, spell the sentence it gives
   if (w.geslo) {
     const used = new Set();
@@ -161,6 +170,27 @@ function checkHerring(c) {
   for (const m of H.hmm || []) if (!wrong.includes(m[0]) || !get(m[1]) || !m[2]) fail(c.id, 'herring: hmm is [a misleading clue, a sentence, a note]');
   tooLong(c, 'herring', [H.h1, ...(H.hmm || []).map(m => m[2])]);
 }
+// ⏰ Kdaj?: sentences of the case sorted before / during / after the deed. A card from another time is never an
+// alibi or the proof (it must not count); a card at the deed's time never hands over the proof.
+const BANDS = new Set(['before', 'during', 'after']);
+function checkWhen(c) {
+  const W = c.when, ss = c.sentences, st = c.steps;
+  if (!W || !W.deed || !W.cards) return fail(c.id, 'a when step needs when: { deed, cards, h1? }');
+  if (st.indexOf('when') !== st.length - 2) fail(c.id, 'the when step comes right before solve');
+  if (st.includes('lie') || st.includes('herring')) fail(c.id, 'when is never in the same case as lie or herring');
+  if (words(W.deed) > 6) fail(c.id, `when: the deed is ${words(W.deed)} words (max 6): ${W.deed}`);
+  const ids = Object.keys(W.cards);
+  if (!inRange(ids.length, [2, 4])) fail(c.id, 'when: 2–4 cards');
+  if (!ids.some(x => W.cards[x] !== 'during')) fail(c.id, 'when: at least one card from before or after');
+  for (const [sid, band] of Object.entries(W.cards)) {
+    const s = ss.find(x => x.id === sid);
+    if (!s) { fail(c.id, `when: card ${sid} is missing`); continue; }
+    if (!BANDS.has(band)) fail(c.id, `when: ${sid} is before, during or after`);
+    if (band !== 'during' && (s.role === 'clear' || s.role === 'evidence')) fail(c.id, `when: ${sid} is from another time, so it is no alibi and no proof`);
+    if (band === 'during' && s.role === 'evidence') fail(c.id, `when: ${sid} is the proof; the step must not hand it over`);
+  }
+  tooLong(c, 'when', [W.h1]);
+}
 function checkSteps(c) {
   const ss = c.sentences;
   if (c.type !== 'elim') fail(c.id, 'step cases are type elim');
@@ -196,6 +226,13 @@ function checkSteps(c) {
   if (c.steps.includes('torn')) checkTorn(c);
   if (c.steps.includes('lie') || c.lie) checkLie(c);
   if (c.steps.includes('herring') || c.herring) checkHerring(c);
+  if (c.steps.includes('when') || c.when) checkWhen(c);
+  for (const s of ss.filter(x => x.when)) {
+    if (c.when) fail(c.id, `${s.id}: when: on a sentence only in a case without the ⏰ step`);
+    if (!['before', 'after'].includes(s.when) || s.role === 'clear' || s.role === 'evidence') fail(c.id, `${s.id}: when is 'before' or 'after', on a sentence that is no alibi and no proof`);
+  }
+  if (ss.filter(s => s.rub).length > 1) fail(c.id, 'at most one page to rub (rub)');
+  for (const s of ss.filter(x => x.rub)) if (stepOf(s) !== 'scene' || s.dark) fail(c.id, `${s.id}: a page to rub is a scene object, not dark`);
   for (const s of ss.filter(x => x.points)) if (!c.suspects.includes(s.points) || s.points === c.culprit) fail(c.id, `${s.id}: points at an innocent suspect`);
   if (c.steps.includes('words')) checkWords(c);
   // 🔐 code lock: 3–5 digits; h2 gives the code away (fair play when the earlier case was skipped)
@@ -272,7 +309,7 @@ for (const c of CASES) {
   if (c.steps ? !inRange(evidence.length, [1, 2]) : evidence.length !== (pair ? 2 : 1)) fail(c.id, `${evidence.length} evidence sentences (${c.steps ? 'a step case has 1, or a pair of 2' : `${c.type} needs ${pair ? 2 : 1}`})`);
   const lines = [c.h1, ...(c.call || []), ...(c.film || []).map(f => f[1]), ...(c.letter || []), ...(c.excuse ? [c.excuse] : []), ...(c.card && c.card.think ? [c.card.think] : [])];
   for (const t of lines.flatMap(l => l.split(/(?<=[.!?…])\s+(?=\p{Lu})/u))) if (words(t) > R.maxWords) fail(c.id, `${words(t)} words (max ${R.maxWords}): ${t}`);
-  if (c.steps) { checkSteps(c); continue; }
+  if (c.steps) { checkSteps(c); tooLong(c, 'reveal/excuse/letter', [...(c.reveal || []), c.excuse, ...(c.letter || []), c.card && c.card.think]); continue; }
   for (const k of ['h2', 'h3']) for (const e of evidence) if (!c[k].includes(e.id)) fail(c.id, `${k} does not include evidence ${e.id}`);
   const distractors = ss.filter(s => s.role === 'distractor').length;
   if (!inRange(distractors, R.distractors)) fail(c.id, `${distractors} distractors (level ${c.level} allows ${R.distractors.join('–')})`);
@@ -284,7 +321,6 @@ for (const c of CASES) {
   for (const k of ['h2', 'h3']) for (const id of c[k]) if (!ids.has(id)) fail(c.id, `${k} references missing ${id}`);
   if (!c.question || !c.h1 || !c.reveal || !c.reveal.length) fail(c.id, 'question, h1 and reveal are required');
   // the solved screen's lines are read too: the same limit (each sentence of a line)
-  if (c.steps) tooLong(c, 'reveal/excuse/letter', [...(c.reveal || []), c.excuse, ...(c.letter || []), c.card && c.card.think]);
 }
 
 // Play order and the ladder, per file: case numbers run 1, 2, 3, … without gaps; the rungs
@@ -311,6 +347,8 @@ for (const f of FILES) {
       if (g.options.length < 2 || g.after > inFile.length + (f.soon || 0)) fail(f.id, 'guess needs 2+ options and a case it follows');
       if (g.again && (!g.q2 || g.again <= g.after || g.again >= inFile.length + (f.soon || 0))) fail(f.id, 'guess.again comes after guess.after and before the final, with q2');
     }
+    if (f.cup && (!f.cup.q || !f.cup.cloth || !f.cup.btn || !f.cup.cheer || !(f.cup.names || []).length || [f.cup.q, f.cup.cloth, f.cup.btn, f.cup.cheer].some(t => words(t) > LEVEL_RULES.A.maxWords))) fail(f.id, 'cup: { q, cloth, btn, cheer (≤ 8 words), names }');
+    if (f.cup && f.book) fail(f.id, 'a season ends with a book or a cup, not both');
     if (f.book && (!f.book.q || !f.book.title || !f.book.by || words(f.book.q) > LEVEL_RULES.A.maxWords)) fail(f.id, 'book: { q (≤ 8 words), title, by }');
     // puzzles vary: no puzzle type in two cases in a row
     inFile.forEach((c, i) => { const prev = inFile[i - 1];

@@ -282,6 +282,7 @@ button.suspect { cursor: pointer; }
 .toolbar-kid { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
 .tool { appearance: none; font: inherit; font-size: 20px; font-weight: 700; cursor: pointer; background: var(--card); border: 3px solid var(--line); border-radius: 14px; padding: 6px 14px; }
 .tool.on { background: #fff6c2; border-color: var(--sel-line); box-shadow: 0 0 18px rgba(255, 210, 0, .7); }
+.tool.pulse { animation: pulse 1.1s ease-in-out infinite; border-color: var(--sel-line); }
 .pocket-count { margin-left: auto; font-weight: 800; color: var(--muted); }
 .ask .suspect.on { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent); }
 .ask .suspect .ok { position: absolute; top: 4px; right: 6px; color: #2e9d57; font-weight: 800; }
@@ -431,6 +432,12 @@ button.suspect { cursor: pointer; }
 .wlist { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 340px; }
 .wword { background: #fff; border: 2px solid var(--line); border-radius: 999px; padding: 4px 12px; font-weight: 800; font-size: 20px; letter-spacing: 1px; }
 .wword.got { background: #c9efd3; border-color: #5cb97a; text-decoration: line-through; }
+/* 🔤 riddles instead of words: a riddle and its dashes; found, the word replaces the dashes */
+.wlist.riddles { flex-direction: column; flex-wrap: nowrap; max-width: 420px; width: 100%; }
+.wword.riddle { display: flex; align-items: center; justify-content: space-between; gap: 10px; border-radius: 12px; font-size: 17px; font-weight: 600; letter-spacing: 0; text-align: left; cursor: pointer; }
+.wword.riddle .wd { font-weight: 800; letter-spacing: 2px; white-space: nowrap; }
+.wword.riddle.got { text-decoration: none; }
+.riddled .wgrid { --cell: min(72px, calc((100vw - 48px) / var(--n)), calc((100dvh - 520px) / var(--n))); }
 /* 🔤 the geslo: the letters left over glow, then spell a sentence in a strip under the grid */
 .wcell.left { background: #fff4c2; border-color: var(--sel-line); animation: glowcell .5s both; }
 @keyframes glowcell { from { background: #fff; transform: scale(1); } 60% { transform: scale(1.15); } }
@@ -511,6 +518,42 @@ button.suspect { cursor: pointer; }
 @keyframes hflip { 0% { transform: rotateY(0); } 50% { transform: rotateY(90deg); } 100% { transform: rotateY(0); } }
 .hstamp { position: absolute; right: 10px; top: -14px; font-size: 13px; border-width: 3px; padding: 0 8px; background: #fff; color: #2f5fb3; border-color: #2f5fb3; pointer-events: none; }
 .row .ltag.herr { color: #2f5fb3; font-size: 12px; }
+/* ⏰ Kdaj?: three time bands; a sentence from before or after gets the referee's yellow card */
+.whenstep { gap: 0; }
+.kdwrap { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; gap: 10px; padding: 2px; }
+.wbands { display: flex; flex-direction: column; gap: 6px; flex: none; }
+.wband { cursor: pointer; display: flex; flex-direction: column; gap: 6px; background: #f2f2f6; border: 3px solid #cfcfdc; border-radius: 16px; padding: 6px 10px; min-height: 48px; }
+.wband .wlab { font-weight: 900; font-size: 16px; letter-spacing: 1px; color: var(--muted); }
+.wband .wdeed { letter-spacing: 0; font-weight: 700; color: var(--ink); }
+.wband.during { background: #e9f6ec; border-color: #6fc287; }
+.wband.during .wlab { color: #2e7d4f; }
+.wband.armed { border-style: dashed; border-color: var(--sel-line); }
+.wband.pulse { animation: pulse 1.1s ease-in-out infinite; border-color: var(--sel-line); }
+.wdeck { display: flex; flex-direction: column; gap: 8px; flex: none; }
+.wcard { position: relative; }
+.wcard.put { cursor: default; min-height: 0; padding: 6px 12px; }
+.wcard.put.before, .wcard.put.after { background: #fffbe6; padding-right: 44px; }
+.wcard.put.during { background: #fff; border-color: #6fc287; }
+.wcard.flip { animation: hflip .6s; }
+.wcard .ycard { position: absolute; right: 8px; top: 50%; margin-top: -16px; font-size: 26px; transform: rotate(10deg); }
+.wcard .wstamp { position: absolute; right: 10px; top: -14px; font-size: 13px; border-width: 3px; padding: 0 8px; background: #fff; color: #a86f00; border-color: #e0a800; pointer-events: none; }
+.wcard .wok { margin-left: auto; flex: none; padding-left: 8px; font-size: 14px; font-weight: 900; color: #2e7d4f; }
+mark.tw { background: #ffe27a; border-radius: 4px; padding: 0 2px; color: inherit; }
+.row .ltag.ytag { color: #a86f00; font-size: 18px; transform: none; }
+/* 🖍️ the pencil: a blank page with pressed letters; rubbed, white letters come out of grey */
+.obj.rub { background: #fff; border-color: #d6d6de; }
+.objs.pencil .obj.rub { box-shadow: 0 0 0 4px rgba(130, 130, 150, .6), 0 0 18px rgba(130, 130, 150, .6); }
+.obj.rubbing { background: repeating-linear-gradient(-30deg, #8a8a96 0 6px, #a3a3ae 6px 12px); background-size: 200% 100%; animation: rubsweep .9s linear both; }
+@keyframes rubsweep { from { background-size: 0% 100%; background-color: #fff; } to { background-size: 200% 100%; } }
+.row.rubbed { background: #7d7d88; border-color: #5d5d68; color: #fff; font-weight: 700; letter-spacing: .5px; }
+/* 🏆 the cup: the cloth comes off, the names light up one by one */
+.cup { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.cup .cupi { font-size: 96px; line-height: 1; filter: drop-shadow(0 6px 10px rgba(180, 130, 0, .4)); }
+.cup .cloth { font-size: 18px; font-weight: 800; color: var(--muted); }
+.cup .cname { font-weight: 900; letter-spacing: 2px; font-size: 20px; color: #8a6400; background: #fff3c4; border: 2px solid #e0b84a; border-radius: 10px; padding: 2px 12px;
+  opacity: 0; animation: cuplight .5s both; }
+.cup .cname.me { font-size: 22px; color: #fff; background: linear-gradient(160deg, #e0a800, #b07a00); border-color: #8a6400; }
+@keyframes cuplight { from { opacity: 0; transform: scale(.6); filter: brightness(2); } to { opacity: 1; transform: none; } }
 /* a witness in the questioning: answers, but is not a suspect */
 .suspect.witness { border-style: dashed; }
 .suspect .eye { position: absolute; left: -4px; top: -6px; font-size: 18px; }
@@ -688,6 +731,19 @@ button.suspect { cursor: pointer; }
   .lwrap .rows { flex: 1 1 60%; }
   .claim { min-height: 0; padding: 6px 10px; font-size: 18px; }
   .hclue { min-height: 0; padding: 6px 10px; font-size: 18px; }
+  .kdwrap { flex-direction: row; align-items: flex-start; }
+  .wbands { flex: 1; }
+  .wdeck { flex: 1; }
+  .wband { min-height: 44px; padding: 4px 8px; gap: 4px; }
+  .wcard.put { font-size: 15px; min-height: 0; padding: 2px 34px 2px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+  .wcard.put .ycard { font-size: 18px; margin-top: -11px; }
+  .wcard.put .wstamp, .wcard.put .wok { display: none; }
+  .wdeck .wcard { font-size: 18px; min-height: 0; padding: 6px 12px; }
+  .whenstep .caseq { display: none; }
+  .cup { flex-direction: row; flex-wrap: wrap; justify-content: center; max-width: 760px; }
+  .cup .cupi { font-size: 64px; flex-basis: 100%; text-align: center; }
+  .cup .cname { font-size: 16px; }
+  .bookstep { gap: 10px; }
   .cipherstep, .tornstep { gap: 6px; }
   .ckey { max-width: none; flex-wrap: nowrap; }
   .cchip { min-width: 36px; font-size: 17px; padding: 0 3px; }
@@ -813,7 +869,7 @@ const CHARACTERS = {
   meta: { name: 'Meta', animal: '🐐', color: '#eef0dc', re: 'Met(a|o|e|i|in\\p{L}*)' },
   // 🦔 Skrivnost hotela Galeb (Gusti the seagull is a she: she lays eggs; the sea is a suspect in one case)
   luka: { name: 'Luka', animal: '👦🏼', color: '#dff0ff', re: 'Luk(a|e|i|o|ov\\p{L}*)' },
-  hana: { name: 'Hana', animal: '👧🏽', color: '#ffe3ea', re: 'Han(a|e|i|o|in\\p{L}*)' },
+  hana: { name: 'Hana', animal: '👧🏽', color: '#ffeccc', re: 'Han(a|e|i|o|in\\p{L}*)' },
   bepi: { name: 'Bepi', animal: '👴🏻', color: '#e2ecf6', re: 'Bepi(ja|ju|jem|jev\\p{L}*)?' },
   vera: { name: 'Vera', animal: '👵🏼', color: '#efe3f7', re: 'Ver(a|e|i|o|in\\p{L}*)' },
   gusti: { name: 'Gusti', animal: '🐦', color: '#eef4f8', re: 'Gusti(n\\p{L}*|jin\\p{L}*)?' },
@@ -829,6 +885,10 @@ const CHARACTERS = {
   lan: { name: 'Lan', animal: '👦🏽', color: '#dff0ff', re: 'Lan(a|u|om|ov\\p{L}*)?' },
   zoja: { name: 'Zoja', animal: '👧🏻', color: '#f3e4ff', re: 'Zoj(a|e|i|o|in\\p{L}*)' },
   fosil: { name: 'Fosil', animal: '🐈‍⬛', color: '#e8e8e8', re: 'Fosil(a|u|om|ov\\p{L}*)?' },
+  // ⚽ Skrivnost zlatega pokala (with Lan, Zoja, Luka, Hana, Pia). ⚠ A sentence never starts with »Bor …« (pine) or »Borovnice …«.
+  tone: { name: 'Hišnik Tone', animal: '👨🏻‍🔧', color: '#ece4d4', re: 'Ton(e|eta|etu|etom|etov\\p{L}*)' },
+  neza: { name: 'Sodnica Neža', animal: '👩🏼‍⚖️', color: '#e3f2e3', re: 'Než(a|e|i|o|in\\p{L}*)' },
+  bor: { name: 'Bor', animal: '🧒🏻', color: '#f0f0e0', re: 'Bor(a|u|om|ov\\p{L}*)?' },
 };
 
 // Case files (shown to children as pustolovščine, adventures): one place, one cast. Every case has file + no (1, 2, … within the file).
@@ -860,11 +920,18 @@ const FILES = [
     guess: { after: 3, again: 5, q: 'Kaj misliš, kdo ponoči premika Rexa?', q2: 'Ali še vedno tako misliš?',
       options: [['rado', '👮🏻‍♂️', 'čuvaj Rado, ki je ponoči v muzeju'], ['ivo', '👨🏻‍🔬', 'profesor Ivo, ki pozna vse kosti'], ['mila', '👩🏽', 'vodička Mila, ki hodi tiho']] },
     answer: { id: 'mila', icon: '🩰', text: 'Z Rexom je ponoči plesala Mila!' } },
+  { id: 'pokal', icon: '⚽', title: 'Skrivnost zlatega pokala', cast: ['lan', 'zoja', 'luka', 'hana', 'pia', 'bor', 'tone', 'neza'], paper: 'NOGOMETNE NOVICE',
+    season: true, mystery: 'Kam je izginil zlati pokal?', teaser: 'Kam je izginil zlati pokal?', opens: '2026-11-12',
+    // after case 3 the child guesses who took the cup; after case 5 they may change their mind once (the right one is in the middle)
+    guess: { after: 3, again: 5, q: 'Kaj misliš, kdo je vzel zlati pokal?', q2: 'Ali še vedno tako misliš?',
+      options: [['luka', '👦🏼', 'Luka, ki je držal pokal'], ['tone', '👨🏻‍🔧', 'hišnik Tone, ki vse popravi'], ['zoja', '👧🏻', 'Zoja, ki vse nariše']] },
+    answer: { id: 'tone', icon: '🏆', text: 'Pokal je bil pri hišniku Tonetu v kleti!' },
+    // the final's solved screen goes on to the cup: the cloth comes off, every team's name lights up, the child's last
+    cup: { q: 'Pokal je pod prtom. Ali ga odkriješ?', cloth: 'Pod prtom je nekaj zlatega …', btn: 'Odgrni prt!', cheer: 'Bo že, bo! Vsaka ekipa mora na pokal!', names: ['DINOZAVRI', 'KOZICE', 'JEŽKI', 'SOKOLI'] } },
 ];
 // Adventures announced but not written yet: the same teaser card. When one is written, it moves into
 // FILES with its teaser line (and opens, if it has a date).
 const COMING = [
-  { id: 'pokal', icon: '⚽', title: 'Skrivnost zlatega pokala', teaser: 'Kam je izginil zlati pokal?', opens: '2026-11-12' },
   { id: 'sneg', icon: '❄️', title: 'Sneženi možje brez sledi', teaser: 'Kdo ponoči dela snežene može?', opens: '2026-11-19' },
 ];
 
@@ -890,9 +957,12 @@ const UI_AUDIO = {
   // investigation steps (call → scene → solve)
   scene: 'Preišči prostor. Tapni vsako stvar.',
   dark: 'Tu je pretemno. Vzemi svetilko!',
+  rub: 'Na listu ni nič. Vzemi svinčnik!',
   sceneDone: 'Vse je preiskano. Kdo je bil?',
+  sceneDoneOn: 'Vse je preiskano. Naprej! 👉',
   ask: 'Zasliši vse. Tapni obraz, nato vprašanje.',
   askDone: 'Vsi so odgovorili. Kdo je bil?',
+  askDoneOn: 'Vsi so odgovorili. Naprej! 👉',
   wordNo: 'To ni beseda s seznama. Tapni prvo in zadnjo črko.',
   wordLook: 'Beseda je v svetli vrsti.',
   wordAssist: 'Tapni prvo črko, nato zadnjo. Utripata.',
@@ -937,6 +1007,21 @@ const UI_AUDIO = {
   herringExplained: 'Res, sled ne drži! Poišči še drug stavek.',
   tooEasy: 'Preveč lahko? Poglej še enkrat!',
   crossFirst: 'Dobro! Najprej prečrtaj še vse, ki niso bili.',
+  // ⏰ Kdaj? (step when): sort the sentences by time; one from before or after gets the yellow card
+  when: 'Kdaj je to bilo? Tapni stavek, nato čas.',
+  howWhen: 'Kdaj se je to zgodilo? Tapni stavek, nato PREJ, TAKRAT ali POTEM.',
+  when_before: 'PREJ',
+  when_during: 'TAKRAT',
+  when_after: 'POTEM',
+  whenFirst: 'Najprej tapni stavek. 👇',
+  whenNo: 'Poglej, kdaj je to bilo.',
+  whenH1: 'Poišči v stavku, kdaj je to bilo.',
+  whenLook: 'Preberi svetle besede. Kdaj je to bilo?',
+  whenAssist: 'Tapni stavek, nato čas, ki utripa.',
+  whenStamp: 'NAPAČEN ČAS!',
+  whenCounts: 'To šteje!',
+  whenDone: 'Zdaj veš, kaj šteje. Kdo je bil?',
+  wrongTime: 'Napačen čas! Poglej uro še enkrat.',
   liarNotCulprit: 'Kdor ne pove resnice, ni nujno kriv.',
   coachLie1: 'Nekdo nekaj trdi. Ali je res? Tapni to.',
   coachLie2: 'Kateri stavek pove drugače? Tapni ga.',
@@ -1003,7 +1088,11 @@ const UI_AUDIO = {
 // herring = 🧭 Kam kaže sled? (step 'herring', just before solve, never with lie): clues (1–2 sentences, each with an
 // arrow to the face in points), explains ({ clue: sets of 1–2 sentences that say why it doesn't count }; a clue not in
 // explains is true and is the proof), hmm, h1. Without the step, points: '<id>' on a sentence marks the obvious
-// suspect it points at: using it against that face in solve gets »Preveč lahko?«. witnesses = people who answer in
+// suspect it points at: using it against that face in solve gets »Preveč lahko?«.
+// when = ⏰ Kdaj? (step 'when', just before solve, never with lie or herring): deed (the deed's time, as the
+// question says it), cards ({ sentence: 'before' | 'during' | 'after' }), h1. A card from before or after gets
+// the yellow card and, used in solve, »Napačen čas!«; without the step, when: 'before' | 'after' on a sentence
+// does the same. rub = a scene object that needs the 🖍️ pencil (at most one). witnesses = people who answer in
 // ask but are not suspects (👁️). The final's client may be a suspect (he calls for help himself).
 // card = the sentence pinned to the season's corkboard
 // (think = the detective's thought when it is pinned);
@@ -1842,6 +1931,266 @@ const CASES = [
     card: { icon: '🩰', sid: 's11', think: 'Pravi copat, prava noga: Mila! 🩰' },
     letter: ['Hvala! Na zabavi sem plesal tudi jaz! 🕺', 'Mila pravi: »Oprostite. Naslednjič vprašam.«', 'P. S. Lan je dobil vabilo na nogometni turnir! ⚽'],
   },
+  // ======== ⚽ Skrivnost zlatega pokala (season 4): one Saturday, 8:00 to the 17:00 final ========
+  {
+    id: 'p1', file: 'pokal', no: 1, type: 'elim', level: 'A', sticker: '🦷', place: 'Igrišče',
+    steps: ['call', 'scene', 'when', 'solve'],
+    // Lan found the teeth after the photo (the final's alibi for Zoja leans on it); the notebook makes the rub tempting
+    client: 'lan', call: ['Hej, pomagaj! Žoge imajo zobe!', 'Pred slikanjem ob osmih so bile še bele.', 'Sodnica Neža vse zapiše v zvezek.'],
+    question: 'Kdo je ob osmih porisal žoge?',
+    suspects: ['luka', 'zoja', 'pia', 'tone'], culprit: 'zoja',
+    sentences: [
+      ['s1', 'Na vsaki žogi so zeleni zobje dinozavra.', 'neutral', { obj: '🎒', label: 'vreča' }],
+      // 🖍️ the decoy: Neža's next page, written at seven (the ⏰ PREJ card): Luka was at the balls while they were white
+      ['s2', 'Ob sedmih je Luka nosil žoge na igrišče.', 'distractor', { obj: '📓', label: 'zvezek', rub: true }],
+      ['s3', 'Ob osmih je Luka na sliki držal pokal.', 'clear', { obj: '🖼️', label: 'slika', clears: 'luka' }],
+      // names Zoja without proving anything, and plants Luka's line for the guess
+      ['s5', 'Luka in Zoja vpijeta: »Ta pokal bo naš!«', 'neutral', { obj: '🏟️', label: 'tribuna' }],
+      ['s6', 'Ob osmih je Pia v avli pazila Bora.', 'clear', { obj: '🎈', label: 'balon', clears: 'pia' }],
+      // plants for the final: Tone was the last one at the cup, and Tone cuts letters into metal
+      ['s7', 'Ob osmih je Tone v avli slikal pokal.', 'clear', { obj: '📷', label: 'kamera', clears: 'tone' }],
+      ['s8', 'Napise na vratih šole je vrezal hišnik Tone.', 'neutral', { obj: '🚪', label: 'vrata' }],
+      // card 1: the first rubbing (names no suspect)
+      ['s9', 'Na klopi Dinozavrov je siva risba: DINOZAVRI.', 'neutral', { obj: '🪑', label: 'klop' }],
+      // the proof, in the last row (p2–p4 have it in rows 3–4), behind the place (the goal), not the gloves; fresh, so it is from the deed's time
+      ['s4', 'Na Zojinih rokavicah so sveže packe zelenega flomastra.', 'evidence', { obj: '🥅', label: 'gol' }],
+    ],
+    // ⏰ 2 cards, owl-guided, both about Luka: same place, which hour?
+    when: { deed: 'ob osmih: žoge dobijo zobe', cards: { s2: 'before', s3: 'during' },
+      h1: 'Kdaj je bil Luka pri žogah?' },
+    h1: 'Kdo NI mogel biti? Kje so zelene packe?',
+    reveal: ['Luka je nosil žoge že ob sedmih.', 'Ob osmih je Zoja na žoge risala zobe.', 'Zelene packe so ostale na rokavicah.', 'Kje pa je zlati pokal? Vitrina je prazna! 🏆'],
+    caught: 'Zojo', excuse: 'Rrr! Dinozavri morajo imeti žoge z zobmi!',
+    card: { icon: '🖍️', sid: 's9', think: 'Kdo je narisal to sivo risbo? In kje je pokal? 🤔' },
+    letter: ['Hvala! Z Zojo sva umila vse žoge.', 'Zoja zdaj riše zobe samo na papir. 🦖', 'P. S. Pijin bratec Bor ima kozji kostum! 🐐'],
+  },
+  {
+    id: 'p2', file: 'pokal', no: 2, type: 'elim', level: 'A', sticker: '🐐', place: 'Mali gol',
+    steps: ['call', 'ask', 'when', 'solve'],
+    // no score here (the lock code's first score comes in p3's call); the film ends after the match, so the call is after it too
+    client: 'lan', call: ['Hej! Gooool … ampak čigav?', 'Med tekmo je nekdo zabil v mali gol.', 'Kamera za telovadnico je vse posnela!'],
+    // 📹 the camera on the small pitch: pred / med / po tekmi; two blurred visitors, only the »med« one counts
+    film: [
+      ['🥅', 'Pred tekmo: mali gol je prazen.'],
+      ['⚪', 'Med tekmo: nekaj belega skoči k žogi.', 'blur'],
+      ['⚽', 'Bum! Žoga je v golu. Mreža se strga!'],
+      ['🧍', 'Po tekmi nekdo pobere žogo.', 'blur'],
+    ],
+    question: 'Kdo je med tekmo zabil skrivni gol?',
+    suspects: ['hana', 'pia', 'luka', 'bor'], culprit: 'bor',
+    // 👁️ the referee and the caretaker answer, but are not suspects
+    witnesses: ['neza', 'tone'],
+    sentences: [
+      // the culprit's »alibi« from his happy sister: true, but before the match (a yellow card)
+      ['s1', '»Pred tekmo je Bor plesal ob igrišču.«', 'neutral', { who: 'pia', ask: 'Kje je bil tvoj bratec Bor?' }],
+      // a lead, not a proof: white (the film's blur) and horns (the proof)
+      ['s2', '»Meee! Imam bel kozji kostum z rogovi!«', 'neutral', { who: 'bor', ask: 'Si ti tudi Kozica?' }],
+      // the proof, in the upper half: a trace of the deed (the net tore on the film) on the culprit
+      ['s3', '»Na rogu ima Bor kos mreže malega gola.«', 'evidence', { who: 'tone', ask: 'Kaj manjka na malem golu?' }],
+      ['s4', '»Med tekmo je Pia branila na velikem igrišču.«', 'clear', { who: 'neza', ask: 'Kje je bila Pia med tekmo?', clears: 'pia' }],
+      // the decoy: Hana at the goal, after the match (the film's last frame)
+      ['s5', '»Po tekmi sem pobrala žogo iz malega gola.«', 'distractor', { who: 'hana', ask: 'Si bila ti pri malem golu?' }],
+      ['s6', '»Med tekmo je Luka z mano meril čas.«', 'clear', { who: 'neza', ask: 'Kdo vam je pomagal med tekmo?', clears: 'luka' }],
+      // Luka stood by the referee, so he saw the tribune
+      ['s7', '»Med tekmo je Hana na tribuni štela gole.«', 'clear', { who: 'luka', ask: 'Kje je bila Hana med tekmo?', clears: 'hana' }],
+      // plant for the big mystery: Tone is at every bench before every match
+      ['s8', '»Pred vsako tekmo postavim klopi.«', 'neutral', { who: 'tone', ask: 'Kaj delate pred vsako tekmo?' }],
+      // card 2: white letters (a rubbing, as the child made in p1)
+      ['s9', '»Na risbi KOZICE so bele črke.«', 'neutral', { who: 'pia', ask: 'Kaj je na klopi Kozic?' }],
+    ],
+    // ⏰ 3 cards: Bor before (true, no alibi), Hana's alibi during, Hana at the goal after
+    when: { deed: 'med tekmo: skrivni gol',
+      cards: { s1: 'before', s7: 'during', s5: 'after' },
+      h1: 'Pred tekmo, med tekmo ali po tekmi?' },
+    h1: 'Kdo NI mogel biti? Kje je kos mreže?',
+    reveal: ['Kos mreže je visel na Borovem rogu.', 'Med tekmo je Bor stekel k malemu golu.', 'Žogo je zabil z glavo, kot prava koza!', 'Ples je bil pred tekmo. Napačen čas! 🟨'],
+    caught: 'Bora', excuse: 'Meee! Tudi jaz sem Kozica!',
+    card: { icon: '🖍️', sid: 's9', think: 'Bele črke na sivem? Kot z mojim svinčnikom! 🤔' },
+    letter: ['Hvala! Boru so dali medaljo »najboljša maskota«. 🏅', 'Pia bo Boru zlepila rog. Meee!', 'P. S. Luka je kapetan Ježkov. Ima rdeč trak!'],
+  },
+  {
+    id: 'p3', file: 'pokal', no: 3, type: 'elim', level: 'A', sticker: '🎗️', place: 'Klop Ježkov',
+    steps: ['call', 'ask', 'torn', 'herring', 'solve'],
+    // the score is half of the final's lock code (3-1-2-0): no other digits in this case
+    client: 'lan', call: ['Gooool! Zmagali smo 3 : 1!', 'Luka je pustil trak na klopi.', 'Med odmorom je trak izginil!'],
+    question: 'Kdo je med odmorom vzel kapetanski trak?',
+    suspects: ['zoja', 'tone', 'hana', 'pia'], culprit: 'hana',
+    // 👁️ Lan (the client), Luka (the armband is his) and Neža answer, but are not suspects
+    witnesses: ['lan', 'luka', 'neza'],
+    sentences: [
+      // the 🧭 clue: the culprit sends everyone after Pia's cap (true, but the cap was there before the match)
+      ['s1', '»Pri naši klopi leži Pijina kapa.«', 'distractor', { who: 'hana', ask: 'Kaj si videla pri klopi?' }],
+      ['s2', '»Med odmorom sva bila s Pio v garderobi.«', 'clear', { who: 'lan', ask: 'Kje si bil med odmorom?', clears: 'pia' }],
+      // a lead, not a proof: it names Hana in bold and makes the rulebook familiar before the proof
+      ['s3', '»Hana! Povsod nosi knjigo pravil.«', 'neutral', { who: 'luka', ask: 'Kdo pri Ježkih pozna pravila?', lead: true }],
+      // the proof, in the upper half: the armband is in the culprit's thing, away from the bench (a bookmark)
+      ['s4', '»Iz Hanine knjige pravil gleda kapetanski trak.«', 'evidence', { who: 'pia', ask: 'Si kje videla trak?' }],
+      // Luka left the bench at half-time (the call: he left the armband there), so he could see the gym
+      ['s5', '»Med odmorom je Zoja v telovadnici risala plakat.«', 'clear', { who: 'luka', ask: 'Koga si videl med odmorom?', clears: 'zoja' }],
+      // card 3: the drawing on the Ježki bench; Zoja the artist notices the handle
+      ['s6', '»Na risbi JEŽKI je obris ročaja.«', 'neutral', { who: 'zoja', ask: 'Kaj vidiš na sivi risbi?' }],
+      // the small goal is behind the gym, far from the bench (its net was torn in case 2)
+      ['s7', '»Med odmorom sva s Tonetom popravljala mali gol.«', 'clear', { who: 'neza', ask: 'Kje je bil Tone med odmorom?', clears: 'tone' }],
+      // plant for the big mystery (the cellar, »bzzz«); »med tekmami« is not »med odmorom«, and it is his own word
+      ['s8', '»Bo že, bo! Med tekmami delam v kleti.«', 'neutral', { who: 'tone', ask: 'Kaj delate med tekmami?' }],
+      // the 🧭 explanation, from the torn report: the case's word »preden«
+      ['s9', 'Pia je izgubila kapo, preden so začeli.', 'neutral', { from: 'torn' }],
+    ],
+    // 📜 Neža writes everything down; a ball tore her report
+    torn: {
+      note: 'Žoga je strgala Nežin zapisnik. Sestavi ga.',
+      parts: ['Pia je', 'izgubila kapo,', 'preden so', 'začeli.'],
+      gives: 's9',
+      h1: 'Velika črka je na začetku, pika na koncu.',
+      h2: 'Kaj je Pia izgubila? Kdaj?',
+    },
+    // 🧭 the explanation is a time (before the match); Pia's alibi and the proof are near misses
+    herring: { clues: ['s1'], points: { s1: 'pia' }, explains: { s1: [['s9']] },
+      hmm: [['s1', 's2', 'Pia je bila res v garderobi. Kaj pa kapa?'],
+            ['s1', 's4', 'Res, trak je v Hanini knjigi. Zakaj pa je kapa tam?']],
+      h1: 'Kdaj je Pia izgubila kapo? Preberi zapisnik.' },
+    h1: 'Kdo NI mogel biti? Kje je kapetanski trak?',
+    reveal: ['Hana je med odmorom vzela Lukov trak.', 'Trak je bil kazalo v knjigi pravil.', 'Pijina kapa je že prej ležala pri klopi.', 'Pia in Lan sta takrat lepila Borov rog.'],
+    caught: 'Hano', excuse: 'Ups! Rabila sem kazalo za pravilo sedem.',
+    card: { icon: '🏆', sid: 's6', think: 'Ročaj? Kaj ima tak ročaj? 🤔' },
+    letter: ['Hvala! Luka ima spet svoj trak.', 'Hana je dobila pravo kazalo. 📖', 'P. S. Opoldne je kosilo. Juha! 🍲'],
+  },
+  {
+    id: 'p4', file: 'pokal', no: 4, type: 'elim', level: 'A', sticker: '🌼', place: 'Veliko igrišče',
+    steps: ['call', 'words', 'scene', 'when', 'solve'],
+    // the call carries the second half of the final's lock code (2 : 0), and the case's two time phrases meet in ⏰
+    client: 'lan', call: ['Ježki so zmagali 2 : 0!', 'Medtem ko smo jedli, je gol zacvetel!', 'Ves gol je v venčkih! 🌼'],
+    // 🔤 iskanka with riddles: the words are the four places to search (scene labels gol, klop, trava, okno)
+    words: {
+      note: 'Hana ti je skrila kraje v iskanko. Reši uganke!',
+      grid: ['ČEMUBI', 'ZKLOPO', 'GIHEDK', 'OJAŠUN', 'LAFECO', 'STRAVA'],
+      find: [['🥅', 'GOL', 'Kje stoji vratar?'],
+             ['🪑', 'KLOP', 'Kje sedijo igralci, ko ne igrajo?'],
+             ['🌱', 'TRAVA', 'Kaj je zeleno in raste na igrišču?'],
+             ['🪟', 'OKNO', 'Skozi kaj gledaš ven?']],
+      h1: 'Besede gredo → in ↓. Črtice povedo, koliko je črk.',
+    },
+    question: 'Kdo je med kosilom okrasil gol z venčki?',
+    suspects: ['pia', 'zoja', 'bor', 'tone'], culprit: 'pia',
+    sentences: [
+      // two at the goal at the wrong time (after, before), then the proof through the dining-room window (upper half)
+      ['s1', 'Po kosilu je Zoja risala rože na golu.', 'distractor', { obj: '🥅', label: 'gol' }],
+      ['s2', 'Pred kosilom je Tone kosil travo pri golu.', 'distractor', { obj: '🌱', label: 'trava' }],
+      ['s3', 'Medtem ko so jedli, je Pia pletla venčke.', 'evidence', { obj: '🪟', label: 'okno' }],
+      // the culprit, away from the goal, but only after lunch: no alibi
+      ['s4', 'Po kosilu je Pia Hani pletla kitke.', 'neutral', { obj: '🪑', label: 'klop' }],
+      ['s5', 'Med kosilom je Zoja sedela poleg Lana.', 'clear', { obj: '🍽️', label: 'miza', clears: 'zoja' }],
+      ['s6', '»Med kosilom je Bor jedel z mano.«', 'clear', { obj: '📋', label: 'zapisnik', who: 'neza', clears: 'bor' }],
+      ['s7', 'Medtem ko so jedli, je Tone pomival lonce.', 'clear', { obj: '🍲', label: 'kuhinja', clears: 'tone' }],
+      // card 4 (names nobody) and the season's plant for the final
+      ['s8', 'Na risbi SOKOLI so zlate mrvice.', 'neutral', { obj: '📄', label: 'risba' }],
+      ['s9', 'Hišnik Tone ima za ušesom debel svinčnik.', 'neutral', { obj: '🧰', label: 'orodje' }],
+    ],
+    // ⏰ 4 cards: Tone before, Tone during (his alibi, the new phrase under TAKRAT), Zoja and Pia after
+    when: { deed: 'med kosilom: venčki na golu',
+      cards: { s2: 'before', s7: 'during', s1: 'after', s4: 'after' },
+      h1: 'Medtem ko so jedli: to je med kosilom.' },
+    h1: 'Kdo NI mogel biti? Kdo je pletel venčke?',
+    reveal: ['Med kosilom je Pia pletla venčke iz marjetic.', 'Z njimi je okrasila gol za finale.', 'Tone je bil pri golu prej, Zoja potem.', 'Venčki bodo za zmagovalce! 🌼'],
+    caught: 'Pio', excuse: 'Za finale mora biti gol lep! Marjetice so zastonj!',
+    card: { icon: '✨', sid: 's8', think: 'Zlate mrvice? Kdo je brusil zlato? 🤔' },
+    letter: ['Hvala! Pia zdaj plete venčke za vse ekipe.', 'Tudi Bor hoče venček na rogove. Meee!', 'P. S. Po kosilu pride zlata žoga za finale! ✨'],
+  },
+  {
+    id: 'p5', file: 'pokal', no: 5, type: 'elim', level: 'A', sticker: '🏠', place: 'Pri telovadnici',
+    steps: ['call', 'order', 'scene', 'lie', 'solve'],
+    // no score and no digits in this call (the final's lock code is in p3 and p4); the window starts at one
+    client: 'lan', call: ['Zlata žoga za finale je na strehi!', 'Ob enih je bila žoga še v mreži.', 'Kdo jo je brcnil gor? Pomagaj!'],
+    // 🕐 the window's two edges: still in the net at one, found on the roof at two; »Preden« goes third
+    order: {
+      note: 'Lan pove vse naenkrat. Kaj je bilo najprej?',
+      cards: [
+        ['🎁', 'Najprej so zlato žogo dali v mrežo.'],
+        ['🥅', 'Ob enih je bila žoga še v mreži.'],
+        ['💨', 'Preden je žoga pristala na strehi, je letela.'],
+        ['🪜', 'Šele ob dveh so žogo našli na strehi.'],
+      ],
+      h1: 'Kje je bila žoga ob enih? Kje ob dveh?',
+      h2: 'Žoga je letela po enih in pred dvema.',
+      done: 'Žoga je poletela od enih do dveh!',
+    },
+    question: 'Kdo je od enih do dveh brcnil žogo?',
+    suspects: ['hana', 'neza', 'tone', 'luka'], culprit: 'neza',
+    sentences: [
+      // the decoy: Tone on the roof, but at two, when the ball was already up there (a yellow card in solve)
+      ['s1', 'Ob dveh je Tone splezal na streho.', 'distractor', { obj: '🪜', label: 'lestev', when: 'after' }],
+      // the two claims: Neža's lie (shown second) and Luka's true one (shown first)
+      ['s2', '»Pisk! Od enih sem že sodila tekmo.«', 'neutral', { obj: '⏱️', label: 'štoparica', who: 'neza' }],
+      ['s3', '»Po kosilu sem spal kot polh.«', 'neutral', { obj: '🎽', label: 'dres', who: 'luka' }],
+      // 👁️ Pia (no suspect) braided Hana's hair the whole hour: Hana sat still
+      ['s4', '»Od enih do dveh sem Hani pletla kitke.«', 'clear', { obj: '🎀', label: 'garderoba', who: 'pia', clears: 'hana' }],
+      // card 5 (names nobody)
+      ['s5', 'Na zadnji risbi so vsa štiri imena.', 'neutral', { obj: '📄', label: 'klop' }],
+      // Tone's alibi is the big mystery's clue: he was grinding (card 4 asked »Kdo je brusil zlato?«)
+      ['s6', 'Od enih do dveh Tone brusi v kleti.', 'clear', { obj: '⚙️', label: 'klet', clears: 'tone' }],
+      // the proof: a time sighting at the window's start; a referee taking a ball fits her claim, so only the urnik breaks it
+      ['s7', 'Na posnetku ob enih Neža vzame zlato žogo.', 'evidence', { obj: '📹', label: 'kamera' }],
+      // plant for the final's lock (Neža chose the code)
+      ['s8', 'Na vratih kleti je nova ključavnica s šifro.', 'neutral', { obj: '🔒', label: 'vrata', dark: true }],
+      ['s9', 'Od enih do dveh je Luka trdno spal.', 'clear', { obj: '💤', label: 'blazina', clears: 'luka' }],
+      // ❗ the breaker: the strict organiser's own timetable (it names her, so the proof is not her only bold name)
+      ['s10', 'Nežin urnik: prva tekma po kosilu ob dveh.', 'neutral', { obj: '🗓️', label: 'urnik' }],
+      ['s11', '»No ja … Zlato žogo sem hotela preizkusiti.«', 'neutral', { from: 'lie', who: 'neza' }],
+    ],
+    // ❗ the culprit lies, second of two claims; the timetable breaks it (no match at one)
+    lie: { claims: ['s3', 's2'], claim: 's2', breaks: [['s10']], truth: 's11',
+      hmm: [['s3', 's9', 'Luka je res spal. To se ujema!'],
+            ['s2', 's7', 'Sodnica res vzame žogo. Ampak za katero tekmo?']],
+      h1: 'Kdaj je bila prva tekma po kosilu?' },
+    h1: 'Kdo NI mogel biti? Kaj je na posnetku?',
+    reveal: ['Ob enih je Neža vzela zlato žogo.', 'Samo enkrat je hotela streljati na gol.', 'Bum! Žoga je poletela na streho.', 'Ob dveh jo je Tone prinesel dol. 🪜'],
+    caught: 'sodnico Nežo', excuse: 'Pisk! Samo enkrat sem hotela streljati. Previsoko!',
+    card: { icon: '🔄', sid: 's5', think: 'Vse ekipe na eni risbi! Kdo navija za vse? 🤔' },
+    letter: ['Hvala! Zlata žoga je spet v mreži. ✨', 'Pred finalom sme Neža enkrat streljati. Pisk!', 'P. S. Ob petih je finale. Pridi! 🏆'],
+  },
+  {
+    id: 'p6', file: 'pokal', no: 6, final: true, type: 'elim', level: 'A', sticker: '🏆', place: 'Zlati pokal',
+    steps: ['call', 'ask', 'lock', 'scene', 'when', 'solve'],
+    // the window has two edges: after the 8:00 photo (call, question) and until nine (question, Zoja's empty cabinet)
+    client: 'lan', call: ['Ob petih je finale. Pokala še ni!', 'Pokal je izginil po slikanju ob osmih.', 'Klet je zaklenjena. Šifro je izbrala Neža.'],
+    question: 'Kdo je po slikanju do devetih vzel pokal?',
+    suspects: ['luka', 'zoja', 'tone', 'neza'], culprit: 'tone',
+    witnesses: ['hana', 'pia', 'lan'],
+    sentences: [
+      // the two decoys: Luka at the cup BEFORE the photo, Zoja at the cabinet AT nine (already empty)
+      ['s1', '»Pred slikanjem sem sam držal pokal.«', 'distractor', { who: 'luka', ask: 'Kdaj si ti držal pokal?' }],
+      ['s2', '»Po slikanju je Luka do devetih tekel kroge.«', 'clear', { who: 'hana', ask: 'Kaj je delal Luka po slikanju?', clears: 'luka' }],
+      ['s3', '»Ob devetih je bila vitrina že prazna.«', 'distractor', { who: 'zoja', ask: 'Si danes videla vitrino?' }],
+      ['s4', '»Po slikanju je Zoja do devetih umivala žoge.«', 'clear', { who: 'lan', ask: 'Kaj je delala Zoja po slikanju?', clears: 'zoja' }],
+      // the proof pair: this half names the culprit (it comes first, as the checker reads the first proof) …
+      ['s5', '»Po slikanju je Tone nesel škatlo v klet.«', 'evidence', { who: 'pia', ask: 'Kaj si videla po slikanju?' }],
+      ['s6', '»Bo že, bo! Pokal se bo že našel.«', 'neutral', { who: 'tone', ask: 'Veste, kje je pokal?' }],
+      // Tone's »alibi« from someone else, for the wrong time (a yellow card): he is not cleared
+      ['s7', '»Pisk! Pred slikanjem je Tone čistil fotoaparat.«', 'neutral', { who: 'neza', ask: 'Ste videli hišnika Toneta?' }],
+      ['s8', '»Po slikanju je Neža do devetih merila gol.«', 'clear', { who: 'hana', ask: 'Kaj je delala Neža po slikanju?', clears: 'neza' }],
+      // the cellar (behind the lock): Tone's workshop, three objects
+      ['s9', 'Za srečo: DINOZAVRI, KOZICE, JEŽKI, SOKOLI.', 'neutral', { obj: '🗒️', label: 'blok', rub: true }],
+      ['s10', 'Na mizi so zlate mrvice.', 'neutral', { obj: '✨', label: 'miza' }],
+      // … and the cup's empty box names nobody
+      ['s11', 'V kleti je prazna škatla za pokal.', 'evidence', { obj: '📦', label: 'polica' }],
+    ],
+    // 🔐 4 wheels: the two morning scores from Lan's calls (p3 »3 : 1«, p4 »2 : 0«), by the clock; h2's only digits are the code
+    lock: {
+      note: 'Šifra: rezultata obeh jutranjih tekem, po vrsti.',
+      code: '3120',
+      h1: 'Rezultata je povedal Lan. Kdo je igral prvi?',
+      h2: 'Šifra je 3-1-2-0. Najprej Dinozavri, nato Ježki.',
+    },
+    // ⏰ a window with two edges: two PREJ (Luka, Tone), one TAKRAT (Zoja's alibi), one POTEM (Zoja at nine)
+    when: { deed: 'po slikanju do devetih: pokal izgine',
+      cards: { s1: 'before', s7: 'before', s4: 'during', s3: 'after' },
+      h1: 'Pokal je izginil do devetih. Kaj je bilo potem?' },
+    h1: 'Kdo NI mogel biti? Kaj je v kleti?',
+    reveal: ['Tone je pokal v škatli nesel v klet.', 'Tam je vrezal imena vseh štirih ekip.', 'Sive risbe so odtisi teh imen.', 'Ob petih je pokal spet na igrišču! 🏆'],
+    caught: 'hišnika Toneta', excuse: 'Bo že, bo! Vsaka ekipa mora na pokal.',
+    card: { icon: '🏆', sid: 's9', think: 'Vsa imena na enem pokalu! 🏆' },
+    letter: ['Hvala! Vsi smo na zlatem pokalu! 🏆', 'Hišnik Tone pravi: »Naslednjič povem vsaj Neži.«', 'P. S. Pozimi gremo vsi na sneg! ❄️'],
+  },
 ];
 
 // Practice case for the first-time tutorial: very easy, the answer is stated plainly.
@@ -1874,7 +2223,7 @@ function clipList() {
     out.push([c.id + '_q', c.question]);
     (c.call || []).forEach((t, i) => out.push([`${c.id}_c${i + 1}`, t]));
     (c.film || []).forEach((f, i) => out.push([`${c.id}_f${i + 1}`, f[1]]));
-    if (c.words) out.push([c.id + '_wn', c.words.note], [c.id + '_wh', c.words.h1]);
+    if (c.words) out.push([c.id + '_wn', c.words.note], [c.id + '_wh', c.words.h1], ...c.words.find.filter(f => f[2]).map((f, i) => [`${c.id}_wc${i + 1}`, f[2]]));
     if (c.lock) out.push([c.id + '_kn', c.lock.note], [c.id + '_kh1', c.lock.h1], [c.id + '_kh2', c.lock.h2]);
     if (c.order) {
       out.push([c.id + '_on', c.order.note], [c.id + '_oh1', c.order.h1], [c.id + '_oh2', c.order.h2], [c.id + '_od', c.order.done]);
@@ -1886,6 +2235,7 @@ function clipList() {
       if (c.herring.h1) out.push([c.id + '_hh1', c.herring.h1]);
       (c.herring.hmm || []).forEach((m, i) => out.push([`${c.id}_hm${i + 1}`, m[2]]));
     }
+    if (c.when && c.when.h1) out.push([c.id + '_th1', c.when.h1]);
     if (c.lie) {
       if (c.lie.h1) out.push([c.id + '_lh1', c.lie.h1]);
       (c.lie.hmm || []).forEach((m, i) => out.push([`${c.id}_lm${i + 1}`, m[2]]));
@@ -1904,6 +2254,7 @@ function clipList() {
     if (f.guess.q2) out.push([f.id + '_gq2', f.guess.q2]);
     if (f.answer) out.push([f.id + '_a', f.answer.text]);
     if (f.book) out.push([f.id + '_bq', f.book.q]);
+    if (f.cup) out.push([f.id + '_uq', f.cup.q], [f.id + '_uc', f.cup.cheer]);
   }
   return out;
 }
@@ -2106,6 +2457,8 @@ function newRun() {
     // ❗ UGOVOR: the claim and sentences tapped, wrong tries, caught, the catch's phase (shout → stamp → done)
     lclaim: null, lorder: null, lrows: [], lbroke: [], lwrong: 0, llook: false, lassisted: false, caught: false, lphase: null, lcoach: undefined,
     hclue: null, horder: null, hrows: [], hdone: [], hby: {}, hjust: null, hwrong: 0, hlook: false, hassisted: false,
+    // ⏰ Kdaj?: the card tapped, the cards as shown, where each was put, wrong tries; 🖍️ the pencil on, the page being rubbed
+    wcard: null, worder: null, wplaced: {}, wjust: null, wmiss: 0, wlook: false, wassisted: false, pencil: false, rubbing: null,
     // a two-proof step case: the proof already shown
     proofs: [],
     // »Najprej navodilo«: steps whose card was read (»Razumem«), when the open card came, the truth card read
@@ -2261,6 +2614,7 @@ function sfx(name) {
     if (name === 'nope') { tone(220, 0, .15, 'sine', .1); tone(180, .12, .2, 'sine', .1); }
     if (name === 'beep') { tone(1760, 0, .08, 'square', .05); tone(1760, .14, .08, 'square', .05); }
     if (name === 'lock') { tone(1200, 0, .04, 'square', .08); tone(600, .09, .06, 'square', .08); tone(300, .2, .18, 'triangle', .12); }
+    if (name === 'whistle') { tone(2900, 0, .12, 'square', .04); tone(2900, .18, .32, 'square', .04); }
     if (name === 'tada') [523, 659, 784, 1047].forEach((f, i) => tone(f, .12 + i * .1, .3, 'triangle', .1));
   } catch (e) { /* no sound is fine */ }
 }
@@ -2505,7 +2859,7 @@ function backTarget() {
     case 'call': return S.orderMode === 'board' ? toBoard : 'stay';
     case 'scene': case 'ask': case 'words': case 'lock': case 'order': case 'cipher': case 'torn': return S.run.hint ? 'stay' : () => go(stepNext(-1));
     case 'lie': return S.run.hint || S.run.lphase === 'shout' || S.run.lphase === 'stamp' ? 'stay' : () => go(stepNext(-1));
-    case 'herring': return S.run.hint ? 'stay' : () => go(stepNext(-1));
+    case 'herring': case 'when': return S.run.hint ? 'stay' : () => go(stepNext(-1));
     case 'solve': return S.run.hint ? 'stay' : () => go(stepNext(-1));
     case 'story': return () => go('intro');
     case 'accuse': return () => go('story');
@@ -2544,7 +2898,9 @@ addEventListener('popstate', () => {
 
 function render() {
   app.className = 'level-' + (S.level || 'B');
+  const keep = $('.kdwrap'), keepTop = keep ? keep.scrollTop : 0;   // ⏰: a tap must not jump the bands back to the top
   app.innerHTML = T[S.screen]();
+  if (keep && $('.kdwrap')) $('.kdwrap').scrollTop = keepTop;
   if (briefOpen()) app.insertAdjacentHTML('beforeend', briefHTML());
   else if (truthOpen()) app.insertAdjacentHTML('beforeend', truthHTML());
   else if (excuseOpen()) app.insertAdjacentHTML('beforeend', excuseHTML());
@@ -2632,8 +2988,10 @@ function wordSpots(w) {
 
 // Step cases: the step after (or before, d = -1) the current screen, and the button that goes on.
 const stepNext = (d = 1) => S.c.steps[S.c.steps.indexOf(S.screen) + d];
+// »Vse je preiskano. Kdo je bil?« only when solve comes next; before another step it says »Naprej!«
+const doneKey = (k) => stepNext() === 'solve' ? k : k + 'On';
 const STEP_LABEL = { ask: 'Zasliši osumljence 🗣️', words: 'Preberi listek 🔤', lock: 'K vratom 🔐', order: 'Poglej slike 🕐', scene: 'Na kraj dogodka 🔍',
-  cipher: 'Skrivni listek ✉️', torn: 'Raztrgan listek 📜', lie: 'Je vse res? ❗', herring: 'Kam kaže sled? 🧭' };
+  cipher: 'Skrivni listek ✉️', torn: 'Raztrgan listek 📜', lie: 'Je vse res? ❗', herring: 'Kam kaže sled? 🧭', when: 'Kdaj? ⏰' };
 const stepLabel = () => STEP_LABEL[stepNext()] || 'Vem, kdo je bil!';
 
 // »Najprej navodilo«: every step opens with a card that says what to do (a puzzle's card has the
@@ -2644,7 +3002,7 @@ const BRIEF = {
   words: ['🔤', 'Iskanka', 'howWords', 'words', 'wn'], lock: ['🔐', 'Ključavnica', 'howLock', 'lock', 'kn'],
   order: ['🕐', 'Po vrsti', 'howOrder', 'order', 'on'], cipher: ['✉️', 'Skrivni listek', 'howCipher', 'cipher', 'cn'],
   torn: ['📜', 'Raztrgan listek', 'howTorn', 'torn', 'pn'], lie: ['❗', 'Je vse res?', 'howLie'],
-  herring: ['🧭', 'Kam kaže sled?', 'howHerring'], solve: ['🕵️', 'Kdo je bil?', 'howSolve'],
+  herring: ['🧭', 'Kam kaže sled?', 'howHerring'], when: ['⏰', 'Kdaj?', 'howWhen'], solve: ['🕵️', 'Kdo je bil?', 'howSolve'],
 };
 const stepCase = () => !!(S.c && S.c.steps && S.run);
 const briefOpen = () => stepCase() && !!BRIEF[S.screen] && !S.run.briefed.includes(S.screen);
@@ -2682,7 +3040,7 @@ function noteHTML() {
   const r = S.run, hmm = S.c.lie ? (S.c.lie.hmm || []).findIndex(m => m[2] === r.note) : -1;
   const key = Object.keys(UI_AUDIO).find(k => UI_AUDIO[k] === r.note);
   const almost = hmm >= 0 || r.note === UI_AUDIO.lieHalf;
-  const good = [UI_AUDIO.lastOne, UI_AUDIO.sceneDone, UI_AUDIO.askDone, UI_AUDIO.herringDone].includes(r.note);
+  const good = [UI_AUDIO.lastOne, UI_AUDIO.sceneDone, UI_AUDIO.askDone, UI_AUDIO.sceneDoneOn, UI_AUDIO.askDoneOn, UI_AUDIO.herringDone, UI_AUDIO.whenDone].includes(r.note);
   return `<div class="note-back" data-act="noteNudge"></div><div class="hint note ${almost ? 'almost' : good ? 'good' : 'tip'}" id="note">
     <span class="hi">${almost ? '💡' : good ? '✅' : '💬'}</span><span class="txt">${almost ? `<b class="verdict">${UI_AUDIO.almost}</b> ` : ''}${esc(r.note)}</span>
     ${spk(hmm >= 0 ? `${S.c.id}_lm${hmm + 1}` : 'ui_' + key)}<button class="btn" data-act="noteOk">V redu</button></div>`;
@@ -2697,6 +3055,11 @@ function deliver(sid) {
   if (!S.run.found.includes(sid)) S.run.found.push(sid);
 }
 const unq = (t) => t.replace(/^»|«$/g, '');
+// ⏰ a sentence about another time than the deed's: a ⏰ card from before or after, or when: on the sentence
+const wrongTime = (s, c = S.c) => ['before', 'after'].includes(c.when ? c.when.cards[s.id] : s.when);
+// the time words of a sentence, marked (the ⏰ step's second hint); tags are left alone
+const TIME_RE = /(?<!\p{L})(?:(?:ob|pred|med|po|od|do)\s+\p{L}+|medtem ko|potem ko|preden|šele|zjutraj|opoldne|zvečer|ponoči|potem)(?!\p{L})/giu;
+const timeMark = (html) => html.split(/(<[^>]+>)/).map(p => p[0] === '<' ? p : p.replace(TIME_RE, '<mark class="tw">$&</mark>')).join('');
 const liarOf = (c = S.c) => c.lie && c.sentences.find(s => s.id === c.lie.claim).who;
 
 // The lie is caught: the first time ever the child shouts UGOVOR (a big red button), then the stamp
@@ -2961,7 +3324,7 @@ const T = {
     return `<div class="screen">
       <div class="board-head"><span class="q">${f.icon} ${esc(f.title)}</span>
         <span class="count">✔ ${done} / ${cases.length + soon}</span></div>
-      ${fileDone(S.file) ? `<div class="trophy">🏅 Pustolovščina rešena! Bravo, ${esc(detName(p))}!${f.book ? ' <button class="btn secondary" data-act="openBook">📖 Moja knjiga</button>' : ''}</div>` : ''}
+      ${fileDone(S.file) ? `<div class="trophy">🏅 Pustolovščina rešena! Bravo, ${esc(detName(p))}!${f.book ? ' <button class="btn secondary" data-act="openBook">📖 Moja knjiga</button>' : f.cup ? ' <button class="btn secondary" data-act="openBook">🏆 Moj pokal</button>' : ''}</div>` : ''}
       ${S.toast && S.toast !== 'soon' ? `<div class="toast">${esc(S.toast)}</div>` : ''}
       ${soon && done === cases.length ? `<div class="waiting ${S.toast === 'soon' ? 'flash' : ''}"><span>⏳ Primer ${cases.length + 1} pride kmalu! Medtem reši druge pustolovščine.</span>
         <button class="btn" data-act="toFiles">🗺️ Pojdi</button></div>` : ''}
@@ -3061,18 +3424,22 @@ const T = {
     const letters = w.grid.flatMap(row => [...row]);
     // the geslo: once every word is found, the letters left over glow and spell a sentence, in order
     const geslo = done && w.geslo;
+    // riddles: the list shows a riddle and a dash per letter; the word shows only when found
+    const riddles = w.find.every(f => f[2]);
     let k = 0;
     const strip = geslo && `<div class="geslo">${sent(w.geslo).text.toUpperCase().split(' ').map(x => `<span class="gw">${[...x].map(ch =>
       /\p{L}/u.test(ch) ? `<span class="gl" style="animation-delay:${k++ * 80}ms">${ch}</span>` : `<span>${esc(ch)}</span>`).join('')}</span>`).join('')}${spk(c.id + '_' + w.geslo)}</div>`;
     let j = 0;
-    return `<div class="screen scene wordsearch ${geslo ? 'gesloed' : ''} ${r.hint ? 'locked' : ''}">
+    return `<div class="screen scene wordsearch ${geslo ? 'gesloed' : ''} ${riddles ? 'riddled' : ''} ${r.hint ? 'locked' : ''}">
       <div class="caseq">❓ ${esc(c.question)}</div>
       <div class="row wnote" data-act="brief">📃 ${esc(w.note)}</div>
       <div class="wwrap">
         <div class="wgrid" style="--n:${[...w.grid[0]].length}">${letters.map((ch, i) => `<button class="wcell
           ${got.has(i) ? 'got' : geslo ? 'left' : ''} ${r.wsel === i ? 'sel' : ''} ${line(i) ? 'hl' : ''} ${ends.includes(i) ? 'pulse' : ''}" data-act="wordTap" data-i="${i}"
           ${geslo && !got.has(i) ? `style="animation-delay:${j++ * 80}ms"` : ''}>${ch}</button>`).join('')}</div>
-        ${strip || `<div class="wlist">${w.find.map(([e, x]) => `<span class="wword ${r.words.includes(x) ? 'got' : ''}">${e} ${x}</span>`).join('')}</div>`}
+        ${strip || (riddles ? `<div class="wlist riddles">${w.find.map(([e, x, q], i) => `<div class="wword riddle ${r.words.includes(x) ? 'got' : ''}" data-act="say" data-clip="${c.id}_wc${i + 1}">
+          <span class="wq">${esc(q)}</span><span class="wd">${r.words.includes(x) ? `${e} ${x}` : [...x].map(() => '_').join(' ')}</span></div>`).join('')}</div>`
+          : `<div class="wlist">${w.find.map(([e, x]) => `<span class="wword ${r.words.includes(x) ? 'got' : ''}">${e} ${x}</span>`).join('')}</div>`)}
       </div>
       ${geslo ? `<div class="toast good">🔤 ${UI_AUDIO.geslo}</div>` : ''}
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
@@ -3214,7 +3581,7 @@ const T = {
     const me = profile() ? profile().av : '🕵️';
     return `<div class="screen scene ask">
       <div class="caseq">❓ ${esc(c.question)}</div>
-      ${qbarB(done ? UI_AUDIO.askDone : UI_AUDIO.ask, done ? 'ui_askDone' : 'ui_ask')}
+      ${qbarB(done ? UI_AUDIO[doneKey('askDone')] : UI_AUDIO.ask, done ? 'ui_' + doneKey('askDone') : 'ui_ask')}
       <div class="suspects mini">${[...c.suspects, ...(c.witnesses || [])].map(id => {
         const left = mine.filter(s => s.who === id && !r.found.includes(s.id)).length, eye = (c.witnesses || []).includes(id);
         return `<button class="suspect ${r.who === id ? 'on' : ''} ${eye ? 'witness' : ''}" data-act="askWho" data-id="${id}">
@@ -3232,25 +3599,56 @@ const T = {
     </div>`;
   },
 
-  // Step 2: search the scene. Every object hides one sentence; the dark one needs the torch.
+  // ⏰ Kdaj?: the deed's time is the middle band. The child taps a sentence, then PREJ, TAKRAT or POTEM; one
+  // from before or after gets the referee's yellow card »NAPAČEN ČAS!« and won't count in solve.
+  when() {
+    const c = S.c, r = S.run, W = c.when, ids = Object.keys(W.cards);
+    // the cards show in a new order each time, so the one that counts is not always first
+    if (!r.worder) r.worder = [...ids].sort(() => Math.random() - .5);
+    const open = r.worder.filter(x => !r.wplaced[x]), done = !open.length;
+    const look = !done && (r.wlook || r.wassisted);
+    const target = r.wassisted && !done ? r.wcard || open[0] : null;
+    const card = (sid) => {
+      const s = sent(sid), at = r.wplaced[sid];
+      return `<div class="row wcard ${r.wcard === sid ? 'selected' : ''} ${at ? 'put ' + at : ''} ${r.wjust === sid ? 'flip' : ''} ${target === sid && !r.wcard ? 'pulse' : ''}"
+        data-act="whenCard" data-sid="${sid}">${look && !at ? timeMark(sayHTML(s)) : sayHTML(s)}${at === 'during' ? `<span class="wok">${UI_AUDIO.whenCounts}</span>`
+        : at ? `<span class="ycard">🟨</span><span class="stamp wstamp ${r.wjust === sid ? 'slam' : ''}">${UI_AUDIO.whenStamp}</span>` : ''}</div>`;
+    };
+    const band = (k, icon) => `<div class="wband ${k} ${r.wcard ? 'armed' : ''} ${target && r.wcard === target && W.cards[target] === k ? 'pulse' : ''}" data-act="whenBand" data-band="${k}">
+      <span class="wlab">${icon} ${UI_AUDIO['when_' + k]}${k === 'during' ? ` · <span class="wdeed">${esc(W.deed)}</span>` : ''}</span>
+      ${r.worder.filter(x => r.wplaced[x] === k).map(card).join('')}</div>`;
+    return `<div class="screen whenstep ${done ? 'done' : ''} ${r.hint ? 'locked' : ''}">
+      <div class="caseq">❓ ${esc(c.question)}</div>
+      ${qbarB(UI_AUDIO.when, 'ui_when')}
+      <div class="kdwrap">
+        <div class="wbands">${band('before', '⏪')}${band('during', '⏰')}${band('after', '⏩')}</div>
+        ${done ? '' : `<div class="wdeck">${open.map(card).join('')}</div>`}
+      </div>
+      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
+        <button class="btn big" data-act="toScene" ${done ? '' : 'disabled'}>${stepLabel()}</button></div>
+    </div>${r.hint ? hintHTML(r.hint) : ''}`;
+  },
+
+  // Step 2: search the scene. Every object hides one sentence; the dark one needs the torch, a pressed page the pencil.
   scene() {
     const c = S.c, r = S.run;
     const mine = own('scene'), all = mine.length;
     const found = r.found.filter(sid => stepOf(sent(sid)) === 'scene'), done = found.length === all;
     return `<div class="screen scene">
       <div class="caseq">❓ ${esc(c.question)}</div>
-      ${qbarB(done ? UI_AUDIO.sceneDone : UI_AUDIO.scene, done ? 'ui_sceneDone' : 'ui_scene')}
+      ${qbarB(done ? UI_AUDIO[doneKey('sceneDone')] : UI_AUDIO.scene, done ? 'ui_' + doneKey('sceneDone') : 'ui_scene')}
       <div class="toolbar-kid">
         <button class="tool ${r.torch ? 'on' : ''}" data-act="torch">🔦 Svetilka</button>
+        ${mine.some(s => s.rub) ? `<button class="tool ${r.pencil ? 'on' : r.rubMiss >= 2 ? 'pulse' : ''}" data-act="pencil">🖍️ Svinčnik</button>` : ''}
         <span class="pocket-count">👝 ${found.length} / ${all}</span>
       </div>
-      <div class="objs ${r.torch ? 'torch' : ''}">${mine.map(s => {
+      <div class="objs ${r.torch ? 'torch' : ''} ${r.pencil ? 'pencil' : ''}">${mine.map(s => {
         const got = r.found.includes(s.id);
-        return `<button class="obj ${got ? 'got' : ''} ${s.dark && !got ? 'dark' : ''}" data-act="openClue" data-sid="${s.id}">
+        return `<button class="obj ${got ? 'got' : ''} ${s.dark && !got ? 'dark' : ''} ${s.rub && !got ? 'rub' : ''} ${r.rubbing === s.id ? 'rubbing' : ''}" data-act="openClue" data-sid="${s.id}">
           <span class="oe">${s.dark && !got ? '🌑' : s.obj}</span><span class="ol">${esc(s.label)}</span>${got ? '<span class="ok">✔</span>' : ''}</button>`;
       }).join('')}</div>
       <div class="rows pocket">${found.slice().reverse().map((sid, i) =>
-        `<div class="row ${i === 0 && r.fresh ? 'fresh' : ''}" data-act="listenClue" data-sid="${sid}">${sayHTML(sent(sid))}</div>`).join('')}</div>
+        `<div class="row ${i === 0 && r.fresh ? 'fresh' : ''} ${sent(sid).rub ? 'rubbed' : ''}" data-act="listenClue" data-sid="${sid}">${sayHTML(sent(sid))}</div>`).join('')}</div>
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
         <span class="grow"></span><button class="btn big" data-act="toSolve" ${done ? '' : 'disabled'}>${stepLabel()}</button></div>
     </div>`;
@@ -3272,7 +3670,7 @@ const T = {
       <div class="rows">${c.sentences.map(s => `<div class="row ${r.sel === s.id ? 'selected' : ''} ${r.proofs.includes(s.id) ? 'proof' : ''} ${r.used.includes(s.id) ? 'used' : ''}
         ${t && t.sid !== s.id ? 'dim' : ''} ${r.assisted && t && t.sid === s.id ? 'pulse' : ''}" data-act="pickClue" data-sid="${s.id}">${sayHTML(s)}${
         c.lie && r.caught && s.id === c.lie.claim ? '<span class="ltag">UGOVOR!</span>' : c.lie && s.id === c.lie.truth ? '<span class="ltag truth">✨</span>'
-          : r.hdone.includes(s.id) ? '<span class="ltag herr">NAPAČNA SLED</span>' : ''}</div>`).join('')}</div>
+          : r.hdone.includes(s.id) ? '<span class="ltag herr">NAPAČNA SLED</span>' : r.wplaced[s.id] && wrongTime(s) ? '<span class="ltag ytag">🟨</span>' : ''}</div>`).join('')}</div>
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span></div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
@@ -3350,6 +3748,15 @@ const T = {
   book() {
     const c = S.c, f = FILES.find(x => x.id === c.file), p = profile() || {};
     const yes = S.run && S.run.bookYes;
+    // 🏆 the cup (a season with cup instead of a book): the cloth comes off, the names light up, the child's last
+    if (f.cup) return `<div class="screen center bookstep">
+      <div class="caller">${avatar(c.culprit, 'sm')}<div class="bubble"><div class="row" data-act="say" data-clip="${f.id}_${yes ? 'uc' : 'uq'}">${esc(yes ? f.cup.cheer : f.cup.q)}</div></div></div>
+      ${yes ? `<div class="cup"><span class="cupi">🏆</span>${[...f.cup.names, (p.name || detName()).toUpperCase()].map((n, i, a) =>
+          `<span class="cname ${i === a.length - 1 ? 'me' : ''}" style="animation-delay:${.4 + i * .6}s">${i === a.length - 1 ? '⭐ ' : ''}${esc(n)}</span>`).join('')}</div>
+        <button class="btn big" data-act="next">Naprej</button>`
+        : `<div class="cup"><span class="cupi" style="filter:grayscale(1) brightness(.6)">🏆</span><span class="cloth">🧺 ${esc(f.cup.cloth)}</span></div>
+          <button class="btn big" data-act="bookYes">${esc(f.cup.btn)}</button>`}
+    </div>`;
     return `<div class="screen center bookstep">
       <div class="caller">${avatar(c.culprit, 'sm')}<div class="bubble"><div class="row" data-act="say" data-clip="${f.id}_bq">${esc(f.book.q)}</div></div></div>
       ${yes ? `<div class="bcover"><span class="bstar">⭐</span><span class="bav">${p.av || '🕵️'}</span>
@@ -3781,7 +4188,7 @@ const ACTIONS = {
     r.wsel = null;
     const spots = wordSpots(w);
     const word = Object.keys(spots).find(x => !r.words.includes(x) && spots[x].cells[0] === a && spots[x].cells[spots[x].cells.length - 1] === b);
-    log('puzzle_word', { correct: !!word, word: word || null });
+    log('puzzle_word', { correct: !!word, word: word || null, ...(w.find.every(f => f[2]) ? { clue: true } : {}) });
     if (word) {
       r.words.push(word);
       if (r.words.length === w.find.length) {
@@ -4027,6 +4434,64 @@ const ACTIONS = {
     const x = document.querySelector(`.herringstep .row[data-sid="${s.id}"]`);
     if (x) x.classList.add('wobble');
   },
+  whenCard(el) {
+    const r = S.run, s = sent(el.dataset.sid);
+    if (r.hint) return;
+    // with a card picked, a placed card is part of its band (a full band has little room left to tap)
+    if (r.wplaced[s.id] && r.wcard) { ACTIONS.whenBand({ dataset: { band: r.wplaced[s.id] } }); return; }
+    if (r.wplaced[s.id]) { play(S.c.id + '_' + s.id, s.text, el); return; }
+    r.wcard = r.wcard === s.id ? null : s.id;
+    r.note = null;
+    sfx('click');
+    render();
+  },
+  whenBand(el) {
+    const r = S.run, c = S.c, W = c.when, band = el.dataset.band;
+    if (r.hint) return;
+    const open = r.worder.filter(x => !r.wplaced[x]);
+    if (!open.length) return;
+    if (!r.wcard) {
+      if (open.length > 1) {
+        r.note = UI_AUDIO.whenFirst;
+        log('when_try', { sentenceId: null, band, correct: false, kind: 'noCard' });
+        render();
+        play('ui_whenFirst', UI_AUDIO.whenFirst);
+        return;
+      }
+      r.wcard = open[0];
+    }
+    const sid = r.wcard, right = W.cards[sid] === band;
+    log('when_try', { sentenceId: sid, band, correct: right, kind: right ? band : 'no' });
+    r.note = null;
+    if (right) {
+      r.wplaced[sid] = band;
+      r.wcard = null;
+      r.wjust = sid;
+      const all = r.worder.every(x => r.wplaced[x]);
+      if (all) { r.note = UI_AUDIO.whenDone; log('when_done', { wrong: r.wmiss, assisted: r.wassisted }); }
+      render();
+      if (band === 'during') { sfx('pop'); play('ui_whenCounts', UI_AUDIO.whenCounts); }
+      else { sfx('whistle'); play('ui_whenStamp', UI_AUDIO.whenStamp); }
+      setTimeout(() => { if (S.run === r && r.wjust === sid) { r.wjust = null; if (S.screen === 'when') render(); } }, 1200);
+      return;
+    }
+    r.wmiss++;
+    sfx('nope');
+    let h = null;
+    if (r.wassisted || r.wmiss >= 4) {
+      if (!r.wassisted) { r.wassisted = true; log('when_assisted'); }
+      h = { key: 'whenAssist', text: UI_AUDIO.whenAssist, clip: 'ui_whenAssist', level: 3 };
+    } else if (r.wmiss === 3) {
+      r.wlook = true;
+      h = { key: 'whenLook', text: UI_AUDIO.whenLook, clip: 'ui_whenLook', level: 2 };
+    } else if (r.wmiss === 2) {
+      h = W.h1 ? { key: 'h1', text: W.h1, clip: c.id + '_th1', level: 1 } : { key: 'h1', text: UI_AUDIO.whenH1, clip: 'ui_whenH1', level: 1 };
+    } else r.note = UI_AUDIO.whenNo;
+    if (h) { r.hint = h; log('when_hint', { hint: h.key, hintLevel: h.level }); }
+    render();
+    const x = document.querySelector(`.whenstep .wcard[data-sid="${sid}"]`);
+    if (x) x.classList.add('wobble');
+  },
   askWho(el) {
     const r = S.run;
     r.who = el.dataset.id;
@@ -4047,7 +4512,7 @@ const ACTIONS = {
     setTimeout(() => {
       if (S.screen !== 'ask' || r.typing !== s.id) return;
       r.typing = null;
-      if (own('ask').every(x => r.found.includes(x.id))) r.note = UI_AUDIO.askDone;
+      if (own('ask').every(x => r.found.includes(x.id))) r.note = UI_AUDIO[doneKey('askDone')];
       sfx('pop');
       render();
     }, 900);
@@ -4055,14 +4520,45 @@ const ACTIONS = {
   torch() {
     const r = S.run;
     r.torch = !r.torch;
+    r.pencil = false;
     r.note = null;
     sfx('click');
     log('tool_use', { tool: 'torch', on: r.torch });
     render();
   },
+  pencil() {
+    const r = S.run;
+    r.pencil = !r.pencil;
+    r.torch = false;
+    r.note = null;
+    sfx('click');
+    log('tool_use', { tool: 'pencil', on: r.pencil });
+    render();
+  },
   openClue(el) {
     const r = S.run, s = sent(el.dataset.sid);
-    if (r.found.includes(s.id)) return;
+    if (r.found.includes(s.id) || r.rubbing) return;
+    if (s.rub && !r.pencil) {
+      r.note = UI_AUDIO.rub;
+      sfx('nope');
+      r.rubMiss = (r.rubMiss || 0) + 1;   // the second time, the 🖍️ button pulses
+      log('clue_dark', { sentenceId: s.id, tool: 'pencil' });
+      render();
+      play('ui_rub', UI_AUDIO.rub);
+      return;
+    }
+    if (s.rub && !el.dataset.rubbed) {   // grey strokes sweep over the page first, then the letters come out
+      r.rubbing = s.id;
+      r.note = null;
+      sfx('click');
+      render();
+      setTimeout(() => {
+        if (S.run !== r || S.screen !== 'scene') return;
+        r.rubbing = null;
+        ACTIONS.openClue({ dataset: { sid: s.id, rubbed: '1' } });
+      }, 900);
+      return;
+    }
     if (s.dark && !r.torch) {
       r.note = UI_AUDIO.dark;
       sfx('nope');
@@ -4073,7 +4569,7 @@ const ACTIONS = {
     }
     r.found.push(s.id);
     r.fresh = true;
-    r.note = own('scene').every(x => r.found.includes(x.id)) ? UI_AUDIO.sceneDone : null;
+    r.note = own('scene').every(x => r.found.includes(x.id)) ? UI_AUDIO[doneKey('sceneDone')] : null;
     r.heard.add(s.id);
     sfx('pop');
     log('clue_open', { sentenceId: s.id, role: s.role, n: r.found.length });
@@ -4117,7 +4613,7 @@ const ACTIONS = {
     const pair = c.sentences.filter(x => x.role === 'evidence').length === 2;
     const half = proof && pair && (!r.proofs.length || r.proofs.includes(s.id));
     log('evidence_confirm', { sentenceId: s.id, sentenceIds: [s.id], role: s.role, suspectId: id, correct: proof || alibi, suspectCorrect: id === c.culprit,
-      kind: half ? 'half' : proof ? 'proof' : 'cross', ...(liar && id === liar ? { liar: true } : {}), ...(pointed && id === pointed ? { obvious: true } : {}) });
+      kind: half ? 'half' : proof ? 'proof' : 'cross', ...(liar && id === liar ? { liar: true } : {}), ...(wrongTime(s) ? { wrongTime: true } : {}), ...(pointed && id === pointed ? { obvious: true } : {}) });
     r.sel = null;
     // gentle notes, not counted: a misleading clue (or what explains it) against its face, a lead against the
     // culprit, and in a case with a true 🧭 clue the proof before everyone else is crossed off
@@ -4125,6 +4621,7 @@ const ACTIONS = {
     const needCross = proof && H && H.clues.some(x => !H.explains[x]) && c.suspects.some(x => x !== c.culprit && !r.crossed.includes(x));
     const soft = needCross ? { key: 'crossFirst', text: UI_AUDIO.crossFirst, clip: 'ui_crossFirst', level: 0 }
       : alibi || proof ? null
+      : wrongTime(s) ? { key: 'wrongTime', text: UI_AUDIO.wrongTime, clip: 'ui_wrongTime', level: 0 }
       : H && Object.entries(H.explains).some(([cl, sets]) => H.points[cl] === id && sets.flat().includes(s.id))
         ? { key: 'herringExplained', text: UI_AUDIO.herringExplained, clip: 'ui_herringExplained', level: 0 }
       : pointed && id === pointed ? (H ? { key: 'herringAway', text: UI_AUDIO.herringAway, clip: 'ui_herringAway', level: 0 }
@@ -4207,7 +4704,7 @@ const ACTIONS = {
   next() {
     if (S.tut) { endTutorial(); return; }
     const f = S.c && FILES.find(x => x.id === S.c.file);
-    if (S.screen === 'reveal' && S.c.final && f && f.book) {
+    if (S.screen === 'reveal' && S.c.final && f && (f.book || f.cup)) {
       go('book');
       return;
     }
@@ -4291,6 +4788,8 @@ function newMetrics(id) {
     lie: !!(c && c.lie), lieWrong: 0, lieHints: 0, lieAssisted: false, liarBlamed: 0,
     // 🧭 Kam kaže sled?: wrong tries, hints; and how often the face a misleading clue points at was blamed
     herring: !!(c && c.herring), herWrong: 0, herHints: 0, herAssisted: false, obviousBlamed: 0,
+    // ⏰ Kdaj?: wrong tries, hints; and how often a sentence from the wrong time was used in solve
+    when: !!(c && c.when), whenWrong: 0, whenHints: 0, whenAssisted: false, wrongTime: 0,
     // »Najprej navodilo«: instruction cards read, and how many were closed in under 3 s (not read)
     briefs: 0, briefFast: 0,
   };
@@ -4350,6 +4849,9 @@ function analyzeSession(evs) {
       case 'herring_try': if (e.kind === 'no') m.herWrong++; break;
       case 'herring_hint': m.herHints++; break;
       case 'herring_assisted': m.herAssisted = true; break;
+      case 'when_try': if (e.kind === 'no') m.whenWrong++; break;
+      case 'when_hint': m.whenHints++; break;
+      case 'when_assisted': m.whenAssisted = true; break;
       case 'lie_hint': m.lieHints++; break;
       case 'brief_ok': m.briefs++; if (e.ms < BRIEF_FAST) m.briefFast++; break;
       case 'lie_assisted': m.lieAssisted = true; break;
@@ -4460,8 +4962,9 @@ function sessionHTML(s) {
       <td class="${guessCls}">${m.guess}/${m.confirms}</td>
       <td class="${m.early ? 'c-warn' : ''}">${m.early ? 'da' : 'ne'}</td>
       <td>${MORE[m.more] || '–'}</td>
-      <td class="${m.liarBlamed || m.obviousBlamed ? 'c-warn' : ''}">${m.lie ? `${m.lieWrong} / ${m.lieHints}${m.lieAssisted ? ' (vodeno)' : ''}${m.liarBlamed ? ` · ${m.liarBlamed}× kriv lažnivec` : ''}`
-        : m.herring ? `🧭 ${m.herWrong} / ${m.herHints}${m.herAssisted ? ' (vodeno)' : ''}` : '–'}${m.obviousBlamed ? ` · ${m.obviousBlamed}× očiten osumljenec` : ''}</td>
+      <td class="${m.liarBlamed || m.obviousBlamed || m.wrongTime ? 'c-warn' : ''}">${m.lie ? `${m.lieWrong} / ${m.lieHints}${m.lieAssisted ? ' (vodeno)' : ''}${m.liarBlamed ? ` · ${m.liarBlamed}× kriv lažnivec` : ''}`
+        : m.herring ? `🧭 ${m.herWrong} / ${m.herHints}${m.herAssisted ? ' (vodeno)' : ''}` : m.when ? `⏰ ${m.whenWrong} / ${m.whenHints}${m.whenAssisted ? ' (vodeno)' : ''}` : '–'}${
+          m.obviousBlamed ? ` · ${m.obviousBlamed}× očiten osumljenec` : ''}${m.wrongTime ? ` · ${m.wrongTime}× napačen čas` : ''}</td>
       <td class="${m.briefFast * 2 > m.briefs ? 'c-warn' : ''}">${m.briefs ? `${m.briefFast} / ${m.briefs}` : '–'}</td>
     </tr>`;
     return row + (S.open === key ? `<tr><td colspan="13">${timelineHTML(s, m.id)}</td></tr>` : '');
@@ -4486,6 +4989,7 @@ const EVENT_LABEL = {
   adult_gate: 'odrasli pregled', session_end: 'konec seje', session_start: 'začetek seje',
   call_answer: 'se javi na telefon', tool_use: 'svetilka', clue_open: 'odpre sled', clue_dark: 'pretemno', ask_q: 'vpraša', letter_read: 'prebere pismo',
   herring_try: 'sled: poskus', herring_hint: 'sled: namig', herring_assisted: 'sled: vodeno', herring_done: 'napačna sled',
+  when_try: 'kdaj: poskus', when_hint: 'kdaj: namig', when_assisted: 'kdaj: vodeno', when_done: 'kdaj: urejeno',
   lie_try: 'ugovor: poskus', lie_hint: 'ugovor: namig', lie_assisted: 'ugovor: vodeno', lie_shout: 'zakliče UGOVOR', lie_done: 'ujame laž',
   puzzle_cipher: 'šifra', puzzle_torn: 'raztrgan listek', guess_again: 'ponovno ugiba', book_yes: 'knjiga: da',
 };

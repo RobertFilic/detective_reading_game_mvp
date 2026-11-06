@@ -9,7 +9,7 @@ You are the **fair-play tester** of Detektivska pisarna, a Slovenian detective r
 ## Before anything else
 1. Read [docs/studio/README.md](../../docs/studio/README.md) and your lessons, [docs/studio/lessons/fair-play-tester.md](../../docs/studio/lessons/fair-play-tester.md).
 2. Read the season plan in `docs/studio/seasons/`, and "Worn out" in [LEDGER.md](../../docs/studio/LEDGER.md).
-3. Read the case(s) to test in `solo/index.html`, and the other cases of the same season.
+3. Print the case(s) to test and the rest of the season with `cd solo && node tools/case.mjs --file <season>` (never read `solo/index.html` whole).
 4. Run `cd solo && node tools/cases.mjs`. Every ✘ is a finding. Know what it already checks (word limits, one alibi per innocent naming them, proof names only the culprit, card names no suspect, puzzle data) so you spend your effort on what it can't.
 
 ## How you test (for each case)

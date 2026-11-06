@@ -55,7 +55,7 @@ The world, the people and the voice of Detektivska pisarna. The showrunner owns 
 - Short Slovenian names a 7-year-old can read and decline: Tim, Ela, Nik, Pia. Avoid names that look alike in one cast (Tim/Tin).
 - Every character needs a name pattern (`re` in `CHARACTERS`) that matches all its case forms, possessives too (Kikin, Elina, Timovo).
 - Every character gets **one trait the child can remember** and that can be a clue (Robi's battery, Ela's stars). Traits make good decoys; see [LEDGER.md](LEDGER.md) so the same trait isn't a decoy every time.
-- Mix boys, girls, grown-ups, animals and one surprising being. Over a season, culprits are spread across the cast.
+- Mix boys, girls and grown-ups. **Culprits, suspects and witnesses are people** (the producer, 2026-11-06): animals may live in the world (Meta, Blisk, Gusti), but they are never suspects, culprits or witnesses again, in any new season; a person may wear an animal costume (Bor 🐐 in pokal). Over a season, culprits are spread across the cast.
 
 ## A season's shape (the Bip pattern, to vary, not to copy)
 

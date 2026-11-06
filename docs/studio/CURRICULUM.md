@@ -31,10 +31,10 @@ Rungs 1–2 are done. The order after that is a plan; the showrunner may swap ne
 |---|---|---|---|
 | 1 ✅ | **Find it and cross off** | Read every clue; cross off whoever has an alibi; the proof names the culprit | the closed circle: everyone was on the station |
 | 2 ✅ | **Follow the thread** | Clues from different cases belong to one bigger story; a guess is not a proof | the recurring small oddities that only make sense at the end (Bip) |
-| 3 | **The lie (UGOVOR!)** | A witness says something; another sentence shows it can't be true | the alibi that breaks: »I was in the kitchen« vs the kitchen light was off |
-| 4 | **The obvious suspect is innocent** | The clue that points at someone too clearly was planted or misread | the red herring; the person everybody suspects from page one is not the one |
+| 3 ✅ | **The lie (UGOVOR!)** | A witness says something; another sentence shows it can't be true | the alibi that breaks: »I was in the kitchen« vs the kitchen light was off |
+| 4 ✅ | **The obvious suspect is innocent** | The clue that points at someone too clearly was planted or misread | the red herring; the person everybody suspects from page one is not the one |
 | 5 | **What did *not* happen** | Missing evidence is a clue: the dog didn't bark, the snow has no footprints | the dog in the night (Holmes, but Christie used it too) |
-| 6 | **When, exactly?** | A true alibi for the wrong time is no alibi; order events by clock and »preden / potem« | the timetable murder, minus the murder: who could have been there at 8? |
+| 6 ✅ | **When, exactly?** | A true alibi for the wrong time is no alibi; order events by clock and »preden / potem« | the timetable murder, minus the murder: who could have been there at 8? |
 | 7 | **The clue in a list** | One item in an ordinary list matters (a shopping list, a packing list) | Christie's favourite trick: hide the clue among boring things |
 | 8 | **Why?** | Motive: who *wanted* this to happen, and why it was kind or funny | the motive revealed at the end, here always warm |
 | 9 | **The least likely person** | The helper, the client, the quiet one, the one who called for help | *Roger Ackroyd*, softened: the client hid the thing, for a good reason |

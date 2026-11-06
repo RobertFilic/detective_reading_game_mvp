@@ -1,6 +1,7 @@
 // Usage (from solo/, once: cd tools && npm install):
 //   node tools/shots.mjs b6            every screen of case b6 on 3 phones/tablets
 //   node tools/shots.mjs b6 --out dir  where the PNGs go (default: shots/, git-ignored)
+//   node tools/shots.mjs p1 --date 2026-11-12  the page's date (default: the last release date, so unreleased seasons open)
 // Serves the repo itself, opens the game with a ready-made detective, and renders each step
 // of the case (as the child first sees it) plus the solved screen and the board, on
 // iPhone 14, iPad and a landscape phone. Prints any screen that overflows sideways or
@@ -15,7 +16,9 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const args = process.argv.slice(2);
 const id = args.find(a => !a.startsWith('--'));
 const out = path.resolve(args.includes('--out') ? args[args.indexOf('--out') + 1] : 'shots');
-if (!id) { console.log('usage: node tools/shots.mjs <caseId> [--out dir]'); process.exit(1); }
+if (!id) { console.log('usage: node tools/shots.mjs <caseId> [--out dir] [--date YYYY-MM-DD]'); process.exit(1); }
+const DAY = args.includes('--date') ? args[args.indexOf('--date') + 1]
+  : [...fs.readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../index.html'), 'utf8').matchAll(/opens: '(\d{4}-\d\d-\d\d)'/g)].map(m => m[1]).sort().pop() || new Date().toISOString().slice(0, 10);
 fs.mkdirSync(out, { recursive: true });
 
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
@@ -40,6 +43,11 @@ for (const [name, w, h] of VIEWS) {
   await p.setRequestInterception(true);
   p.on('request', r => r.url().startsWith(base) ? r.continue() : r.abort());   // no analytics from tests
   await p.evaluateOnNewDocument(() => { if (window.speechSynthesis) speechSynthesis.getVoices = () => []; });
+  // the page's clock is set to the last release date (or --date), so a season pushed before its day can be shot
+  await p.evaluateOnNewDocument((day) => {
+    const D = Date, t = new D(day + 'T09:00:00').getTime() - D.now();
+    window.Date = class extends D { constructor(...a) { super(...(a.length ? a : [D.now() + t])); } static now() { return D.now() + t; } };
+  }, DAY);
   await p.setViewport({ width: w, height: h, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
   await p.goto(base + '/solo/?play');
   await p.evaluate(() => { localStorage.clear(); localStorage.setItem('dp_save_version', '4'); localStorage.setItem('dp_tutorial_done', 'true');

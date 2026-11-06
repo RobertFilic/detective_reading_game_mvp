@@ -19,7 +19,7 @@ Detektivska pisarna is made by a small studio of Claude Code agents, with a huma
 
 1. **Pitch.** The showrunner reads the playtest notes, the curriculum and the ledger, and writes `docs/studio/seasons/<id>.md`: the premise, the red thread, the six cases in one line each, the skill it teaches, and what is new. → **The producer approves or changes it.** Nothing is written before that.
 2. **Puzzles.** The puzzle designer assigns one puzzle per case (two in the final), with difficulty and hints, into the same season file. A new mechanic becomes a spec for the main session.
-3. **Writing.** Case writers draft the cases (in parallel, one case each) into `solo/index.html`, and run `node tools/cases.mjs`.
+3. **Writing.** Two case writers draft the cases (cases 1–3 and 4–6, in parallel) into `solo/index.html`, and run `node tools/cases.mjs`.
 4. **Review.** The fair-play tester and the Slovenian editor review every case. Findings go back to the writer until both pass. The main session builds any new mechanic.
 5. **Screens.** The UX reviewer runs `node tools/shots.mjs <caseId>` and reviews the screenshots.
 6. **Play.** The producer plays it with the child. What happened goes into [PLAYTEST.md](PLAYTEST.md).
@@ -44,6 +44,11 @@ Each agent has a lessons file in [lessons/](lessons/) that it **reads before eve
 - **Privacy.** Names are never logged. Children's data stays on the device.
 - **Slovenian is a draft** until a native speaker has read it.
 - Agents do not commit, push or edit `docs/PLAN.md`. The producer says when to commit.
+- **Mind the token budget** (the producer's plan has a session limit, and a season used to run into it):
+  - Never read `solo/index.html` whole (300 KB). Print what you need with `cd solo && node tools/case.mjs` (`<ids>`, `--file <season>`, `--cast <season>`, `--format`, `--list`), and grep for anything else.
+  - Read only the sections of a season plan your task needs. Don't read an older season's plan as a model; one or two of its cases via `tools/case.mjs` are enough.
+  - Keep what you write short: a pitch ≤ 250 lines, the puzzle section ≤ 150 lines, a report within the word limit the brief gives.
+  - Keep your lessons file ≤ 60 lines: when you add a lesson, merge or drop an older one it covers.
 
 ## Where things are
 
@@ -52,6 +57,7 @@ Each agent has a lessons file in [lessons/](lessons/) that it **reads before eve
 | The game, cases (`CASES`), seasons (`FILES`), cast (`CHARACTERS`), UI lines (`UI_AUDIO`) | `solo/index.html` (cases between `CASES-BEGIN` and `CASES-END`) |
 | The case format and step types | [solo/README.md](../../solo/README.md) |
 | Checker (rules, solvability, word limits) | `cd solo && node tools/cases.mjs` |
+| One case, a season or its cast, without reading the whole game | `cd solo && node tools/case.mjs p1` · `--file pokal` · `--cast pokal` · `--format` · `--list` |
 | Screenshots of every screen of a case | `cd solo && node tools/shots.mjs <caseId>` (once: `cd tools && npm install`) |
 | Puzzle catalogue | [docs/PUZZLES.md](../PUZZLES.md) |
 | Theme backlog | [docs/CASE_FILES.md](../CASE_FILES.md) |
