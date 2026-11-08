@@ -94,7 +94,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   await click('[data-act="toScene"]');
   ok(await st() === 'scene' && (await p.$$('.obj')).length === 5, `${name} ty: the scene shows 5 objects (not the truth)`);
   for (const s of ['s1', 's2', 's4', 's5', 's6']) { await p.click(`.obj[data-sid="${s}"]`); await wait(50); }
-  ok((await text()).includes('👝 5 / 5') && (await p.$eval('[data-act="toSolve"]', e => e.innerText)).includes('Je vse res'), `${name} ty: 5 / 5, the button says "Je vse res? ❗"`);
+  ok((await text()).includes('👝 5 / 5') && (await p.$eval('[data-act="toSolve"]', e => e.innerText)).includes('Naprej'), `${name} ty: 5 / 5, the button says »Naprej 👉«`);
   await click('[data-act="toSolve"]');
   ok(await st() === 'lie' && (await p.$$('.claim')).length === 1 && !(await p.$('.liestep .row[data-sid="s1"]')) && !(await p.$('.liestep .row[data-sid="s3"]')), `${name} ty: lie step, 1 claim, the claim and the truth are not rows`);
   ok((await p.$eval('.coach', e => e.innerText)).includes('Nekdo nekaj trdi') && await p.$('.coach-hand'), `${name} ty: the owl coaches the claim, with a finger`);
@@ -136,10 +136,10 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   await click('[data-act="answer"]'); await click('[data-act="toScene"]');
   ok((await p.$$('.obj')).length === 6, `${name} tx: the scene has its own 6 objects`);
   for (const s of ['s1', 's2', 's9', 's11', 's12', 's13']) { await p.click(`.obj[data-sid="${s}"]`); await wait(40); }
-  ok((await p.$eval('[data-act="toSolve"]', e => e.innerText)).includes('Zasliši'), `${name} tx: scene → "Zasliši osumljence"`);
+  ok((await p.$eval('[data-act="toSolve"]', e => e.innerText)).includes('Naprej'), `${name} tx: scene → »Naprej 👉«`);
   await click('[data-act="toSolve"]');
   for (const who of ['luka', 'hana', 'bepi']) { await click(`.suspect[data-id="${who}"]`); await click('.qbtn'); await wait(1000); }
-  ok((await text()).includes('👝 3 / 3') && (await p.$eval('[data-act="toSolve"]', e => e.innerText)).includes('Skrivni listek'), `${name} tx: ask 3 / 3 → "Skrivni listek ✉️"`);
+  ok((await text()).includes('👝 3 / 3') && (await p.$eval('[data-act="toSolve"]', e => e.innerText)).includes('Naprej'), `${name} tx: ask 3 / 3 → »Naprej 👉«`);
   await click('[data-act="toSolve"]');
   ok(await st() === 'cipher' && (await p.$$('.ccell')).length === 15 && (await p.$$('.ctile')).length === 10, `${name} tx: cipher, 15 cells, 9 letters + 1 decoy tile`);
   ok((await p.$$eval('.cchip b', els => els.map(e => e.innerText))).includes('?'), `${name} tx: the missing pair shows ?`);

@@ -71,7 +71,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   await p.evaluate(() => { S.file = 'ht'; playCase(1); });
   await click('[data-act="answer"]'); await click('[data-act="toScene"]');
   for (const s of ['s1', 's2', 's3', 's4', 's5', 's6']) { await p.click(`.obj[data-sid="${s}"]`); await wait(40); }
-  ok((await p.$eval('[data-act="toSolve"]', e => e.innerText)).includes('Napačna sled?'), `${name} h1: the button says »Napačna sled? 🤔«`);
+  ok((await p.$eval('[data-act="toSolve"]', e => e.innerText)).includes('Naprej'), `${name} h1: the button says »Naprej 👉«`);
   await click('[data-act="toSolve"]');
   ok(await st() === 'herring' && (await p.$$('.hclue')).length === 1 && !(await p.$('.herringstep .row[data-sid="s2"]')), `${name} h1: one clue card, not among the rows`);
   ok(await p.$('.hclue .harrow') && await p.$eval('.hclue .hface', e => e.innerText.includes('👩🏿‍🚀') || e.innerHTML.length > 0), `${name} h1: the clue has an arrow and a face`);

@@ -25,7 +25,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   ok(await p.$('.folder[data-no="2"]:not(.soon)'), `${name}: case 2 is open`);
   await p.click('.folder[data-no="2"]'); await wait();
   await p.click('[data-act="answer"]'); await wait();
-  ok((await text()).includes('velik vtikač') && (await text()).includes('Zasliši osumljence'), `${name}: Maja calls, "Zasliši osumljence"`);
+  ok((await text()).includes('velik vtikač') && (await p.$eval('[data-act="toScene"]', e => e.innerText)).includes('Naprej'), `${name}: Maja calls, »Naprej 👉«`);
   await check('call');
   await p.click('[data-act="toScene"]'); await wait();
   ok(await p.evaluate(() => S.screen) === 'ask' && await p.$eval('[data-act="toSolve"]', e => e.disabled), `${name}: ask screen, "Vem" locked`);

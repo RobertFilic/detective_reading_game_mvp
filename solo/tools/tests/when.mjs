@@ -74,7 +74,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   await click('[data-act="torch"]');
   ok(await R('torch') && !(await R('pencil')), `${name} w1: torch on, pencil off`);
   for (const s of ['s1', 's3', 's4', 's5', 's6']) { await p.click(`.obj[data-sid="${s}"]`); await wait(40); }
-  ok((await p.$eval('[data-act="toSolve"]', e => e.innerText)).includes('Kdaj'), `${name} w1: the button says »Kdaj? ⏰«`);
+  ok((await p.$eval('[data-act="toSolve"]', e => e.innerText)).includes('Naprej'), `${name} w1: the button says »Naprej 👉«`);
   await click('[data-act="toSolve"]');
 
   // ---- w1: the ⏰ step

@@ -34,7 +34,7 @@ for (const [name, w, h, guess] of [['iphone14', 390, 844, 'alien'], ['ipad', 820
   ok((await text()).includes('Veliki primer') && !(await p.$('.folder.locked')), `${name}: case 6 open, "Veliki primer"`);
   await p.click('.folder[data-no="6"]'); await wait();
   await p.click('[data-act="answer"]'); await wait();
-  ok((await text()).includes('modra luč') && (await p.$eval('[data-act="toScene"]', e => e.innerText)).includes('Poglej slike'), `${name}: Vesna calls, "Poglej slike 🕐"`);
+  ok((await text()).includes('modra luč') && (await p.$eval('[data-act="toScene"]', e => e.innerText)).includes('Naprej'), `${name}: Vesna calls, »Naprej 👉«`);
   ok((await p.$$eval('.suspect span', els => els.map(e => e.innerText))).includes('???') && !(await text()).includes('Bip,'), `${name}: the 4th suspect is ??? (no Bip yet)`);
   await p.click('[data-act="toScene"]'); await wait();
   ok(await st() === 'order' && (await p.$$('.tdeck .tcard')).length === 4 && await p.$('[data-act="checkOrder"][disabled]'), `${name}: 4 mixed cards, »Preveri« off`);

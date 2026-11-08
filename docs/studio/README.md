@@ -8,19 +8,20 @@ Detektivska pisarna is made by a small studio of Claude Code agents, with a huma
 |---|---|---|---|
 | 🎬 **Showrunner** | [.claude/agents/showrunner.md](../../.claude/agents/showrunner.md) | the season: big mystery, red thread, cast, the skill it teaches, the final reveal | write case sentences |
 | ✍️ **Case writer** | [.claude/agents/case-writer.md](../../.claude/agents/case-writer.md) | one case: its sentences, alibis, decoy, proof, call, reveal, letter, in the game's data format | change the season plan on its own |
-| 🧩 **Puzzle designer** | [.claude/agents/puzzle-designer.md](../../.claude/agents/puzzle-designer.md) | the puzzle in each case, its difficulty and hint ladder; specs for new mechanics | build the mechanic (the main session does) |
+| 🧩 **Puzzle designer** | [.claude/agents/puzzle-designer.md](../../.claude/agents/puzzle-designer.md) | the puzzle in each case, its difficulty and hint ladder; specs for new mechanics | build the mechanic (the developer does) |
 | 🔎 **Fair-play tester** | [.claude/agents/fair-play-tester.md](../../.claude/agents/fair-play-tester.md) | proof that each case has exactly one answer, reachable by reading, with no pattern to game | rewrite the case itself |
 | 🇸🇮 **Slovenian editor** | [.claude/agents/slovenian-editor.md](../../.claude/agents/slovenian-editor.md) | grammar, natural child-level Slovenian, reading load | change the plot |
 | 📱 **UX reviewer** | [.claude/agents/ux-reviewer.md](../../.claude/agents/ux-reviewer.md) | what the child sees and taps, on a small phone, an iPad and a landscape phone | change content |
+| 🛠️ **Developer** | [.claude/agents/developer.md](../../.claude/agents/developer.md) | building a new mechanic from the spec, with its checker rules, README section and browser test | design puzzles, write case content, commit |
 
-**The producer is the human** (the parent). They approve the season pitch, play it with their child, and say when to commit. **The main Claude session** runs the pipeline, builds new mechanics (with tests), and is the only one that touches code outside the case data.
+**The producer is the human** (the parent). They approve the season pitch, play it with their child, and say when to commit. **The main Claude session** runs the pipeline, reviews the developer's work, fixes the hard bugs itself (only on a device, only in parallel), and makes the small and cross-cutting code changes. Only the developer and the main session touch code outside the case data.
 
 ## The pipeline for a season
 
 1. **Pitch.** The showrunner reads the playtest notes, the curriculum and the ledger, and writes `docs/studio/seasons/<id>.md`: the premise, the red thread, the six cases in one line each, the skill it teaches, and what is new. → **The producer approves or changes it.** Nothing is written before that.
-2. **Puzzles.** The puzzle designer assigns one puzzle per case (two in the final), with difficulty and hints, into the same season file. A new mechanic becomes a spec for the main session.
+2. **Puzzles.** The puzzle designer assigns one puzzle per case (two in the final), with difficulty and hints, into the same season file. A new mechanic becomes a spec for the developer.
 3. **Writing.** Two case writers draft the cases (cases 1–3 and 4–6, in parallel) into `solo/index.html`, and run `node tools/cases.mjs`.
-4. **Review.** The fair-play tester and the Slovenian editor review every case. Findings go back to the writer until both pass. The main session builds any new mechanic.
+4. **Review.** The fair-play tester and the Slovenian editor review every case. Findings go back to the writer until both pass. The developer builds any new mechanic (Sonnet); the main session reviews it.
 5. **Screens.** The UX reviewer runs `node tools/shots.mjs <caseId>` and reviews the screenshots.
 6. **Play.** The producer plays it with the child. What happened goes into [PLAYTEST.md](PLAYTEST.md).
 7. **Retro.** Each agent reads the playtest notes and updates its lessons file. The showrunner updates [LEDGER.md](LEDGER.md) and the season's place in [CURRICULUM.md](CURRICULUM.md).

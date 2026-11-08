@@ -27,7 +27,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   ok(!(await p.$('.folder.soon')) && await p.$('.folder[data-no="4"]:not(.locked)'), `${name}: board: case 4 open`);
   await p.click('.folder[data-no="4"]'); await wait();
   await p.click('[data-act="answer"]'); await wait();
-  ok((await text()).includes('ob desetih zvil anteno') && (await p.$eval('[data-act="toScene"]', e => e.innerText)).includes('Preberi listek'), `${name}: Vesna calls, "Preberi listek 🔤"`);
+  ok((await text()).includes('ob desetih zvil anteno') && (await p.$eval('[data-act="toScene"]', e => e.innerText)).includes('Naprej'), `${name}: Vesna calls, »Naprej 👉«`);
   await p.click('[data-act="toScene"]'); await wait();
   ok(await st() === 'words' && (await p.$$('.wcell')).length === 36 && (await p.$$('.wword')).length === 4, `${name}: word search: 6×6 grid, 4 words`);
   ok(await p.$eval('[data-act="toScene"]', e => e.disabled), `${name}: scene locked until all words are found`);

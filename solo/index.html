@@ -2993,9 +2993,9 @@ function wordSpots(w) {
 const stepNext = (d = 1) => S.c.steps[S.c.steps.indexOf(S.screen) + d];
 // »Vse je preiskano. Kdo je bil?« only when solve comes next; before another step it says »Naprej!«
 const doneKey = (k) => stepNext() === 'solve' ? k : k + 'On';
-const STEP_LABEL = { ask: 'Zasliši osumljence 🗣️', words: 'Preberi listek 🔤', lock: 'K vratom 🔐', order: 'Poglej slike 🕐', scene: 'Na kraj dogodka 🔍',
-  cipher: 'Skrivni listek ✉️', torn: 'Raztrgan listek 📜', lie: 'Je vse res? ❗', herring: 'Napačna sled? 🤔', when: 'Kdaj? ⏰' };
-const stepLabel = () => STEP_LABEL[stepNext()] || 'Vem, kdo je bil!';
+// The button that goes on is always »Naprej 👉« (the next step's own card says what to do there), and
+// »Vem, kdo je bil!« before solve. A step's name on the button read like a riddle (»Napačna sled? 🤔«).
+const stepLabel = () => stepNext() === 'solve' ? 'Vem, kdo je bil!' : 'Naprej 👉';
 // the scene and questioning buttons wait until everything is done; meanwhile they say how much is left
 const leftLabel = (n, [one, two, few, many], icon) => `Še ${n} ${n === 1 ? one : n === 2 ? two : n < 5 ? few : many} ${icon}`;
 

@@ -28,7 +28,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   ok(!(await p.$('.folder.soon')) && await p.$('.folder[data-no="5"]:not(.locked)'), `${name}: board: case 5 open`);
   await p.click('.folder[data-no="5"]'); await wait();
   await p.click('[data-act="answer"]'); await wait();
-  ok((await text()).includes('ključavnico s šifro') && (await p.$eval('[data-act="toScene"]', e => e.innerText)).includes('K vratom'), `${name}: Maja calls, "K vratom 🔐"`);
+  ok((await text()).includes('ključavnico s šifro') && (await p.$eval('[data-act="toScene"]', e => e.innerText)).includes('Naprej'), `${name}: Maja calls, »Naprej 👉«`);
   await p.click('[data-act="toScene"]'); await wait();
   ok(await st() === 'lock' && (await digits()) === '000' && !(await p.$('[data-act="toScene"]')), `${name}: lock 0-0-0, no way past it yet`);
   ok(await inView('[data-act="tryLock"]') && await inView('.wbtn[data-d="-1"]'), `${name}: wheels and »Odpri« on screen`);

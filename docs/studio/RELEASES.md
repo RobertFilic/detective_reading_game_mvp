@@ -25,7 +25,7 @@ A whole season in one sitting (pitch → six writers → reviews → UX) ran int
 | Sitting | Steps | Agents (model) |
 |---|---|---|
 | A · pitch day | 1 pitch → producer approves | showrunner (Opus) |
-| B · next day | 2 puzzles, any new mechanic built by the main session, 3 writing | puzzle designer (Sonnet), then **two** case writers, cases 1–3 and 4–6 (Sonnet) |
+| B · next day | 2 puzzles, any new mechanic built, 3 writing | puzzle designer (Sonnet), then the developer (Sonnet) builds a new mechanic while **two** case writers write cases 1–3 and 4–6 (Sonnet) |
 | C · next day | 4 review and fixes | fair-play tester (Opus) and Slovenian editor (Opus) in parallel; the main session applies small fixes itself instead of sending writers back |
 | D · by the push date | 5 screens, 6 ship | UX reviewer (Sonnet, iPhone 14 shots plus new mechanics only); browser tests (`node solo/tools/tests/run.mjs`, about 8 min; a new mechanic gets its own test file there); commit and push |
 
