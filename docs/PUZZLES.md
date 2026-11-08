@@ -95,7 +95,7 @@ A puzzle that has no reading in it, such as spot the difference, a jigsaw or a m
 - **Pitfalls:** double meanings are hard at 7. Test every riddle with children. This one costs almost nothing, because it is a `scene` with one object that answers it.
 
 **6. 🕐 Časovnica (timeline)**
-- **In the story:** the order of events shows that Rado was not at the entrance. The numbers on the back of the cards are the code for the lock.
+- **In the story:** the order of events shows that Rambo was not at the entrance. The numbers on the back of the cards are the code for the lock.
 - **Difficulty knobs:**
   - 3 → 4 cards
   - time words given (*najprej, nato, na koncu*) vs. only implied ("the lights went out" → "it was dark")
@@ -103,7 +103,7 @@ A puzzle that has no reading in it, such as spot the difference, a jigsaw or a m
 - **Pitfalls:** clock reading is weak at 7, so use **whole hours spelled out** in words. Play is tap-to-place, as with the torn note.
 
 **7. 🟦 Logična mreža (mini logic grid, like a children's Murdle or Logico)**
-- **In the story:** »Kdo ima katero svetilko?« The clues are »Lan nima modre svetilke.« and »Rado ima rumeno svetilko.«
+- **In the story:** »Kdo ima katero svetilko?« The clues are »Lan nima modre svetilke.« and »Rambo ima rumeno svetilko.«
 - **Difficulty knobs:**
   - 2×2 → 3×3
   - only ✔ clues → negative clues (*nima*)
@@ -171,17 +171,17 @@ Other rules:
 
 **Setting.** A sleepover in the natural history museum (real museums run these nights). Torches, a whale skeleton, a mammoth, a T-rex. Each case is a small piece of mischief during the night. Alongside it, notes signed 👻 keep appearing. They are the puzzles, and each one hides a **golden letter**. The corkboard collects the notes and the letters.
 
-**Season answer (warm, not scary).** The Duh is the night guard **Rado**. Tomorrow he retires. As a goodbye he set up a hunt for the children, and at its end he shows them the museum's new **dinosaur egg** 🥚. The golden letters J-A-J-C-E are the code for the final lock.
+**Season answer (warm, not scary).** The Duh is the night guard **Rambo**. Tomorrow he retires. As a goodbye he set up a hunt for the children, and at its end he shows them the museum's new **dinosaur egg** 🥚. The golden letters J-A-J-C-E are the code for the final lock.
 
 **Cast (new file `muzej`, four suspects):**
 - **Lan** 👦🏽
 - **Zoja** 👧🏻
-- **čuvaj Rado** 👮🏻‍♂️
+- **čuvaj Rambo** 👮🏻‍♂️
 - **papiga Koko** 🦜, the museum's parrot, an animal: innocent in case 2, culprit in the twist (case 3)
 
 The client is **kustosinja Mojca** 👩🏼‍🔬. She is never a suspect.
 
-Each culprit gets a reason to be harmless. Rado is the culprit in case 5 as well as the final, so that "the one who was never caught" is not a tell. Then case 5 foreshadows the season.
+Each culprit gets a reason to be harmless. Rambo is the culprit in case 5 as well as the final, so that "the one who was never caught" is not a tell. Then case 5 foreshadows the season.
 
 | # | Type (rung) | Small mystery | Steps | Puzzle and what it gives | Golden letter / corkboard |
 |---|---|---|---|---|---|
@@ -189,8 +189,8 @@ Each culprit gets a reason to be harmless. Rado is the culprit in case 5 as well
 | 2 | trace (2) | Kdo je strašil v dvorani dinozavrov? (Zoja) | call → scene → 🟦 grid → solve | The grid turns into the sentence »Zoja ima modro svetilko.« for the pocket | **A**, visible only in blue light |
 | 3 | twist (2) | Kdo je raztrgal Duhovo pismo? (Koko) | call → 📜 torn note → scene → solve | The rebuilt sentence says where the letter is | **J**, in the whale's mouth |
 | 4 | slip (3) | Kdo je mamutu narisal brke? (Lan) | call → ✉️ cipher → ask → solve | The decoded note gives the key to the slip | **C**, on the back of the note |
-| 5 | alibi (4) | Kdo je zaklenil vrata v klet? (Rado) | call → ask → 🕐 timeline → 🔐 lock → solve | The order breaks Rado's alibi; the card numbers open the cellar | **E**, on a chest marked 👻 |
-| 6 ⭐ | pair (5) | **Kdo je Duh muzeja?** (Rado) | call → 🗺️ directions → 🔐 letter lock → solve (two proofs) | The path leads to the egg room; JAJCE opens it | the egg 🥚 |
+| 5 | alibi (4) | Kdo je zaklenil vrata v klet? (Rambo) | call → ask → 🕐 timeline → 🔐 lock → solve | The order breaks Rambo's alibi; the card numbers open the cellar | **E**, on a chest marked 👻 |
+| 6 ⭐ | pair (5) | **Kdo je Duh muzeja?** (Rambo) | call → 🗺️ directions → 🔐 letter lock → solve (two proofs) | The path leads to the egg room; JAJCE opens it | the egg 🥚 |
 
 ### Story snippets (draft – a native speaker must check them)
 
@@ -201,7 +201,7 @@ Each culprit gets a reason to be harmless. Rado is the culprit in case 5 as well
 - Sentences behind the objects:
   - »Zoja je ves večer risala mamuta.« (clears Zoja)
   - »Koko ne zna odpreti vitrine.« (clears Koko)
-  - »Rado je bil z Mojco pri vhodu.« (clears Rado)
+  - »Rambo je bil z Mojco pri vhodu.« (clears Rambo)
   - »Pod klopjo je Lanova vrečka.«
   - »V Lanovi vrečki je velik bel zob.« (the proof)
   - »Na dnu vaze je zlata črka J.«
@@ -210,7 +210,7 @@ Each culprit gets a reason to be harmless. Rado is the culprit in case 5 as well
 **Case 2 – Modra luč.**
 - Lan calls: »Po steni je plesal velik dinozaver!« »Bil je iz modre luči.«
 - Scene: »Mojca je razdelila tri svetilke.« and »Vsak je dobil drugo barvo.«
-- Grid: Lan, Zoja, Rado × 🔴🔵🟡. The clues are »Lan nima modre svetilke.« and »Rado ima rumeno svetilko.« The result goes to the pocket as »Zoja ima modro svetilko.«
+- Grid: Lan, Zoja, Rambo × 🔴🔵🟡. The clues are »Lan nima modre svetilke.« and »Rambo ima rumeno svetilko.« The result goes to the pocket as »Zoja ima modro svetilko.«
 - Proof (the trace): »Senca na steni je bila modra.«
 - Card: »V modri luči se pokaže zlata črka A.«
 - Excuse: »Hotela sem narediti senco dinozavra!«
@@ -230,17 +230,17 @@ Each culprit gets a reason to be harmless. Rado is the culprit in case 5 as well
 - Cipher under the canvas: »KDOR VE BARVO, JE RISAL.« The back of the note has a golden C.
 - Questioning:
   - Zoja: »Kakšni brki? Nisem jih videla.«
-  - Rado: »Ves večer sem bil pri vhodu.«
+  - Rambo: »Ves večer sem bil pri vhodu.«
   - Lan: »Modri brki sploh niso smešni.« (the slip: nobody saw the colour)
 - Excuse: »Mamut je bil videti tako žalosten!«
 
 **Case 5 – Zaklenjena klet (alibi).**
 - Zoja calls: »Vrata v klet so zaklenjena!« »Iz kleti se sliši šuštenje.«
-- Rado: »Ob devetih sem bil pri vhodu.«
+- Rambo: »Ob devetih sem bil pri vhodu.«
 - Timeline cards, each with a number on the back:
-  - »Ob osmih je Rado pil čaj.« (2)
+  - »Ob osmih je Rambo pil čaj.« (2)
   - »Ob devetih je bil vhod prazen.« (7)
-  - »Nato je Koko kričala: Rado, klet!« (5)
+  - »Nato je Koko kričala: Rambo, klet!« (5)
 - The order gives the code 2-7-5. In the cellar: »V kleti je skrinja z znakom 👻.« and »Na skrinji je zlata črka E.«
 - Excuse: »To je skrivnost. Do jutri zjutraj!«
 
@@ -250,10 +250,10 @@ Each culprit gets a reason to be harmless. Rado is the culprit in case 5 as well
 - Letter lock: five wheels → J-A-J-C-E.
 - The two proofs only work together:
   - »Vsa Duhova pisma so pisana z zelenim črnilom.«
-  - »Samo Rado ima zeleno pero.«
+  - »Samo Rambo ima zeleno pero.«
 - Reveal:
-  - »Duh muzeja je bil čuvaj Rado.«
-  - »Jutri gre Rado v pokoj.«
+  - »Duh muzeja je bil čuvaj Rambo.«
+  - »Jutri gre Rambo v pokoj.«
   - »Za slovo vam pokaže pravo jajce.«
   - »Hvala, detektivi! 🦕🥚«
 
@@ -324,10 +324,10 @@ cipher: { key: { '🦴': 'K', '🦕': 'D', '🪨': 'O', /* … */ }, text: 'KDOR
           given: 'all', gives: 's6', h1: 'Poišči znak v vrstici zgoraj.' },
 torn:   { parts: ['Tretja črka', 'je v ustih', 'velikega kita.'], gives: 's7' },
 grid:   { rows: ['lan', 'zoja', 'rado'], cols: ['🔴', '🔵', '🟡'],
-          clues: ['Lan nima modre svetilke.', 'Rado ima rumeno svetilko.'],
+          clues: ['Lan nima modre svetilke.', 'Rambo ima rumeno svetilko.'],
           answer: { lan: '🔴', zoja: '🔵', rado: '🟡' }, gives: 's5' },  // s5 = 'Zoja ima modro svetilko.'
-timeline: { cards: [['t1', 'Ob osmih je Rado pil čaj.', 2], ['t2', 'Ob devetih je bil vhod prazen.', 7],
-                    ['t3', 'Nato je Koko kričala: Rado, klet!', 5]], code: true },  // order → 2-7-5
+timeline: { cards: [['t1', 'Ob osmih je Rambo pil čaj.', 2], ['t2', 'Ob devetih je bil vhod prazen.', 7],
+                    ['t3', 'Nato je Koko kričala: Rambo, klet!', 5]], code: true },  // order → 2-7-5
 lock:   { wheels: 3, code: '275', from: 'timeline', opens: 'klet' },   // final case: code: 'JAJCE', from: 'season'
 path:   { map: ['🐋', '🦣', '🦖', '🪜', '🚪'], steps: ['Pojdi do kita.', 'Nato k mamutu.', 'Pri mamutu pojdi dol.'],
           answer: ['🐋', '🦣', '🪜'] },

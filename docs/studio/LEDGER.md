@@ -30,12 +30,12 @@ The memory of the studio, so no season is a copy of the last. The showrunner che
 | 🦔 g4 | elim, ask, ❗ lie (about someone else) | Gusti 🐦 | a nest for her eggs | seen: she sits in the cap | Luka wore the cap yesterday | 📜 torn note |
 | 🦔 g5 | elim, scene, ❗ lie (tall tale) | the sea 🌊 (nobody) | – (the tide) | trace: seaweed all over the castle | Gusti's feather on the castle | 🔤 word search + geslo |
 | 🦔 g6 | elim, final, ❗ lie (pair breaker) | Vera | to write in peace | pair: »Pišem v sobi 7« + Vera lives in room 7 | Hana read every book; Vera »sleeps at nine« | ✉️ cipher (one pair missing) |
-| 🦕 m1 | elim, scene, 🧭 (1 clue) | Lan | to see the crystals glow | trace: his new sticker on the switch | Rado's torch under the switch (left there that morning) | – |
+| 🦕 m1 | elim, scene, 🧭 (1 clue) | Lan | to see the crystals glow | trace: his new sticker on the switch | Rambo's torch under the switch (left there that morning) | – |
 | 🦕 m2 | elim, ask + 👁️, 🧭 (1 clue) | Zoja | her drawing as a present | the cat brings her painted paw slipper | cat paw prints → Fosil (costume paws) | 📜 torn (Fosil's alibi) |
-| 🦕 m3 | elim, ask + scene, ❗ lie (innocent, mistaken witness) | Ivo | to polish the tooth for the birthday | the tooth on his desk | Lan »saw Rado« (only a big shadow) | – |
+| 🦕 m3 | elim, ask + scene, ❗ lie (innocent, mistaken witness) | Ivo | to polish the tooth for the birthday | the tooth on his desk | Lan »saw Rambo« (only a big shadow) | – |
 | 🦕 m4 | elim, scene, 🧭 (2 clues, one true) | Lan | to help (mixed up the labels) | old labels in his bag (the true clue) | Ivo's magnifier on the case (lost since Tuesday) | 🔐 lock 5432 (the countdown) |
-| 🦕 m5 | elim, scene, ❗ lie (culprit), no 🧭 (»Preveč lahko?«) | Zoja | rehearsing for the parade | her dinosaur tail behind the curtain | the biggest torch is Rado's | 🔤 word search + geslo |
-| 🦕 m6 | elim, final, 🧭 (2 clues at Rado) | Mila | Dinoples, a birthday surprise | pair: Mila lost a red slipper + the slipper behind Rex | keys only Rado has; Rado's cap on Rex | 🕐 timeline (the week's poses) |
+| 🦕 m5 | elim, scene, ❗ lie (culprit), no 🧭 (»Preveč lahko?«) | Zoja | rehearsing for the parade | her dinosaur tail behind the curtain | the biggest torch is Rambo's | 🔤 word search + geslo |
+| 🦕 m6 | elim, final, 🧭 (2 clues at Rambo) | Mila | Dinoples, a birthday surprise | pair: Mila lost a red slipper + the slipper behind Rex | keys only Rambo has; Rambo's cap on Rex | 🕐 timeline (the week's poses) |
 | ⚽ p1 | elim, scene, ⏰ (2 cards, guided) | Zoja | dinosaur teeth on the balls, for luck | trace: fresh green marker on her gloves (last row) | Luka carried the balls, at seven (🖍️ rubbing) | 🖍️ rubbing (Neža's notebook) |
 | ⚽ p2 | elim, ask + 👁️, ⏰ (3 cards) | Bor (a boy in a goat costume) | to score a goal too | trace: a piece of net on his costume horn (witness Tone) | Pia: »he danced before the match« (true, wrong time); Hana took the ball after | 📹 film with pred / med / po |
 | ⚽ p3 | elim, ask + 👁️, 🧭 (1 clue) | Hana | the armband as a bookmark | seen: the armband in her rulebook | Pia's cap at the bench, lost »preden so začeli« | 📜 torn (gives the 🧭 explanation) |

@@ -48,7 +48,7 @@ The world, the people and the voice of Detektivska pisarna. The showrunner owns 
 - Babica could grow into the child's **Miss Marple**: an old owl who has seen everything and asks the one quiet question. Not yet used in seasons.
 
 ### Planned (not canon until a season is approved)
-🦕 Noč v muzeju (the museum ghost is the night guard Rado; [PUZZLES.md](../PUZZLES.md)), ⚽ football tournament, 🏝️ Gran Canaria, 🏫 school, 🏴‍☠️ pirate island ([CASE_FILES.md](../CASE_FILES.md)).
+🦕 Noč v muzeju (the museum ghost is the night guard Rambo; [PUZZLES.md](../PUZZLES.md)), ⚽ football tournament, 🏝️ Gran Canaria, 🏫 school, 🏴‍☠️ pirate island ([CASE_FILES.md](../CASE_FILES.md)).
 
 ## Naming rules for new characters
 
