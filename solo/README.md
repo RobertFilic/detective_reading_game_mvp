@@ -12,10 +12,18 @@ A Slovenian detective reading game for children aged 6–9. The child accuses a 
 | `tools/shots.mjs` | Screenshots of every screen of a case on iPhone 14, iPad and a landscape phone, and flags overflow or an off-screen main button: `node tools/shots.mjs b6` (once: `cd tools && npm install`; needs Google Chrome). The page's date is set to the last release date (`--date` to change it), so a season pushed before its day shows. |
 | `tools/case.mjs` | Prints only what an agent needs instead of the whole 300 KB file: `node tools/case.mjs p1 p2` (cases), `--file pokal` (a season and its `FILES` entry), `--cast pokal`, `--format`, `--list`. |
 | `tools/tests/` | Browser tests that play the game by taps on 3 screens: `node tools/tests/run.mjs` (all, 4 at a time, slowest first, about 8 min on this Mac) or `node tools/tests/run.mjs muzej when` (only these). After a change, run the files it touches; run all before a push. `--shots` keeps the screenshots, `-j 2` on a slower computer. |
+| `fonts/` | `lexend-sl.woff2`, the Lexend font cut to Slovenian Latin (400–700), and its licence (SIL OFL). It is inlined in `index.html` as a data URL, so the game needs no network; replace the data URL if you change the font. |
+| `?ui` | `index.html?ui` opens the component gallery: every `ui-*` part in every state, with the season colours. For grown-ups building screens. |
 | `sw.js` | Offline cache for the hosted version. |
 
 ## Run locally
 Open `solo/index.html` in a browser (or the start page `index.html` one level up). Run the `node tools/…` commands below from this `solo/` folder. The adult setup screen comes first. Without recordings, the app tries `audio/<clipId>.m4a` and then a Slovenian system voice (Edge on Windows has one; iPad Safari does not).
+
+## Design system
+The look is »Tiha lupa« from Claude Design (`docs/design/`): quiet paper, one deep band of the season's colour on top, Lexend.
+- **Tokens** (top of the CSS): colours (`--season`, `--season-mid`, `--season-soft`, `--bg`, `--paper`, `--ink`, `--ink-2`, `--line`, `--glow`, `--mark`, `--stamp`, `--blue`, `--green`), type (`--t-small` 15 · `--t-body` 18 · `--t-row` 21 · `--t-title` 26 · `--t-big` 34), radius (`--r-s` … `--r-xl`), shadows (`--sh-soft`, `--sh-float`, `--sh-lift`, `--ring-glow`), `--tap` (56 px). Hex values come first for older iPads; oklch replaces them where it works.
+- **Season colour:** every adventure in `FILES` has a `hue` (0–359 on the oklch wheel; the checker requires it). `render()` sets `--hue` on `#app` for the screens of that season's board and cases; the start, the ID card and the adult screens stay brand green (160). Gold means only light (a hint ring, marked words); picked is the deep season colour with white text.
+- **Components:** the `ui-*` classes (»Components« block at the end of the CSS) and the `UI.*` helpers that write their HTML: `band`, `row`, `used`, `face`, `tile`, `tool`, `btn`, `stamp`, `helper`, `sheet`, `note`, `pill`, `tag`, `id`, `coin`. States are `.is-*` classes (`is-picked`, `is-glow`, `is-out`, `is-done`, `is-off` …). A new screen uses only these; a missing part is added to the block, to `UI` and to the `?ui` gallery first. The older screens still use their own classes and move to the components one by one; the old variable names (`--accent`, `--card`, `--muted` …) point at the tokens until then.
 
 ## Edit cases
 Cases live in `index.html` between `// CASES-BEGIN` and `// CASES-END`. After editing, run:

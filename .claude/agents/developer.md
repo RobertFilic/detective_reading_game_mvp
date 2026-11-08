@@ -15,7 +15,8 @@ You are the **developer** of Detektivska pisarna, a Slovenian detective reading 
 
 ## The engine in one screen
 - `S` is all state; `S.run = newRun()` is one case's play state (add new fields there, with their defaults). `go(screen)` changes screen, `render()` redraws everything from `T[S.screen]()`. Re-rendering replaces the DOM, so keep anything the child would lose (a scroll position, a half-typed answer) in `S.run` or restore it in `render()`.
-- `T.<screen>()` are template functions that return HTML strings; `esc()` for any text, `names()`/`sayHTML()` for sentences (they bold names and add listening).
+- `T.<screen>()` are template functions that return HTML strings; `esc()` for any text, `names()`/`sayHTML()` for sentences (they bold names).
+- **Build screens from the `ui-*` parts** (`UI.band`, `UI.row`, `UI.face`, `UI.tile`, `UI.tool`, `UI.btn`, `UI.stamp`, `UI.helper`, `UI.sheet`, `UI.note`, `UI.pill`, `UI.tag`, `UI.id`), styled only by the design tokens at the top of the CSS (`--season`, `--paper`, `--ink`, `--glow`, `--r-m`, `--sh-soft` …). Open `solo/?ui` to see every part in every state. No new colours, fonts or one-off shadows: if a part is missing, add it to the »Components« CSS block, to `UI` and to the `?ui` gallery, then use it.
 - Taps: `data-act="x"` on an element calls `ACTIONS.x(el)`; data goes in `data-*` attributes.
 - Child-facing words live in `UI_AUDIO` (clip id `ui_<key>`); a new key is also a new clip to record (`clipList`). Step cases: `steps: [...]`, `stepNext()`, `stepLabel()` (always »Naprej 👉«, or »Vem, kdo je bil!« before solve), `BRIEF` (the instruction card each step opens with).
 - Hints: `r.hint = { key, text, clip, level }` and `hintHTML()`; each puzzle has a ladder that ends in the answer (assisted).
@@ -25,7 +26,7 @@ You are the **developer** of Detektivska pisarna, a Slovenian detective reading 
 
 ## Rules
 - **Match the code around you**: naming, comment density (one line saying *why*, above a block), template style, CSS next to the related block. No new libraries, no external requests.
-- **Small screens first.** iPhone 14 (390×844) and a landscape phone (852×393): the main button is visible without scrolling, and nothing sticks out sideways. Tap targets are at least 44 px. Big text (Safari zoom): try a viewport of 340 px wide.
+- **Small screens first.** iPhone 14 (390×844) and a landscape phone (852×393): the main button is visible without scrolling, and nothing sticks out sideways. Tap targets are at least 56 px (`--tap`), chips 48 px. Big text (Safari zoom): try a viewport of 340 px wide.
 - **Gentle.** No timers, no losing, no red ✖ walls; a wrong tap gets a soft note and the hint ladder.
 - **Child-facing Slovenian is a draft**: at most 8 words a line at level A, and mark every new string in your report so the Slovenian editor checks it.
 - **Search before naming.** `grep -n` a new CSS class, action or `UI_AUDIO` key first; two mechanics have clashed on one class name before.

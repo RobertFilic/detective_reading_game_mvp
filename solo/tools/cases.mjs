@@ -330,6 +330,7 @@ const fileIds = FILES.map(f => f.id);
 // Release dates and teasers: a date the game can compare, a teaser line a child can read, one id per adventure.
 for (const f of [...FILES, ...COMING]) {
   if (f.opens && !/^\d{4}-\d{2}-\d{2}$/.test(f.opens)) fail(f.id, `opens must be YYYY-MM-DD: ${f.opens}`);
+  if (!Number.isInteger(f.hue) || f.hue < 0 || f.hue > 359) fail(f.id, `a season's colour: hue, a whole number 0–359 (160 green, 235 sea blue, 55 warm brown, 300 violet): ${f.hue}`);
   if ((f.opens || COMING.includes(f)) && (!f.teaser || words(f.teaser) > LEVEL_RULES.A.maxWords)) fail(f.id, 'a teaser card needs its line (teaser, ≤ 8 words)');
 }
 for (const f of COMING) if (fileIds.includes(f.id) || COMING.filter(x => x.id === f.id).length > 1) fail(f.id, 'teaser id used twice');

@@ -15,7 +15,7 @@ Agreed with the producer on 2026-11-05: one new season a week. A season is built
 3. **Writing** (case writers, one case each) into `solo/index.html`; `node tools/cases.mjs` passes.
 4. **Review:** the fair-play tester (exactly one answer per case: every alibi covers the deed's time and place; the decoy is never a second answer) and the Slovenian editor, until both pass.
 5. **Screens** (UX reviewer): `node tools/shots.mjs <caseId>` on a small phone, an iPad and a landscape phone.
-6. **Ship:** the browser tests pass; the season's `FILES` entry gets `teaser` and `opens`, and its line leaves `COMING`; the ledger and the curriculum are updated; commit and push.
+6. **Ship:** the browser tests pass; the season's `FILES` entry gets `teaser`, `opens` and its colour `hue` (0–359; pick one far from the other seasons, see `solo/?ui`), and its line leaves `COMING`; the ledger and the curriculum are updated; commit and push.
 7. **Release check** on the day: the live site has the season, the teaser is gone, case 1 opens.
 
 ## Fitting a season into the session limit
