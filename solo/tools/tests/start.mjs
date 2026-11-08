@@ -7,9 +7,9 @@ const wait = (ms = 150) => new Promise(r => setTimeout(r, ms));
 const all = (f, n) => Array.from({ length: n }, (_, i) => `${f}:${i + 1}`);
 const states = {
   fresh: [],
-  now: [...all('vesolje', 6), ...all('kmetija', 6), ...all('bip', 6)],
-  mid: [...all('vesolje', 6), ...all('galeb', 2), ...all('kmetija', 3)],
-  done: [...all('vesolje', 6), ...all('kmetija', 6), ...all('bip', 6), ...all('galeb', 6)],
+  now: [...all('bip', 6)],
+  mid: [...all('bip', 6), ...all('galeb', 2)],
+  done: [...all('bip', 6), ...all('galeb', 6)],
 };
 for (const [dev, w, h] of [['plus14', 428, 926], ['iphone14', 390, 844]]) {
   for (const [st, played] of Object.entries(states)) {
@@ -25,12 +25,12 @@ for (const [dev, w, h] of [['plus14', 428, 926], ['iphone14', 390, 844]]) {
     const shelf = await p.$$eval('.medal', els => els.map(e => e.dataset.file));
     const heroBtn = await p.evaluate(() => { const g = document.querySelector('.hero .go'); if (!g) return null; const r = g.getBoundingClientRect(); return { t: g.textContent, vis: r.bottom <= innerHeight }; });
     console.log(dev, st, cards.join(' '), '| shelf', shelf.join(' '), '|', heroBtn && heroBtn.t);
-    const expect = { fresh: ['vesolje*', 'kmetija', 'bip', 'galeb', 'muzej'], now: ['muzej*', 'galeb'], mid: ['kmetija*', 'galeb', 'bip', 'muzej'], done: ['muzej*'] }[st];
+    const expect = { fresh: ['bip*', 'galeb', 'muzej'], now: ['muzej*', 'galeb'], mid: ['galeb*', 'muzej'], done: ['muzej*'] }[st];
     ok(JSON.stringify(cards) === JSON.stringify(expect), `${dev} ${st}: card order ${cards}`);
-    ok(shelf.length === { fresh: 0, now: 3, mid: 1, done: 4 }[st], `${dev} ${st}: shelf`);
+    ok(shelf.length === { fresh: 0, now: 1, mid: 1, done: 2 }[st], `${dev} ${st}: shelf`);
     if (heroBtn) ok(heroBtn.vis, `${dev} ${st}: the hero button is on screen without scrolling`);
     const novo = await p.$$eval('.file-card:not(.teaser)', els => els.map(e => e.dataset.file + ':' + (e.querySelector('.new-tag') || {}).textContent));
-    if (st === 'mid') ok(novo.includes('bip:NOVO · 🔎 skrivnost') && novo.includes('galeb:🔎 skrivnost'), `${dev} mid: NOVO only on the unstarted ${novo}`);
+    if (st === 'mid') ok(novo.includes('muzej:NOVO · 🔎 skrivnost') && novo.includes('galeb:🔎 skrivnost'), `${dev} mid: NOVO only on the unstarted ${novo}`);
     const W = await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth);
     ok(W, `${dev} ${st}: no sideways scroll`);
     await p.screenshot({ path: `shots/start-${dev}-${st}.png` });

@@ -14,7 +14,7 @@ for (const [name, w, h] of devices) {
   await p.goto('http://localhost:8765/solo/?play');
   // 2 cases already solved: solving this one makes her a Detektivka (3)
   await p.evaluate(() => { localStorage.clear(); localStorage.setItem('dp_save_version', '3'); localStorage.setItem('dp_tutorial_done', 'true');
-    localStorage.setItem('dp_played_v1', JSON.stringify(['vesolje:1', 'kmetija:1']));
+    localStorage.setItem('dp_played_v1', JSON.stringify(['galeb:1', 'galeb:2']));
     localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏽‍♀️', g: 'f', sk: '🐶', name: 'Ana', id: '1234' })); });
   await p.reload(); await wait(400);
   const st = () => p.evaluate(() => S.screen);
@@ -30,7 +30,7 @@ for (const [name, w, h] of devices) {
 
   ok((await text()).includes('Vajenka'), `${name}: ID card shows the rank (🔰 Vajenka)`);
   await check('files');
-  ok((await p.$$('.file-card:not(.teaser)')).length === 5 && await p.$('.file-card.season[data-file="bip"]'), `${name}: 5 adventures, the new season is marked`);
+  ok((await p.$$('.file-card:not(.teaser)')).length === await p.evaluate(() => FILES.length) && await p.$('.file-card.season[data-file="bip"]'), `${name}: every adventure, the new season is marked`);
   await p.click('.file-card[data-file="bip"]'); await wait();
   ok(await st() === 'board' && (await p.$$('.folder')).length === 6 && (await p.$$('.folder.soon')).length === await p.evaluate(() => 6 - casesIn('bip').length), `${name}: board: written cases + the rest coming soon`);
   if (name !== 'land') ok((await p.$$('.cork .pincard.empty')).length === 6, `${name}: corkboard with 6 empty slots`);

@@ -38,41 +38,25 @@ await p.click('[data-sid="s3"]'); await p.click('[data-act="confirm"]'); await w
 ok((await p.$eval('.coach .say', el => el.textContent)).includes('Bravo, detektivka!'), 'practice praise uses "detektivka"');
 ok((await text()).includes('Bravo, Detektivka Ana!'), 'reveal shows "Bravo, Detektivka Ana!"');
 await p.click('[data-act="next"]'); await wait();
-ok(await st() === 'files' && (await p.$$('.file-card:not(.teaser)')).length === 5, 'file picker with 5 adventures');
+ok(await st() === 'files' && (await p.$$('.file-card:not(.teaser)')).length === await p.evaluate(() => FILES.length), 'file picker with every adventure out today');
 ok((await p.$eval('.coach .say', el => el.textContent)).includes('izberi pustolovščino'), 'coach: "Zdaj izberi pustolovščino…"');
 await p.screenshot({ path: 'shots/f4-files.png' });
 await p.click('[data-coach="ok"]');
 
-// ---- solve a whole themed file
-async function solveFile(file, n) {
-  await p.click(`.file-card[data-file="${file}"]`); await wait(200);
-  ok(await st() === 'board' && (await p.$$('.folder')).length === n, `${file}: board with ${n} cases`);
-  const finalNo = await p.evaluate(() => (casesIn(S.file).find(c => c.final) || {}).no);
-  if (finalNo) {
-    ok(await p.$(`.folder.locked[data-no="${finalNo}"]`), `${file}: final case ${finalNo} starts locked 🔒`);
-    await p.click(`.folder[data-no="${finalNo}"]`); await wait(150);
-    ok(await st() === 'board' && (await text()).includes('Veliki primer se odpre'), `${file}: tapping it explains, doesn't open`);
-    if (file === 'vesolje') await p.screenshot({ path: 'shots/f5-board-locked.png' });
-  }
-  for (let no = 1; no <= n; no++) {
-    await p.click(`.folder[data-no="${no}"]`); await wait(150);
-    const c = await p.evaluate(() => ({ id: S.c.id, culprit: S.c.culprit, evs: S.c.sentences.filter(x => x.role === 'evidence').map(x => x.id) }));
-    await p.click('[data-act="toStory"]'); await p.click('[data-act="know"]');
-    await p.click(`[data-act="pick"][data-id="${c.culprit}"]`); for (const ev of c.evs) await p.click(`[data-sid="${ev}"]`); await p.click('[data-act="confirm"]'); await wait(150);
-    if (await st() !== 'reveal') { ok(false, `${c.id} not solvable`); return; }
-    if (file === 'vesolje' && no === 2) await p.screenshot({ path: 'shots/f6-reveal-space.png' });
-    await p.click('[data-act="next"]'); await wait(150);
-    if (finalNo && no === finalNo - 1) ok(!(await p.$(`.folder.locked[data-no="${finalNo}"]`)), `${file}: final case unlocks after the others`);
-  }
-  ok((await text()).includes('Pustolovščina rešena') && (await p.$$('.folder.solved')).length === n, `${file}: all ${n} solved → "Pustolovščina rešena!"`);
-  if (file === 'vesolje') await p.screenshot({ path: 'shots/f7-file-done.png' });
-  await p.click('[data-act="toFiles"]'); await wait(150);
-}
-await solveFile('vesolje', 6);
-ok(await p.$('.stamp-slot.got'), 'ID card gets the 🚀 stamp');
-await solveFile('kmetija', 6);
-ok((await text()).includes('12 rešenih primerov'), 'card counts "12 rešenih primerov"');
-ok(!(await p.$('.file-card[data-file="gozd"]')), 'the old forest stories are gone');
+// ---- a season: cases open in order, a finished one stamps the ID card
+await p.click('.file-card[data-file="bip"]'); await wait(200);
+ok(await st() === 'board' && (await p.$$('.folder')).length === 6, 'bip: board with 6 cases');
+ok(await p.$('.folder.locked[data-no="6"]'), 'bip: final case 6 starts locked 🔒');
+await p.click('.folder[data-no="6"]'); await wait(150);
+ok(await st() === 'board' && (await text()).includes('se odpre, ko rešiš primer 5'), "bip: tapping it explains, doesn't open");
+await p.screenshot({ path: 'shots/f5-board-locked.png' });
+await p.evaluate(() => { localStorage.setItem('dp_played_v1', JSON.stringify([1, 2, 3, 4, 5, 6].map(n => 'bip:' + n))); toBoard(); }); await wait(150);
+ok((await text()).includes('Pustolovščina rešena') && (await p.$$('.folder.solved')).length === 6, 'bip: all 6 solved → "Pustolovščina rešena!"');
+await p.screenshot({ path: 'shots/f7-file-done.png' });
+await p.click('[data-act="toFiles"]'); await wait(150);
+ok(await p.$('.stamp-slot.got'), 'ID card gets the 👾 stamp');
+ok((await text()).includes('6 rešenih primerov'), 'card counts "6 rešenih primerov"');
+ok(!(await p.$('.file-card[data-file="gozd"], .file-card[data-file="vesolje"], .file-card[data-file="kmetija"]')), 'the old forest, space and farm stories are gone');
 await p.screenshot({ path: 'shots/f8-files-after.png' });
 
 // ---- edit the card: skip the name → "Detektivka" only
@@ -80,7 +64,7 @@ await p.click('[data-act="editCard"]'); await wait(150);
 await p.click('[data-act="mkAvatar"][data-i="1"]'); await p.click('[data-act="mkSidekick"][data-e="🦉"]'); await p.click('[data-act="mkSkip"]'); await wait(150);
 await p.click('[data-act="mkDone"]'); await wait(150);
 ok(await st() === 'files' && (await text()).includes('Detektiv\n') || (await p.$eval('.idcard b', el => el.textContent)) === 'Detektiv', 'edited card: boy avatar, no name → "Detektiv"');
-ok((await p.$$('.stamp-slot.got')).length === 2, 'progress kept after editing the card');
+ok((await p.$$('.stamp-slot.got')).length === 1, 'progress kept after editing the card');
 
 ok(!errors.length, 'no page errors ' + errors.join('|'));
 

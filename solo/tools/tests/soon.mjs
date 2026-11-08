@@ -40,7 +40,7 @@ for (const [day, want] of [['2026-11-05', ['Še 7 dni', 'Še 14 dni']], ['2026-1
 
 // on the release day the teaser is gone (a written season would be in FILES by then; COMING keeps only unwritten ones)
 for (const [dev, w, h] of [['iphone14', 390, 844], ['plus14', 428, 926], ['land', 844, 390]]) {
-  const p = await open('2026-11-05', { w, h, played: [...Array(6)].map((_, i) => 'vesolje:' + (i + 1)) });
+  const p = await open('2026-11-05', { w, h, played: [...Array(6)].map((_, i) => 'bip:' + (i + 1)) });
   ok((await teasers(p)).length === 2 && await p.$eval('.soon-head', e => e.textContent.includes('Kmalu')), `${dev}: two teasers under »Kmalu«`);
   ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${dev}: no sideways scroll`);
   const hero = await p.evaluate(() => { const g = document.querySelector('.hero .go'); return g && g.getBoundingClientRect().bottom <= innerHeight; });

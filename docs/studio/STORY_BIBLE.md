@@ -29,7 +29,7 @@ The world, the people and the voice of Detektivska pisarna. The showrunner owns 
 
 ## Worlds and casts
 
-### 🚀 Vesoljska postaja Zvezdica (space station)
+### 🚀 Vesoljska postaja Zvezdica (space station, the world of 👾 Skrivnost v zračniku)
 - **Kapitanka Vesna** 👩🏻‍✈️: the captain, a client (never a suspect). Plays chess, gets birthday surprises.
 - **Maja** 👩🏼‍🚀: a client in the Bip season; loves cheese and photographing the Moon.
 - **Tim** 👨🏽‍🚀: loves food and baking; secretly kind (the birthday present). *Used a lot as culprit: rest him.*
@@ -38,7 +38,7 @@ The world, the people and the voice of Detektivska pisarna. The showrunner owns 
 - **Kiki** 🐭: the station mouse; loves cheese and crackers; too small for high cupboards and locks.
 - **Bip** 👾: a tiny lost alien who lived in the vent and built a transmitter from shiny things to call home. *Season 1's mystery guest. He went home in a flying saucer; he can write a letter or come back to visit.*
 
-### 🐄 Pri babici na kmetiji (grandma's farm)
+### 🐄 Pri babici na kmetiji (grandma's farm; removed from the game 2026-11-08, kept here so it isn't repeated)
 - **Babi**: grandma, the client. **Nik** 👦🏻 and **Pia** 👧🏼: the grandchildren. **Dedek** 👴🏻: grandpa, red shirt. **Jan** 👨🏽‍🌾: the neighbour with the tractor.
 - Animals: **Meta** 🐐 the goat (eats laundry), **Blisk** the pony, hens, pigs.
 - Planned season »Lisica na kmetiji?«: signs of a fox, really a lost puppy the children may name ([IMPROVEMENTS.md §4](../IMPROVEMENTS.md)).

@@ -4,6 +4,8 @@ The memory of the studio, so no season is a copy of the last. The showrunner che
 
 ## Cases so far
 
+The 🚀 v and 🐄 k cases were removed from the game on 2026-11-08; they stay here so they aren't repeated.
+
 | Case | Skill / type | Culprit | Motive | Proof kind | Decoy kind | Puzzle |
 |---|---|---|---|---|---|---|
 | 🚀 v1 | fact | Tim | ate the ice cream | says it plainly | »Ela ima zelo rada sladoled« (likes it) | – |
