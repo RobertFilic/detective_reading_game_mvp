@@ -503,7 +503,7 @@ button.suspect { cursor: pointer; }
 .row .ltag { margin-left: auto; flex: none; padding-left: 8px; font-size: 14px; font-weight: 900; color: var(--danger); transform: rotate(-6deg); }
 .row .ltag.truth { color: inherit; font-size: 20px; transform: none; }
 .row.proof { border-color: #5cb97a; background: var(--good); }
-/* 🧭 Preveri sled: a clue card with an arrow to a face; explained, it flips, a blue stamp lands, the arrow bends away */
+/* 🧭 Napačna sled?: a clue card with an arrow to a face; explained, it flips, a blue stamp lands, the arrow bends away */
 .herringstep { gap: 0; }
 .hclues { display: flex; flex-direction: column; gap: 8px; }
 .hclue { appearance: none; font: inherit; color: inherit; text-align: left; cursor: pointer; position: relative; display: flex; align-items: center; gap: 8px; width: 100%;
@@ -994,9 +994,10 @@ const UI_AUDIO = {
   lieBroken: 'Ta stavek ni res. Na njem je žig.',
   truthLead: 'Dobra sled! Kateri stavek to dokaže?',
   liarCaught: 'Laž je že ujeta! Poišči stavek, ki to dokaže.',
-  // 🧭 Preveri sled (step herring): a clue points at someone; find the sentence that says why it doesn't count
-  herring: 'Preveri sled! Tapni sled, nato stavek.',
-  howHerring: 'Sled kaže na nekoga. Je res? Tapni sled, nato stavek, ki pove, zakaj.',
+  // 🧭 Napačna sled? (step herring): a clue points at someone; find the sentence that says why it doesn't count
+  herring: 'Zakaj je ta sled tu? Poišči stavek, ki to pove.',
+  herringMany: 'Zakaj so sledi tu? Tapni sled, nato stavek, ki to pove.',
+  howHerring: 'Sled kaže na nekoga. Ampak morda je tu zaradi nečesa drugega! Poišči stavek, ki pove, zakaj.',
   herringFirst: 'Najprej tapni sled. 👉',
   herringNo: 'Ta stavek ne pove, zakaj.',
   herringTrue: 'Ta sled drži. Poišči drugo.',
@@ -1045,11 +1046,11 @@ const UI_AUDIO = {
   howCipher: 'Vsak znak je ena črka. Poglej ključ in tapni pravo črko.',
   howTorn: 'Sestavi listek. Tapni koščke po vrsti, nato »Preveri«.',
   howLie: 'Nekdo nekaj trdi. 💬 Je to res? Tapni 💬, nato stavek, ki pove drugače.',
-  howSolve: 'Prečrtaj, kdo ni bil. Tapni stavek, nato obraz. Na koncu pokaži dokaz.',
+  howSolve: 'Veš, kdo je bil? Tapni stavek, ki to dokaže, nato obraz. Ne veš? Prečrtaj, kdo ni bil: tapni stavek, nato obraz.',
   truthTells: 'pove resnico:',
   excuseSays: 'pravi:',
   selfClaim: 'To trdi o sebi. Ali je res? Poišči dokaz.',
-  solve: 'Prečrtaj, kdo ni bil. Tapni stavek, nato obraz.',
+  solve: 'Kdo je bil? Tapni dokaz, nato obraz. Ne veš? Prečrtaj, kdo ni bil.',
   lastOne: 'Ostal je samo eden. Pokaži dokaz!',
   pickFirst: 'Najprej tapni stavek, potem obraz.',
   notThis: 'Ta stavek ne pove, kdo ni bil. Izberi drug stavek.',
@@ -1087,7 +1088,7 @@ const UI_AUDIO = {
 // lie = ❗ UGOVOR (step 'lie', just before solve): claims (💬, each with who), claim (the one that isn't true),
 // breaks (sets of 1–2 sentences that show it), truth (from: 'lie', what the liar then says), hmm (near misses
 // [claim, sentence, note]), h1. A step case may have two proofs (a pair): one names the culprit, one names nobody.
-// herring = 🧭 Preveri sled (step 'herring', just before solve, never with lie): clues (1–2 sentences, each with an
+// herring = 🧭 Napačna sled? (step 'herring', just before solve, never with lie): clues (1–2 sentences, each with an
 // arrow to the face in points), explains ({ clue: sets of 1–2 sentences that say why it doesn't count }; a clue not in
 // explains is true and is the proof), hmm, h1. Without the step, points: '<id>' on a sentence marks the obvious
 // suspect it points at: using it against that face in solve gets »Preveč lahko?«.
@@ -2993,7 +2994,7 @@ const stepNext = (d = 1) => S.c.steps[S.c.steps.indexOf(S.screen) + d];
 // »Vse je preiskano. Kdo je bil?« only when solve comes next; before another step it says »Naprej!«
 const doneKey = (k) => stepNext() === 'solve' ? k : k + 'On';
 const STEP_LABEL = { ask: 'Zasliši osumljence 🗣️', words: 'Preberi listek 🔤', lock: 'K vratom 🔐', order: 'Poglej slike 🕐', scene: 'Na kraj dogodka 🔍',
-  cipher: 'Skrivni listek ✉️', torn: 'Raztrgan listek 📜', lie: 'Je vse res? ❗', herring: 'Preveri sled 🧭', when: 'Kdaj? ⏰' };
+  cipher: 'Skrivni listek ✉️', torn: 'Raztrgan listek 📜', lie: 'Je vse res? ❗', herring: 'Napačna sled? 🤔', when: 'Kdaj? ⏰' };
 const stepLabel = () => STEP_LABEL[stepNext()] || 'Vem, kdo je bil!';
 // the scene and questioning buttons wait until everything is done; meanwhile they say how much is left
 const leftLabel = (n, [one, two, few, many], icon) => `Še ${n} ${n === 1 ? one : n === 2 ? two : n < 5 ? few : many} ${icon}`;
@@ -3006,7 +3007,7 @@ const BRIEF = {
   words: ['🔤', 'Iskanka', 'howWords', 'words', 'wn'], lock: ['🔐', 'Ključavnica', 'howLock', 'lock', 'kn'],
   order: ['🕐', 'Po vrsti', 'howOrder', 'order', 'on'], cipher: ['✉️', 'Skrivni listek', 'howCipher', 'cipher', 'cn'],
   torn: ['📜', 'Raztrgan listek', 'howTorn', 'torn', 'pn'], lie: ['❗', 'Je vse res?', 'howLie'],
-  herring: ['🧭', 'Preveri sled', 'howHerring'], when: ['⏰', 'Kdaj?', 'howWhen'], solve: ['🕵️', 'Kdo je bil?', 'howSolve'],
+  herring: ['🤔', 'Napačna sled?', 'howHerring'], when: ['⏰', 'Kdaj?', 'howWhen'], solve: ['🕵️', 'Kdo je bil?', 'howSolve'],
 };
 const stepCase = () => !!(S.c && S.c.steps && S.run);
 const briefOpen = () => stepCase() && !!BRIEF[S.screen] && !S.run.briefed.includes(S.screen);
@@ -3542,7 +3543,7 @@ const T = {
       <button class="btn ugovor" data-act="lieShout"><span>❕</span>UGOVOR!</button></div></div>` : ''}${r.hint ? hintHTML(r.hint) : ''}`;
   },
 
-  // 🧭 Preveri sled: each pointing clue is a card with an arrow to a face. The child taps a clue, then the
+  // 🧭 Napačna sled?: each pointing clue is a card with an arrow to a face. The child taps a clue, then the
   // sentence that says why it doesn't count: the card flips, »NAPAČNA SLED!« lands and the arrow bends away.
   herring() {
     const c = S.c, r = S.run, H = c.herring;
@@ -3563,7 +3564,7 @@ const T = {
     };
     return `<div class="screen herringstep ${done ? 'done' : ''} ${r.hint ? 'locked' : ''}">
       <div class="caseq">❓ ${esc(c.question)}</div>
-      ${qbarB(UI_AUDIO.herring, 'ui_herring')}
+      ${H.clues.length > 1 ? qbarB(UI_AUDIO.herringMany, 'ui_herringMany') : qbarB(UI_AUDIO.herring, 'ui_herring')}
       <div class="lwrap">
         <div class="lleft"><div class="hclues">${r.horder.map(sid => card(sent(sid))).join('')}</div></div>
         <div class="rows">${rows.map(s => `<div class="row ${r.hrows.includes(s.id) ? 'selected' : ''} ${look && !expl.has(s.id) ? 'dim' : ''}
@@ -4790,7 +4791,7 @@ function newMetrics(id) {
     anchor: null, early: 0, suspectChanges: 0, done: false, more: null,
     // ❗ UGOVOR (counted apart from the solve's hints): wrong tries, hints, an innocent liar blamed
     lie: !!(c && c.lie), lieWrong: 0, lieHints: 0, lieAssisted: false, liarBlamed: 0,
-    // 🧭 Preveri sled: wrong tries, hints; and how often the face a misleading clue points at was blamed
+    // 🧭 Napačna sled?: wrong tries, hints; and how often the face a misleading clue points at was blamed
     herring: !!(c && c.herring), herWrong: 0, herHints: 0, herAssisted: false, obviousBlamed: 0,
     // ⏰ Kdaj?: wrong tries, hints; and how often a sentence from the wrong time was used in solve
     when: !!(c && c.when), whenWrong: 0, whenHints: 0, whenAssisted: false, wrongTime: 0,

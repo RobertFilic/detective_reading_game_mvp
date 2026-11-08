@@ -1,0 +1,88 @@
+// Case 4: call → 🔤 word search → scene → cross off → proof; puzzle hints; back through 4 steps; letter.
+import './brief-auto.mjs';
+import puppeteer from 'puppeteer-core';
+const b = await puppeteer.launch({ executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true });
+const ok = (c, m) => { console.log((c ? '✔ ' : '✘ ') + m); if (!c) process.exitCode = 1; };
+const wait = (ms = 120) => new Promise(r => setTimeout(r, ms));
+for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land', 852, 393]]) {
+  const p = await b.newPage();
+  const errors = []; p.on('pageerror', e => errors.push(e.message));
+  await p.evaluateOnNewDocument(() => { if (window.speechSynthesis) speechSynthesis.getVoices = () => []; });
+  await p.setViewport({ width: w, height: h, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
+  await p.goto('http://localhost:8765/solo/?play');
+  await p.evaluate(() => { localStorage.clear(); localStorage.setItem('dp_save_version', '4'); localStorage.setItem('dp_tutorial_done', 'true');
+    localStorage.setItem('dp_played_v1', JSON.stringify(['bip:1', 'bip:2', 'bip:3']));
+    localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻', g: 'm', sk: '🐶', name: 'Luka', id: '1234' })); });
+  await p.reload(); await wait(400);
+  const text = () => p.evaluate(() => document.body.innerText);
+  const st = () => p.evaluate(() => S.screen);
+  const shot = (s) => p.screenshot({ path: `shots/b4-${name}-${s}.png` });
+  const overflow = () => p.evaluate(() => { const W = document.documentElement.clientWidth; const bad = [];
+    document.querySelectorAll('#app *').forEach(el => { if (el.closest('.pins')) return; const r = el.getBoundingClientRect(); if (r.width && (r.right > W + 1 || r.left < -1)) bad.push(el.className || el.tagName); });
+    return [...new Set(bad)].slice(0, 6); });
+  const inView = (sel) => p.$eval(sel, el => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight + 1; });
+  const check = async (s) => { const o = await overflow(); ok(!o.length, `${name} ${s}: no overflow ${o.length ? JSON.stringify(o) : ''}`); await shot(s); };
+  const tap = async (a, z) => { await p.click(`.wcell[data-i="${a}"]`); await wait(40); await p.click(`.wcell[data-i="${z}"]`); await wait(80); };
+  await p.click('.file-card[data-file="bip"]'); await wait();
+  ok(!(await p.$('.folder.soon')) && await p.$('.folder[data-no="4"]:not(.locked)'), `${name}: board: case 4 open`);
+  await p.click('.folder[data-no="4"]'); await wait();
+  await p.click('[data-act="answer"]'); await wait();
+  ok((await text()).includes('ob desetih zvil anteno') && (await p.$eval('[data-act="toScene"]', e => e.innerText)).includes('Preberi listek'), `${name}: Vesna calls, "Preberi listek 🔤"`);
+  await p.click('[data-act="toScene"]'); await wait();
+  ok(await st() === 'words' && (await p.$$('.wcell')).length === 36 && (await p.$$('.wword')).length === 4, `${name}: word search: 6×6 grid, 4 words`);
+  ok(await p.$eval('[data-act="toScene"]', e => e.disabled), `${name}: scene locked until all words are found`);
+  ok(await inView('.wcell[data-i="35"]') && await inView('[data-act="toScene"]'), `${name}: whole grid and button on screen`);
+  await check('words');
+  await tap(0, 7);   // not a word
+  ok((await text()).includes('To ni beseda s seznama') && !(await p.$('#hint')), `${name}: 1st wrong → gentle note`);
+  await tap(1, 3);
+  ok((await p.$eval('#hint', e => e.innerText)).includes('→ in ↓'), `${name}: 2nd wrong → h1 "→ in ↓"`);
+  await p.click('[data-act="hintOk"]'); await wait();
+  await tap(0, 5);
+  ok((await p.$$('.wcell.got')).length === 6 && await p.$('.wword.got'), `${name}: ANTENA found`);
+  await tap(18, 6);  // KOŠ, last letter first
+  ok((await p.evaluate(() => S.run.words)).join() === 'ANTENA,KOŠ', `${name}: KOŠ found tapping the last letter first`);
+  await tap(2, 9); await tap(2, 9); await p.click('[data-act="hintOk"]'); await wait();
+  ok((await p.$$('.wcell.hl')).length === 6, `${name}: 4th wrong → the row of the next word lights up`);
+  await shot('words-look');
+  await tap(2, 9); await tap(2, 9); await p.click('[data-act="hintOk"]'); await wait();
+  ok((await p.$$('.wcell.pulse')).length === 2, `${name}: 6th wrong → first and last letter pulse`);
+  await tap(25, 28); await tap(17, 35);
+  ok((await p.evaluate(() => S.run.words)).length === 4 && !(await p.$eval('[data-act="toScene"]', e => e.disabled)), `${name}: all 4 words → "Na kraj dogodka" open`);
+  await check('words-done');
+  await p.click('[data-act="toScene"]'); await wait();
+  ok(await st() === 'scene' && (await p.$$('.obj')).length === 7, `${name}: scene with 7 objects`);
+  await p.click('[data-act="back"]'); await wait();
+  ok(await st() === 'words' && (await p.evaluate(() => S.run.words.length)) === 4, `${name}: back → word search, words kept`);
+  await p.click('[data-act="back"]'); await wait();
+  ok(await st() === 'call', `${name}: back again → call`);
+  await p.click('[data-act="toScene"]'); await wait(); await p.click('[data-act="toScene"]'); await wait();
+  await p.click('[data-act="torch"]'); await wait(60);
+  for (const s of ['s1', 's2', 's3', 's4', 's5', 's6', 's7']) { await p.click(`.obj[data-sid="${s}"]`); await wait(60); }
+  ok((await text()).includes('3-1-4'), `${name}: the code 3-1-4 is in the bin`);
+  await check('scene');
+  await p.click('[data-act="toSolve"]'); await wait();
+  await p.click('[data-act="pickClue"][data-sid="s2"]'); await p.click('.suspect[data-id="ela"]'); await wait();
+  ok(!!(await p.$('#hint')), `${name}: Ela's own claim + Ela → hint`);
+  await p.click('[data-act="hintOk"]'); await wait();
+  await p.click('[data-act="back"]'); await wait();
+  ok(await st() === 'scene', `${name}: back from solve → scene`);
+  await p.click('[data-act="toSolve"]'); await wait();
+  for (const [sid, id] of [['s1', 'tim'], ['s4', 'robi'], ['s6', 'kiki']]) { await p.click(`[data-act="pickClue"][data-sid="${sid}"]`); await p.click(`.suspect[data-id="${id}"]`); await wait(80); }
+  ok((await p.evaluate(() => S.run.crossed)).join() === 'tim,robi,kiki', `${name}: alibis cross off Tim, Robi, Kiki`);
+  await p.click('[data-act="pickClue"][data-sid="s5"]'); await p.click('.suspect[data-id="ela"]'); await wait(1600);
+  ok((await text()).includes('Detektiv Luka je ujel Elo!'), `${name}: "Detektiv Luka je ujel Elo!"`);
+  await check('reveal');
+  await p.click('[data-act="next"]'); await wait();
+  ok(name === 'land' || (await p.$$('.cork .pincard:not(.empty)')).length === 4, `${name}: 4 cards pinned`);
+  ok(await p.$('.folder[data-no="5"]:not(.soon)'), `${name}: case 5 is open next`);
+  await wait(1500); await shot('board');
+  await p.reload(); await wait(400);
+  await p.click('.file-card[data-file="bip"]'); await wait();
+  ok((await text()).includes('Kaj pomeni 3-1-4'), `${name}: Vesna's letter asks about 3-1-4`);
+  const logs = await p.evaluate(() => JSON.stringify(LOG));
+  ok(logs.includes('puzzle_word') && logs.includes('puzzle_hint') && logs.includes('puzzle_done') && !logs.includes('Luka'), `${name}: puzzle events logged, no name`);
+  ok(errors.length === 0, `${name}: no page errors ${errors.join('|')}`);
+  await p.close();
+}
+await b.close();

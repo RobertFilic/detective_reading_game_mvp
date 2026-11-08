@@ -25,3 +25,6 @@ dist-ssr
 
 # screenshots from solo/tools/shots.mjs
 shots/
+
+# test timings from solo/tools/tests/run.mjs
+.durations.json
