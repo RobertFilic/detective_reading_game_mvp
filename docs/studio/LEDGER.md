@@ -22,7 +22,7 @@ The 🚀 v and 🐄 k cases were removed from the game on 2026-11-08; they stay 
 | 🐄 k6 | pair, final | Nik | brought flowers | grow only behind the barn + only Nik went there | »Pia rada nabira rože« | – |
 | 👾 b1 | elim, scene | Tim | cookies | ate honey bread, sticky handle | Ela came in first | – |
 | 👾 b2 | elim, ask | Robi | pulled the plug (hungry for power) | his cable by the plug | his own claim »vso noč na polnilcu« | – |
-| 👾 b3 | elim, camera | Kiki 🐭 | cheese | crumbs in her cage | »Tim ima zelo rad sir« (likes it) | 📹 film |
+| 👾 b3 | elim, camera | Kiki 👶🏼 | cheese | crumbs in her cot | »Tim ima zelo rad sir« (likes it) | 📹 film |
 | 👾 b4 | elim, scene | Ela | turned the antenna to the stars | her glove under it | her own claim »se nisem dotaknila« | 🔤 word search |
 | 👾 b5 | elim, scene | Tim | hid a birthday present | his present behind the boxes | »Robi rad zbira vijake« (likes it) | 🔐 lock 3-1-4 |
 | 👾 b6 | elim, final | Bip 👾 | calling home | the spoon and wire are in the vent | »Robi zna piskati« | 🕐 timeline |

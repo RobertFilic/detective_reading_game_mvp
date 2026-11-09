@@ -1448,7 +1448,7 @@ const CHARACTERS = {
   tim: { name: 'Tim', animal: '👨🏽‍🚀', color: '#e2f2e6', re: 'Tim(a|u|om|ov\\p{L}*)?' },
   ela: { name: 'Ela', animal: '👩🏿‍🚀', color: '#f6e2f0', re: 'El(a|o|e|i|in\\p{L}*)' },
   robi: { name: 'Robi', animal: '🤖', color: '#e6e9ee', re: 'Robi(ja|ju|jem|jev\\p{L}*)?' },
-  kiki: { name: 'Kiki', animal: '🐭', color: '#f3e9e2', re: 'Kiki(n\\p{L}*|ja|ju|jem|jev\\p{L}*)?' },
+  kiki: { name: 'Kiki', animal: '👶🏼', color: '#f3e9e2', re: 'Kiki(n\\p{L}*|ja|ju|jem|jev\\p{L}*)?' },
   // the season's mystery guest: a face with no name until the final case unmasks it (real),
   // so the sentences name it by where it hides
   bip: { name: '???', animal: '👀', color: '#d6f5dc', re: 'zračnik\\p{L}*', real: { name: 'Bip', animal: '👾' } },
@@ -1489,7 +1489,7 @@ const FILES = [
   { id: 'bip', icon: '👾', hue: 300, title: 'Skrivnost v zračniku', cast: ['tim', 'ela', 'robi', 'kiki'], paper: 'ZVEZDNI ČASNIK',
     season: true, mystery: 'Kaj se skriva v zračniku?', peek: { icon: '👀', label: 'zračnik', say: 'pip-pip!' },
     // after case 3 the child guesses what is in the vent; the final case shows who was right (answer)
-    guess: { after: 3, q: 'Kaj misliš, kdo je v zračniku?', options: [['mouse', '🐭', 'še ena miška'], ['robot', '🤖', 'mali robot'], ['alien', '👽', 'bitje iz vesolja']] },
+    guess: { after: 3, q: 'Kaj misliš, kdo je v zračniku?', options: [['cat', '🐱', 'izgubljen mucek'], ['robot', '🤖', 'mali robot'], ['alien', '👽', 'bitje iz vesolja']] },
     answer: { id: 'alien', icon: '👾', text: 'V zračniku je bil Bip, mali vesoljček!' } },
   { id: 'galeb', icon: '🦔', hue: 235, title: 'Skrivnost hotela Galeb', cast: ['luka', 'hana', 'bepi', 'vera', 'gusti'], paper: 'PIRANSKI GALEB',
     season: true, mystery: 'Kdo v hotelu piše knjige o Ježku?', pages: true,
@@ -1697,7 +1697,7 @@ const CASES = [
     sentences: [
       ['s1', 'Ročaj omarice je lepljiv od medu.', 'neutral', { obj: '🗄️', label: 'omarica' }],
       ['s2', 'Ela je zjutraj prva prišla v kuhinjo.', 'distractor', { obj: '🚪', label: 'vrata' }],
-      ['s3', 'Kiki je premajhna za tako visoko omarico.', 'clear', { obj: '🐭', label: 'kletka', clears: 'kiki' }],
+      ['s3', 'Kiki je premajhna za tako visoko omarico.', 'clear', { obj: '🧸', label: 'posteljica', clears: 'kiki' }],
       ['s4', 'Zvečer je Tim jedel kruh z medom.', 'evidence', { obj: '🍯', label: 'med' }],
       ['s5', 'Robi je bil vso noč na polnilcu.', 'clear', { obj: '🔌', label: 'polnilec', clears: 'robi' }],
       ['s6', 'V kotu je droben zelen odtis.', 'neutral', { obj: '👣', label: 'temen kot', dark: true }],
@@ -1721,8 +1721,8 @@ const CASES = [
       ['s3', '»Ob polnoči sva s Timom štela zvezde.«', 'clear', { who: 'ela', ask: 'Kje si bila ob polnoči?', clears: 'tim' }],
       ['s4', '»Pri vtikaču je zjutraj ležal Robijev kabel.«', 'evidence', { who: 'ela', ask: 'Kaj si videla zjutraj?' }],
       ['s5', '»Vso noč sem bil na polnilcu.«', 'distractor', { who: 'robi', ask: 'Kje si bil ob polnoči?' }],
-      ['s6', '»Ob polnoči je Kiki spala v mojem žepu.«', 'clear', { who: 'tim', ask: 'Kje je bila Kiki?', clears: 'kiki' }],
-      ['s7', '»Pi-pi! Pi?«', 'neutral', { who: 'kiki', ask: 'Kaj si videla?' }],
+      ['s6', '»Ob polnoči je Kiki spala v moji kabini.«', 'clear', { who: 'tim', ask: 'Kje je bila Kiki?', clears: 'kiki' }],
+      ['s7', '»Kiki je spinkala!«', 'neutral', { who: 'kiki', ask: 'Kaj si videla?' }],
     ],
     h1: 'Kdo NI mogel biti? Kdo govori o sebi?',
     reveal: ['Robiju je zmanjkalo baterije.', 'Izvlekel je velik vtikač za svoj kabel.', 'Zato so ugasnile vse luči.', 'Ampak kdo je piskal v zračniku? 🤔'],
@@ -1737,7 +1737,7 @@ const CASES = [
     // the security camera: we see something small take the cheese, then the picture goes
     film: [
       ['🧀 🥄', 'Na mizi sta sir in bleščeča žlička.'],
-      ['🐭', 'Nekaj majhnega odnese sir.', 'blur'],
+      ['👶🏼', 'Nekdo majhen odnese sir.', 'blur'],
       ['📺', 'Šum! Kamera nekaj časa ne vidi.'],
       ['🍽️', 'Zdaj ni več sira. Tudi žličke ni!'],
     ],
@@ -1748,13 +1748,13 @@ const CASES = [
       ['s2', 'Ela je bila ves večer pri teleskopu.', 'clear', { obj: '🔭', label: 'teleskop', clears: 'ela' }],
       ['s3', 'Pri zračniku je spet droben zelen odtis.', 'neutral', { obj: '👣', label: 'zračnik', dark: true }],
       ['s4', 'Tim in Vesna sta ves večer igrala šah.', 'clear', { obj: '♟️', label: 'šah', clears: 'tim' }],
-      ['s5', 'V Kikini kletki so drobtine sira.', 'evidence', { obj: '🐭', label: 'kletka' }],
-      ['s6', 'Žlička je pretežka za miško.', 'neutral', { obj: '🥄', label: 'predal' }],
+      ['s5', 'V Kikini posteljici so drobtine sira.', 'evidence', { obj: '🧸', label: 'posteljica' }],
+      ['s6', 'Majhne roke ne nesejo sira in žličke hkrati.', 'neutral', { obj: '🥄', label: 'predal' }],
       ['s7', 'Robi je ves večer ropotal v delavnici.', 'clear', { obj: '🔧', label: 'delavnica', clears: 'robi' }],
     ],
     h1: 'Kdo NI mogel biti? Kje so sledi sira?',
-    reveal: ['V Kikini kletki so bile drobtine sira.', 'Kiki je sir odnesla v kletko.', 'Žličke pa miška ne more nesti.', 'Kdo je vzel bleščečo žličko? 🤔'],
-    caught: 'Kiki', excuse: 'Pi-pi! Sir je tako lepo dišal!',
+    reveal: ['V Kikini posteljici so bile drobtine sira.', 'Kiki je sir odnesla v posteljico.', 'Za žličko ni imela več rok.', 'Kdo je vzel bleščečo žličko? 🤔'],
+    caught: 'Kiki', excuse: 'Njami! Sir je tako lepo dišal!',
     card: { icon: '🥄', sid: 's6', think: 'Spet zelen odtis … in bleščeča žlička. Kdo jo je vzel? 🤔' },
     letter: ['Hvala! Kiki zdaj dobi svoj košček sira.', 'Žlička pa je še vedno izginila.', 'P. S. Ela ne najde srebrne žice …'],
   },
@@ -1777,7 +1777,7 @@ const CASES = [
       ['s3', 'Z antene manjka srebrna žica.', 'neutral', { obj: '🪟', label: 'okno' }],
       ['s4', 'Ob desetih je Robi pomival posodo.', 'clear', { obj: '🧽', label: 'korito', clears: 'robi' }],
       ['s5', 'Pod anteno je Elina rokavica.', 'evidence', { obj: '📡', label: 'antena' }],
-      ['s6', 'Kiki je premajhna, da bi zvila anteno.', 'clear', { obj: '🐭', label: 'kletka', clears: 'kiki' }],
+      ['s6', 'Kiki je premajhna, da bi zvila anteno.', 'clear', { obj: '🧸', label: 'posteljica', clears: 'kiki' }],
       ['s7', 'Na dnu koša je listek: 3-1-4.', 'neutral', { obj: '🗑️', label: 'koš', dark: true }],
     ],
     h1: 'Kdo NI mogel biti? Kaj leži pod anteno?',
@@ -1801,7 +1801,7 @@ const CASES = [
     suspects: ['tim', 'ela', 'robi', 'kiki'], culprit: 'tim',
     sentences: [
       ['s1', 'Po tleh so raztreseni vijaki.', 'neutral', { obj: '📦', label: 'škatla' }],
-      ['s2', 'Kiki je do jutra spala v zaklenjeni kletki.', 'clear', { obj: '🐭', label: 'kletka', clears: 'kiki' }],
+      ['s2', 'Kiki do jutra ni mogla iz posteljice.', 'clear', { obj: '🧸', label: 'posteljica', clears: 'kiki' }],
       ['s3', 'Robi zelo rad zbira vijake.', 'distractor', { obj: '🔩', label: 'vijaki' }],
       ['s4', 'Ela je vso noč spala pri Maji.', 'clear', { obj: '🛏️', label: 'postelja', clears: 'ela' }],
       ['s5', 'Za zračnikom se nekaj sveti.', 'neutral', { obj: '🌀', label: 'zračnik', dark: true }],
@@ -1838,7 +1838,7 @@ const CASES = [
       ['s1', 'Robi zna tudi piskati: pip-pip!', 'distractor', { obj: '🔊', label: 'zvočnik' }],
       ['s2', 'Ela je vso noč spala v kabini.', 'clear', { obj: '🛏️', label: 'kabina', clears: 'ela' }],
       ['s3', 'Pri vratcih so drobni zeleni odtisi.', 'neutral', { obj: '👣', label: 'tla' }],
-      ['s4', 'Kiki je vso noč spala v zaprti kletki.', 'clear', { obj: '🐭', label: 'kletka', clears: 'kiki' }],
+      ['s4', 'Kiki vso noč ni mogla iz posteljice.', 'clear', { obj: '🧸', label: 'posteljica', clears: 'kiki' }],
       ['s5', 'Na listku je narisana pot do zvezde.', 'neutral', { obj: '🗺️', label: 'listek' }],
       ['s6', 'Robi je prevelik za tako majhna vratca.', 'clear', { obj: '🚪', label: 'vratca', clears: 'robi' }],
       ['s7', 'Žlička in žica sta skriti v zračniku.', 'evidence', { obj: '🌀', label: 'zračnik', dark: true }],
@@ -3741,7 +3741,7 @@ const T = {
     const m = S.mk, edit = !m.hello;
     const steps = m.hello ? [0, 1, 2, 3, 4] : [1, 2, 3, 4], at = steps.indexOf(m.step);
     const back = m.step > (m.hello ? 0 : 1) ? 'mkBack' : backTarget() ? 'back' : null;
-    const TITLES = { 0: ['🔍', 'Postani detektiv!'], 1: ['🕵️', 'Izberi svojega detektiva.'], 2: [m.av || '🐾', 'Izberi pomočnika'], 3: ['✏️', 'Kako ti je ime?'], 4: ['🪪', 'To si ti!'] };
+    const TITLES = { 0: ['🔍', 'Postani detektiv!'], 1: ['🕵️', 'Izberi svojega detektiva'], 2: [m.av || '🐾', 'Izberi pomočnika'], 3: ['✏️', 'Kako ti je ime?'], 4: ['🪪', 'To si ti!'] };
     const [ti, tt] = TITLES[m.step];
     let body, foot = '';
     if (m.step === 0) {
@@ -3758,7 +3758,7 @@ const T = {
       foot = UI.btn('Naprej', { act: 'mkName' }) + UI.btn('Preskoči', { act: 'mkSkip', kind: 'is-quiet' });
     } else {
       const p = { id: m.id, av: m.av, g: m.g, sk: m.sk, name: m.name };
-      body = `<div class="ui-body">${idCard(p, { stamp: edit ? '' : 'To si ti!' })}${edit ? '' : UI.helper('Postani detektiv!', { e: m.sk })}</div>`;
+      body = `<div class="ui-body">${idCard(p, { stamp: edit ? '' : 'To si ti!' })}${edit ? '' : UI.helper(m.g === 'f' ? 'Postala si detektivka!' : 'Postal si detektiv!', { e: m.sk })}</div>`;
       foot = UI.btn('Začni 🔍', { act: 'mkDone' });
     }
     return `<div class="ui-screen make"><header class="ui-band"><div class="ui-band-top">${back ? `<button class="ui-band-btn" data-act="${back}" aria-label="Nazaj">←</button>` : '<span class="ui-band-gap"></span>'}

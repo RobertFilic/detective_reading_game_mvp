@@ -35,7 +35,7 @@ The world, the people and the voice of Detektivska pisarna. The showrunner owns 
 - **Tim** 👨🏽‍🚀: loves food and baking; secretly kind (the birthday present). *Used a lot as culprit: rest him.*
 - **Ela** 👩🏿‍🚀: loves stars and her telescope; turned the antenna to see more stars. Has a green marker.
 - **Robi** 🤖: the robot; always hungry for electricity, loves screws, can beep »pip-pip«. A natural red herring.
-- **Kiki** 🐭: the station mouse; loves cheese and crackers; too small for high cupboards and locks.
+- **Kiki** 👶🏼: the station toddler; loves cheese and crackers; too small for high cupboards and antennas; sleeps in a cot with rails (posteljica z ograjico), talks about herself in the third person (»Kiki je spinkala!«).
 - **Bip** 👾: a tiny lost alien who lived in the vent and built a transmitter from shiny things to call home. *Season 1's mystery guest. He went home in a flying saucer; he can write a letter or come back to visit.*
 
 ### 🐄 Pri babici na kmetiji (grandma's farm; removed from the game 2026-11-08, kept here so it isn't repeated)

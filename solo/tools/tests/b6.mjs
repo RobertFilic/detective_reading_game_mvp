@@ -5,7 +5,7 @@ import puppeteer from 'puppeteer-core';
 const b = await puppeteer.launch({ executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true });
 const ok = (c, m) => { console.log((c ? '✔ ' : '✘ ') + m); if (!c) process.exitCode = 1; };
 const wait = (ms = 120) => new Promise(r => setTimeout(r, ms));
-for (const [name, w, h, guess] of [['iphone14', 390, 844, 'alien'], ['ipad', 820, 1180, 'mouse'], ['land', 852, 393, null]]) {
+for (const [name, w, h, guess] of [['iphone14', 390, 844, 'alien'], ['ipad', 820, 1180, 'cat'], ['land', 852, 393, null]]) {
   const p = await b.newPage();
   const errors = []; p.on('pageerror', e => errors.push(e.message));
   await p.evaluateOnNewDocument(() => { if (window.speechSynthesis) speechSynthesis.getVoices = () => []; });
@@ -80,7 +80,7 @@ for (const [name, w, h, guess] of [['iphone14', 390, 844, 'alien'], ['ipad', 820
   await p.click('[data-act="pickClue"][data-sid="s7"]'); await p.click('.suspect[data-id="bip"]'); await wait(2200);
   const t = await text();
   ok(t.includes('Detektivka Ana je ujela Bipa!') && (name === 'land' || await p.$('.unmask .real')), `${name}: "ujela Bipa!", ??? unmasked`);
-  ok(t.includes('mali vesoljček') && (guess === 'alien' ? t.includes('Prav si ugibala') : guess ? t.includes('še ena miška') && t.includes('Nič hudega') : !t.includes('Tvoje ugibanje')), `${name}: the guess is checked (${guess})`);
+  ok(t.includes('mali vesoljček') && (guess === 'alien' ? t.includes('Prav si ugibala') : guess ? t.includes('izgubljen mucek') && t.includes('Nič hudega') : !t.includes('Tvoje ugibanje')), `${name}: the guess is checked (${guess})`);
   ok(await inView('[data-act="next"]'), `${name}: "Naprej" on screen`);
   await check('reveal');
   await p.click('[data-act="next"]'); await wait(1600);
