@@ -5,169 +5,302 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Detektiv">
-<meta name="theme-color" content="#fdf6e9">
+<meta name="apple-mobile-web-app-title" content="Detektivi">
+<meta name="theme-color" content="#1b4d36">
+<meta name="description" content="Bralni detektivi: bralna igra za otroke od 6 do 10 let. Vsak stavek je sled. Vsak teden nova pustolovščina.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Detektivska pisarna</title>
+<title>Bralni detektivi</title>
 <style>
-:root { --bg: #fdf6e9; --ink: #2b2a33; --muted: #6b6876; --card: #fff; --line: #e6dcc8; --accent: #3d6fd8; }
+/* »Landing Page« from Claude Design, in the game's tokens (solo/index.html). Slovenian only for now. */
+@font-face { font-family: Lexend; src: url('solo/fonts/lexend-sl.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
+:root {
+  --season: #164b33; --season-mid: #3b825f; --season-soft: #def5e8;
+  --bg: #faf6ef; --paper: #fffdfa; --ink: #1b222e; --ink-2: #4f5661; --line: #dfdad1;
+  --glow: #f8ca65; --stamp: #c83a35; --stamp-paper: #fefbf6;
+  --font: Lexend, Verdana, system-ui, sans-serif;
+}
+@supports (color: oklch(0 0 0)) {
+  :root { --season: oklch(0.37 0.07 160); --season-mid: oklch(0.55 0.09 160); --season-soft: oklch(0.95 0.03 160); }
+}
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body { margin: 0; height: 100%; }
-body {
-  background: var(--bg); color: var(--ink);
-  font: 20px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: manipulation;
-}
-main {
-  min-height: 100%; min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 28px; padding: calc(24px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); text-align: center;
-}
-h1 { font-size: 40px; margin: 0; }
-.games { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; width: 100%; }
-.game {
-  display: flex; flex-direction: column; align-items: center; gap: 10px; width: min(320px, 100%);
-  background: var(--card); border: 3px solid var(--line); border-radius: 24px; padding: 28px 20px;
-  color: inherit; text-decoration: none;
-}
-.game:active { border-color: var(--accent); }
-.game .icon { font-size: 80px; line-height: 1; }
-.game .name { font-size: 30px; font-weight: 700; color: var(--accent); }
-.game .who { color: var(--muted); font-size: 18px; }
-.games[hidden] { display: none; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
+a { color: var(--season); }
+h1, h2, p { margin: 0; }
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-right)) 0 max(20px, env(safe-area-inset-left)); }
+.coin { width: 38px; height: 38px; flex: none; border-radius: 50%; background: var(--season); display: grid; place-items: center; font-size: 19px; box-shadow: inset 0 0 0 3px var(--season), inset 0 0 0 5px #fff; }
 
-/* Kid-facing hero: one tap into the detective game */
-.hero {
-  display: flex; flex-direction: column; align-items: center; gap: 8px; width: min(520px, 100%);
-  background: var(--card); border: 3px solid var(--line); border-radius: 28px; padding: 28px 20px 22px;
-  color: inherit; text-decoration: none; box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
-}
-.hero:active { transform: scale(.98); }
-.hero-icon { font-size: 88px; line-height: 1; }
-.hero-title { font-size: 34px; font-weight: 800; }
-.hero-sub { font-size: 20px; color: var(--muted); max-width: 22em; }
-.hero-cast { font-size: 40px; letter-spacing: 6px; }
-.hero-btn {
-  margin-top: 6px; background: var(--accent); color: #fff; font-size: 30px; font-weight: 800;
-  border-radius: 999px; padding: 14px 56px; box-shadow: 0 6px 0 #2b55b0;
-}
-.hero-note { font-size: 16px; color: var(--muted); }
-.more-games { appearance: none; border: 0; background: none; color: var(--muted); font: inherit; font-size: 16px; cursor: pointer; }
-@media (max-width: 520px) {
-  .hero-icon { font-size: 64px; }
-  .hero-title { font-size: 28px; }
-  .hero-sub { font-size: 18px; }
-  .hero-btn { font-size: 26px; padding: 12px 44px; }
-}
+/* buttons */
+.btn { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 60px; padding: 0 28px; border-radius: 20px; font: 600 19px var(--font); text-decoration: none; white-space: nowrap; }
+.btn.gold { background: var(--glow); color: var(--ink); box-shadow: 0 10px 24px rgba(0, 0, 0, .2); }
+.btn.line { min-height: 56px; border: 1.5px solid rgba(255, 255, 255, .45); color: #fff; font-weight: 500; font-size: 17px; }
+.btn.main { background: var(--season); color: #fff; box-shadow: 0 10px 24px rgba(22, 75, 51, .3); }
 
-/* install: banner on top, step-by-step sheet for Safari (iPhone / iPad have no install button) */
-.install {
-  display: flex; align-items: center; gap: 14px; width: min(680px, 100%); text-align: left;
-  background: var(--card); border: 2px solid var(--line); border-radius: 20px; padding: 12px 14px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, .08);
+/* top bar */
+header.top { position: sticky; top: 0; z-index: 10; background: rgba(250, 246, 239, .92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top); }
+header.top .wrap { display: flex; align-items: center; gap: 14px; min-height: 60px; }
+.brand { display: flex; align-items: center; gap: 9px; margin-right: auto; text-decoration: none; color: var(--ink); font: 700 18px var(--font); white-space: nowrap; }
+nav.links { display: none; gap: 22px; font: 500 15px var(--font); }
+nav.links a { color: var(--ink-2); text-decoration: none; }
+header.top .btn { min-height: 44px; padding: 0 20px; border-radius: 14px; font-size: 15px; display: none; }
+
+/* hero */
+.hero { background: var(--season); color: #fff; border-radius: 0 0 36px 36px; overflow: hidden; position: relative; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(80% 50% at 90% 0%, rgba(255, 233, 160, .22), transparent 70%); pointer-events: none; }
+.hero .wrap { position: relative; padding-top: 32px; padding-bottom: 44px; display: flex; flex-direction: column; align-items: center; gap: 36px; }
+.hero-text { align-self: stretch; display: flex; flex-direction: column; gap: 18px; animation: in 500ms ease-out both; }
+.eyebrow { align-self: flex-start; background: rgba(255, 255, 255, .14); border-radius: 999px; padding: 6px 14px; font: 500 14px var(--font); }
+.hero h1 { font: 700 clamp(38px, 7vw, 68px)/1.04 var(--font); letter-spacing: -.02em; text-wrap: balance; }
+.lead { max-width: 540px; font-size: clamp(17px, 2vw, 21px); color: rgba(255, 255, 255, .9); text-wrap: pretty; }
+.hero-btns { display: flex; flex-direction: column; gap: 10px; padding-top: 4px; }
+.hero-note { font-size: 15px; color: rgba(255, 255, 255, .78); }
+
+/* the phone: a case on screen, the stamp on top */
+.phone { flex: none; position: relative; width: 280px; height: 578px; }
+.phone-frame { width: 280px; height: 578px; border-radius: 44px; background: #17191d; padding: 9px; box-shadow: 0 30px 70px rgba(0, 0, 0, .4); transform: rotate(2deg); }
+.phone-screen { width: 100%; height: 100%; border-radius: 36px; overflow: hidden; background: var(--bg); display: flex; flex-direction: column; color: var(--ink); --s: #5a3f7a; --s-soft: #f1e8fa; }
+@supports (color: oklch(0 0 0)) { .phone-screen { --s: oklch(0.37 0.07 300); --s-soft: oklch(0.95 0.03 300); } }
+.m-band { background: var(--s); color: #fff; padding: 12px 13px 13px; border-radius: 0 0 22px 22px; display: flex; flex-direction: column; gap: 9px; }
+.m-notch { align-self: center; width: 84px; height: 22px; border-radius: 14px; background: #17191d; }
+.m-top { display: flex; align-items: center; gap: 8px; font: 500 11px var(--font); color: rgba(255, 255, 255, .85); }
+.m-x { width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 255, 255, .14); display: grid; place-items: center; font-size: 13px; color: #fff; }
+.m-track { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.m-line { position: relative; height: 2px; background: rgba(255, 255, 255, .3); }
+.m-line::before { content: ''; position: absolute; left: 0; top: 0; height: 2px; width: 75%; background: #fff; }
+.m-ball { position: absolute; left: 75%; top: -9px; margin-left: -10px; width: 20px; height: 20px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: 12px; }
+.m-q { display: flex; gap: 8px; align-items: center; font: 600 14px/1.3 var(--font); }
+.m-q i { width: 26px; height: 26px; flex: none; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: 13px; font-style: normal; }
+.m-faces { display: flex; justify-content: space-between; padding: 11px 11px 7px; }
+.m-face { display: flex; flex-direction: column; align-items: center; gap: 3px; width: 56px; font: 500 11px var(--font); }
+.m-face b { position: relative; width: 44px; height: 44px; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 22px; font-weight: 400; }
+.m-face.out b { background: var(--bg); color: transparent; text-shadow: 0 0 0 rgba(27, 34, 46, .4); }
+.m-face.out b::after { content: ''; position: absolute; left: 3px; right: 3px; top: 50%; height: 2px; background: var(--ink); transform: rotate(-35deg); }
+.m-face.out span { text-decoration: line-through; }
+.m-rows { padding: 0 11px; display: flex; flex-direction: column; gap: 7px; }
+.m-row { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-radius: 13px; background: var(--paper); border: 1.5px solid var(--line); font: 400 12.5px/1.3 var(--font); }
+.m-row span { flex: 1; }
+.m-row.picked { background: var(--s); border-color: var(--s); color: #fff; font-weight: 500; }
+.m-row.picked i, .m-used i { width: 24px; height: 24px; flex: none; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: 12px; font-style: normal; }
+.m-row.glow { animation: glow 2.4s ease-in-out infinite; }
+.m-used { flex: none !important; display: flex; align-items: center; gap: 2px; background: var(--s-soft); color: var(--s); border-radius: 999px; padding: 1px 6px 1px 2px; font: 500 10px var(--font); }
+.m-used i { width: 18px; height: 18px; font-size: 10px; }
+.m-row s { text-decoration-thickness: 1.5px; color: var(--ink-2); }
+.m-helper { margin-top: auto; padding: 10px 11px 20px; display: flex; gap: 8px; align-items: center; }
+.m-helper b { width: 36px; height: 36px; flex: none; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 19px; font-weight: 400; }
+.m-helper span { flex: 1; background: var(--paper); border: 1.5px solid var(--glow); border-radius: 13px 13px 13px 4px; padding: 7px 10px; font: 400 12px/1.35 var(--font); }
+.stamp { position: absolute; right: -14px; top: -16px; z-index: 2; display: flex; align-items: center; gap: 8px; white-space: nowrap; color: var(--stamp); background: var(--stamp-paper);
+  border: 3px solid var(--stamp); border-radius: 14px; box-shadow: inset 0 0 0 2px var(--stamp-paper), inset 0 0 0 3.5px var(--stamp), 0 14px 30px rgba(0, 0, 0, .25);
+  padding: 5px 14px 5px 5px; font: 700 19px var(--font); transform: rotate(-7deg); animation: stamp 400ms 600ms cubic-bezier(.3, 1.5, .5, 1) both; }
+.stamp i { width: 28px; height: 28px; border-radius: 50%; background: var(--stamp); color: #fff; display: grid; place-items: center; font: 700 15px var(--font); font-style: normal; }
+.call { display: none; position: absolute; left: -176px; top: 120px; z-index: 2; width: 170px; flex-direction: column; gap: 8px; background: var(--paper); color: var(--ink);
+  border-radius: 18px; padding: 12px 14px; box-shadow: 0 16px 36px rgba(0, 0, 0, .25); font-size: 15px; line-height: 1.35; animation: float 6s ease-in-out infinite; }
+.call b { display: flex; align-items: center; gap: 8px; font: 600 14px var(--font); }
+.call b i { width: 30px; height: 30px; border-radius: 50%; background: var(--season-soft); display: grid; place-items: center; font-size: 16px; font-style: normal; }
+
+/* sections */
+section.part { padding: 56px 0 24px; scroll-margin-top: 64px; }
+.head { max-width: 640px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+.kicker { font: 600 13px var(--font); letter-spacing: .1em; text-transform: uppercase; color: var(--season-mid); }
+h2 { font: 700 clamp(28px, 4vw, 44px)/1.12 var(--font); letter-spacing: -.01em; text-wrap: balance; }
+.sub { color: var(--ink-2); text-wrap: pretty; }
+.steps { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 20px; margin: 0 -20px; padding: 6px 20px 18px; scrollbar-width: none; }
+.steps::-webkit-scrollbar { display: none; }
+.step { flex: 0 0 78%; scroll-snap-align: start; background: var(--paper); border: 1.5px solid var(--line); border-radius: 22px; padding: 20px 18px; display: flex; flex-direction: column; gap: 10px;
+  box-shadow: 0 2px 0 var(--line), 0 10px 24px rgba(60, 50, 20, .05); }
+.step-top { display: flex; align-items: center; justify-content: space-between; }
+.step-top i { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; font-size: 28px; font-style: normal; transform: rotate(-4deg); }
+.step-top span { font: 700 15px var(--font); color: var(--season-mid); }
+.step b { font: 600 19px/1.2 var(--font); }
+.step p { font-size: 16px; line-height: 1.5; color: var(--ink-2); }
+.step small { margin-top: auto; font: 500 14px/1.35 var(--font); color: var(--season); background: var(--season-soft); border-radius: 12px; padding: 8px 10px; }
+.swipe { text-align: center; font-size: 14px; color: var(--ink-2); }
+.two { display: flex; flex-direction: column; gap: 28px; }
+.two > * { flex: 1 1 0; display: flex; flex-direction: column; gap: 12px; }
+.grid { display: grid; grid-template-columns: 1fr; gap: 12px; align-content: start; }
+.card { background: var(--paper); border: 1.5px solid var(--line); border-radius: 22px; padding: 18px; display: flex; gap: 14px; align-items: flex-start; box-shadow: 0 2px 0 var(--line), 0 10px 24px rgba(60, 50, 20, .05); }
+.card i { width: 46px; height: 46px; flex: none; border-radius: 50%; background: var(--season-soft); display: grid; place-items: center; font-size: 23px; font-style: normal; }
+.card span { display: flex; flex-direction: column; gap: 5px; }
+.card b { font: 600 18px/1.25 var(--font); }
+.card p { font-size: 16px; line-height: 1.5; color: var(--ink-2); }
+.cork { margin-top: 8px; background: var(--season); color: #fff; border-radius: 24px; padding: 18px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 16px 36px rgba(22, 75, 51, .25); }
+.cork-q { display: flex; gap: 10px; align-items: center; font: 500 17px/1.3 var(--font); }
+.cork-q i, .letter i { width: 32px; height: 32px; flex: none; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: 16px; font-style: normal; }
+.slots { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; max-width: 360px; }
+.slots span { aspect-ratio: 1; border-radius: 12px; display: grid; place-items: center; background: #fff; font-size: 20px; }
+.slots span.empty { background: transparent; border: 1.5px dashed rgba(255, 255, 255, .5); color: rgba(255, 255, 255, .7); font: 600 17px var(--font); }
+.letter { background: var(--paper); color: var(--ink); border-radius: 16px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start; transform: rotate(-1deg); }
+.letter i { width: 40px; height: 40px; background: #dff0ff; font-size: 22px; }
+.letter span { display: flex; flex-direction: column; gap: 3px; font-size: 16px; line-height: 1.4; }
+.together { margin-top: 8px; background: #fbe6a4; border-radius: 22px; padding: 18px 20px; display: flex; gap: 14px; align-items: flex-start; transform: rotate(-1deg); box-shadow: 0 14px 30px rgba(60, 50, 20, .12); }
+.together i { width: 48px; height: 48px; flex: none; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: 24px; font-style: normal; }
+.together span { display: flex; flex-direction: column; gap: 5px; font-size: 16px; line-height: 1.5; }
+.final { position: relative; overflow: hidden; background: var(--season); color: #fff; border-radius: 30px; padding: 32px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 22px; }
+.final::before { content: ''; position: absolute; inset: 0; background: radial-gradient(60% 80% at 100% 0%, rgba(255, 233, 160, .2), transparent 70%); pointer-events: none; }
+.final > div { position: relative; flex: 1 1 300px; display: flex; flex-direction: column; gap: 8px; }
+.final p { color: rgba(255, 255, 255, .88); }
+.final .btn { position: relative; flex: 1 1 220px; max-width: 340px; }
+footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-size: 14px; color: var(--ink-2); display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.adults { background: none; border: 1.5px solid var(--line); border-radius: 14px; min-height: 48px; padding: 0 16px; font: 500 15px var(--font); color: var(--ink-2); text-decoration: none; display: inline-flex; align-items: center; cursor: pointer; }
+.dock { position: sticky; bottom: 0; z-index: 10; padding: 10px 16px calc(12px + env(safe-area-inset-bottom)); background: linear-gradient(rgba(250, 246, 239, 0), var(--bg) 35%); }
+.dock .btn { min-height: 58px; border-radius: 18px; font-size: 18px; }
+
+/* install: Chrome/Edge/Android get the real dialog, Safari the steps */
+.install { display: flex; align-items: center; gap: 12px; background: var(--paper); border: 1.5px solid var(--line); border-radius: 18px; padding: 10px 12px; margin: 16px 0 0; box-shadow: 0 2px 0 var(--line); }
+.install[hidden], .reopen[hidden], .sheet-wrap[hidden] { display: none; }
+.install img { width: 44px; height: 44px; border-radius: 10px; }
+.install .txt { flex: 1; display: flex; flex-direction: column; font-size: 14px; line-height: 1.35; color: var(--ink-2); }
+.install .txt b { color: var(--ink); font-size: 16px; }
+.pill { min-height: 44px; padding: 0 16px; border: 0; border-radius: 999px; background: var(--season); color: #fff; font: 600 15px var(--font); cursor: pointer; }
+.x { width: 44px; height: 44px; border: 0; border-radius: 50%; background: transparent; color: var(--ink-2); font-size: 18px; cursor: pointer; }
+.reopen { background: none; border: 0; color: var(--season); font: 500 15px var(--font); min-height: 44px; cursor: pointer; }
+.sheet-wrap { position: fixed; inset: 0; z-index: 30; background: rgba(26, 30, 40, .45); display: flex; align-items: flex-end; justify-content: center; padding: 0 12px calc(14px + env(safe-area-inset-bottom)); }
+.sheet { width: min(520px, 100%); background: var(--paper); border: 3px solid var(--season); border-radius: 28px; padding: 22px 18px 18px; display: flex; flex-direction: column; gap: 12px;
+  box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4.5px var(--season), 0 -10px 50px rgba(40, 30, 10, .28); }
+.sheet h3 { margin: 0; font: 600 23px/1.2 var(--font); }
+.sheet .sub { font-size: 16px; }
+.sheet ol { margin: 0; padding: 0; list-style: none; counter-reset: s; display: flex; flex-direction: column; gap: 8px; }
+.sheet li { counter-increment: s; display: flex; align-items: center; gap: 12px; background: var(--bg); border-radius: 14px; padding: 10px 12px; font-size: 16px; line-height: 1.35; }
+.sheet li::before { content: counter(s); width: 28px; height: 28px; flex: none; border-radius: 50%; background: var(--season); color: #fff; display: grid; place-items: center; font: 600 14px var(--font); }
+.sheet li span:first-child { flex: 1; }
+.sheet .pill { min-height: 56px; border-radius: 18px; font-size: 18px; }
+
+@keyframes in { from { transform: translateY(14px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes float { 0%, 100% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-6px) rotate(-5deg); } }
+@keyframes stamp { 0% { transform: scale(1.9) rotate(-12deg); opacity: 0; } 75% { transform: scale(.97) rotate(-7deg); opacity: 1; } 100% { transform: scale(1) rotate(-7deg); opacity: 1; } }
+@keyframes glow { 0%, 100% { box-shadow: 0 0 0 3px var(--glow), 0 0 16px 2px rgba(248, 202, 101, .35); } 50% { box-shadow: 0 0 0 5px var(--glow), 0 0 28px 8px rgba(248, 202, 101, .55); } }
+@media (min-width: 760px) {
+  nav.links { display: flex; }
+  header.top .btn { display: flex; }
+  .dock, .swipe { display: none; }
+  .hero .wrap { flex-direction: row; padding-top: 72px; padding-bottom: 80px; gap: 56px; }
+  .hero-text { flex: 1 1 0; }
+  .hero-btns { flex-direction: row; }
+  .steps { flex-wrap: wrap; overflow: visible; justify-content: center; margin: 0; padding: 0; }
+  .step { flex: 1 1 190px; max-width: 260px; }
+  .grid { grid-template-columns: 1fr 1fr; }
+  footer.foot { padding-bottom: 40px; }
 }
-.install[hidden], .sheet-wrap[hidden], .reopen[hidden] { display: none; }
-.install img { width: 56px; height: 56px; border-radius: 14px; flex: none; }
-.install .txt { flex: 1; }
-.install b { display: block; font-size: 20px; }
-.install span { color: var(--muted); font-size: 16px; }
-.pill {
-  appearance: none; border: 0; border-radius: 999px; background: var(--accent); color: #fff; cursor: pointer;
-  font: inherit; font-size: 20px; font-weight: 700; padding: 10px 22px; min-height: 48px;
-}
-.x { appearance: none; border: 0; background: none; font-size: 24px; color: var(--muted); cursor: pointer; padding: 4px 8px; }
-.reopen { appearance: none; border: 0; background: none; color: var(--accent); font: inherit; font-size: 17px; cursor: pointer; text-decoration: underline; }
-.sheet-wrap { position: fixed; inset: 0; background: rgba(0, 0, 0, .45); display: flex; align-items: flex-end; justify-content: center; z-index: 30; }
-.sheet {
-  width: min(560px, 100%); background: var(--bg); border-radius: 26px 26px 0 0; text-align: left;
-  padding: 18px 20px calc(22px + env(safe-area-inset-bottom)); animation: up .25s ease-out;
-}
-@keyframes up { from { transform: translateY(100%); } }
-.sheet .grab { width: 44px; height: 5px; border-radius: 3px; background: var(--line); margin: 0 auto 14px; }
-.langs { display: flex; justify-content: flex-end; gap: 0; margin: -6px 0 10px; }
-.langs button {
-  appearance: none; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; padding: 4px 12px;
-  background: var(--card); color: var(--muted); border: 1px solid var(--line);
-}
-.langs button:first-child { border-radius: 999px 0 0 999px; }
-.langs button:last-child { border-radius: 0 999px 999px 0; border-left: 0; }
-.langs button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
-.preview {
-  display: flex; justify-content: center; gap: 22px; padding: 18px 10px; border-radius: 18px; margin-bottom: 14px;
-  background: linear-gradient(135deg, #3b4ca8, #6a3fa0 60%, #1f7a8c);
-}
-.preview .app { display: flex; flex-direction: column; align-items: center; gap: 6px; color: #fff; font-size: 14px; }
-.preview .app img, .preview .app i { width: 62px; height: 62px; border-radius: 15px; }
-.preview .app i { background: rgba(255, 255, 255, .25); filter: blur(1px); }
-.sheet h2 { margin: 0 0 4px; font-size: 26px; }
-.sheet .sub { color: var(--muted); margin: 0 0 14px; }
-.steps { list-style: none; margin: 0; padding: 4px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; counter-reset: st; }
-.steps li { counter-increment: st; display: flex; align-items: center; gap: 12px; padding: 10px 0; font-size: 18px; }
-.steps li + li { border-top: 1px solid var(--line); }
-.steps li::before { content: counter(st); color: var(--muted); font-weight: 700; width: 18px; }
-.steps li > span:first-child { flex: 1; }
-.steps .ico { font-size: 22px; flex: none; }
-@media (max-width: 520px) {
-  .install .txt span { display: none; }
-  .install .pill { padding: 8px 16px; font-size: 18px; }
-}
-.sheet .pill { width: 100%; margin-top: 14px; }
+@media (min-width: 1000px) { .two { flex-direction: row; gap: 48px; } .call { display: flex; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; } html { scroll-behavior: auto; } }
 </style>
 <!-- Cloudflare Web Analytics: anonymous visit counts only (no cookies, no names, no game data) -->
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "6412abd4f3ce49da8e9b0654e8158f3d"}'></script>
 </head>
 <body>
-<main>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#top"><span class="coin">🔍</span>Bralni detektivi</a>
+  <nav class="links"><a href="#kako">Kako deluje</a><a href="#vsak-teden">Vsak teden</a><a href="#zakaj">Zakaj branje</a></nav>
+  <a class="btn main" href="solo/?play">Igraj zdaj</a>
+</div></header>
+
+<section class="hero" id="top"><div class="wrap">
+  <div class="hero-text">
+    <span class="eyebrow">Bralna igra za otroke od 6 do 10 let</span>
+    <h1>Vsak stavek je sled.</h1>
+    <p class="lead">Otrok postane detektiv. Da reši primer, mora brati in razumeti.</p>
+    <div class="hero-btns">
+      <a class="btn gold" href="solo/?play" id="play">▶ Igraj zdaj</a>
+      <a class="btn line" href="#kako">Kako deluje ↓</a>
+    </div>
+    <p class="hero-note">Za telefon in tablico. Tudi brez povezave. Vsak teden nova pustolovščina.</p>
+  </div>
+  <div class="phone" aria-hidden="true">
+    <div class="call"><b><i>📞</i>Zvoni!</b>Nekdo je ponoči odprl omarico s piškoti!</div>
+    <div class="stamp"><i>✓</i>Primer rešen!</div>
+    <div class="phone-frame"><div class="phone-screen">
+      <div class="m-band"><span class="m-notch"></span>
+        <div class="m-top"><span class="m-x">←</span><span class="m-track">Primer 1 · Kdo je bil?<span class="m-line"><span class="m-ball">👾</span></span></span></div>
+        <div class="m-q"><i>❓</i>Kdo je odprl omarico s piškoti?</div></div>
+      <div class="m-faces"><span class="m-face"><b>👨🏽‍🚀</b><span>Tim</span></span><span class="m-face out"><b>👩🏿‍🚀</b><span>Ela</span></span><span class="m-face"><b>🤖</b><span>Robi</span></span><span class="m-face out"><b>🐭</b><span>Kiki</span></span></div>
+      <div class="m-rows">
+        <div class="m-row"><span><s>Ela je zjutraj prva prišla v kuhinjo.</s></span><span class="m-used"><i>👩🏿‍🚀</i>✕</span></div>
+        <div class="m-row picked"><span>Ročaj omarice je lepljiv od medu.</span><i>👆</i></div>
+        <div class="m-row glow"><span>Kiki je premajhna za tako visoko omarico.</span></div>
+      </div>
+      <div class="m-helper"><b>🦉</b><span>Prečrtaj, kdo ni bil. Tapni stavek, nato obraz.</span></div>
+    </div></div>
+  </div>
+</div></section>
+
+<div class="wrap">
   <div class="install" id="install" hidden>
     <img src="icons/icon-180.png" alt="">
-    <div class="txt"><b data-i="title"></b><span data-i="banner"></span></div>
-    <button class="pill" id="installBtn" data-i="install"></button>
-    <button class="x" id="installClose" data-i-label="close">✕</button>
+    <div class="txt"><b>Namesti aplikacijo</b><span>Igra na začetnem zaslonu – deluje tudi brez interneta.</span></div>
+    <button class="pill" id="installBtn">Namesti</button>
+    <button class="x" id="installClose" aria-label="Zapri">✕</button>
   </div>
-  <a class="hero" href="solo/?play">
-    <span class="hero-icon">🔍</span>
-    <span class="hero-title">Detektivska pisarna</span>
-    <span class="hero-sub">Reši skrivnosti v vesolju, v hotelu in v muzeju!</span>
-    <span class="hero-cast">👾 🤖 · 🦔 👵🏼 · 🦕 👮🏻‍♂️</span>
-    <span class="hero-btn">Igraj!</span>
-    <span class="hero-note">Vsak teden nova skrivnost!</span>
-  </a>
-  <button class="more-games" id="moreGames" aria-expanded="false">Za odrasle ▾</button>
-  <div class="games" id="otherGames" hidden>
-    <a class="game" href="solo/">
-      <span class="icon">🕵️</span>
-      <span class="name">Igraj sam</span>
-      <span class="who">z nastavitvami za odrasle</span>
-    </a>
-    <!-- for now only solo play: Igrajta v dvoje (za-dva/) and Pekarna (pekarna/) are hidden; their pages still work -->
+</div>
+
+<section class="part" id="kako"><div class="wrap">
+  <div class="head"><span class="kicker">Kako deluje</span><h2>Pet kratkih korakov</h2><p class="sub">Veliki stavki, malo navodil.</p></div>
+  <div class="steps">
+    <div class="step"><div class="step-top"><i style="background:#dff1ff">📞</i><span>01</span></div><b>Zvoni!</b><p>Nekdo kliče na pomoč.</p><small>»Nekdo je ponoči odprl omarico s piškoti!«</small></div>
+    <div class="step"><div class="step-top"><i style="background:var(--season-soft)">🔍</i><span>02</span></div><b>Na kraju dogodka</b><p>Zbira sledi.</p><small>🍯 🍪 🔦 🚪</small></div>
+    <div class="step"><div class="step-top"><i style="background:#fdeaa9">🔤</i><span>03</span></div><b>Uganka</b><p>Iskanka, šifra, ključavnica …</p><small>A N T E N A</small></div>
+    <div class="step"><div class="step-top"><i style="background:#f1e8fa">🕵️</i><span>04</span></div><b>Kdo je bil?</b><p>Prečrta in dokaže.</p><small>Tapni stavek, nato obraz.</small></div>
+    <div class="step"><div class="step-top"><i style="background:#fbe4e0">📰</i><span>05</span></div><b>Primer rešen!</b><p>Ime v časopisu.</p><small>ZVEZDNI ČASNIK</small></div>
   </div>
-  <button class="reopen" id="reopen" hidden data-i="reopen"></button>
-</main>
+  <p class="swipe">Povlecite →</p>
+</div></section>
+
+<section class="part" id="vsak-teden"><div class="wrap two">
+  <div>
+    <span class="kicker">Vsak teden znova</span>
+    <h2>Branje, ki se ga veseli</h2>
+    <p class="sub">Vsak primer odklene nov namig. Vsak teden pride nova pustolovščina.</p>
+    <div class="cork">
+      <span class="cork-q"><i>📌</i>Kaj se skriva v zračniku?</span>
+      <span class="slots"><span>👣</span><span>🔊</span><span>🥄</span><span class="empty">?</span><span class="empty">?</span><span class="empty">?</span></span>
+      <span class="letter"><i>📬</i><span><b>Prišlo je pismo!</b>P. S. Ponoči nekaj piska v zračniku …</span></span>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="card"><i style="background:#dff1ff">🧩</i><span><b>Zgodba se nadaljuje</b><p>Vsak primer doda namig na tablo.</p></span></div>
+    <div class="card"><i style="background:#fdeaa9">📬</i><span><b>Pismo s skrivnostjo</b><p>Pride ob naslednjem obisku.</p></span></div>
+    <div class="card"><i style="background:#f1e8fa">🔰</i><span><b>Čin raste</b><p>Samo navzgor.</p></span></div>
+    <div class="card"><i style="background:#fbe4e0">🤝</i><span><b>Ritem določite vi</b><p>Brez nizov in časovnih omejitev.</p></span></div>
+  </div>
+</div></section>
+
+<section class="part" id="zakaj"><div class="wrap two">
+  <div>
+    <span class="kicker">Za starše</span>
+    <h2>Branje je ključ do rešitve</h2>
+    <p class="sub">Otrok bere, ker hoče izvedeti, kdo je bil.</p>
+    <div class="together"><i>👪</i><span><b>Igrajta skupaj</b>Otrok bere, vi pomagate. Namigi, nikoli kazni.</span></div>
+  </div>
+  <div class="grid">
+    <div class="card"><i>📖</i><span><b>Tekoče branje</b><p>Kratki stavki, velika pisava.</p></span></div>
+    <div class="card"><i>🔎</i><span><b>Razumevanje</b><p>Dokaz je v stavku.</p></span></div>
+    <div class="card"><i>⏳</i><span><b>Zaporedje</b><p>Prej, takrat, potem.</p></span></div>
+    <div class="card"><i>🧠</i><span><b>Sklepanje</b><p>Dva stavka, en zaključek.</p></span></div>
+  </div>
+</div></section>
+
+<section class="part"><div class="wrap">
+  <div class="final">
+    <div><h2>Prvi primer že čaka.</h2><p>Kdo je ponoči odprl omarico s piškoti?</p></div>
+    <a class="btn gold" href="solo/?play">▶ Igraj zdaj</a>
+  </div>
+  <footer class="foot">
+    <span>Bralni detektivi · Brez časovnih omejitev, točk in oglasov.</span>
+    <a class="adults" href="solo/">Za odrasle: nastavitve in pregled</a>
+    <button class="reopen" id="reopen" hidden>📲 Namesti na začetni zaslon</button>
+  </footer>
+</div></section>
+
+<div class="dock"><a class="btn main" href="solo/?play">▶ Igraj zdaj</a></div>
+
 <div class="sheet-wrap" id="sheet" hidden>
-  <div class="sheet" role="dialog" data-i-label="title">
-    <div class="grab"></div>
-    <div class="langs" role="group" aria-label="Language">
-      <button data-lang="en">EN</button><button data-lang="sl">SL</button>
-    </div>
-    <div class="preview">
-      <span class="app"><i></i>&nbsp;</span>
-      <span class="app"><img src="icons/icon-180.png" alt="">Detektiv</span>
-      <span class="app"><i></i>&nbsp;</span>
-    </div>
-    <h2 data-i="title"></h2>
-    <p class="sub" data-i="sub"></p>
-    <ol class="steps" id="steps"></ol>
-    <button class="pill" id="sheetClose" data-i="ok"></button>
+  <div class="sheet" role="dialog" aria-label="Namesti aplikacijo">
+    <h3>Namesti aplikacijo</h3>
+    <p class="sub">Ikona bo na začetnem zaslonu in igra se odpre čez cel zaslon.</p>
+    <ol id="steps"></ol>
+    <button class="pill" id="sheetClose">Razumem</button>
   </div>
 </div>
 <script>
-// "Za odrasle": the solo game with its adult setup stays one tap away.
-document.getElementById('moreGames').onclick = (e) => {
-  const g = document.getElementById('otherGames');
-  g.hidden = !g.hidden;
-  e.currentTarget.setAttribute('aria-expanded', String(!g.hidden));
-};
-
 // ---- Install: Chrome/Edge/Android get the real install dialog; Safari gets the steps.
 (() => {
   const $ = (id) => document.getElementById(id);
@@ -175,55 +308,18 @@ document.getElementById('moreGames').onclick = (e) => {
   if (standalone) return; // already opened from the Home Screen
   const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const KEY = 'install_hidden';
-  const LANG_KEY = 'install_lang';
-  // Install widget only. English by default (most iPads run iOS in English); SL on request.
-  const T = {
-    en: {
-      title: 'Install the app', banner: 'Games on your Home Screen – they work offline too.', install: 'Install',
-      close: 'Close', reopen: '📲 Add to Home Screen', ok: 'Got it',
-      sub: 'The icon goes on your Home Screen and the games open full screen.',
-      ios: ['Tap <b>Share</b> – top right on iPad, at the bottom on iPhone, or in the <b>•••</b> menu',
-        'Scroll down and tap <b>Add to Home Screen</b>', 'Tap <b>Add</b> in the top right'],
-      other: ['Open the browser menu <b>⋮</b> or <b>•••</b>', 'Choose <b>Install app</b> or <b>Add to Home screen</b>', 'Confirm with <b>Install</b>'],
-    },
-    sl: {
-      title: 'Namesti aplikacijo', banner: 'Igre na začetnem zaslonu – delujejo tudi brez interneta.', install: 'Namesti',
-      close: 'Zapri', reopen: '📲 Namesti na začetni zaslon', ok: 'Razumem',
-      sub: 'Ikona bo na začetnem zaslonu in igre se odprejo čez cel zaslon.',
-      ios: ['Tapni <b>Deli</b> – na iPadu zgoraj desno, na iPhonu spodaj ali v meniju <b>•••</b>',
-        'Podrsaj navzdol in tapni <b>Dodaj na začetni zaslon</b>', 'Tapni <b>Dodaj</b> zgoraj desno'],
-      other: ['Odpri meni brskalnika <b>⋮</b> ali <b>•••</b>', 'Izberi <b>Namesti aplikacijo</b> ali <b>Dodaj na začetni zaslon</b>', 'Potrdi z <b>Namesti</b>'],
-    },
-  };
-  let lang = 'en';
-  try { if (localStorage.getItem(LANG_KEY) === 'sl') lang = 'sl'; } catch (e) {}
+  const STEPS = ios
+    ? ['Tapni <b>Deli</b> – na iPadu zgoraj desno, na iPhonu spodaj ali v meniju <b>•••</b>', 'Podrsaj navzdol in tapni <b>Dodaj na začetni zaslon</b>', 'Tapni <b>Dodaj</b> zgoraj desno']
+    : ['Odpri meni brskalnika <b>⋮</b> ali <b>•••</b>', 'Izberi <b>Namesti aplikacijo</b> ali <b>Dodaj na začetni zaslon</b>', 'Potrdi z <b>Namesti</b>'];
   const ICONS = ios ? ['⬆️', '➕', '✅'] : ['☰', '➕', '✅'];
-  const applyLang = () => {
-    const t = T[lang];
-    document.querySelectorAll('[data-i]').forEach(el => { el.textContent = t[el.dataset.i]; });
-    document.querySelectorAll('[data-i-label]').forEach(el => el.setAttribute('aria-label', t[el.dataset.iLabel]));
-    $('steps').innerHTML = (ios ? t.ios : t.other)
-      .map((txt, i) => `<li><span>${txt}</span><span class="ico">${ICONS[i]}</span></li>`).join('');
-    document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
-  };
-  document.querySelectorAll('[data-lang]').forEach(b => {
-    b.onclick = () => {
-      lang = b.dataset.lang;
-      try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
-      applyLang();
-    };
-  });
+  $('steps').innerHTML = STEPS.map((txt, i) => `<li><span>${txt}</span><span>${ICONS[i]}</span></li>`).join('');
   let hidden = false;
   try { hidden = localStorage.getItem(KEY) === '1'; } catch (e) {}
   let deferred = null;
   const show = () => { $('install').hidden = hidden; $('reopen').hidden = !hidden; };
-
-  applyLang();
-
   // iOS has no install dialog for web apps, so Safari always gets the steps.
   if (!ios) window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferred = e; });
   window.addEventListener('appinstalled', () => { $('install').hidden = true; $('reopen').hidden = true; });
-
   const open = async () => {
     if (deferred) {
       deferred.prompt();
