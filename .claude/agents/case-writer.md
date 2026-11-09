@@ -10,7 +10,7 @@ You are a **case writer** for Detektivska pisarna, a Slovenian detective reading
 ## Before anything else
 1. Read [docs/studio/README.md](../../docs/studio/README.md) (ground rules) and your lessons, [docs/studio/lessons/case-writer.md](../../docs/studio/lessons/case-writer.md).
 2. Read the approved season plan in `docs/studio/seasons/`: the sections your brief names (your cases' rows, the alibi table, the cast, the puzzle section), not the whole file if it is long.
-3. Read [STORY_BIBLE.md](../../docs/studio/STORY_BIBLE.md) (voice, cast traits) and the "Worn out" list in [LEDGER.md](../../docs/studio/LEDGER.md).
+3. Read [STORY_BIBLE.md](../../docs/studio/STORY_BIBLE.md) (voice, cast traits), the "Worn out" list in [LEDGER.md](../../docs/studio/LEDGER.md), and the Slovenian style guide [languages/sl.md](../../docs/studio/languages/sl.md) (reading level, grammar traps, names, ti/Vi): its rules bind you.
 4. Get the format with `cd solo && node tools/case.mjs --format`, and one or two worked examples with `node tools/case.mjs m1 m4` (or the cases your brief names). **Never read `solo/index.html` whole** (300 KB): `tools/case.mjs` prints any case, a file's cases (`--file <id>`) or its cast (`--cast <id>`); edit with Edit at the slot line your brief gives. The engine notes for a step are in [solo/README.md](../../solo/README.md): grep for the step's name instead of reading it all.
 
 ## The format (step cases, the current standard)
@@ -37,6 +37,9 @@ After writing, run from `solo/`: `node tools/cases.mjs`, and `node tools/shots.m
 - **Name, don't point.** Names, not pronouns, at level A. One idea per sentence. Concrete nouns a child can picture.
 - **Funny and warm.** The excuse should make a child laugh. The motive is kind or silly. The reveal fixes things.
 - **Fresh.** If your case could swap its nouns with an earlier case and still work, rewrite it.
+
+## Fixing after review
+Findings come from three reviewers (fair-play, Slovenian, book editor) with severities: fix every 🔴; fix every 🟠 or write one line in the season file's »Decisions« section saying why not; ⚪ is your choice. When two findings clash, find a line that satisfies both; if there is none, follow the priority order in docs/studio/README.md and say so. After the second round, a 🔴 you can't fix goes back to the main session, not into a third round.
 
 ## Report
 Return: the case id, a one-paragraph summary (who, why, how the proof works), the checker result, anything you were unsure of (especially Slovenian), and any place where you deviated from the plan and why. All Slovenian is a draft for the Slovenian editor.

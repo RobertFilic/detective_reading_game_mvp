@@ -12,14 +12,16 @@ The children are 7–8 now and will be 9–10 in two years. Each season teaches 
 
 ## Reading knobs (from easy to hard)
 
+The knobs are the same in every language; each language's examples are in its style guide ([languages/sl.md](languages/sl.md) §2 for Slovenian). Words per sentence are counted for Slovenian; another language sets its own limits from its school system.
+
 | Knob | Season 1 (now) | Later |
 |---|---|---|
 | Words per sentence | ≤ 8 (level A) | 9–10 → 11–12 → ≤ 14 (level B) |
 | Sentences per case | 6–8 | 9–10 → 11–12 |
 | Suspects | 4 | 4–5 |
-| Names vs pronouns | names only | »je rekla«, »njegov« (pronoun points to the sentence before) |
-| Time words | najprej, potem, na koncu | ob osmih, preden, medtem ko, šele ko |
-| Negation | rare | »ni«, »nikoli«, »nihče« (careful: a child often misses »ne«) |
+| Names vs pronouns | names only | pronouns that point to the sentence before (»she said«, »his«) |
+| Time words | sequence words (first, then, at the end) | clock times, »before«, »while«, »only when« |
+| Negation | rare | »not«, »never«, »nobody« (careful: a child often misses the »not«) |
 | Who speaks | narration and short quotes | witnesses who contradict each other; a diary; a letter |
 | Text across screens | one screen | two clues on different screens that must be combined |
 
