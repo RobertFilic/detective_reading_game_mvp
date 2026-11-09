@@ -29,8 +29,8 @@ for (const [dev, w, h] of [['plus14', 428, 926], ['iphone14', 390, 844]]) {
     ok(JSON.stringify(cards) === JSON.stringify(expect), `${dev} ${st}: card order ${cards}`);
     ok(shelf.length === { fresh: 0, now: 1, mid: 1, done: 2 }[st], `${dev} ${st}: shelf`);
     if (heroBtn) ok(heroBtn.vis, `${dev} ${st}: the hero button is on screen without scrolling`);
-    const novo = await p.$$eval('.file-card:not(.teaser)', els => els.map(e => e.dataset.file + ':' + (e.querySelector('.new-tag') || {}).textContent));
-    if (st === 'mid') ok(novo.includes('muzej:NOVO · 🔎 skrivnost') && novo.includes('galeb:🔎 skrivnost'), `${dev} mid: NOVO only on the unstarted ${novo}`);
+    const novo = await p.$$eval('.file-card:not(.teaser)', els => els.map(e => e.dataset.file + ':' + [...e.querySelectorAll('.ui-tag')].map(t => t.textContent).join(' · ')));
+    if (st === 'mid') ok(novo.includes('muzej:NOVO · 🔎 skrivnost') && novo.includes('galeb:'), `${dev} mid: NOVO only on the unstarted ${novo}`);
     const W = await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth);
     ok(W, `${dev} ${st}: no sideways scroll`);
     await p.screenshot({ path: `shots/start-${dev}-${st}.png` });

@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Detektiv">
+<meta name="apple-mobile-web-app-title" content="Detektivi">
 <meta name="theme-color" content="#faf6ef">
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="apple-touch-icon" href="../icons/icon-180.png">
-<title>Detektivska pisarna</title>
+<title>Bralni detektivi</title>
 <style>
 /* ===== Design tokens (»Tiha lupa«, Claude Design v4). Every colour, size and shadow comes from here.
    A season sets only --hue (FILES[].hue): the deep band, the picked row and the main button follow it.
@@ -27,7 +27,7 @@
   --stamp: #c83a35; --stamp-paper: #fefbf6;        /* the red stamp, never a »wrong« */
   --green: #21763c; --green-soft: #dcf7e1;         /* »To šteje!«, done cards */
   --font: Lexend, Verdana, system-ui, sans-serif;
-  --t-small: 15px; --t-body: 18px; --t-row: 21px; --t-title: 26px; --t-big: 34px;
+  --t-small: 15px; --t-label: 16px; --t-body: 18px; --t-story: 19px; --t-row: 21px; --t-title: 27px; --t-big: 34px;
   --r-s: 12px; --r-m: 18px; --r-l: 22px; --r-xl: 28px; --r-pill: 999px;
   --sh-soft: 0 2px 0 var(--line), 0 6px 14px rgba(60, 50, 20, .05);
   --sh-float: 0 10px 24px rgba(40, 30, 10, .12);
@@ -114,6 +114,7 @@ a.btn { text-decoration: none; display: inline-flex; align-items: center; }
 @keyframes pulse { 50% { box-shadow: 0 0 0 8px rgba(224, 168, 0, .45); } }
 .footer { display: flex; gap: 12px; justify-content: flex-end; align-items: center; flex-wrap: wrap; padding-top: 12px; }
 .locked .rows, .locked .footer { pointer-events: none; }
+.locked .ui-foot.footer { opacity: .4; }
 .locked .footer { opacity: .4; }
 .suspects { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
 .suspect {
@@ -160,77 +161,6 @@ button.suspect { cursor: pointer; }
 }
 .folder.suggest { border-color: var(--sel-line); animation: glow 1.6s ease-in-out infinite; }
 @keyframes glow { 50% { box-shadow: 0 0 0 7px rgba(224, 168, 0, .45); } }
-/* first-time tutorial: Babica (owl) coach bubble + the thing to tap glows */
-.coach {
-  position: fixed; left: 50%; transform: translateX(-50%); width: min(620px, calc(100% - 20px)); z-index: 20;
-  display: flex; gap: 12px; align-items: center; background: #fff; border: 3px solid var(--accent); border-radius: 20px;
-  padding: 10px 14px; font-size: 22px; font-weight: 600; box-shadow: 0 10px 30px rgba(0, 0, 0, .2); animation: coachIn .3s ease-out;
-}
-.coach.top { top: calc(10px + var(--safe-top)); }
-.coach.bottom { bottom: calc(10px + env(safe-area-inset-bottom)); }
-.coach .owl { font-size: 44px; line-height: 1; flex: none; }
-.coach .say { flex: 1; }
-.coach .btn { flex: none; }
-@keyframes coachIn { from { opacity: 0; transform: translateX(-50%) scale(.9); } }
-.coach-target { outline: 4px solid var(--sel-line); outline-offset: 4px; border-radius: 16px; animation: pulse 1.1s ease-in-out infinite; }
-/* the rest of the screen dims around the target, a thick ring breathes and a finger bounces at it */
-.coach-spot { position: fixed; z-index: 19; pointer-events: none; border-radius: 18px; border: 5px solid #ffc400;
-  box-shadow: 0 0 0 100vmax rgba(20, 24, 40, .45); animation: ring-breathe 1s ease-in-out infinite; }
-@keyframes ring-breathe { 50% { border-color: #ff8a00; outline: 6px solid rgba(255, 196, 0, .5); outline-offset: 4px; } }
-.coach-hand { position: fixed; z-index: 21; pointer-events: none; font-size: 54px; line-height: 1; transform: translateX(-50%);
-  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, .35)); animation: hand-up .8s ease-in-out infinite; }
-.coach-hand.down { animation-name: hand-down; }
-@keyframes hand-up { 50% { margin-top: -14px; } }
-@keyframes hand-down { 50% { margin-top: 14px; } }
-@media (prefers-reduced-motion: reduce) { .coach-spot, .coach-hand { animation: none; } }
-/* Detective ID card */
-.idcard {
-  width: min(440px, 100%); background: linear-gradient(135deg, #fffaf0, #f3e6c9); border: 2px solid #d9c08f;
-  border-radius: 16px; padding: 10px 14px 12px; text-align: left; box-shadow: 0 6px 18px rgba(0, 0, 0, .1);
-}
-.id-top { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; letter-spacing: .5px; color: #8a6a2f; }
-.id-body { display: flex; align-items: center; gap: 14px; margin: 8px 0; }
-.id-photo { font-size: 64px; line-height: 1; background: #fff; border: 2px solid #e2cfa4; border-radius: 12px; padding: 4px 8px; }
-.id-text { display: flex; flex-direction: column; gap: 2px; font-size: 17px; }
-.id-text b { font-size: 24px; }
-.id-stamps { display: flex; gap: 8px; }
-.stamp-slot { font-size: 22px; width: 38px; height: 38px; border: 2px dashed #d9c08f; border-radius: 50%; display: flex; align-items: center; justify-content: center; filter: grayscale(1); opacity: .35; }
-.stamp-slot.got { filter: none; opacity: 1; border: 2px solid var(--danger); transform: rotate(-8deg); background: #fff; }
-.files-screen { overflow-y: auto; -webkit-overflow-scrolling: touch; gap: 12px; }
-.files-card { position: relative; display: flex; justify-content: center; }
-.who-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; width: 100%; max-width: 720px; margin: 12px 0; }
-.who-card { appearance: none; font: inherit; color: inherit; cursor: pointer; background: #fff; border: 3px solid var(--line); border-radius: 18px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.who-card .who-av { font-size: 56px; line-height: 1.1; }
-.who-card .rank, .who-card .muted { font-size: 15px; color: var(--muted); }
-.who-card.add { border-style: dashed; }
-.files-card .edit { position: absolute; bottom: 10px; right: max(10px, calc(50% - 210px)); min-height: 40px; padding: 4px 10px; font-size: 18px; }
-.file-list { display: flex; flex-direction: column; gap: 10px; }
-.file-card {
-  appearance: none; font: inherit; color: inherit; cursor: pointer; display: flex; align-items: center; gap: 14px; text-align: left;
-  background: #fff3cf; border: 2px solid #e2c98f; border-radius: 18px; padding: 12px 16px; box-shadow: 0 3px 0 rgba(0, 0, 0, .12);
-}
-.file-card.hero { padding: 16px 18px; border-width: 3px; box-shadow: 0 5px 0 rgba(0, 0, 0, .14); }
-.file-card.hero .fi { font-size: 60px; }
-.file-card .go { align-self: flex-start; margin-top: 6px; background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 22px; border-radius: 14px; padding: 6px 18px; }
-.shelf { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
-.shelf-head { font-weight: 800; font-size: 18px; color: #8a6a2f; }
-.medals { display: flex; flex-wrap: wrap; gap: 10px; }
-.medal { appearance: none; font: inherit; cursor: pointer; position: relative; width: 64px; height: 64px; border-radius: 16px; background: #e9f6ec; border: 2px solid #9fd3ad; box-shadow: 0 3px 0 rgba(0, 0, 0, .12); font-size: 34px; display: flex; align-items: center; justify-content: center; }
-.medal .mm { position: absolute; right: -6px; bottom: -6px; font-size: 22px; }
-.medal.arrive { animation: arrive .8s .3s both; }
-@keyframes arrive { from { transform: translateY(-120px) scale(1.6); opacity: 0; } 70% { transform: translateY(6px) scale(.95); opacity: 1; } }
-.file-card .fi { font-size: 48px; line-height: 1; }
-.file-card .ft { flex: 1; display: flex; flex-direction: column; }
-.file-card .ft b { font-size: 22px; }
-.file-card .cast { font-size: 24px; letter-spacing: 2px; }
-.file-card .fp { font-weight: 800; color: var(--muted); font-size: 18px; white-space: nowrap; }
-.soon-head { font-weight: 800; font-size: 18px; color: var(--muted); margin-top: 6px; }
-.file-card.teaser { cursor: default; background: #f6f3ee; border: 2px dashed #cfc6b6; box-shadow: none; }
-.file-card.teaser .fi { filter: saturate(.7); }
-.file-card .tz { font-size: 17px; color: var(--muted); }
-.file-card .when { font-weight: 800; font-size: 17px; color: #8a6a2f; background: #fff3cf; border-radius: 12px; padding: 4px 10px; white-space: nowrap; }
-.file-card.teaser.wiggle { animation: wiggle .4s; }
-@keyframes wiggle { 25% { transform: rotate(-2deg); } 75% { transform: rotate(2deg); } }
 .folder.final { background: #fff0f6; border-color: #f0b8d0; }
 .folder.locked { cursor: pointer; }
 .folder.locked .stk { filter: grayscale(1); opacity: .6; }
@@ -238,23 +168,6 @@ button.suspect { cursor: pointer; }
 .caseq { font-weight: 700; font-size: 22px; text-align: center; margin-bottom: 6px; }
 .toast { background: var(--warn); border: 2px solid var(--sel-line); border-radius: 12px; padding: 8px 12px; margin-bottom: 10px; font-weight: 600; }
 .kudos { font-size: 22px; font-weight: 800; color: var(--accent); }
-/* ID card maker */
-.make { gap: 16px; }
-.mk-top { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 520px; min-height: 44px; }
-.mk-back { min-height: 44px; padding: 4px 14px; font-size: 18px; }
-.steps-dots { display: flex; gap: 8px; }
-.steps-dots i { width: 12px; height: 12px; border-radius: 50%; background: var(--line); }
-.steps-dots i.on { background: var(--accent); }
-.pick-grid { display: grid; grid-template-columns: repeat(3, minmax(90px, 140px)); gap: 12px; justify-content: center; }
-.pick-grid.four { grid-template-columns: repeat(4, minmax(70px, 120px)); }
-.pick {
-  appearance: none; font: inherit; color: var(--muted); cursor: pointer; background: var(--card); border: 3px solid var(--line);
-  border-radius: 18px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 16px; font-weight: 600;
-}
-.pick.on { border-color: var(--accent); background: var(--heard); }
-.pick .pe { font-size: 56px; line-height: 1.1; }
-.name-in { font-size: 28px; padding: 10px 16px; border: 3px solid var(--line); border-radius: 16px; width: min(320px, 100%); text-align: center; background: #fff; }
-.name-in:focus { outline: none; border-color: var(--accent); }
 .trophy .btn { min-height: 40px; padding: 4px 12px; font-size: 17px; margin-left: 6px; }
 .trophy { background: var(--good); border-radius: 14px; padding: 8px 14px; font-weight: 700; margin-bottom: 10px; text-align: center; }
 .hint {
@@ -612,9 +525,6 @@ mark.tw { background: #ffe27a; border-radius: 4px; padding: 0 2px; color: inheri
 .folder.soon { cursor: default; background: #f1eadb; border-style: dashed; }
 .folder.soon .stk { opacity: .5; }
 .folder.soon .fq { color: var(--muted); font-weight: 500; }
-.file-card.season { border-color: #8a7ad6; background: #efeaff; }
-.new-tag { font-size: 13px; font-weight: 800; color: #5a45c2; letter-spacing: .5px; }
-.id-text .rank { font-weight: 800; color: #8a6a2f; }
 .letter-wrap { position: fixed; inset: 0; background: rgba(0, 0, 0, .35); display: flex; align-items: center; justify-content: center; z-index: 30; padding: 16px; }
 .letter { background: #fffdf3; border: 2px solid #d9c08f; border-radius: 8px; padding: 14px 18px; width: min(520px, 100%); display: flex; flex-direction: column; gap: 8px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, .3); animation: spin-in .5s ease-out; }
@@ -662,17 +572,6 @@ mark.tw { background: #ffe27a; border-radius: 4px; padding: 0 2px; color: inheri
   .reveal { gap: 10px; }
   .kudos { font-size: 19px; }
   .footer .btn.secondary { font-size: 17px; padding: 8px 14px; min-height: 46px; }
-  .pick .pe { font-size: 44px; }
-  .pick-grid { gap: 8px; }
-  .id-photo { font-size: 52px; }
-  .id-text b { font-size: 20px; }
-  .file-card { padding: 10px 12px; gap: 10px; }
-  .file-card .fi { font-size: 38px; }
-  .file-card.hero .fi { font-size: 50px; }
-  .file-card .ft b { font-size: 19px; }
-  .file-card .cast { font-size: 20px; }
-  .coach { font-size: 18px; padding: 8px 10px; gap: 8px; }
-  .coach .owl { font-size: 34px; }
   .reveal .sticker { display: none; }
   .reveal .suspect { flex-direction: row; padding: 6px 14px; }
   .reveal .avatar { width: 44px; height: 44px; font-size: 26px; }
@@ -882,10 +781,12 @@ tr.clickable { cursor: pointer; }
 .ui-track::before { right: 8px; background: rgba(255, 255, 255, .25); }
 .ui-track::after { width: calc((100% - 16px) * var(--p)); background: #fff; transition: width 500ms var(--ease-move); }
 .ui-dots { position: absolute; inset: 0; display: flex; justify-content: space-between; align-items: center; }
-.ui-dot { width: 18px; height: 18px; border-radius: 50%; box-sizing: border-box; border: 2px solid rgba(255, 255, 255, .45); background: var(--season); display: grid; place-items: center; font-size: 9px; }
+.ui-dot { width: 16px; height: 16px; border-radius: 50%; box-sizing: border-box; border: 2px solid rgba(255, 255, 255, .45); background: var(--season); display: grid; place-items: center; font-size: 9px; }
 .ui-dot.is-done { background: #fff; border-color: #fff; }
 .ui-ball { position: absolute; top: -6px; left: calc(8px + (100% - 16px) * var(--p)); width: 30px; height: 30px; margin-left: -15px; border-radius: 50%; background: #fff;
   display: grid; place-items: center; font-size: 19px; box-shadow: 0 3px 8px rgba(0, 0, 0, .25); transition: left 500ms var(--ease-move); }
+.ui-player { flex: none; display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 12px 0 4px; border-radius: 22px; background: rgba(255, 255, 255, .12); font: 500 var(--t-small) var(--font); white-space: nowrap; max-width: 40%; overflow: hidden; }
+.ui-player > .ui-coin { width: 36px; height: 36px; font-size: 20px; }
 .ui-band-q { display: flex; gap: 12px; align-items: center; min-height: 48px; font: 600 var(--t-row)/1.3 var(--font); text-wrap: pretty; }
 
 /* a sentence: one per row, tap to hold it */
@@ -894,12 +795,16 @@ tr.clickable { cursor: pointer; }
   font: 400 var(--row-font)/1.35 var(--font); cursor: pointer; transition: background 160ms, transform 160ms, box-shadow 160ms; }
 .ui-row-text { flex: 1; min-width: 0; overflow-wrap: break-word; hyphens: manual; }
 .ui-row mark { background: var(--mark); color: var(--ink); padding: 0 4px; border-radius: 5px; }
+.ui-row-coin { display: none; }
+.ui-row.is-picked > .ui-row-coin { display: inline-grid; }
+.ui-body.rows { gap: 10px; }
+.ui-btn:disabled { cursor: default; }
 .ui-row.is-picked { background: var(--season); border-color: var(--season); color: #fff; font-weight: 500; box-shadow: var(--sh-lift); transform: translateY(-2px); }
 .ui-row.is-picked mark { color: var(--ink); }
 .ui-row.is-glow { box-shadow: var(--ring-glow); animation: ui-glow 2s ease-in-out infinite; }
 .ui-row.is-used .ui-row-text { text-decoration: line-through 2px; text-decoration-color: var(--ink-2); color: var(--ink-2); }
 .ui-row.is-done { background: var(--green-soft); border-color: var(--green); }
-.ui-row.is-off { opacity: .55; cursor: default; }
+.ui-row.is-off { background: transparent; border-style: dashed; box-shadow: none; color: var(--ink-2); cursor: default; }   /* not part of this step */
 .ui-row.is-claim { border-radius: var(--r-l) var(--r-l) var(--r-l) 6px; }
 .ui-row > .ui-stamp { position: absolute; right: 12px; bottom: -14px; z-index: 1; }
 .ui-used { flex: none; display: inline-flex; align-items: center; gap: 4px; background: var(--season-soft); color: var(--season); border-radius: var(--r-pill); padding: 2px 8px 2px 3px; font: 500 14px var(--font); }
@@ -911,17 +816,19 @@ tr.clickable { cursor: pointer; }
   display: grid; place-items: center; font-size: 32px; line-height: 1; transition: box-shadow 180ms; }
 .ui-face-name { max-width: 100%; text-align: center; overflow-wrap: anywhere; }
 .ui-face.is-picked { transform: translateY(-3px); animation: ui-hop 360ms ease-out; }
-.ui-face.is-picked .ui-face-pic { border: 3px solid var(--season); box-shadow: var(--sh-lift); }
+.ui-face.is-picked .ui-face-pic { border: 2px solid var(--season); box-shadow: var(--sh-lift); }
 .ui-face.is-out .ui-face-pic { background: var(--bg); }
 .ui-face.is-out .ui-face-pic > span { opacity: .4; }
 .ui-face.is-out .ui-face-pic::after { content: ''; position: absolute; left: 4px; right: 4px; top: 50%; height: 3px; margin-top: -1.5px; border-radius: 2px; background: var(--ink); transform: rotate(-35deg); animation: ui-pop 220ms ease-out both; }
 .ui-face.is-out .ui-face-name { text-decoration: line-through; }
 .ui-face.is-glow .ui-face-pic { box-shadow: var(--ring-glow); animation: ui-glow 2s ease-in-out infinite; }
-.ui-face.is-witness .ui-face-pic { border: 2px dashed var(--ink-2); }
+.ui-face.is-witness .ui-face-pic { border: 2px dashed var(--season-mid); }
+.ui-face.is-unknown .ui-face-pic { background: var(--season); border-color: var(--season); color: #fff; font: 700 19px var(--font); letter-spacing: .04em; }
+.ui-face.is-blush .ui-face-pic { background: #fbe4e0; border-color: #efb8ae; }
 .ui-face-badge { position: absolute; right: -6px; bottom: -4px; width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 14px; }
 
 /* a thing at the scene: tap to open what it hides */
-.ui-tile { appearance: none; position: relative; flex: none; width: 76px; height: 72px; border-radius: var(--r-m); border: 1.5px solid var(--line); background: var(--paper); box-shadow: var(--sh-soft);
+.ui-tile { appearance: none; position: relative; flex: none; width: 76px; height: 74px; border-radius: var(--r-m); border: 1.5px solid var(--line); background: var(--paper); box-shadow: var(--sh-soft);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--ink-2); font: 500 var(--t-small) var(--font); cursor: pointer; transition: background 200ms, border-color 200ms; }
 .ui-tile-e { font-size: 26px; line-height: 1; }
 .ui-tile.is-done { background: var(--season-soft); border-color: var(--season-mid); box-shadow: none; }
@@ -942,9 +849,13 @@ tr.clickable { cursor: pointer; }
   font: 600 21px/1.2 var(--font); box-shadow: var(--sh-lift); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; }
 .ui-btn.is-sec { min-height: var(--tap); background: var(--paper); color: var(--ink); border: 1.5px solid var(--line); box-shadow: none; font: 500 17px var(--font); }
 .ui-btn.is-quiet { min-height: var(--tap); background: transparent; color: var(--ink-2); box-shadow: none; font: 500 17px var(--font); }
-.ui-btn.is-wait { background: var(--season-soft); color: var(--season); box-shadow: none; }   /* looks not ready yet, still answers a tap */
+.ui-btn.is-wait { background: var(--season-soft); color: var(--season); border: 1.5px dashed var(--season-mid); box-shadow: none; }   /* looks not ready yet, still answers a tap */
 .ui-btn.is-gold { background: var(--glow); color: var(--ink); box-shadow: 0 10px 24px rgba(0, 0, 0, .2); }
-.ui-btn.is-chip { width: auto; min-height: 48px; padding: 0 16px; border-radius: var(--r-pill); font: 500 var(--t-small) var(--font); }
+.ui-btn.is-soft { min-height: var(--tap); background: var(--season-soft); color: var(--season); box-shadow: none; font: 600 18px var(--font); }
+.ui-btn.is-loud { min-height: 76px; border-radius: var(--r-l); background: var(--stamp); font: 700 28px var(--font); letter-spacing: .04em; box-shadow: 0 12px 26px rgba(200, 58, 53, .35); }   /* the first UGOVOR only */
+.ui-btn.is-chip { width: auto; min-height: var(--tap); padding: 0 18px; border-radius: 28px; background: var(--paper); color: var(--season); border: 1.5px solid var(--season); box-shadow: none; font: 500 17px var(--font); }
+.ui-btn.is-chip.is-on { background: var(--season); color: #fff; }
+.ui-btn.is-chip.is-used { background: var(--bg); border-color: var(--line); color: var(--ink-2); text-decoration: line-through; }
 .ui-btns { display: flex; gap: 8px; }
 .ui-btns > * { flex: 1; min-width: 0; }
 
@@ -960,14 +871,25 @@ tr.clickable { cursor: pointer; }
 /* a note at the bottom (a wrong try, »Najprej tapni …«) and the green »done« card */
 .ui-note { display: flex; flex-direction: column; gap: 12px; background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--r-m); padding: 14px 16px;
   box-shadow: var(--sh-float); font: 400 var(--t-body)/1.35 var(--font); animation: ui-in 200ms ease-out both; }
-.ui-note.is-done { background: var(--green-soft); border-color: var(--green); }
+.ui-note.is-done { flex-direction: row; align-items: center; background: var(--green-soft); border-color: var(--green); color: #1a5a2f; font-weight: 600; box-shadow: none; }
+.ui-note.is-done::before { content: '✓'; width: 44px; height: 44px; flex: none; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; font: 700 20px var(--font); }
+/* someone's own words on a card: the truth after UGOVOR, the culprit's excuse */
+.ui-say { display: flex; gap: 12px; align-items: flex-start; background: var(--paper); border: 2px solid var(--season); border-radius: 20px; padding: 12px 14px; box-shadow: 0 10px 22px rgba(40, 30, 10, .1); text-align: left; }
+.ui-say > .ui-coin { width: 48px; height: 48px; font-size: 28px; background: var(--season-soft); }
+.ui-say-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; font: 400 var(--t-story)/1.35 var(--font); }
+.ui-say-who { font: 600 var(--t-label) var(--font); color: var(--season); }
+.ui-say.is-excuse { background: #fbf6e6; border: 0; border-radius: 6px; transform: rotate(-1deg); }
+.ui-say.is-excuse > .ui-coin { background: #fff; }
+.ui-say.is-excuse .ui-say-who { color: var(--ink-2); }
+.ui-say.is-excuse .ui-say-text > span:last-child { font-style: italic; }
 .ui-note.is-sway { animation: ui-sway 280ms ease-in-out; }
 
 /* the helper the child picked (🐶 🐱 🦉 🦊), breathing beside its bubble */
 .ui-helper { appearance: none; display: flex; gap: 10px; align-items: center; border: 0; background: transparent; padding: 0; text-align: left; color: var(--ink); cursor: pointer; width: 100%; }
 .ui-helper-pic { width: var(--tap); height: var(--tap); flex: none; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 30px; animation: ui-breathe 4s ease-in-out infinite; }
 .ui-bubble { flex: 1; min-width: 0; background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--r-m) var(--r-m) var(--r-m) 6px; padding: 10px 14px; font: 400 var(--t-body)/1.35 var(--font); transition: box-shadow 200ms; }
-.ui-helper.is-glow .ui-bubble { border-color: var(--glow); box-shadow: 0 0 0 3px var(--glow); }
+.ui-helper.is-glow .ui-bubble { border-color: var(--glow); box-shadow: 0 0 0 3px rgba(248, 202, 101, .5); }
+.ui-helper.is-good .ui-bubble { border-color: var(--green); }
 
 /* the stamp: red »Primer rešen!« and »UGOVOR!«, blue »NAPAČNA SLED!«, green »To šteje!« */
 .ui-stamp { --ink-c: var(--stamp); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; color: var(--ink-c); background: var(--stamp-paper);
@@ -982,7 +904,10 @@ tr.clickable { cursor: pointer; }
 /* small labels */
 .ui-pill { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; background: var(--season-soft); color: var(--season); border-radius: var(--r-pill); padding: 2px 10px; font: 600 var(--t-small) var(--font); }
 .ui-tag { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; background: var(--paper); color: var(--ink); border: 1.5px solid var(--line); border-radius: var(--r-pill); padding: 2px 10px; font: 600 var(--t-small) var(--font); }
-.ui-tag.is-new { background: var(--glow); border-color: var(--glow); }
+.ui-tag.is-new { background: var(--stamp); border-color: var(--stamp); color: #fff; font-weight: 700; font-size: 14px; letter-spacing: .06em; }
+.ui-tag.is-days { background: #fdeaa9; border-color: #fdeaa9; }
+.ui-tag.is-tomorrow { background: var(--glow); border-color: var(--glow); }
+.ui-tag.is-season { background: var(--season); border-color: var(--season); color: #fff; }
 .ui-tag.is-soon { background: var(--season-soft); border-color: var(--season-soft); color: var(--season); }
 .ui-count { font: 500 var(--t-small) var(--font); color: var(--ink-2); white-space: nowrap; }
 .ui-card { background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--r-l); box-shadow: var(--sh-soft); padding: 14px 16px; }
@@ -1002,6 +927,175 @@ tr.clickable { cursor: pointer; }
 .ui-id-stamps { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 18px 18px; }
 .ui-id-stamps > span { width: 38px; height: 38px; border-radius: 50%; box-sizing: border-box; border: 2px dashed var(--line); display: grid; place-items: center; font-size: 20px; filter: grayscale(1); opacity: .45; }
 .ui-id-stamps > span.is-done { border: 2px solid var(--stamp); background: #fff; filter: none; opacity: 1; transform: rotate(-8deg); }
+
+/* an adventure's own colour on one card (style="--hue:300"), e.g. on the start screen */
+@supports (color: oklch(0 0 0)) {
+  .ui-hue { --season: oklch(0.37 0.07 var(--hue)); --season-mid: oklch(0.55 0.09 var(--hue)); --season-soft: oklch(0.94 0.05 var(--hue));
+    --season-shadow: oklch(0.37 0.07 var(--hue) / .3); --sh-lift: 0 10px 22px var(--season-shadow); }
+}
+
+/* a child's screen: band on top, the body scrolls, the main button stays at the bottom */
+.ui-screen { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; }
+.ui-body { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; width: 100%; max-width: 640px; margin: 0 auto;
+  padding: 22px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); display: flex; flex-direction: column; gap: 14px; }
+.ui-body > * { flex-shrink: 0; }   /* a tall card never squashes: the body scrolls */
+.ui-body.is-center { align-items: center; text-align: center; }
+.ui-body.is-center > :first-child { margin-top: auto; }
+.ui-body.is-center > :last-child { margin-bottom: auto; }
+.ui-foot { flex: none; width: 100%; max-width: 640px; margin: 0 auto; padding: 10px max(16px, env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  display: flex; flex-direction: column; gap: 8px; }
+.ui-top { flex: none; height: var(--safe-top); }   /* a screen without a band keeps the status bar clear */
+.ui-title { font: 600 var(--t-title)/1.15 var(--font); margin: 0; text-wrap: balance; }
+.ui-big { font: 600 30px/1.15 var(--font); margin: 0; text-wrap: balance; }
+.ui-text { font: 400 var(--t-story)/1.4 var(--font); margin: 0; color: var(--ink-2); }
+.ui-head { font: 600 17px var(--font); padding: 6px 2px 0; margin: 0; text-align: left; }
+.ui-head + .ui-text { margin-top: -10px; font-size: var(--t-small); text-align: left; }
+
+/* the onboarding band: ← · step pills · a title with its coin */
+.ui-band-title { display: flex; gap: 12px; align-items: center; min-height: 56px; font: 600 26px/1.15 var(--font); text-wrap: balance; }
+.ui-band-title > .ui-coin { width: 44px; height: 44px; font-size: 20px; }
+.ui-pills { flex: 1; display: flex; justify-content: center; gap: 8px; }
+.ui-pills > i { height: 8px; width: 8px; border-radius: var(--r-pill); background: rgba(255, 255, 255, .35); transition: width 300ms var(--ease-move), background 300ms; }
+.ui-pills > i.is-done { background: #fff; }
+.ui-pills > i.is-now { width: 28px; background: #fff; }
+.ui-band-gap { width: var(--tap); flex: none; }
+
+/* home: the brand on top and the detective's badge under it */
+.ui-band.is-home { align-items: center; gap: 8px; padding-bottom: 30px; border-radius: 0 0 32px 32px; }
+.ui-band.is-home > .ui-band-top { align-self: stretch; justify-content: space-between; }
+.ui-brand { font: 500 var(--t-small) var(--font); letter-spacing: .12em; text-transform: uppercase; color: rgba(255, 255, 255, .85); text-align: center; }
+.ui-band-name { font: 600 26px/1.12 var(--font); padding-top: 14px; overflow-wrap: anywhere; text-align: center; }
+.ui-badge { appearance: none; position: relative; width: 120px; height: 120px; flex: none; border: 0; padding: 0; background: transparent; cursor: pointer; animation: ui-badge 700ms var(--ease) both; }
+.ui-badge-ring { position: absolute; inset: 0; border-radius: 50%; background: repeating-conic-gradient(var(--glow) 0 10deg, #f2b84b 10deg 20deg); box-shadow: 0 18px 40px rgba(0, 0, 0, .3); }
+.ui-badge-pic { position: absolute; inset: 16px; border-radius: 50%; background: var(--paper); border: 2.5px dashed var(--season-mid); display: grid; place-items: center; font-size: 44px; line-height: 1; }
+.ui-badge > .ui-coin { position: absolute; right: -8px; top: 0; width: 38px; height: 38px; font-size: 22px; box-shadow: 0 4px 10px rgba(0, 0, 0, .2); }
+.ui-badge-rank { position: absolute; left: 50%; bottom: -16px; transform: translateX(-50%); white-space: nowrap; background: var(--paper); color: var(--season); border-radius: var(--r-pill);
+  padding: 5px 16px; font: 600 var(--t-label) var(--font); box-shadow: 0 6px 14px rgba(0, 0, 0, .2); }
+.ui-badge.is-l { width: 140px; height: 140px; animation: none; }
+.ui-badge.is-l .ui-badge-pic { inset: 14px; font-size: 60px; border: 0; }
+.ui-badge.is-l > .ui-coin { top: auto; bottom: -4px; right: -10px; width: 50px; height: 50px; font-size: 30px; }
+.ui-band.is-home + .ui-body { margin-top: -20px; padding-top: 0; position: relative; }
+
+/* the next adventure: a card on top with how far along it is and one big button */
+.ui-hero { appearance: none; width: 100%; display: flex; flex-direction: column; gap: 12px; padding: 14px; text-align: left; color: var(--ink); cursor: pointer;
+  background: var(--paper); border: 1.5px solid var(--line); border-radius: 24px; box-shadow: 0 14px 30px rgba(40, 30, 10, .12); transform: rotate(-.8deg); }
+.ui-hero-head { display: flex; align-items: center; gap: 12px; }
+.ui-hero-head > .ui-item-pic { width: 60px; height: 60px; border-radius: var(--r-m); font-size: 34px; transform: rotate(-4deg); }
+.ui-hero .ui-item-title { font-size: 19px; }
+.ui-hero .ui-item-sub { font-size: var(--t-label); }
+.ui-segs { display: flex; gap: 4px; }
+.ui-segs > i { flex: 1; height: 8px; border-radius: 4px; background: var(--season-soft); }
+.ui-segs > i.is-done { background: var(--season); }
+
+/* a list item: an adventure, a teaser, a detective on »Kdo igra?« */
+.ui-item { appearance: none; width: 100%; min-height: 76px; display: flex; align-items: center; gap: 12px; padding: 8px 14px 8px 8px; text-align: left; color: var(--ink); cursor: pointer;
+  background: var(--paper); border: 1.5px solid var(--line); border-radius: 20px; box-shadow: 0 2px 0 var(--line); font: inherit; }
+.ui-item-pic { position: relative; width: 56px; height: 56px; flex: none; border-radius: 16px; background: var(--season-soft); display: grid; place-items: center; font-size: 30px; line-height: 1; }
+.ui-item-pic.is-round { width: 60px; height: 60px; border-radius: 50%; font-size: 34px; }
+.ui-item-pic > .ui-coin { position: absolute; right: -6px; bottom: -4px; width: 30px; height: 30px; font-size: 16px; border: 1.5px solid var(--line); }
+.ui-item-text { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.ui-item-title { font: 600 17px/1.2 var(--font); overflow-wrap: anywhere; }
+.ui-item-sub { font: 400 var(--t-small)/1.3 var(--font); color: var(--ink-2); }
+.ui-item-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.ui-item-tags > .ui-tag { padding: 2px 9px; font-size: 14px; }
+.ui-item-tags > .ui-tag.is-new { font-size: 13px; }
+.ui-item-go { flex: none; font: 500 22px var(--font); color: var(--ink-2); }
+.ui-item.is-soon { background: transparent; border-style: dashed; box-shadow: none; cursor: default; }
+.ui-item.is-add { background: transparent; border-style: dashed; box-shadow: none; }
+.ui-item.is-add .ui-item-pic { background: var(--paper); border: 1.5px solid var(--line); color: var(--season); font: 500 28px var(--font); }
+.ui-item.is-on { border: 2px solid var(--season); }
+.ui-item.is-wiggle { animation: ui-sway 280ms ease-in-out; }
+
+/* 🏅 the medal shelf: one medal per finished adventure, on a wooden ledge */
+.ui-shelf { display: flex; flex-direction: column; padding: 16px 14px 0; background: var(--paper); border: 1.5px solid var(--line); border-radius: 20px; }
+.ui-medals { display: flex; flex-wrap: wrap; justify-content: space-around; align-items: flex-end; gap: 10px; min-height: 84px; }
+.ui-medal { appearance: none; width: 60px; height: 60px; border: 0; padding: 0; border-radius: 50%; cursor: pointer; display: grid; place-items: center; font-size: 30px; line-height: 1;
+  background: radial-gradient(circle at 35% 30%, #fbe39a, #e1a73d); box-shadow: 0 4px 8px rgba(0, 0, 0, .15); }
+.ui-medal.is-empty { background: transparent; border: 2px dashed var(--line); box-shadow: none; cursor: default; }
+.ui-medal.is-new { box-shadow: 0 0 0 4px #fff, 0 0 22px 6px rgba(248, 202, 101, .6); animation: ui-fly 800ms var(--ease) .3s both; }
+.ui-ledge { height: 14px; margin: 6px -14px 0; border-radius: 0 0 18px 18px; background: linear-gradient(#c7a27a, #a98361); }
+
+/* a choice on a big tile (the detective, the helper) */
+.ui-picks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
+.ui-picks.is-2 { grid-template-columns: 1fr 1fr; }
+.ui-pick { appearance: none; position: relative; height: 112px; border-radius: var(--r-l); background: var(--paper); border: 1.5px solid var(--line); box-shadow: var(--sh-soft);
+  display: grid; place-items: center; font-size: 58px; line-height: 1; cursor: pointer; transition: transform 180ms, box-shadow 180ms, background 180ms; }
+.ui-picks.is-2 .ui-pick { height: 150px; border-radius: 24px; font-size: 72px; }
+.ui-pick.is-on { background: var(--season-soft); border: 3px solid var(--season); box-shadow: var(--sh-lift); transform: translateY(-3px); animation: ui-hop 360ms ease-out; }
+.ui-pick.is-on::after { content: '✓'; position: absolute; top: -8px; right: -8px; width: 32px; height: 32px; box-sizing: border-box; border-radius: 50%; background: var(--season); color: #fff;
+  border: 3px solid var(--bg); display: grid; place-items: center; font: 700 15px var(--font); animation: ui-pop 220ms ease-out both; }
+.ui-duo { align-self: center; display: flex; align-items: center; gap: 10px; background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--r-pill); padding: 6px 16px 6px 6px; font-size: 22px; }
+.ui-duo > .ui-coin { width: 48px; height: 48px; font-size: 28px; background: var(--season-soft); }
+.ui-duo > .ui-coin.is-empty { background: transparent; border: 2px dashed var(--line); }
+.ui-me { position: relative; width: 110px; height: 110px; flex: none; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--line); display: grid; place-items: center;
+  font-size: 60px; line-height: 1; box-shadow: 0 10px 24px rgba(60, 50, 20, .08); }
+.ui-me > .ui-coin { position: absolute; right: -10px; bottom: -4px; width: 46px; height: 46px; font-size: 26px; border: 1.5px solid var(--line); }
+.ui-input { width: 100%; height: 76px; border-radius: var(--r-l); border: 1.5px solid var(--line); background: var(--paper); text-align: center; font: 600 32px var(--font); color: var(--ink);
+  outline: none; box-shadow: 0 2px 0 var(--line); transition: border-color 160ms, box-shadow 160ms; }
+.ui-input:focus, .ui-input.is-on { border: 3px solid var(--season); box-shadow: 0 10px 22px var(--season-shadow); }
+.ui-input::placeholder { color: #b9b3a9; }
+.ui-hello { position: relative; width: 190px; height: 190px; flex: none; }
+.ui-hello > i { position: absolute; inset: 0; border-radius: 50%; background: repeating-conic-gradient(var(--glow) 0 10deg, #f2b84b 10deg 20deg); box-shadow: 0 18px 40px rgba(60, 50, 20, .2); }
+.ui-hello > b { position: absolute; inset: 12px; border-radius: 50%; background: var(--glow); }
+.ui-hello > span { position: absolute; inset: 26px; border-radius: 50%; background: var(--paper); border: 2.5px dashed var(--season-mid); display: grid; place-items: center; font-size: 66px; line-height: 1; }
+.ui-trio { display: flex; gap: 10px; font-size: 34px; }
+.ui-id.is-new { animation: ui-badge 600ms var(--ease) both; }
+.ui-id > .ui-stamp { position: absolute; right: 16px; bottom: 12px; animation-delay: 700ms; }
+.ui-id.is-new .ui-id-body { padding-bottom: 40px; }
+/* a phone held sideways: the home band is one row (badge, name), so the next adventure's button stays on screen */
+@media (max-height: 500px) {
+  .ui-band.is-home { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 4px 16px; padding-bottom: 14px; }
+  .ui-band.is-home > .ui-band-top { flex: 1 0 100%; }
+  .ui-band.is-home > .ui-band-top + .ui-badge { width: 76px; height: 76px; margin-top: -48px; }
+  .ui-band.is-home .ui-badge-pic { inset: 10px; font-size: 30px; }
+  .ui-band.is-home .ui-badge > .ui-coin { width: 28px; height: 28px; font-size: 16px; }
+  .ui-band.is-home .ui-brand { visibility: hidden; }
+  .ui-band.is-home .ui-badge-rank { left: calc(100% + 16px); bottom: 2px; transform: none; padding: 2px 12px; font-size: var(--t-small); box-shadow: none; }
+  .ui-band.is-home .ui-band-name { margin-top: -100px; padding-bottom: 30px; }
+  .ui-band.is-home .ui-band-name { padding-top: 0; margin-top: -48px; align-self: center; }
+  .ui-band.is-home + .ui-body { margin-top: 0; padding-top: 12px; }
+  .ui-band-title { min-height: 44px; font-size: 22px; }
+  .ui-picks { grid-template-columns: repeat(6, 1fr); }
+  .ui-picks.is-2 { grid-template-columns: repeat(4, 1fr); }
+  .ui-pick, .ui-picks.is-2 .ui-pick { height: 96px; font-size: 52px; }
+  .ui-pal { width: 96px; height: 96px; font-size: 56px; }
+  .ui-hello { width: 130px; height: 130px; }
+  .ui-hello > span { inset: 18px; font-size: 44px; }
+}
+
+/* the helper big on its own (practice, end of a session) */
+.ui-pal { width: 150px; height: 150px; flex: none; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 90px; line-height: 1;
+  box-shadow: 0 14px 30px rgba(40, 30, 10, .1); animation: ui-breathe 4s ease-in-out infinite; }
+.ui-pal.is-m { width: 120px; height: 120px; font-size: 70px; box-shadow: none; }
+.ui-quest { align-self: stretch; display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 20px; background: var(--season-soft); text-align: left; }
+.ui-quest > .ui-coin { width: 52px; height: 52px; border-radius: 16px; font-size: 30px; }
+.ui-quest > span:last-child { font: 600 19px/1.25 var(--font); }
+.ui-faces { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 6px; width: 100%; }
+.ui-letter { position: relative; width: 200px; height: 150px; flex: none; border-radius: var(--r-s); background: var(--paper); border: 1.5px solid var(--line); box-shadow: 0 14px 30px rgba(40, 30, 10, .1);
+  display: grid; place-items: center; font-size: 64px; transform: rotate(-3deg); }
+.ui-letter > .ui-tag { position: absolute; right: -14px; top: -14px; transform: rotate(6deg); font-size: var(--t-label); }
+.ui-screen.is-season { background: var(--season); color: #fff; }
+.ui-screen.is-season .ui-text { color: rgba(255, 255, 255, .9); }
+.ui-screen.is-season .ui-btn { background: #fff; color: var(--season); box-shadow: none; }
+
+/* the coach in the practice case: the screen dims, a thick gold ring breathes round what to tap, a finger bounces at it */
+.coach { position: fixed; left: 0; right: 0; margin: 0 auto; width: min(560px, calc(100% - 24px)); z-index: 20; display: flex; gap: 10px; align-items: center; animation: ui-in 300ms ease-out both; }
+.coach.top { top: calc(10px + var(--safe-top)); }
+.coach.bottom { bottom: calc(14px + env(safe-area-inset-bottom)); }
+.coach > .ui-coin { width: 64px; height: 64px; font-size: 36px; background: var(--paper); }
+.coach .say { flex: 1; min-width: 0; background: var(--paper); border: 2px solid var(--glow); border-radius: var(--r-m) var(--r-m) var(--r-m) 6px; padding: 12px 14px; font: 400 var(--t-story)/1.35 var(--font); color: var(--ink); }
+.coach { flex-wrap: wrap; }
+.coach .ui-btn { flex: 1 0 100%; }
+.coach-target { position: relative; }
+.coach-spot { position: fixed; z-index: 19; pointer-events: none; border-radius: var(--r-m); box-shadow: 0 0 0 100vmax rgba(26, 30, 40, .55); }
+.coach-spot::after { content: ''; position: absolute; inset: 0; border-radius: inherit; animation: ui-coach 1600ms ease-in-out infinite; }
+.coach-hand { position: fixed; z-index: 21; pointer-events: none; font-size: 40px; line-height: 1; transform: translateX(-50%); filter: drop-shadow(0 3px 3px rgba(0, 0, 0, .3)); animation: ui-tap 900ms ease-in-out infinite; }
+.coach-hand.down { animation-name: ui-tap-down; }
+@keyframes ui-coach { 0%, 100% { box-shadow: 0 0 0 6px var(--glow), 0 0 0 12px rgba(248, 202, 101, .3); } 50% { box-shadow: 0 0 0 8px var(--glow), 0 0 0 20px rgba(248, 202, 101, .15); } }
+@keyframes ui-tap { 0%, 100% { margin-top: 0; } 50% { margin-top: -8px; } }
+@keyframes ui-tap-down { 0%, 100% { margin-top: 0; } 50% { margin-top: 8px; } }
+@keyframes ui-badge { 0% { transform: scale(.85) rotate(-8deg); opacity: 0; } 100% { transform: none; opacity: 1; } }
+@keyframes ui-fly { 0% { transform: translate(-60px, -180px) scale(1.6) rotate(-20deg); opacity: 0; } 100% { transform: none; opacity: 1; } }
 
 @keyframes ui-glow { 0%, 100% { box-shadow: 0 0 0 3px var(--glow), 0 0 16px 2px rgba(248, 202, 101, .35); } 50% { box-shadow: 0 0 0 5px var(--glow), 0 0 28px 8px rgba(248, 202, 101, .55); } }
 @keyframes ui-stamp { 0% { transform: scale(1.9) rotate(-12deg); opacity: 0; } 75% { transform: scale(.97) rotate(-6deg); opacity: 1; } 100% { transform: scale(1) rotate(-6deg); opacity: 1; } }
@@ -2418,10 +2512,10 @@ const UI = {
     <div class="ui-band-top">${o.back !== false ? `<button class="ui-band-btn" data-act="${o.backAct || 'back'}" aria-label="Nazaj">${o.back || '✕'}</button>` : ''}
       <div class="ui-steps"><span class="ui-step-name">${esc(o.step || '')}</span>
         ${o.dots ? `<div class="ui-track" style="--p:${o.at || 0}"><div class="ui-dots">${o.dots.map(d => `<span class="ui-dot ${d ? 'is-done' : ''}"></span>`).join('')}</div>
-          <span class="ui-ball">${o.ball || '🔍'}</span></div>` : ''}</div>${o.end || ''}</div>
+          <span class="ui-ball">${o.ball || '🔍'}</span></div>` : ''}</div>${o.player ? UI.player(o.player) : ''}${o.end || ''}</div>
     ${o.q ? `<div class="ui-band-q">${UI.coin(o.qIcon || '❓')}<span>${esc(o.q)}</span></div>` : ''}</header>`,
   // a sentence row; html is already escaped (names() or sayHTML()); end = what sits at its right (a coin, a ui-used chip, a stamp)
-  row: (html, o = {}) => `<button class="ui-row ${o.state || ''}"${uiAttrs(o)}><span class="ui-row-text">${html}</span>${o.state && o.state.includes('is-picked') ? UI.coin('👆') : ''}${o.end || ''}</button>`,
+  row: (html, o = {}) => `<button class="ui-row ${o.state || ''}"${uiAttrs(o)}><span class="ui-row-text">${html}</span>${UI.coin('👆', 'ui-row-coin')}${o.end || ''}</button>`,
   used: (e) => `<span class="ui-used">${UI.coin(e, 'is-s')}✕</span>`,
   face: (id, o = {}) => { const ch = CHARACTERS[id];
     return `<button class="ui-face ${o.state || ''}"${uiAttrs({ act: 'pick', attrs: `data-id="${id}"`, ...o })}>
@@ -2432,18 +2526,31 @@ const UI = {
   // kind: '' main · 'is-sec' · 'is-quiet' · 'is-wait' · 'is-gold' · 'is-chip'
   btn: (label, o = {}) => `<button class="ui-btn ${o.kind || ''}"${uiAttrs(o)}>${esc(label)}</button>`,
   stamp: (text, o = {}) => `<span class="ui-stamp ${o.color || ''} ${o.big ? 'is-big' : ''}"><span class="ui-stamp-mark">${o.mark || '✓'}</span>${esc(text)}</span>`,
-  helper: (text, o = {}) => `<button class="ui-helper ${o.glow ? 'is-glow' : ''}"${uiAttrs(o)}><span class="ui-helper-pic">${o.e || helperEmoji()}</span><span class="ui-bubble">${esc(text)}</span></button>`,
+  // tone: 'is-glow' when it has a hint for the child, 'is-good' after a right step
+  helper: (text, o = {}) => `<button class="ui-helper ${o.glow ? 'is-glow' : ''} ${o.tone || ''}"${uiAttrs(o)}><span class="ui-helper-pic">${o.e || helperEmoji()}</span><span class="ui-bubble">${esc(text)}</span></button>`,
   sheet: (o) => `<div class="ui-sheet-wrap"><div class="ui-sheet">
     <div class="ui-sheet-title">${UI.coin(o.icon, 'is-season')}${esc(o.title)}</div>${o.body || ''}
     ${UI.btn(o.btn || 'Razumem ✓', { act: o.act || 'briefOk' })}</div></div>`,
-  note: (html, o = {}) => `<div class="ui-note ${o.done ? 'is-done' : ''}"><span>${html}</span>${o.btn !== false ? UI.btn(o.btn || 'V redu', { kind: 'is-sec', act: o.act || 'noteOk' }) : ''}</div>`,
+  note: (html, o = {}) => `<div class="ui-note ${o.done ? 'is-done' : ''}"><span>${html}</span>${o.btn !== false ? UI.btn(o.btn || 'V redu', { kind: 'is-soft', act: o.act || 'noteOk' }) : ''}</div>`,
+  // someone's own words on a card: who = a CHARACTERS entry, label = »Luka pove resnico:«; excuse: the culprit's note
+  say: (who, label, html, o = {}) => `<div class="ui-say ${o.excuse ? 'is-excuse' : ''}"${uiAttrs(o)}>${UI.coin(who.animal)}<span class="ui-say-text"><span class="ui-say-who">${esc(label)}</span><span>${html}</span></span></div>`,
+  // home: the detective's badge (tap = edit the ID card); o.big: the large one on the thank-you screen
+  badge: (p, o = {}) => `<${o.act ? 'button' : 'span'} class="ui-badge ${o.big ? 'is-l' : ''}"${uiAttrs(o)}><span class="ui-badge-ring"></span><span class="ui-badge-pic">${p.av}</span>${UI.coin(p.sk)}${o.rank ? `<span class="ui-badge-rank">${esc(o.rank)}</span>` : ''}</${o.act ? 'button' : 'span'}>`,
+  // a list item: o.pic (emoji), o.title, o.sub, o.tags (html), o.end (html at the right), o.hue (the adventure's colour), o.state
+  item: (o) => `<${o.act ? 'button' : 'div'} class="ui-item ${o.hue != null ? 'ui-hue' : ''} ${o.state || ''}"${o.hue != null ? ` style="--hue:${o.hue}"` : ''}${uiAttrs(o)}>
+    <span class="ui-item-pic ${o.round ? 'is-round' : ''}">${o.pic}${o.sk ? UI.coin(o.sk) : ''}</span>
+    <span class="ui-item-text"><span class="ui-item-title">${esc(o.title)}</span>${o.sub ? `<span class="ui-item-sub">${o.sub}</span>` : ''}${o.tags ? `<span class="ui-item-tags">${o.tags}</span>` : ''}</span>${o.end || ''}</${o.act ? 'button' : 'div'}>`,
+  // onboarding: one pill per step, the one now is long
+  pills: (n, at) => `<span class="ui-pills">${Array.from({ length: n }, (_, i) => `<i class="${i === at ? 'is-now' : i < at ? 'is-done' : ''}"></i>`).join('')}</span>`,
+  // the player's chip in the band (who is playing)
+  player: (p) => `<span class="ui-player">${UI.coin(p.av)}${esc(p.name || '')}</span>`,
   pill: (text) => `<span class="ui-pill">${esc(text)}</span>`,
   tag: (text, cls = '') => `<span class="ui-tag ${cls}">${esc(text)}</span>`,
   id: (p, o = {}) => { const n = solvedKeys().filter(k => ALL_KEYS.includes(k)).length;
-    return `<div class="ui-id"><div class="ui-id-head"><span>${esc(o.brand || BRAND)}</span>${UI.coin('🔍')}</div>
+    return `<div class="ui-id ${o.stamp ? 'is-new' : ''}"><div class="ui-id-head"><span>${esc(o.brand || BRAND)}</span>${UI.coin('🔍')}</div>
       <div class="ui-id-body"><span class="ui-id-photo"><span>${p.av}</span>${UI.coin(p.sk)}</span>
-        <span class="ui-id-text"><span class="ui-id-name">${esc(p.name || detTitle(p))}</span>${UI.pill(rankName(rankFor(n), p))}<span class="ui-count">✔ ${solvedLabel(n)}</span></span></div>
-      <div class="ui-id-stamps">${FILES.map(f => `<span class="${fileDone(f.id) ? 'is-done' : ''}" title="${esc(f.title)}">${f.icon}</span>`).join('')}</div></div>`; },
+        <span class="ui-id-text"><span class="ui-id-name">${esc(p.name || detTitle(p))}</span>${UI.pill(rankName(rankFor(n), p))}${n ? `<span class="ui-count">✔ ${solvedLabel(n)}</span>` : ''}</span></div>
+      ${n ? `<div class="ui-id-stamps">${FILES.map(f => `<span class="${fileDone(f.id) ? 'is-done' : ''}" title="${esc(f.title)}">${f.icon}</span>`).join('')}</div>` : ''}${o.stamp ? UI.stamp(o.stamp) : ''}</div>`; },
 };
 const BRAND = 'Bralni detektivi';
 const helperEmoji = () => (profile() || {}).sk || '🦉';   // the helper the child picked on the ID card
@@ -2496,9 +2603,9 @@ function soonLabel(f) {
   const n = Math.round((Date.parse(f.opens) - Date.parse(TODAY)) / 864e5);
   return n <= 1 ? 'Jutri!' : `Še ${n} ${n === 2 ? 'dneva' : n < 5 ? 'dnevi' : 'dni'}`;
 }
-const teasersHTML = () => SOON.length ? `<div class="soon-head">📅 Kmalu nove pustolovščine</div>${SOON.map(f =>
-  `<button class="file-card teaser" data-act="teaser" aria-label="${esc(f.title)}: ${soonLabel(f)}"><span class="fi">${f.icon}</span>
-    <span class="ft"><b>${esc(f.title)}</b><span class="tz">${esc(f.teaser)}</span></span><span class="when">⏳ ${soonLabel(f)}</span></button>`).join('')}` : '';
+const soonTag = (f) => { const l = soonLabel(f); return UI.tag(l === 'Kmalu' ? '📅 Kmalu' : l === 'Jutri!' ? l : '⏳ ' + l, l === 'Kmalu' ? 'is-soon' : l === 'Jutri!' ? 'is-tomorrow' : 'is-days'); };
+const teasersHTML = () => SOON.length ? `<h2 class="ui-head">📅 Kmalu nove pustolovščine</h2>${SOON.map(f => UI.item({ act: 'teaser', state: 'is-soon file-card teaser', hue: f.hue,
+  attrs: `aria-label="${esc(f.title)}: ${soonLabel(f)}"`, pic: f.icon, title: f.title, sub: esc(f.teaser), end: soonTag(f) })).join('')}` : '';
 
 const casesIn = (file) => [...new Set(CASES.filter(c => c.file === file).map(c => c.no))].sort((a, b) => a - b).map(no => caseFor(file, no));
 const caseKey = (c) => `${c.file}:${c.no}`;
@@ -2543,8 +2650,9 @@ function shelfHTML(shelf) {
   if (!shelf.length) return '';
   const pid = (profile() || {}).id, seen = S.shelfSeen && S.shelfSeen.pid === pid && S.shelfSeen.ids;
   S.shelfSeen = { pid, ids: shelf.map(f => f.id) };
-  return `<div class="shelf"><div class="shelf-head">🏅 Moje medalje</div><div class="medals">${shelf.map(f =>
-    `<button class="medal ${seen && !seen.includes(f.id) ? 'arrive' : ''}" data-act="openFile" data-file="${f.id}" aria-label="${esc(f.title)}"><span class="mi">${f.icon}</span><span class="mm">🏅</span></button>`).join('')}</div></div>`;
+  const empty = Math.max(0, Math.min(4, FILES.length + SOON.length) - shelf.length);
+  return `<h2 class="ui-head">🏅 Moje medalje</h2><div class="ui-shelf"><div class="ui-medals">${shelf.map(f =>
+    `<button class="ui-medal medal ${seen && !seen.includes(f.id) ? 'is-new arrive' : ''}" data-act="openFile" data-file="${f.id}" aria-label="${esc(f.title)}">${f.icon}</button>`).join('')}${'<span class="ui-medal is-empty"></span>'.repeat(empty)}</div><div class="ui-ledge"></div></div>`;
 }
 
 // Case board: the child picks any case of the file. Solved cases get a tick, and one
@@ -2647,19 +2755,7 @@ const solvedLabel = (n) => n % 100 === 1 ? `${n} rešen primer` : n % 100 === 2 
 const cleanName = (v) => v.replace(/[^\p{L} '-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 12)
   .replace(/^\p{L}/u, ch => ch.toUpperCase());
 
-function idCard(p) {
-  const n = solvedKeys().filter(k => ALL_KEYS.includes(k)).length;
-  return `<div class="idcard">
-    <div class="id-top"><span>🔍 DETEKTIVSKA IZKAZNICA</span><span>št. ${esc(p.id)}</span></div>
-    <div class="id-body">
-      <span class="id-photo">${p.av}</span>
-      <div class="id-text"><b>${esc(detName(p))}</b>
-        <span class="rank">${rankName(rankFor(n), p)}</span>
-        <span>Pomočnik: ${p.sk} · ✔ ${solvedLabel(n)}</span></div>
-    </div>
-    <div class="id-stamps">${FILES.map(f => `<span class="stamp-slot ${fileDone(f.id) ? 'got' : ''}" title="${esc(f.title)}">${f.icon}</span>`).join('')}</div>
-  </div>`;
-}
+const idCard = (p, o) => UI.id(p, o);
 
 // ---- First-time tutorial: a guided practice case before the board ----
 const TUT_KEY = 'dp_tutorial_done';
@@ -2723,18 +2819,27 @@ function coach() {
     placeSpot();
   }
   // Put the bubble on the side with more room, so it doesn't cover what to tap.
-  const rect = target ? target.getBoundingClientRect() : null;
+  const rect = target ? spotRect(target) : null;
   const top = rect ? rect.top > innerHeight - rect.bottom : false;
   document.body.insertAdjacentHTML('beforeend', `<div class="coach ${top ? 'top' : 'bottom'}">
-    <span class="owl">🦉</span><span class="say">${esc(step.text)}</span>
-    ${step.ok ? '<button class="btn" data-coach="ok">V redu</button>' : ''}</div>`);
+    ${UI.coin(helperEmoji())}<span class="say">${esc(step.text)}</span>
+    ${step.ok ? UI.btn('V redu', { attrs: 'data-coach="ok"' }) : ''}</div>`);
+}
+
+// What the spotlight rings: the target, or for a list that scrolls (.rows) only the sentences on screen.
+function spotRect(t) {
+  const box = t.getBoundingClientRect();
+  if (!t.matches('.rows') || !t.children.length) return box;
+  const kids = [...t.children].map(el => el.getBoundingClientRect());
+  const top = Math.max(box.top, Math.min(...kids.map(k => k.top))), bottom = Math.min(box.bottom, Math.max(...kids.map(k => k.bottom)));
+  return { left: box.left + 8, right: box.right - 8, width: box.width - 16, top, bottom, height: bottom - top };
 }
 
 // The spotlight and the finger follow the target when the screen scrolls or turns.
 function placeSpot() {
   const t = document.querySelector('.coach-target'), spot = $('.coach-spot'), hand = $('.coach-hand');
   if (!t || !spot) return;
-  const r = t.getBoundingClientRect(), pad = 8;
+  const r = spotRect(t), pad = 8;
   Object.assign(spot.style, { left: r.left - pad + 'px', top: r.top - pad + 'px', width: r.width + 2 * pad + 'px', height: r.height + 2 * pad + 'px' });
   if (!hand) return;
   // below the target pointing up, or above it pointing down when there is no room below
@@ -2816,7 +2921,7 @@ function detectiveCards() {
 
 // Home: a new child first makes the ID card, then plays the practice case, then picks a file.
 function toHome() {
-  if (!profile()) { S.mk = { step: 1, av: null, g: null, sk: null, name: '' }; go('make'); return; }
+  if (!profile()) { S.mk = { step: 0, hello: true, av: null, g: null, sk: null, name: '' }; go('make'); return; }
   if (!store.read(TUT_KEY, false) && !(S.tut && S.tut.board)) { startTutorial(); return; }
   S.file = null;
   go('files');
@@ -2859,7 +2964,7 @@ function backTarget() {
   const tut = S.tut && !S.tut.board;
   switch (S.screen) {
     case 'make':
-      if (S.mk.step > 1) return () => { S.mk.step--; render(); };
+      if (S.mk.step > (S.mk.hello ? 0 : 1)) return () => { S.mk.step--; render(); };
       if (profile()) return () => { S.mk = null; toHome(); };
       return detectiveCards().length ? () => { S.mk = null; go('who'); } : null;
     case 'board': return () => { S.toast = null; toHome(); };
@@ -2937,7 +3042,7 @@ function render() {
 }
 
 function rowsHTML(act) {
-  return S.c.sentences.map(s => `<div class="row" data-act="${act}" data-sid="${s.id}">${names(s.text)}</div>`).join('');
+  return S.c.sentences.map(s => UI.row(names(s.text), { act, attrs: `data-sid="${s.id}"`, state: 'row' })).join('');
 }
 
 function refreshRows() {
@@ -2945,10 +3050,11 @@ function refreshRows() {
   const onEvidence = S.screen === 'evidence';
   document.querySelectorAll('.rows .row[data-sid]').forEach(el => {
     const s = sent(el.dataset.sid);
-    el.classList.toggle('heard', r.heard.has(s.id));
-    el.classList.toggle('selected', onEvidence && r.picks.includes(s.id));
-    el.classList.toggle('dim', onEvidence && (r.assisted ? s.role !== 'evidence' : !!r.highlight && !r.highlight.has(s.id)));
-    el.classList.toggle('pulse', onEvidence && r.assisted && s.role === 'evidence');
+    const picked = onEvidence && r.picks.includes(s.id), dim = onEvidence && (r.assisted ? s.role !== 'evidence' : !!r.highlight && !r.highlight.has(s.id));
+    const pulse = onEvidence && r.assisted && s.role === 'evidence';
+    el.classList.toggle('selected', picked); el.classList.toggle('is-picked', picked);
+    el.classList.toggle('dim', dim); el.classList.toggle('is-off', dim);
+    el.classList.toggle('pulse', pulse); el.classList.toggle('is-glow', pulse);
   });
 }
 
@@ -2972,15 +3078,20 @@ function watchScroll() {
   requestAnimationFrame(check);
 }
 
+// The band of a classic case (the practice): story → who → proof, the case's question under it.
+const caseBand = (step, at, q) => UI.band({ step: (S.c.no ? 'Primer ' + S.c.no : 'Vaja') + ' · ' + step, back: '←', dots: [0, 1, 2].map(i => i < at), at: at / 2,
+  ball: S.c.sticker, q: q || S.c.question });
+
 // A pair case needs two proof sentences, every other case one.
 const need = () => S.c.type === 'pair' ? 2 : 1;
 
 function evFooter() {
   const r = S.run;
   const two = need() === 2;
-  return (r.wrong >= 2 || r.badSuspect ? '<button class="btn secondary" data-act="changeSuspect">Zamenjaj osumljenca</button>' : '')
-    + (two ? `<span class="pick-count">${r.picks.length} / 2</span>` : '')
-    + `<button class="btn" data-act="confirm" ${r.picks.length === need() ? '' : 'disabled'}>${two ? 'To sta dokaza! ✔' : 'To je dokaz! ✔'}</button>`;
+  const ready = r.picks.length === need();
+  return (r.wrong >= 2 || r.badSuspect ? UI.btn('Zamenjaj osumljenca', { act: 'changeSuspect', kind: 'is-sec' }) : '')
+    + (two ? `<span class="ui-count pick-count">👆 ${r.picks.length} / 2</span>` : '')
+    + UI.btn(two ? 'To sta dokaza! ✔' : 'To je dokaz! ✔', { act: 'confirm', kind: ready ? '' : 'is-wait', attrs: ready ? '' : 'disabled' });
 }
 
 // Every hint follows a wrong answer: it says so first (✖ Ni prav. / Skoraj!), then what to do.
@@ -3220,7 +3331,7 @@ function ladderHint(level) {
 function showHint(h) {
   S.run.hint = h;
   log('hint_shown', { hint: h.key, hintLevel: h.level });
-  $('.screen').classList.add('locked');
+  $('.screen, .ui-screen').classList.add('locked');
   app.insertAdjacentHTML('beforeend', hintHTML(h));
   $('.footer').innerHTML = evFooter();
   refreshRows();
@@ -3244,6 +3355,7 @@ const T = {
       <h2>Pas na vrhu · ui-band</h2>
       ${UI.band({ step: 'Kdo je bil?', dots: [true, true, true, false, false], at: .75, ball: '⚽', q: 'Kdo je ob osmih porisal žoge?', backAct: 'uiTap' })}
       ${UI.band({ step: 'Na kraju dogodka', backAct: 'uiTap', back: '←' })}
+      ${UI.band({ step: 'Tabla', dots: [true, true, false, false, false, false], at: .2, ball: '🦕', backAct: 'uiTap', back: '←', player: p })}
       <h2>Stavek · ui-row</h2>
       ${UI.row(names('Ob osmih je Luka na sliki držal pokal.'), tap)}
       ${UI.row(names('Na Zojinih rokavicah so sveže packe zelenega flomastra.'), { ...tap, state: 'is-picked' })}
@@ -3258,7 +3370,7 @@ const T = {
       ${UI.row(names('Ta stavek je zaklenjen.'), { ...tap, state: 'is-off' })}
       <h2>Obraz · ui-face</h2>
       <div class="ui-wrap">${UI.face('luka', tap)}${UI.face('zoja', { ...tap, state: 'is-picked' })}${UI.face('pia', { ...tap, state: 'is-out' })}${UI.face('tone', { ...tap, state: 'is-glow' })}
-        ${UI.face('mila', { ...tap, state: 'is-witness', badge: '👁️' })}${UI.face('bip', tap)}${UI.face('hana', { ...tap, badge: '😳' })}</div>
+        ${UI.face('mila', { ...tap, state: 'is-witness', badge: '👁️' })}${UI.face('bip', { ...tap, state: 'is-unknown' })}${UI.face('hana', { ...tap, state: 'is-blush', badge: '😳' })}</div>
       <h2>Stvar na kraju · ui-tile · ui-tool</h2>
       <div class="ui-wrap">${UI.tile({ ...tap, e: '🎒', label: 'vreča' })}${UI.tile({ ...tap, e: '📷', label: 'kamera', state: 'is-done' })}${UI.tile({ ...tap, e: '📦', label: 'omara', state: 'is-dark' })}
         ${UI.tile({ ...tap, e: '📓', label: 'zvezek', state: 'is-blank' })}${UI.tile({ ...tap, e: '🎈', label: 'balon', state: 'is-glow' })}</div>
@@ -3266,21 +3378,26 @@ const T = {
       <h2>Gumbi · ui-btn</h2>
       ${UI.btn('Naprej 👉', tap)}${UI.btn('Vem, kdo je bil!', { ...tap, kind: 'is-wait' })}${UI.btn('▶ Igraj zdaj', { ...tap, kind: 'is-gold' })}
       <div class="ui-btns">${UI.btn('← 🗺️ Pustolovščine', { ...tap, kind: 'is-sec' })}${UI.btn('Dovolj za danes', { ...tap, kind: 'is-quiet' })}</div>
-      <div class="ui-wrap">${UI.btn('👍 Da', { ...tap, kind: 'is-chip' })}${UI.btn('🔄 Spremenim', { ...tap, kind: 'is-chip is-sec' })}</div>
+      <div class="ui-wrap">${UI.btn('Kje si bil?', { ...tap, kind: 'is-chip' })}${UI.btn('Kaj si videl?', { ...tap, kind: 'is-chip is-on' })}${UI.btn('Kje si bil?', { ...tap, kind: 'is-chip is-used' })}</div>
+      ${UI.btn('V redu', { ...tap, kind: 'is-soft' })}${UI.btn('UGOVOR! ❗', { ...tap, kind: 'is-loud' })}
       <h2>Žig · ui-stamp</h2>
       <div class="ui-wrap">${UI.stamp('Primer rešen!')}${UI.stamp('UGOVOR!', { mark: '❗' })}${UI.stamp('NAPAČNA SLED!', { color: 'is-blue', mark: '🧭' })}${UI.stamp('To šteje!', { color: 'is-green' })}</div>
       <div class="ui-wrap">${UI.stamp('Primer rešen!', { big: true })}</div>
       <h2>Pomočnik · ui-helper</h2>
       ${UI.helper('Prečrtaj, kdo ni bil. Tapni stavek, nato obraz.', { ...tap, e: p.sk })}
       ${UI.helper('Dokaz je v enem od svetlih stavkov.', { ...tap, e: p.sk, glow: true })}
+      ${UI.helper('To šteje! Še en.', { ...tap, e: p.sk, tone: 'is-good' })}
       <h2>Sporočilo · ui-note</h2>
       ${UI.note('Ta stavek ne pove, kdo ni bil. Izberi drug stavek.', { act: 'uiTap' })}
-      ${UI.note('✔ Vse je preiskano. Naprej! 👉', { done: true, btn: false })}
+      ${UI.note('Vse sledi so preverjene.', { done: true, btn: false })}
+      <h2>Besede · ui-say</h2>
+      ${UI.say(CHARACTERS.luka, 'Luka pove resnico:', '»Ob osmih sem nosil žoge.«', tap)}
+      ${UI.say(CHARACTERS.zoja, 'Zoja pravi:', '»Hotela sem samo pomagati!«', { ...tap, excuse: true })}
       <h2>Navodilo · ui-sheet</h2>
       <div style="position:relative;height:330px;border-radius:var(--r-l);overflow:hidden">${UI.sheet({ icon: '🔍', title: 'Na kraju dogodka', act: 'uiTap',
         body: '<div class="ui-sheet-text">👉 Preišči prostor. Tapni vsako stvar in preberi, kaj najdeš.</div>' })}</div>
       <h2>Oznake · ui-pill · ui-tag</h2>
-      <div class="ui-wrap">${UI.pill('Igrišče')}${UI.pill('🔰 Vajenka')}${UI.tag('NOVO', 'is-new')}${UI.tag('📅 Kmalu', 'is-soon')}${UI.tag('⏳ Še 3 dni')}${UI.tag('🔎 skrivnost')}<span class="ui-count">✔ 3 / 6</span></div>
+      <div class="ui-wrap">${UI.pill('Igrišče')}${UI.pill('🔰 Vajenka')}${UI.tag('NOVO', 'is-new')}${UI.tag('📅 Kmalu', 'is-soon')}${UI.tag('⏳ Še 3 dni', 'is-days')}${UI.tag('Jutri!', 'is-tomorrow')}${UI.tag('🔎 skrivnost')}<span class="ui-count">✔ 3 / 6</span></div>
       <h2>Izkaznica · ui-id</h2>
       ${UI.id(p)}
       <div class="ui-card">To je galerija sestavnih delov za odrasle. Igra: <a href="./?play">?play</a></div>
@@ -3291,7 +3408,7 @@ const T = {
     const embedded = Object.keys(AUDIO).length;
     const ageBtn = (age, label) => `<button class="btn ${S.age === age ? '' : 'secondary'}" data-act="age" data-age="${age}">${label}</button>`;
     return `<div class="screen adult">
-      <h1>Detektivska pisarna</h1>
+      <h1>${esc(BRAND)}</h1>
       <p class="muted">Priprava seje – za odrasle.</p>
       <section class="card">
         <h3>1. Otrok</h3>
@@ -3326,70 +3443,81 @@ const T = {
   },
 
   title() {
-    return `<div class="screen center">
-      <div class="sticker">🔍</div>
-      <h1>Detektivska pisarna</h1>
-      <button class="btn big" data-act="begin">Začni</button>
-    </div>`;
+    return `<div class="ui-screen"><div class="ui-top"></div>
+      <div class="ui-body is-center"><div class="ui-hello"><i></i><b></b><span>🔍</span></div><h1 class="ui-big">${esc(BRAND)}</h1></div>
+      <div class="ui-foot">${UI.btn('Začni', { act: 'begin' })}</div></div>`;
   },
 
-  // New child: three taps to a detective ID card.
+  // New child: a hello, then three taps to a detective ID card (welcome → detective → helper → name → card).
+  // Editing a card skips the hello.
   make() {
-    const m = S.mk;
-    const back = m.step > 1 ? '<button class="btn secondary mk-back" data-act="mkBack">← Nazaj</button>'
-      : backTarget() ? '<button class="btn secondary mk-back" data-act="back">← Nazaj</button>' : '';
-    let body;
-    if (m.step === 1) {
-      body = `<h1>Postani detektiv!</h1><p class="muted">Izberi svojega detektiva.</p>
-        <div class="pick-grid">${AVATARS.map((a, i) => `<button class="pick ${m.av === a.e ? 'on' : ''}" data-act="mkAvatar" data-i="${i}">
-          <span class="pe">${a.e}</span><span>${a.g === 'f' ? 'detektivka' : 'detektiv'}</span></button>`).join('')}</div>`;
+    const m = S.mk, edit = !m.hello;
+    const steps = m.hello ? [0, 1, 2, 3, 4] : [1, 2, 3, 4], at = steps.indexOf(m.step);
+    const back = m.step > (m.hello ? 0 : 1) ? 'mkBack' : backTarget() ? 'back' : null;
+    const TITLES = { 0: ['🔍', 'Postani detektiv!'], 1: ['🕵️', 'Izberi svojega detektiva.'], 2: [m.av || '🐾', 'Izberi pomočnika'], 3: ['✏️', 'Kako ti je ime?'], 4: ['🪪', 'To si ti!'] };
+    const [ti, tt] = TITLES[m.step];
+    let body, foot = '';
+    if (m.step === 0) {
+      body = `<div class="ui-body is-center"><div class="ui-hello"><i></i><b></b><span>🔍</span></div><div class="ui-trio"><span>🕵🏽‍♀️</span><span>🦉</span><span>🕵🏻‍♂️</span></div></div>`;
+      foot = UI.btn('Začni', { act: 'mkHello' });
+    } else if (m.step === 1) {
+      body = `<div class="ui-body"><div class="ui-picks">${AVATARS.map((a, i) => `<button class="ui-pick ${m.av === a.e ? 'is-on' : ''}" data-act="mkAvatar" data-i="${i}" aria-label="${a.g === 'f' ? 'detektivka' : 'detektiv'}">${a.e}</button>`).join('')}</div></div>`;
     } else if (m.step === 2) {
-      body = `<h1>Izberi pomočnika</h1>
-        <div class="pick-grid four">${SIDEKICKS.map(e => `<button class="pick ${m.sk === e ? 'on' : ''}" data-act="mkSidekick" data-e="${e}"><span class="pe">${e}</span></button>`).join('')}</div>`;
+      body = `<div class="ui-body"><span class="ui-duo">${UI.coin(m.av)}+${m.sk ? UI.coin(m.sk) : UI.coin('?', 'is-empty')}</span>
+        <div class="ui-picks is-2">${SIDEKICKS.map(e => `<button class="ui-pick ${m.sk === e ? 'is-on' : ''}" data-act="mkSidekick" data-e="${e}">${e}</button>`).join('')}</div></div>`;
     } else if (m.step === 3) {
-      body = `<h1>Kako ti je ime?</h1>
-        <input id="mkName" class="name-in" type="text" maxlength="12" autocomplete="off" autocapitalize="words" placeholder="tvoje ime" value="${esc(m.name)}">
-        <div class="seg"><button class="btn big" data-act="mkName">Naprej</button></div>
-        <button class="btn secondary" data-act="mkSkip">Preskoči</button>`;
+      body = `<div class="ui-body is-center"><span class="ui-me">${m.av}${UI.coin(m.sk)}</span>
+        <input id="mkName" class="ui-input ${m.name ? 'is-on' : ''}" type="text" maxlength="12" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Ime" value="${esc(m.name)}"></div>`;
+      foot = UI.btn('Naprej', { act: 'mkName' }) + UI.btn('Preskoči', { act: 'mkSkip', kind: 'is-quiet' });
     } else {
-      body = `<h1>To si ti!</h1>${idCard({ id: m.id, av: m.av, g: m.g, sk: m.sk, name: m.name })}
-        <button class="btn big" data-act="mkDone">Začni 🔍</button>`;
+      const p = { id: m.id, av: m.av, g: m.g, sk: m.sk, name: m.name };
+      body = `<div class="ui-body">${idCard(p, { stamp: edit ? '' : 'To si ti!' })}${edit ? '' : UI.helper('Postani detektiv!', { e: m.sk })}</div>`;
+      foot = UI.btn('Začni 🔍', { act: 'mkDone' });
     }
-    return `<div class="screen center make"><div class="mk-top"><span class="steps-dots">${[1, 2, 3, 4].map(i => `<i class="${i <= m.step ? 'on' : ''}"></i>`).join('')}</span>${back}</div>${body}</div>`;
+    return `<div class="ui-screen make"><header class="ui-band"><div class="ui-band-top">${back ? `<button class="ui-band-btn" data-act="${back}" aria-label="Nazaj">←</button>` : '<span class="ui-band-gap"></span>'}
+        ${UI.pills(steps.length, at)}<span class="ui-band-gap"></span></div>
+      <h1 class="ui-band-title">${UI.coin(ti)}<span>${esc(tt)}</span></h1></header>
+      ${body}${foot ? `<div class="ui-foot">${foot}</div>` : ''}</div>`;
   },
 
-  // Kdo igra? One card per detective on this device, plus a new one.
+  // Kdo igra? One row per detective on this device, plus a new one.
   who() {
     const cards = detectiveCards();
-    return `<div class="screen center who">
-      <h1>Kdo igra?</h1>
-      <div class="who-list">${cards.map(x => `<button class="who-card" data-act="pickDetective" data-key="${x.key}">
-        <span class="who-av">${x.p.av}</span><b>${esc(detName(x.p))}</b><span class="rank">${rankName(rankFor(x.n), x.p)}</span><span class="muted">✔ ${solvedLabel(x.n)}</span></button>`).join('')}
-        <button class="who-card add" data-act="addDetective"><span class="who-av">➕</span><b>Nov detektiv</b><span class="muted">za drugega otroka</span></button></div>
-      ${profile() ? '<button class="btn secondary" data-act="back">← Nazaj</button>' : ''}
-    </div>`;
+    return `<div class="ui-screen who"><header class="ui-band"><div class="ui-band-top">${profile() ? '<button class="ui-band-btn" data-act="back" aria-label="Nazaj">←</button>' : ''}
+        <span class="ui-brand" style="flex:1">${esc(BRAND)}</span>${profile() ? '<span class="ui-band-gap"></span>' : ''}</div>
+      <h1 class="ui-band-title">${UI.coin('👥')}<span>Kdo igra?</span></h1></header>
+      <div class="ui-body">${cards.map(x => UI.item({ act: 'pickDetective', attrs: `data-key="${x.key}"`, state: 'who-card' + (x.live ? ' is-on' : ''), round: true, pic: x.p.av, sk: x.p.sk,
+          title: x.p.name || detTitle(x.p), tags: UI.pill(rankName(rankFor(x.n), x.p)), end: '<span class="ui-item-go">›</span>' })).join('')}
+        ${UI.item({ act: 'addDetective', state: 'is-add who-card add', round: true, pic: '+', title: 'Nov detektiv', sub: 'za drugega otroka' })}</div></div>`;
   },
 
+  // Start: the badge on top, the next adventure as a big card, the others, the medals, what comes soon.
   files() {
-    const p = profile();
-    return `<div class="screen files-screen">
-      <div class="files-card">${idCard(p)}<button class="btn secondary edit" data-act="editCard" aria-label="Uredi izkaznico">✏️</button></div>
-      <div class="board-head"><span class="q">🗺️ Izberi pustolovščino</span></div>
-      <div class="file-list">${fileOrder().cards.map(([f, hero]) => {
-        const cs = casesIn(f.id), done = cs.filter(isSolved).length, all = cs.length + (f.soon || 0);
-        const tags = [done ? '' : 'NOVO', f.season ? '🔎 skrivnost' : ''].filter(Boolean).join(' · ');
-        return `<button class="file-card ${hero ? 'hero' : ''} ${f.season ? 'season' : ''}" data-act="openFile" data-file="${f.id}">
-          <span class="fi">${f.icon}</span>
-          <span class="ft">${tags ? `<span class="new-tag">${tags}</span>` : ''}<b>${esc(f.title)}</b><span class="cast">${f.cast.map(id => CHARACTERS[id].animal).join(' ')}</span>
-            ${hero ? `<span class="go">${done ? '▶ Nadaljuj' : '▶ Začni'}</span>` : ''}</span>
-          ${done ? `<span class="fp">✔ ${done} / ${all}</span>` : ''}</button>`;
-      }).join('')}
-        ${shelfHTML(fileOrder().shelf)}
-        ${teasersHTML()}</div>
-      <div class="footer"><button class="btn secondary" data-act="tutorial">❓ Kako igram?</button>
-        <button class="btn secondary" data-act="toWho" aria-label="Kdo igra?">👥</button>
-        <span class="grow"></span><button class="btn secondary" data-act="moreNo">Dovolj za danes</button></div>
-    </div>`;
+    const p = profile(), n = solvedKeys().filter(k => ALL_KEYS.includes(k)).length, order = fileOrder();
+    const card = ([f, hero]) => {
+      const cs = casesIn(f.id), done = cs.filter(isSolved).length, all = cs.length + (f.soon || 0);
+      const tags = [done ? '' : UI.tag('NOVO', 'is-new'), f.season ? UI.tag('🔎 skrivnost') : ''].join('');
+      if (hero) {
+        const next = cs.find(c => !isSolved(c) && !isLocked(c)) || cs.find(c => !isSolved(c));
+        return `<button class="ui-hero ui-hue file-card hero ${f.season ? 'season' : ''}" style="--hue:${f.hue}" data-act="openFile" data-file="${f.id}">
+          <span class="ui-hero-head"><span class="ui-item-pic">${f.icon}</span><span class="ui-item-text"><span class="ui-item-title">${esc(f.title)}</span>
+            ${next ? `<span class="ui-item-sub">Primer ${next.no}${next.place ? ' · ' + esc(next.place) : ''}</span>` : ''}</span></span>
+          <span class="ui-segs">${Array.from({ length: all }, (_, i) => `<i class="${i < done ? 'is-done' : ''}"></i>`).join('')}</span>
+          <span class="ui-btn go">${done ? '▶ Nadaljuj' : '▶ Začni'}</span></button>`;
+      }
+      return UI.item({ act: 'openFile', attrs: `data-file="${f.id}"`, state: `file-card ${f.season ? 'season' : ''}`, hue: f.hue, pic: f.icon, title: f.title,
+        sub: done ? `✔ ${done} / ${all}` : '', tags });
+    };
+    return `<div class="ui-screen files-screen"><header class="ui-band is-home"><div class="ui-band-top">
+        <button class="ui-band-btn" data-act="toWho" aria-label="Kdo igra?">👥</button><span class="ui-brand">${esc(BRAND)}</span>
+        <button class="ui-band-btn" data-act="tutorial" aria-label="Kako igram?">❓</button></div>
+      ${UI.badge(p, { act: 'editCard', attrs: 'aria-label="Uredi izkaznico"', rank: rankName(rankFor(n), p) })}
+      <div class="ui-band-name">${esc(p.name || detTitle(p))}</div></header>
+      <div class="ui-body file-list">${order.cards.slice(0, 1).map(card).join('')}
+        ${order.cards.length > 1 ? `<h2 class="ui-head">🗺️ Pustolovščine</h2>${order.cards.slice(1).map(card).join('')}` : ''}
+        ${shelfHTML(order.shelf)}
+        ${teasersHTML()}
+        ${UI.btn('Dovolj za danes', { act: 'moreNo', kind: 'is-quiet' })}</div></div>`;
   },
 
   board() {
@@ -3754,42 +3882,33 @@ const T = {
   },
 
   intro() {
-    const c = S.c;
-    return `<div class="screen center">
-      <div class="case-no">${S.c.no ? 'Primer ' + S.c.no : '🎓 Vaja'}${c.place ? ' · ' + esc(c.place) : ''}</div>
-      <div class="sticker">${c.sticker}</div>
-      ${qbar(c.question, c.id + '_q', 'big')}
-      <div class="suspects">${c.suspects.map(id => suspectCard(id, false)).join('')}</div>
-      <button class="btn big" data-act="toStory">Beri zgodbo</button>
-      ${backTarget() === 'stay' ? '' : '<button class="btn secondary" data-act="back">← Nazaj</button>'}
-    </div>`;
+    const c = S.c, tut = S.tut && !S.tut.board;
+    return `<div class="ui-screen"><div class="ui-top"></div>
+      <div class="ui-body is-center">${UI.pill(c.no ? 'Primer ' + c.no + (c.place ? ' · ' + c.place : '') : '🔰 Vaja')}
+        <span class="ui-pal">${tut ? helperEmoji() : c.sticker}</span>
+        <div class="ui-quest">${UI.coin(c.sticker)}<span>${esc(c.question)}</span></div>
+        <div class="ui-faces">${c.suspects.map(id => UI.face(id, { act: '' })).join('')}</div></div>
+      <div class="ui-foot">${UI.btn('Beri zgodbo', { act: 'toStory' })}${backTarget() === 'stay' ? '' : UI.btn('← Nazaj', { act: 'back', kind: 'is-quiet' })}</div></div>`;
   },
 
   story() {
-    return `<div class="screen">
-      ${qbar(S.c.question, S.c.id + '_q')}
-      <div class="rows">${rowsHTML('listen')}</div>
-      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
-        <span class="grow"></span><button class="btn big" data-act="know">Vem, kdo je bil!</button></div>
-    </div>`;
+    return `<div class="ui-screen">${caseBand('Zgodba', 0)}
+      <div class="ui-body rows">${rowsHTML('listen')}</div>
+      <div class="ui-foot">${UI.btn('Vem, kdo je bil!', { act: 'know' })}</div></div>`;
   },
 
   accuse() {
-    return `<div class="screen center">
-      ${qbar(UI_AUDIO.accuse, 'ui_accuse', 'big')}
-      <div class="suspects">${S.c.suspects.map(id => suspectCard(id, true)).join('')}</div>
-      <button class="btn secondary" data-act="reread">📖 Še enkrat preberi</button>
-    </div>`;
+    return `<div class="ui-screen">${caseBand('Kdo je bil?', 1, UI_AUDIO.accuse)}
+      <div class="ui-body is-center"><div class="ui-faces suspects">${S.c.suspects.map(id => UI.face(id)).join('')}</div></div>
+      <div class="ui-foot">${UI.btn('📖 Še enkrat preberi', { act: 'reread', kind: 'is-sec' })}</div></div>`;
   },
 
   evidence() {
     const r = S.run;
-    return `<div class="screen ${r.hint ? 'locked' : ''}">
-      <div class="qbar">${avatar(r.suspect, 'sm')}${need() === 2
-        ? `<span class="q">${UI_AUDIO.evidencePair}</span>${spk('ui_evidencePair')}`
-        : `<span class="q">${UI_AUDIO.evidence}</span>${spk('ui_evidence')}`}</div>
-      <div class="rows">${rowsHTML('select')}</div>
-      <div class="footer">${evFooter()}</div>
+    return `<div class="ui-screen ${r.hint ? 'locked' : ''}">${caseBand('Dokaz', 2, need() === 2 ? UI_AUDIO.evidencePair : UI_AUDIO.evidence)}
+      <div class="ui-faces" style="padding-top:12px">${UI.face(r.suspect, { act: '', state: 'is-picked' })}</div>
+      <div class="ui-body rows">${rowsHTML('select')}</div>
+      <div class="ui-foot footer">${evFooter()}</div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
 
@@ -3845,27 +3964,25 @@ const T = {
   },
 
   more() {
-    return `<div class="screen center">
-      ${qbar(UI_AUDIO.more, 'ui_more', 'big')}
-      <div class="seg"><button class="btn big" data-act="moreYes">Da!</button>
-      <button class="btn big secondary" data-act="moreNo">Dovolj za danes</button></div>
-    </div>`;
+    return `<div class="ui-screen"><div class="ui-top"></div>
+      <div class="ui-body is-center"><span class="ui-pal is-m">${helperEmoji()}</span><h1 class="ui-big">${esc(UI_AUDIO.more)}</h1></div>
+      <div class="ui-foot">${UI.btn('Da!', { act: 'moreYes' })}${UI.btn('Dovolj za danes', { act: 'moreNo', kind: 'is-sec' })}</div></div>`;
   },
 
   soon() {
-    return `<div class="screen center">
-      <div class="sticker">🚧</div>
-      ${qbar(UI_AUDIO.soon, 'ui_soon', 'big')}
-      <button class="btn big" data-act="toThanks">V redu</button>
-    </div>`;
+    const next = SOON.find(f => f.opens);
+    return `<div class="ui-screen"><div class="ui-top"></div>
+      <div class="ui-body is-center"><span class="ui-letter">✉️${next ? soonTag(next) : ''}</span>
+        <h1 class="ui-big">${esc(UI_AUDIO.soon)}</h1><p class="ui-text">Vsak teden pride nova pustolovščina.</p></div>
+      <div class="ui-foot">${UI.btn('V redu', { act: 'toThanks' })}</div></div>`;
   },
 
   thanks() {
-    return `<div class="screen center">
-      <div class="sticker">🏅</div>
-      ${qbar(UI_AUDIO.thanks, 'ui_thanks', 'big')}
-      ${KID_MODE ? '<button class="btn secondary" data-act="backToBoard">🗂️ Nazaj na primere</button>' : ''}
-    </div>`;
+    const p = profile();
+    return `<div class="ui-screen is-season"><div class="ui-top"></div>
+      <div class="ui-body is-center">${p ? UI.badge(p, { big: true }) : `<span class="ui-pal is-m">🏅</span>`}
+        <h1 class="ui-big">${esc(UI_AUDIO.thanks)}</h1></div>
+      ${KID_MODE ? `<div class="ui-foot">${UI.btn('🗂️ Nazaj na primere', { act: 'backToBoard' })}</div>` : ''}</div>`;
   },
 
   debrief() {
@@ -3964,6 +4081,7 @@ const ACTIONS = {
     go('make');
   },
   mkBack() { S.mk.step--; render(); },
+  mkHello() { S.mk.step = 1; render(); },
   mkAvatar(el) {
     const a = AVATARS[Number(el.dataset.i)];
     Object.assign(S.mk, { av: a.e, g: a.g, step: 2 });
@@ -4155,9 +4273,9 @@ const ACTIONS = {
   // a tap beside the message card: it wiggles, it doesn't go away
   // a teaser card isn't open yet: it wiggles, and the countdown on it says when
   teaser(el) {
-    el.classList.remove('wiggle');
+    el.classList.remove('is-wiggle');
     void el.offsetWidth;
-    el.classList.add('wiggle');
+    el.classList.add('is-wiggle');
   },
   noteNudge() {
     const n = $('#note');
@@ -4171,7 +4289,7 @@ const ACTIONS = {
     stopAudio();
     const h = $('#hint');
     if (h) h.remove();
-    $('.screen').classList.remove('locked');
+    $('.screen, .ui-screen').classList.remove('locked');
     log('hint_dismiss');
   },
   // ---- step cases

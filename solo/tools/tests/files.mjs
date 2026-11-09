@@ -14,18 +14,21 @@ const text = () => p.evaluate(() => document.body.innerText);
 // ---- ID card
 ok(await st() === 'make' && (await text()).includes('Postani detektiv'), 'first launch: make your detective');
 await p.screenshot({ path: 'shots/f1-make.png' });
+await p.click('[data-act="mkHello"]'); await wait(150);
+ok((await text()).includes('Izberi svojega detektiva'), 'hello → pick a detective');
 await p.click('[data-act="mkAvatar"][data-i="4"]'); await wait(150);
 ok((await text()).includes('Izberi pomočnika'), 'avatar → sidekick');
 await p.click('[data-act="mkSidekick"][data-e="🐶"]'); await wait(150);
 await p.type('#mkName', '<b>ana!!</b>');
 await p.screenshot({ path: 'shots/f2-name.png' });
 await p.click('[data-act="mkName"]'); await wait(150);
-ok((await text()).includes('Detektivka Banab') && !(await p.$('.idcard b b')), 'name is cleaned (letters only) and shown safely');
+ok(await p.$eval('.ui-id-name', el => el.textContent) === 'Banab' && !(await p.$('.ui-id-name b')), 'name is cleaned (letters only) and shown safely');
+ok((await text()).includes('To si ti!') && (await text()).includes('🔰 Vajenka'), 'card: »To si ti!« stamp and the first rank');
 await p.click('[data-act="mkBack"]'); await wait(100);
 await p.evaluate(() => { document.getElementById('mkName').value = ''; });
 await p.type('#mkName', 'ana');
 await p.keyboard.press('Enter'); await wait(150);
-ok((await text()).includes('Detektivka Ana') && (await text()).includes('Pomočnik: 🐶'), 'card: "Detektivka Ana", sidekick, Enter works');
+ok(await p.$eval('.ui-id-name', el => el.textContent) === 'Ana' && await p.$eval('.ui-id-photo .ui-coin', el => el.textContent) === '🐶', 'card: "Ana", sidekick, Enter works');
 await p.screenshot({ path: 'shots/f3-card.png' });
 await p.click('[data-act="mkDone"]'); await wait();
 ok(await st() === 'intro' && (await text()).includes('Vaja'), 'then the practice case');
@@ -54,8 +57,8 @@ await p.evaluate(() => { localStorage.setItem('dp_played_v1', JSON.stringify([1,
 ok((await text()).includes('Pustolovščina rešena') && (await p.$$('.folder.solved')).length === 6, 'bip: all 6 solved → "Pustolovščina rešena!"');
 await p.screenshot({ path: 'shots/f7-file-done.png' });
 await p.click('[data-act="toFiles"]'); await wait(150);
-ok(await p.$('.stamp-slot.got'), 'ID card gets the 👾 stamp');
-ok((await text()).includes('6 rešenih primerov'), 'card counts "6 rešenih primerov"');
+ok(await p.$('.medal[data-file="bip"]'), 'the 👾 medal is on the shelf');
+ok((await p.$eval('.ui-badge-rank', el => el.textContent)).includes('Višja detektivka'), 'the badge shows the rank for 6 cases: ⭐ Višja detektivka');
 ok(!(await p.$('.file-card[data-file="gozd"], .file-card[data-file="vesolje"], .file-card[data-file="kmetija"]')), 'the old forest, space and farm stories are gone');
 await p.screenshot({ path: 'shots/f8-files-after.png' });
 
@@ -63,8 +66,8 @@ await p.screenshot({ path: 'shots/f8-files-after.png' });
 await p.click('[data-act="editCard"]'); await wait(150);
 await p.click('[data-act="mkAvatar"][data-i="1"]'); await p.click('[data-act="mkSidekick"][data-e="🦉"]'); await p.click('[data-act="mkSkip"]'); await wait(150);
 await p.click('[data-act="mkDone"]'); await wait(150);
-ok(await st() === 'files' && (await text()).includes('Detektiv\n') || (await p.$eval('.idcard b', el => el.textContent)) === 'Detektiv', 'edited card: boy avatar, no name → "Detektiv"');
-ok((await p.$$('.stamp-slot.got')).length === 1, 'progress kept after editing the card');
+ok(await st() === 'files' && (await p.$eval('.ui-band-name', el => el.textContent)) === 'Detektiv', 'edited card: boy avatar, no name → "Detektiv"');
+ok((await p.$$('.medal')).length === 1, 'progress kept after editing the card');
 
 ok(!errors.length, 'no page errors ' + errors.join('|'));
 

@@ -4,7 +4,7 @@ import puppeteer from 'puppeteer-core';
 const b = await puppeteer.launch({ executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true });
 const ok = (c, m) => { console.log((c ? '✔ ' : '✘ ') + m); if (!c) process.exitCode = 1; };
 const wait = (ms = 300) => new Promise(r => setTimeout(r, ms));
-const season = (p) => p.evaluate(() => getComputedStyle(document.querySelector('.ui-btn, .btn')).backgroundColor);
+const season = (p) => p.evaluate(() => getComputedStyle(document.querySelector('.ui-btn:not([class*="is-"]), .btn')).backgroundColor);
 
 for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land', 844, 390]]) {
   const p = await b.newPage();
@@ -17,16 +17,16 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
     `${dev}: the gallery opens and Lexend is bundled (no network)`);
   ok(await p.evaluate(() => getComputedStyle(document.body).fontFamily.startsWith('Lexend')), `${dev}: the game's text is Lexend, Verdana behind it`);
   ok(await p.evaluate(() => document.querySelector('.ui-gallery').scrollWidth <= innerWidth), `${dev}: no sideways scroll`);
-  const small = await p.evaluate(() => [...document.querySelectorAll('.ui-row, .ui-btn:not(.is-chip), .ui-tool, .ui-band-btn, .ui-helper, .ui-tile, .ui-face')]
+  const small = await p.evaluate(() => [...document.querySelectorAll('.ui-row, .ui-btn, .ui-tool, .ui-band-btn, .ui-helper, .ui-tile, .ui-face')]
     .filter(el => { const r = el.getBoundingClientRect(); return r.height < 56 || r.width < 56; }).map(el => el.className));
   ok(!small.length, `${dev}: every tap target is at least 56 px ${small.join(', ')}`);
-  const chips = await p.evaluate(() => [...document.querySelectorAll('.ui-btn.is-chip')].every(el => el.getBoundingClientRect().height >= 48));
-  ok(chips, `${dev}: small chips are still 48 px tall`);
+  const chips = await p.evaluate(() => [...document.querySelectorAll('.ui-btn.is-chip')].every(el => el.getBoundingClientRect().height >= 56));
+  ok(chips, `${dev}: chips (questions, letters, answers) are 56 px tall too`);
   const overflow = await p.evaluate(() => [...document.querySelectorAll('.ui-row-text, .ui-face-name, .ui-id-name, .ui-sheet-title')]
     .filter(el => el.scrollWidth > el.clientWidth + 1).map(el => el.textContent.slice(0, 20)));
   ok(!overflow.length, `${dev}: no text spills out of its box ${overflow.join(' | ')}`);
   // picked = the deep season colour with white text, never the gold of a hint
-  const picked = await p.evaluate(() => { const r = getComputedStyle(document.querySelector('.ui-row.is-picked')); return [r.color, r.backgroundColor, getComputedStyle(document.querySelector('.ui-btn')).backgroundColor]; });
+  const picked = await p.evaluate(() => { const r = getComputedStyle(document.querySelector('.ui-row.is-picked')); return [r.color, r.backgroundColor, getComputedStyle(document.querySelector('.ui-btn:not([class*="is-"])')).backgroundColor]; });
   ok(picked[0] === 'rgb(255, 255, 255)' && picked[1] === picked[2], `${dev}: a picked row is white on the season colour`);
   const green = await season(p);
   await p.click('[data-act="uiHue"][data-hue="235"]'); await wait(150);
@@ -52,7 +52,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   for (const f of await p.evaluate(() => FILES.map(f => [f.id, String(f.hue)]))) {
     await p.evaluate((id) => { S.file = id; toBoard(); }, f[0]); await wait(100);
     ok(await hue() === f[1], `${f[0]}: its board is in its own colour (${f[1]})`);
-    seen.add(await p.evaluate(() => { const x = document.createElement('button'); x.className = 'btn'; document.querySelector('.screen').append(x); return getComputedStyle(x).backgroundColor; }));
+    seen.add(await p.evaluate(() => { const x = document.createElement('button'); x.className = 'btn'; document.querySelector('.screen, .ui-screen').append(x); return getComputedStyle(x).backgroundColor; }));
   }
   ok(seen.size === await p.evaluate(() => new Set(FILES.map(f => f.hue)).size), `the older screens' buttons follow the season too: ${[...seen].join(' ')}`);
   ok(await p.evaluate(() => helperEmoji()) === '🦊', 'the helper is the one on the ID card');
