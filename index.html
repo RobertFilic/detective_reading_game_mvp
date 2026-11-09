@@ -309,9 +309,9 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
   const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const KEY = 'install_hidden';
   const STEPS = ios
-    ? ['Tapni <b>Deli</b> – na iPadu zgoraj desno, na iPhonu spodaj ali v meniju <b>•••</b>', 'Podrsaj navzdol in tapni <b>Dodaj na začetni zaslon</b>', 'Tapni <b>Dodaj</b> zgoraj desno']
+    ? ['Tapni <b>•••</b> ob naslovni vrstici, nato <b>Deli</b>', 'Tapni <b>Več</b> in izberi <b>Dodaj na začetni zaslon</b>', 'Pusti vklopljeno <b>Odpri kot spletno aplikacijo</b>', 'Tapni <b>Dodaj</b>']
     : ['Odpri meni brskalnika <b>⋮</b> ali <b>•••</b>', 'Izberi <b>Namesti aplikacijo</b> ali <b>Dodaj na začetni zaslon</b>', 'Potrdi z <b>Namesti</b>'];
-  const ICONS = ios ? ['⬆️', '➕', '✅'] : ['☰', '➕', '✅'];
+  const ICONS = ios ? ['⬆️', '➕', '📱', '✅'] : ['☰', '➕', '✅'];
   $('steps').innerHTML = STEPS.map((txt, i) => `<li><span>${txt}</span><span>${ICONS[i]}</span></li>`).join('');
   let hidden = false;
   try { hidden = localStorage.getItem(KEY) === '1'; } catch (e) {}
