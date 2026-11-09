@@ -44,7 +44,7 @@ The world, the people and the voice of Detektivska pisarna. The showrunner owns 
 - Planned season »Lisica na kmetiji?«: signs of a fox, really a lost puppy the children may name ([IMPROVEMENTS.md §4](../IMPROVEMENTS.md)).
 
 ### 🎓 The practice case
-- **Babica** 🦉 the owl coaches the tutorial. With **Bine** 🐰, **Zala** 🦊, **Jure** 🐻.
+- The child's own helper coaches the tutorial. The suspects are three children: **Bine** 👦🏻, **Zala** 👧🏾, **Jure** 🧒🏼.
 - Babica could grow into the child's **Miss Marple**: an old owl who has seen everything and asks the one quiet question. Not yet used in seasons.
 
 ### Planned (not canon until a season is approved)

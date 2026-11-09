@@ -1440,9 +1440,9 @@ const LEVEL_RULES = {
 // used by tools/cases.mjs to check that the evidence names the culprit.
 const CHARACTERS = {
   // the practice case
-  bine: { name: 'Bine', animal: '🐰', color: '#d6e6ff', re: 'Bine(ta|tu|tom)?' },
-  zala: { name: 'Zala', animal: '🦊', color: '#ffdcc6', re: 'Zal(a|o|e|i)' },
-  jure: { name: 'Jure', animal: '🐻', color: '#ead8c4', re: 'Jure(ta|tu|tom)?' },
+  bine: { name: 'Bine', animal: '👦🏻', color: '#d6e6ff', re: 'Bine(ta|tu|tom)?' },
+  zala: { name: 'Zala', animal: '👧🏾', color: '#ffdcc6', re: 'Zal(a|o|e|i)' },
+  jure: { name: 'Jure', animal: '🧒🏼', color: '#ead8c4', re: 'Jure(ta|tu|tom)?' },
   // 👾 Skrivnost v zračniku (on the space station Zvezdica)
   maja: { name: 'Maja', animal: '👩🏼‍🚀', color: '#dbe4ff', re: 'Maj(a|o|e|i|in\\p{L}*)' },
   tim: { name: 'Tim', animal: '👨🏽‍🚀', color: '#e2f2e6', re: 'Tim(a|u|om|ov\\p{L}*)?' },
@@ -3080,8 +3080,8 @@ function coachStep() {
     case 'story': return t.read
       ? { text: 'Ko veš, kdo je bil, tapni tukaj.', sel: '[data-act="know"]' }
       : { text: 'Preberi vse stavke. Kdo je pojedel korenček?', sel: '.rows', ok: true, point: false };
-    // a group (the animals, the sentences) gets the spotlight but no finger: it would point at one answer
-    case 'accuse': return { text: 'Kdo je bil? Tapni pravo živalco.', sel: '.suspects', point: false };
+    // a group (the suspects, the sentences) gets the spotlight but no finger: it would point at one answer
+    case 'accuse': return { text: 'Kdo je bil? Tapni pravo osebo.', sel: '.suspects', point: false };
     case 'evidence': return r && r.picks.length
       ? { text: 'Tapni »To je dokaz!«', sel: '[data-act="confirm"]' }
       : { text: 'Kateri stavek to dokaže? Tapni ga.', sel: '.rows', point: false };
