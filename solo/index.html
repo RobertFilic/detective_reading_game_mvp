@@ -1229,6 +1229,9 @@ tr.clickable { cursor: pointer; }
 .board-band .ui-band-top > .ui-pill { background: rgba(255, 255, 255, .14); color: #fff; font-size: var(--t-label); padding: 6px 12px; }
 .board-band .ui-step-name { font: 600 22px/1.15 var(--font); color: #fff; }
 .board { background: transparent; border: 0; border-radius: 0; padding: 4px 2px 12px; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+/* the whole board screen scrolls: a tall corkboard (the guess question on a phone) never leaves the folders a sliver */
+.boardscreen { overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+.boardscreen > .board { flex: none; min-height: 0; overflow: visible; }
 .folder { background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--r-m); box-shadow: var(--sh-soft); padding: 14px 10px 10px; min-height: 150px; gap: 6px; }
 .folder .no { top: 8px; left: 10px; width: 26px; height: 26px; border-radius: 50%; background: var(--season-soft); color: var(--season); display: grid; place-items: center; font: 600 14px var(--font); }
 .folder .stk { font-size: 44px; }
@@ -3307,10 +3310,10 @@ function seasonHue() {
 function render() {
   app.className = 'level-' + (S.level || 'B');
   app.style.setProperty('--hue', seasonHue());
-  const keep = $('.kdwrap'), keepTop = keep ? keep.scrollTop : 0;   // ⏰: a tap must not jump the bands back to the top
+  const keep = ['.kdwrap', '.boardscreen'].find(s => $(s)), keepTop = keep ? $(keep).scrollTop : 0;   // a tap must not jump ⏰'s bands or the board back to the top
   app.innerHTML = (bandScreen() ? stepBand() : '') + T[S.screen]();
   app.classList.toggle('rail', !!$('#app > .ui-band + .screen'));   // a phone held sideways: the band becomes a rail on the left
-  if (keep && $('.kdwrap')) $('.kdwrap').scrollTop = keepTop;
+  if (keep && $(keep)) $(keep).scrollTop = keepTop;
   if (briefOpen()) app.insertAdjacentHTML('beforeend', briefHTML());
   else if (truthOpen()) app.insertAdjacentHTML('beforeend', truthHTML());
   else if (excuseOpen()) app.insertAdjacentHTML('beforeend', excuseHTML());
@@ -3814,7 +3817,7 @@ const T = {
     const p = profile();
     const soon = f.soon || 0;
     const letter = letterDue(S.file);
-    return `${UI.band({ cls: 'board-band', step: `${f.icon} ${f.title}`, back: '←', backAct: 'toFiles', end: UI.pill(`✔ ${done} / ${cases.length + soon}`) })}<div class="screen">
+    return `${UI.band({ cls: 'board-band', step: `${f.icon} ${f.title}`, back: '←', backAct: 'toFiles', end: UI.pill(`✔ ${done} / ${cases.length + soon}`) })}<div class="screen boardscreen">
       ${fileDone(S.file) ? `<div class="trophy">🏅 Pustolovščina rešena! Bravo, ${esc(detName(p))}!${f.book ? ' <button class="btn secondary" data-act="openBook">📖 Moja knjiga</button>' : f.cup ? ' <button class="btn secondary" data-act="openBook">🏆 Moj pokal</button>' : ''}</div>` : ''}
       ${S.toast && S.toast !== 'soon' ? `<div class="toast">${esc(S.toast)}</div>` : ''}
       ${soon && done === cases.length ? `<div class="waiting ${S.toast === 'soon' ? 'flash' : ''}"><span>⏳ Primer ${cases.length + 1} pride kmalu! Medtem reši druge pustolovščine.</span>

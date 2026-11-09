@@ -58,6 +58,16 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   ok((await p.$eval('.think', e => e.innerText)).includes('bleščeča žlička'), `${name}: thought about the spoon`);
   ok((await p.$$('.guess-opts .btn')).length === 3, `${name}: vent guess with 3 options`);
   await wait(1500); await check('board-guess');
+  const scrollsDown = () => p.evaluate(() => { const sc = document.querySelector('.board').parentElement, H = innerHeight;
+    sc.scrollTop = sc.scrollHeight; const r = (s) => document.querySelector(s).getBoundingClientRect();
+    const fine = r('.folder[data-no="6"]').bottom <= H + 1 && r('.board ~ .footer .ui-btn').bottom <= H + 1 && r('.folder[data-no="6"]').height >= 100;
+    sc.scrollTop = 0; return fine; });
+  ok(await scrollsDown(), `${name}: under the guess the board scrolls down to every folder and »Dovolj za danes«`);
+  if (name === 'iphone14') {   // big Safari text on a phone is about a 340 px wide page
+    await p.setViewport({ width: 340, height: 700, hasTouch: true, isMobile: true, deviceScaleFactor: 2 }); await wait(300);
+    ok(await scrollsDown(), `${name}: … also with big text (340 × 700)`);
+    await p.setViewport({ width: w, height: h, hasTouch: true, isMobile: true, deviceScaleFactor: 2 }); await wait(300);
+  }
   if (name !== 'land') {   // the corkboard is hidden on a landscape phone
     await p.click('[data-act="ventGuess"][data-id="alien"]'); await wait();
     ok((await p.$eval('.guess.done', e => e.innerText)).includes('bitje iz vesolja'), `${name}: guess kept: alien`);
