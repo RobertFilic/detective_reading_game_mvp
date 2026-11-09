@@ -105,8 +105,6 @@ a.btn { text-decoration: none; display: inline-flex; align-items: center; }
   min-height: 56px; font-size: var(--row-font); line-height: 1.35; display: flex; align-items: center;
   cursor: pointer; text-align: left; transition: opacity .2s; flex: none;
 }
-.row.heard { background: var(--heard); }
-.row.playing { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(61, 111, 216, .25); }
 .row.selected { background: var(--sel); border-color: var(--sel-line); }
 .row.dim { opacity: .3; }
 .pick-count { font-weight: 700; color: var(--muted); }
@@ -787,7 +785,7 @@ tr.clickable { cursor: pointer; }
   display: grid; place-items: center; font-size: 19px; box-shadow: 0 3px 8px rgba(0, 0, 0, .25); transition: left 500ms var(--ease-move); }
 .ui-player { flex: none; display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 12px 0 4px; border-radius: 22px; background: rgba(255, 255, 255, .12); font: 500 var(--t-small) var(--font); white-space: nowrap; max-width: 40%; overflow: hidden; }
 .ui-player > .ui-coin { width: 36px; height: 36px; font-size: 20px; }
-.ui-band-q { display: flex; gap: 12px; align-items: center; min-height: 48px; font: 600 var(--t-row)/1.3 var(--font); text-wrap: pretty; }
+.ui-band-q { appearance: none; border: 0; background: transparent; color: inherit; padding: 0; text-align: left; cursor: pointer; width: 100%; display: flex; gap: 12px; align-items: center; min-height: 48px; font: 600 var(--t-row)/1.3 var(--font); text-wrap: pretty; }
 
 /* a sentence: one per row, tap to hold it */
 .ui-row { appearance: none; position: relative; width: 100%; min-height: var(--tap); display: flex; align-items: center; gap: 10px; padding: 8px 14px; text-align: left;
@@ -1106,6 +1104,276 @@ tr.clickable { cursor: pointer; }
 @keyframes ui-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 @keyframes ui-sway { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
 @media (prefers-reduced-motion: reduce) { [class^="ui-"], [class*=" ui-"] { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; } }
+
+/* ===== Case steps: the older step screens keep their markup (and the tests' hooks) and take the ui-* look here.
+   This block comes after the old rules on purpose: same selectors, the newer look wins. */
+.btn { min-height: 66px; padding: 10px 22px; border: 0; border-radius: 20px; background: var(--season); color: #fff; font: 600 21px/1.2 var(--font); box-shadow: var(--sh-lift); }
+.btn.big { font-size: 21px; padding: 10px 26px; }
+.btn.secondary { min-height: var(--tap); background: var(--paper); color: var(--ink); border: 1.5px solid var(--line); box-shadow: none; font: 500 17px var(--font); }
+.btn.danger { background: var(--paper); color: var(--stamp); border: 1.5px solid var(--stamp); box-shadow: none; }
+.btn:disabled { opacity: 1; background: var(--season-soft); color: var(--season); border: 1.5px dashed var(--season-mid); box-shadow: none; }
+.screen .footer { padding-top: 10px; }
+.ui-band + .screen { padding-top: 14px; }
+.ui-band + .screen .caseq { display: none; }   /* the question is in the band */
+.qbar { margin: 0 0 10px; }
+.qbar .ui-helper { width: 100%; }
+.qbar .ui-bubble { font: 500 var(--t-body)/1.35 var(--font); }
+.caseq { font: 600 var(--t-row)/1.3 var(--font); }
+.case-no { font: 600 var(--t-label) var(--font); color: var(--season); background: var(--season-soft); border-radius: var(--r-pill); padding: 4px 14px; }
+.sticker { font-size: 72px; }
+
+/* sentences */
+.row { min-height: var(--tap); padding: 8px 14px; border-radius: var(--r-m); background: var(--paper); border: 1.5px solid var(--line); box-shadow: var(--sh-soft);
+  font: 400 var(--row-font)/1.35 var(--font); color: var(--ink); transition: background 160ms, transform 160ms, box-shadow 160ms; }
+.row.selected { background: var(--season); border-color: var(--season); color: #fff; font-weight: 500; box-shadow: var(--sh-lift); transform: translateY(-2px); }
+.row.selected .nm, .row.selected .who { color: #fff; }
+.row.dim { opacity: 1; background: transparent; border-style: dashed; box-shadow: none; color: var(--ink-2); }
+.row.pulse, .wcell.pulse, .tcard.pulse, .claim.pulse, .hclue.pulse, .suspect.pulse, .obj.pulse, .tool.pulse, .ctile.pulse, .strip.pulse { border-color: var(--glow); animation: ui-glow 2s ease-in-out infinite; }
+.row.used { text-decoration: line-through 2px; text-decoration-color: var(--ink-2); color: var(--ink-2); opacity: 1; box-shadow: none; }
+.row.broke { border-color: var(--glow); animation: ui-glow 2s ease-in-out 1; }
+.row.proof { background: var(--green-soft); border-color: var(--green); }
+.row .ltag { color: var(--stamp); font: 700 13px var(--font); }
+.row .ltag.herr { color: var(--blue); }
+.row mark, .row .tw { background: var(--mark); color: var(--ink); padding: 0 4px; border-radius: 5px; }
+.rows { gap: 10px; }
+.nm { font-weight: 600; }
+
+/* faces: a person on a coin, crossed off with one pencil line (never a red ✖) */
+.suspects { gap: 8px 12px; }
+.suspect { position: relative; min-width: 84px; padding: 0; border: 0; background: transparent; border-radius: 0; gap: 4px; font: 500 var(--t-small)/1.2 var(--font); color: var(--ink); box-shadow: none; }
+.avatar { position: relative; width: 60px; height: 60px; font-size: 32px; border: 1.5px solid var(--line); box-sizing: border-box; }
+.avatar.sm { width: 44px; height: 44px; font-size: 24px; }
+.suspects.mini .suspect { min-width: 0; padding: 0; font-size: var(--t-small); max-width: 96px; }
+.suspects.mini .avatar { width: 60px; height: 60px; font-size: 32px; }
+.suspect.crossed { opacity: 1; background: transparent; }
+.suspect.crossed .avatar { filter: none; background: var(--bg) !important; border-style: dashed; color: transparent; text-shadow: 0 0 0 rgba(27, 34, 46, .4); }
+.suspect.crossed .avatar::after { content: ''; position: absolute; left: 4px; right: 4px; top: 50%; height: 3px; margin-top: -1.5px; border-radius: 2px; background: var(--ink); transform: rotate(-35deg); }
+.suspect.crossed > span:last-child { text-decoration: line-through; }
+.suspect .xmark { display: none; }
+.suspect.justcrossed .avatar::after { animation: ui-pop 220ms ease-out both; }
+.suspect.witness .avatar { border: 2px dashed var(--season-mid); }
+.suspect .eye { left: auto; right: 4px; top: 40px; width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 14px; }
+.ask .suspect.on .avatar { border: 2px solid var(--season); box-shadow: var(--sh-lift); transform: translateY(-3px); }
+.ask .suspect.on { box-shadow: none; color: var(--season); font-weight: 600; }
+.ask .suspect .ok { top: -4px; right: 6px; width: 22px; height: 22px; border-radius: 50%; background: var(--season); color: #fff; display: grid; place-items: center; font: 600 12px var(--font); }
+.avatar.caught { animation: ui-hop 600ms ease-out .9s 2; }
+
+/* notes and hints at the bottom: the helper speaks; »Ni prav.« is plain words, never red */
+.hint { left: 0; right: 0; margin: 0 auto; transform: none; width: min(560px, calc(100% - 24px)); bottom: calc(14px + env(safe-area-inset-bottom));
+  background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--r-l); padding: 14px; gap: 12px; flex-wrap: wrap; box-shadow: var(--sh-float);
+  font: 400 var(--t-body)/1.35 var(--font); color: var(--ink); animation: ui-in 200ms ease-out both; }
+.hint .hi { flex: none; }
+.hint .hi > .ui-coin { width: 48px; height: 48px; font-size: 28px; background: var(--paper); border: 1.5px solid var(--line); }
+.hint .txt { flex: 1 1 calc(100% - 64px); }
+.hint .ui-btn { flex: 1 0 100%; }
+.hint.no, .hint.tip, .hint.almost { border-color: var(--glow); box-shadow: 0 0 0 3px rgba(248, 202, 101, .4), var(--sh-float); background: var(--paper); }
+.hint.no .hi, .hint.no .verdict { color: inherit; }
+.hint .verdict { display: inline; font-size: 1em; font-weight: 600; }
+.hint.good { background: var(--green-soft); border-color: var(--green); box-shadow: var(--sh-float); }
+.hint.good .hi { width: 44px; height: 44px; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; font: 700 20px var(--font); }
+.hint.good .txt { color: #1a5a2f; font-weight: 600; }
+.hint.note { animation: ui-in 200ms ease-out both; }
+.hint.note.nudge { animation: ui-sway 280ms ease-in-out; }
+.screen .btn { min-height: 60px; }
+.screen.center > .btn.big { width: min(560px, 100%); }
+.ui-band ~ .screen .footer > .btn.secondary[data-act="back"] { display: none; }   /* the band has ← */
+.qbar .bq::after, .row.wnote::after { width: 24px; height: 24px; font: 700 14px var(--font); background: var(--season-soft); color: var(--season); box-shadow: none; }
+.qbar .bq::after { flex: none; margin-left: 0; }
+.screen .btn.secondary, .screen .footer .btn { min-height: var(--tap); }
+/* a phone held sideways: the band is one thin row, the question is left to the step (it said it on the call) */
+@media (max-height: 500px) {
+  .ui-band { padding-top: calc(4px + var(--safe-top)); padding-bottom: 6px; gap: 0; border-radius: 0 0 var(--r-l) var(--r-l); }
+  .ui-band-q { display: none; }
+  .ui-band + .screen { padding-top: 8px; }
+  .screen .btn { min-height: var(--tap); font-size: 19px; }
+  .ui-band + .screen .qbar { margin-bottom: 4px; }
+  .ui-band + .screen .qbar .ui-helper-pic { width: 44px; height: 44px; font-size: 24px; }
+  .ui-band + .screen .qbar .ui-bubble { padding: 6px 12px; }
+  .ui-band + .wordsearch .wgrid { --cell: min(52px, calc((100dvh - 250px) / var(--n))); }
+  .ui-band + .wordsearch .qbar { display: none; }
+  .ui-band + .screen .row.wnote { min-height: 0; padding: 4px 12px; font-size: 17px; margin-bottom: 4px; }
+  .ui-band + .screen .footer { padding-top: 4px; }
+  .ui-band + .wordsearch { position: relative; }
+  .ui-band + .wordsearch > .footer { position: absolute; right: max(14px, env(safe-area-inset-right)); bottom: calc(8px + env(safe-area-inset-bottom)); width: 44%; }   /* beside the grid, under the word list */   /* the instruction card said it; the grid needs the height */
+  .ui-band + .screen .obj { min-height: 52px; padding: 2px; }
+  .ui-band + .screen .obj .oe { font-size: 22px; }
+  .ui-band + .lockstep .padlock { padding-top: 20px; }
+  .ui-band + .lockstep .padlock .shackle { width: 70px; height: 34px; margin-left: -35px; border-width: 10px; transform-origin: 60px 34px; }
+  .ui-band + .lockstep .lockbody { padding: 4px 12px; }
+  .ui-band + .lockstep .digit { font-size: 28px; }
+  .ui-band + .lockstep .wbtn { height: 36px; min-height: 36px; }
+}
+.note-back { background: rgba(26, 30, 40, .2); }
+.toast { background: var(--paper); border: 1.5px solid var(--glow); border-radius: var(--r-m); padding: 10px 14px; font: 500 var(--t-body)/1.35 var(--font); }
+.toast.good { background: var(--green-soft); border-color: var(--green); color: #1a5a2f; }
+
+/* the instruction sheet, the truth and the excuse */
+.brief-wrap.ui-sheet-wrap { position: fixed; z-index: 25; padding: 0 12px calc(14px + env(safe-area-inset-bottom)); align-items: flex-end; justify-content: center; background: rgba(250, 246, 239, .55); }
+.brief.ui-sheet { width: min(560px, 100%); max-height: calc(100% - var(--safe-top) - 10px); overflow-y: auto; border: 3px solid var(--season); border-radius: var(--r-xl); background: var(--paper); }
+.ui-sheet-note { background: var(--bg); border: 1.5px solid var(--line); border-radius: var(--r-m); padding: 12px 14px; font: 400 var(--t-story)/1.35 var(--font); }
+.brief-wrap.later { animation: fadein .3s 1.6s both; }
+
+/* the board: the season band, then the case folders on paper */
+.board-band .ui-band-top > .ui-pill { background: rgba(255, 255, 255, .14); color: #fff; font-size: var(--t-label); padding: 6px 12px; }
+.board-band .ui-step-name { font: 600 22px/1.15 var(--font); color: #fff; }
+.board { background: transparent; border: 0; border-radius: 0; padding: 4px 2px 12px; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.folder { background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--r-m); box-shadow: var(--sh-soft); padding: 14px 10px 10px; min-height: 150px; gap: 6px; }
+.folder .no { top: 8px; left: 10px; width: 26px; height: 26px; border-radius: 50%; background: var(--season-soft); color: var(--season); display: grid; place-items: center; font: 600 14px var(--font); }
+.folder .stk { font-size: 44px; }
+.folder .fq { font: 500 var(--t-small)/1.3 var(--font); }
+.folder .place { background: var(--season-soft); color: var(--season); border-radius: var(--r-pill); padding: 1px 10px; font: 600 13px var(--font); }
+.folder .lvl { font-size: 13px; }
+.folder.solved { background: var(--paper); border-color: var(--line); }
+.folder.solved .stk { opacity: .5; }
+.folder .tick { top: 8px; right: 8px; color: var(--stamp); background: var(--stamp-paper); border: 2.5px solid var(--stamp); border-radius: var(--r-s); padding: 0 8px; font: 700 15px var(--font); }
+.folder.suggest { border-color: var(--glow); animation: ui-glow 2s ease-in-out infinite; }
+.folder.final { background: var(--paper); border: 2px solid var(--season); }
+.folder.locked { background: transparent; border-style: dashed; box-shadow: none; }
+.folder.soon { background: transparent; border-style: dashed; box-shadow: none; }
+.trophy { background: var(--green-soft); border: 1.5px solid var(--green); color: #1a5a2f; border-radius: var(--r-m); padding: 10px 14px; font: 600 var(--t-body)/1.35 var(--font); }
+.trophy .btn { min-height: 48px; font-size: 16px; }
+.waiting { background: var(--paper); border: 1.5px dashed var(--line); border-radius: var(--r-m); font: 500 var(--t-body)/1.35 var(--font); }
+
+/* 📌 the corkboard: paper cards pinned with red string, the detective thinking */
+.cork { position: relative; background-color: #c69a6a; background-image: radial-gradient(#a8805a 1px, transparent 1.5px), radial-gradient(#d9b88f 1px, transparent 1.5px);
+  background-size: 9px 9px, 13px 13px; background-position: 0 0, 4px 6px; border: 0; border-radius: 20px; box-shadow: inset 0 0 0 6px #9c7a52, inset 0 4px 12px rgba(0, 0, 0, .2); padding: 10px 14px 14px; }
+.cork-q { font: 600 17px var(--font); color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, .35); }
+.pins { padding: 10px 2px 4px; gap: 0; }
+.pincard { width: 132px; min-height: 84px; background: var(--paper); border-radius: 4px; padding: 16px 10px 10px; font: 400 14px/1.3 var(--font); box-shadow: 0 6px 12px rgba(0, 0, 0, .2); }
+.pincard:nth-child(4n+3) { transform: rotate(3deg); }
+.pincard::before { content: ''; top: -6px; width: 16px; height: 16px; border-radius: 50%; background: var(--stamp); box-shadow: 0 2px 3px rgba(0, 0, 0, .3); }
+.pincard.empty { background: rgba(255, 255, 255, .25); border: 2px dashed rgba(255, 255, 255, .7); color: #fff; font-size: 22px; }
+.pincard.new { animation: ui-fly 700ms var(--ease) both; }
+.pincard.page { font-family: "Courier New", ui-monospace, monospace; background: #f5f3ee; }
+.string { width: 18px; height: 2.5px; background: var(--stamp); }
+.think { background: var(--paper); border: 1.5px solid var(--line); border-radius: 24px; padding: 10px 14px; font: italic 400 var(--t-body)/1.35 var(--font); }
+.vent { width: 64px; height: 40px; border-radius: 6px; border: 0; background: repeating-linear-gradient(0deg, #5d6370 0 4px, #3d424d 4px 8px); box-shadow: 0 2px 4px rgba(0, 0, 0, .3); }
+.guess { background: var(--paper); border-radius: var(--r-m); padding: 12px; }
+.guess .row { border: 0; box-shadow: none; padding: 0; min-height: 0; font: 600 var(--t-row)/1.25 var(--font); background: transparent; }
+.guess-opts { flex-direction: column; gap: 8px; }
+.guess-opts .btn { min-height: 64px; font-size: 19px; text-align: left; justify-content: flex-start; }
+.guess-opts .btn.before { border: 2px solid var(--season); }
+.guess.done { background: var(--season-soft); color: var(--season); font: 600 var(--t-body)/1.35 var(--font); }
+.guess.answer.right { background: var(--paper); border: 2px solid var(--glow); box-shadow: 0 0 0 4px rgba(248, 202, 101, .35); color: var(--ink); }
+
+/* 📞 the call and the 📹 camera */
+.phone { font-size: 84px; }
+.caller { gap: 10px; }
+.bubble { background: var(--paper); border: 1.5px solid var(--line); border-radius: 20px 20px 20px 6px; padding: 6px 4px; box-shadow: 0 8px 20px rgba(40, 30, 10, .06); }
+.bubble .row { box-shadow: none; background: transparent; padding: 4px 10px; font-size: var(--t-story); }
+.film { background: #262c38; border-radius: 24px; padding: 8px; box-shadow: 0 14px 30px rgba(20, 20, 40, .25); }
+.film-top { font: 600 14px var(--font); letter-spacing: .06em; padding: 4px 10px; color: #e3e6ec; }
+.film-top .rec { color: var(--stamp); }
+.film-pic { border-radius: 16px; background: radial-gradient(circle at 50% 45%, #4a5a70, #28303e); font-size: 96px; padding: 18px 0; }
+.film-pic.blur { filter: blur(3px); }
+.film .row { background: var(--paper); border: 0; box-shadow: none; border-radius: 16px; font-size: var(--t-story); margin: 8px 0; }
+.film-nav .steps-dots i { width: 22px; height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .25); }
+.film-nav .steps-dots i.on { background: #fff; }
+.film-nav .btn { min-height: var(--tap); background: #fff; color: var(--ink); box-shadow: none; font-size: 18px; }
+.film-nav .btn[data-act="toScene"] { background: var(--glow); }
+.film-nav .btn.secondary { background: rgba(255, 255, 255, .14); color: #fff; border: 0; }
+
+/* 🔍 the scene: things on tiles, the torch, the pocket */
+.objs { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 10px; }
+.obj { background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--r-m); box-shadow: var(--sh-soft); min-height: 74px; justify-content: center; gap: 4px; }
+.obj .oe { font-size: 26px; }
+.obj .ol { font: 500 var(--t-small) var(--font); color: var(--ink-2); }
+.obj.got { background: var(--season-soft); border-color: var(--season-mid); box-shadow: none; }
+.obj .ok { top: 5px; right: 5px; width: 20px; height: 20px; border-radius: 50%; background: var(--season); color: #fff; display: grid; place-items: center; font: 600 12px var(--font); }
+.obj.dark { background: #3a3f4b; border-color: #3a3f4b; }
+.obj.dark .oe { filter: brightness(.3); }
+.obj.dark .ol { color: #c9ccd3; }
+.objs.torch .obj.dark { box-shadow: var(--ring-glow); }
+.tool { height: var(--tap); padding: 0 16px; border-radius: var(--r-m); border: 1.5px solid var(--line); background: var(--paper); font: 500 var(--t-small) var(--font); }
+.tool.on { background: var(--season); border-color: var(--season); color: #fff; box-shadow: var(--sh-lift); }
+.pocket-count { font: 500 var(--t-small) var(--font); color: var(--ink-2); }
+
+/* 🗣️ questioning: a messaging app */
+.chat-head { font: 500 var(--t-small) var(--font); color: var(--ink-2); }
+.msg .mav { width: 36px; height: 36px; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 20px; }
+.msg .mtxt { font: 400 var(--t-body)/1.35 var(--font); padding: 10px 14px; }
+.msg.me .mtxt { background: var(--season); border-radius: 20px 20px 6px 20px; font-weight: 500; }
+.msg.them .mtxt { background: var(--paper); border: 1.5px solid var(--line); border-radius: 20px 20px 20px 6px; }
+.ltruth .mtxt { background: var(--green-soft); border-color: var(--green); }
+.typing i { background: var(--ink-2); }
+.qbtn { min-height: var(--tap); padding: 0 18px; border-radius: 28px; background: var(--paper); color: var(--season); border: 1.5px solid var(--season); font: 500 17px var(--font); }
+
+/* the puzzles: letters, wheels, cards and strips on paper, found = green, picked = the season */
+.wcell { border: 1.5px solid var(--line); border-radius: 10px; background: var(--paper); font-family: var(--font); font-weight: 600; color: var(--ink); }
+.wcell.hl, .wcell.left { background: #fff4cf; border-color: var(--glow); }
+.wcell.sel { background: var(--season); border-color: var(--season); color: #fff; }
+.wcell.got { background: var(--green-soft); border-color: var(--green); }
+.wword { background: var(--paper); border: 1.5px solid var(--line); font: 600 18px var(--font); }
+.wword.got { background: var(--green-soft); border-color: var(--green); }
+.geslo .gl { color: var(--season); }
+.lockbody { background: linear-gradient(#f5cc6a, #dda233); border-radius: 24px; }
+.wheel { border: 2px solid #b8861f; border-radius: var(--r-m); background: var(--paper); }
+.wbtn { color: #7a5a14; min-height: 48px; }
+.digit { font-family: var(--font); font-weight: 700; }
+.padlock.open .lockbody { background: linear-gradient(#cdeed6, #7fcb95); }
+.tslot.empty { border: 2px dashed var(--line); }
+.tn { background: var(--season); font: 600 15px var(--font); }
+.tcard { background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--r-m); font: 500 var(--t-body)/1.3 var(--font); }
+.tslot.good .tcard, .cdone, .tdone { background: var(--green-soft); border-color: var(--green); }
+.cchip { background: var(--paper); border: 1.5px solid var(--line); border-radius: 10px; }
+.cchip.hl { background: #fff4cf; border-color: var(--glow); animation: ui-glow 2s ease-in-out infinite; }
+.ccell { background: var(--paper); border: 1.5px solid var(--line); border-radius: 10px; }
+.ccell .cl { font-family: var(--font); font-weight: 700; }
+.ccell.ring { background: var(--season-soft); border: 2px solid var(--season); box-shadow: none; }
+.ccell.got { background: var(--green-soft); border-color: var(--green); }
+.cplain { font-family: var(--font); font-weight: 700; }
+.ctile { border: 1.5px solid var(--season); border-radius: 12px; background: var(--paper); color: var(--season); font-family: var(--font); font-weight: 600; min-width: 52px; min-height: 52px; }
+.pslots { background: #f3ead6; border: 1.5px solid #dccaa0; border-radius: var(--r-m); }
+.pslot.empty { border: 2px dashed var(--line); }
+.strip { font: 600 var(--t-row) var(--font); background: #fffcf3; }
+.pslot.good .strip { background: var(--green-soft); }
+
+/* ❗ UGOVOR and 🧭 Napačna sled? */
+.claim { background: var(--paper); border: 2px solid var(--season); border-radius: var(--r-l) var(--r-l) var(--r-l) 6px; font: 400 var(--row-font)/1.3 var(--font); box-shadow: var(--sh-soft); }
+.claim .who { font: 600 var(--t-small) var(--font); color: var(--season); }
+.claim .who i { background: var(--season-soft); }
+.claim.selected { background: var(--season); border-color: var(--season); color: #fff; }
+.claim.selected .who { color: #fff; }
+.claim.caught { border-color: var(--stamp); background: var(--paper); }
+.blush { width: 28px; height: 28px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: 17px; box-shadow: 0 2px 6px rgba(0, 0, 0, .12); right: -8px; bottom: auto; top: -6px; }
+.lstamp, .hstamp { font: 700 14px var(--font); color: var(--stamp); background: var(--stamp-paper); border: 2.5px solid var(--stamp); border-radius: var(--r-s);
+  box-shadow: inset 0 0 0 2px var(--stamp-paper), inset 0 0 0 3px var(--stamp); padding: 2px 10px; transform: rotate(-5deg); }
+.hstamp { color: var(--blue); border-color: var(--blue); box-shadow: inset 0 0 0 2px var(--stamp-paper), inset 0 0 0 3px var(--blue); }
+.hclue { background: var(--paper); border: 2px dashed var(--blue); border-radius: var(--r-m); font: 400 var(--row-font)/1.3 var(--font); }
+.hclue.selected { background: var(--season); border-color: var(--season); color: #fff; }
+.hclue.flipped { background: var(--blue-soft); border-color: var(--blue); }
+.shout-wrap { background: rgba(26, 30, 40, .55); align-items: flex-end; padding: 0 12px calc(14px + env(safe-area-inset-bottom)); }
+.shout { width: min(560px, 100%); background: var(--paper); border: 3px solid var(--stamp); border-radius: var(--r-xl); padding: 22px 18px 18px;
+  box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4.5px var(--stamp), 0 -10px 50px rgba(40, 30, 10, .28); animation: ui-sheet 320ms var(--ease) both; }
+.shout .row { box-shadow: none; background: transparent; font: 600 var(--t-row)/1.3 var(--font); }
+.btn.ugovor { width: 100%; height: auto; flex-direction: row; gap: 8px; animation: ui-breathe 2s ease-in-out infinite; }
+.ugovor, .btn.ugovor { min-height: 76px; border-radius: var(--r-l); background: var(--stamp); color: #fff; font: 700 28px var(--font); letter-spacing: .04em; box-shadow: 0 12px 26px rgba(200, 58, 53, .35); border: 0; }
+
+/* the solved newspaper, the stamp, the new card */
+.paper { background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--r-m); padding: 10px 16px 14px; box-shadow: 0 14px 30px rgba(40, 30, 10, .12); gap: 8px; }
+.paper .mast { font-family: Georgia, "Times New Roman", serif; letter-spacing: .14em; font-size: 15px; color: var(--ink-2); border-bottom: 1.5px solid var(--line); padding-bottom: 6px; }
+.stamp { display: inline-flex; align-items: center; gap: 8px; color: var(--stamp); background: var(--stamp-paper); border: 4px solid var(--stamp); border-radius: var(--r-m);
+  box-shadow: inset 0 0 0 3px var(--stamp-paper), inset 0 0 0 5px var(--stamp), 0 14px 30px rgba(40, 30, 10, .18); padding: 6px 20px; font: 700 30px var(--font); transform: rotate(-7deg); }
+.stamp.slam { animation: ui-stamp 340ms .25s cubic-bezier(.3, 1.5, .5, 1) both; }
+.kudos { font: 600 var(--t-row) var(--font); color: var(--season); }
+.rankup { background: var(--paper); border: 2px solid var(--glow); border-radius: var(--r-pill); padding: 6px 16px; font: 600 17px var(--font); color: var(--season); }
+.excuse { background: #fbf6e6; border-radius: 6px; padding: 12px 14px; transform: rotate(-1deg); box-shadow: 0 8px 18px rgba(40, 30, 10, .1); font: italic 400 var(--t-story)/1.35 var(--font); text-align: left; }
+.pinned { background: var(--paper); border: 2px solid var(--glow); border-radius: var(--r-m); box-shadow: 0 0 0 4px rgba(248, 202, 101, .3); font: 400 var(--t-body)/1.35 var(--font); color: var(--ink); }
+.reveal-rows .row { box-shadow: none; }
+
+/* the client's letter */
+.letter-wrap { background: rgba(26, 30, 40, .4); }
+.letter { background: var(--paper); border: 0; border-radius: 6px 6px 18px 18px; box-shadow: 0 20px 40px rgba(0, 0, 0, .25); padding: 18px; gap: 10px; transform: rotate(-1deg); }
+.letter-head { font: 600 22px var(--font); }
+.letter .row { font-family: var(--font); font-size: var(--t-story); box-shadow: none; }
+
+/* finales: the book cover in the season's colour, the cup */
+.bcover { background: var(--season); border-radius: 6px 16px 16px 6px; box-shadow: inset 14px 0 0 rgba(0, 0, 0, .15), inset 16px 0 0 rgba(255, 255, 255, .12), 0 26px 50px rgba(40, 30, 10, .3); transform: rotate(-2deg); }
+.bcover .bav { background: var(--paper); box-shadow: 0 0 0 10px var(--glow); }
+.bcover .btitle { font: 600 26px/1.15 var(--font); }
+.bcover .bsub { font: 400 17px/1.3 var(--font); }
+.cup .cname { font-family: var(--font); }
+.cup .cname.me { background: var(--glow); color: var(--ink); }
 
 /* the component gallery (?ui): grown-ups only */
 .ui-gallery { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -2433,8 +2701,9 @@ function loadVoices() {
   if (S.screen === 'setup' || had !== !!slVoice) render();
 }
 
-// 🔊 buttons only when something can actually be heard (recordings or a Slovenian voice).
-const canSpeak = () => Object.keys(AUDIO).length > 0 || !!slVoice;
+// No read-aloud (2026-11): the children's screens have no 🔊 and a tap on a sentence only selects it.
+// The little sounds (ring, stamp, whistle …) are sfx() below. The setup's sound check still uses play().
+const canSpeak = () => false;
 
 function markPlaying(el) {
   if (playingEl) playingEl.classList.remove('playing');
@@ -2451,6 +2720,7 @@ function stopAudio() {
 
 function play(id, text, el) {
   stopAudio();
+  if (S.screen !== 'setup') return;   // the adult sound check only
   const tok = playToken;
   let fellBack = false;
   markPlaying(el);
@@ -2508,12 +2778,12 @@ const uiAttrs = (o) => (o.act ? ` data-act="${o.act}"` : '') + (o.attrs ? ' ' + 
 const UI = {
   coin: (e, cls = '') => `<span class="ui-coin ${cls}">${e}</span>`,
   // the season band: step = its name, at = how far along (0 … 1), dots = one per step (true = done), q = the question
-  band: (o) => `<header class="ui-band">
+  band: (o) => `<header class="ui-band ${o.cls || ''}">
     <div class="ui-band-top">${o.back !== false ? `<button class="ui-band-btn" data-act="${o.backAct || 'back'}" aria-label="Nazaj">${o.back || '✕'}</button>` : ''}
       <div class="ui-steps"><span class="ui-step-name">${esc(o.step || '')}</span>
         ${o.dots ? `<div class="ui-track" style="--p:${o.at || 0}"><div class="ui-dots">${o.dots.map(d => `<span class="ui-dot ${d ? 'is-done' : ''}"></span>`).join('')}</div>
           <span class="ui-ball">${o.ball || '🔍'}</span></div>` : ''}</div>${o.player ? UI.player(o.player) : ''}${o.end || ''}</div>
-    ${o.q ? `<div class="ui-band-q">${UI.coin(o.qIcon || '❓')}<span>${esc(o.q)}</span></div>` : ''}</header>`,
+    ${o.q ? `<${o.qAct ? 'button' : 'div'} class="ui-band-q"${o.qAct ? ` data-act="${o.qAct}"` : ''}>${UI.coin(o.qIcon || '❓')}<span>${esc(o.q)}</span></${o.qAct ? 'button' : 'div'}>` : ''}</header>`,
   // a sentence row; html is already escaped (names() or sayHTML()); end = what sits at its right (a coin, a ui-used chip, a stamp)
   row: (html, o = {}) => `<button class="ui-row ${o.state || ''}"${uiAttrs(o)}><span class="ui-row-text">${html}</span>${UI.coin('👆', 'ui-row-coin')}${o.end || ''}</button>`,
   used: (e) => `<span class="ui-used">${UI.coin(e, 'is-s')}✕</span>`,
@@ -3024,7 +3294,7 @@ function render() {
   app.className = 'level-' + (S.level || 'B');
   app.style.setProperty('--hue', seasonHue());
   const keep = $('.kdwrap'), keepTop = keep ? keep.scrollTop : 0;   // ⏰: a tap must not jump the bands back to the top
-  app.innerHTML = T[S.screen]();
+  app.innerHTML = (bandScreen() ? stepBand() : '') + T[S.screen]();
   if (keep && $('.kdwrap')) $('.kdwrap').scrollTop = keepTop;
   if (briefOpen()) app.insertAdjacentHTML('beforeend', briefHTML());
   else if (truthOpen()) app.insertAdjacentHTML('beforeend', truthHTML());
@@ -3097,9 +3367,9 @@ function evFooter() {
 // Every hint follows a wrong answer: it says so first (✖ Ni prav. / Skoraj!), then what to do.
 function hintHTML(h) {
   const almost = ['pairHalf', 'partial', 'liarCaught', 'truthLead'].includes(h.key), tip = !almost && h.level >= 1;
-  return `<div class="hint ${almost ? 'almost' : tip ? 'tip' : 'no'}" id="hint"><span class="hi">${almost || tip ? '💡' : '✖'}</span>`
-    + `<span class="txt">${tip ? '' : `<b class="verdict">${almost ? UI_AUDIO.almost : UI_AUDIO.no}</b> `}${esc(h.text)}</span>${spk(h.clip)}`
-    + `<button class="btn" data-act="hintOk">${UI_AUDIO.again}</button></div>`;
+  return `<div class="hint ${almost ? 'almost' : tip ? 'tip' : 'no'}" id="hint"><span class="hi">${UI.coin(helperEmoji())}</span>`
+    + `<span class="txt">${tip ? '' : `<b class="verdict">${almost ? UI_AUDIO.almost : UI_AUDIO.no}</b> `}${esc(h.text)}</span>`
+    + UI.btn(UI_AUDIO.again, { act: 'hintOk', kind: 'is-soft' }) + '</div>';
 }
 
 // Where each word of a word search sits: { WORD: { cells: [grid indexes], down, n } }, → and ↓ only.
@@ -3143,30 +3413,28 @@ const truthOpen = () => stepCase() && S.screen === 'lie' && S.run.lphase === 'do
 function briefHTML() {
   const [icon, title, how, part, clip] = BRIEF[S.screen], c = S.c, r = S.run;
   if (!r.briefAt) { r.briefAt = Date.now(); log('brief_show', { step: S.screen }); }
-  return `<div class="brief-wrap"><div class="brief">
-    <div class="btitle"><span class="bi">${icon}</span>${esc(title)}</div>
-    ${part ? `<div class="row bnote" data-act="say" data-clip="${c.id}_${clip}">${esc(c[part].note)}</div>` : ''}
-    <div class="row bhow" data-act="say" data-clip="ui_${how}">👉 ${esc(UI_AUDIO[how])}</div>
-    <button class="btn big" data-act="briefOk">Razumem ✓</button></div></div>`;
+  return `<div class="brief-wrap ui-sheet-wrap"><div class="brief ui-sheet">
+    <div class="ui-sheet-title">${UI.coin(icon, 'is-season')}${esc(title)}</div>
+    ${part ? `<div class="ui-sheet-note">${esc(c[part].note)}</div>` : ''}
+    <div class="ui-sheet-text">👉 ${esc(UI_AUDIO[how])}</div>
+    ${UI.btn('Razumem ✓', { act: 'briefOk' })}</div></div>`;
 }
 // After UGOVOR the truth comes on its own card, so it can't be missed.
 function truthHTML() {
   const tr = sent(S.c.lie.truth), who = CHARACTERS[tr.who];
   if (!S.run.briefAt) S.run.briefAt = Date.now();
-  return `<div class="brief-wrap"><div class="brief truth">
-    <div class="btitle"><span class="bi">${who.animal}</span>${esc(who.name)} ${UI_AUDIO.truthTells}</div>
-    <div class="row bnote" data-act="listenClue" data-sid="${tr.id}">${names(unq(tr.text))}</div>
-    <button class="btn big" data-act="truthOk">Razumem ✓</button></div></div>`;
+  return `<div class="brief-wrap ui-sheet-wrap"><div class="brief truth ui-sheet">
+    ${UI.say(who, `${who.name} ${UI_AUDIO.truthTells}`, `»${names(unq(tr.text))}«`)}
+    ${UI.btn('Razumem ✓', { act: 'truthOk' })}</div></div>`;
 }
 // On the solved screen the culprit's excuse comes on a card after the stamp: as a line it was never read.
 const excuseOpen = () => S.screen === 'reveal' && !!(S.c && S.c.excuse && S.run) && !S.run.excuseOk;
 function excuseHTML() {
   const c = S.c, who = { ...CHARACTERS[c.culprit], ...CHARACTERS[c.culprit].real };
   if (!S.run.briefAt) S.run.briefAt = Date.now();
-  return `<div class="brief-wrap later"><div class="brief excuse-card">
-    <div class="btitle">${avatar(c.culprit, 'sm', who)}${esc(who.name)} ${UI_AUDIO.excuseSays}</div>
-    <div class="row bnote" data-act="say" data-clip="${c.id}_x">»${esc(c.excuse)}«</div>
-    <button class="btn big" data-act="excuseOk">Razumem ✓</button></div></div>`;
+  return `<div class="brief-wrap ui-sheet-wrap later"><div class="brief excuse-card ui-sheet">
+    ${UI.say(who, `${who.name} ${UI_AUDIO.excuseSays}`, `»${esc(c.excuse)}«`, { excuse: true })}
+    ${UI.btn('Razumem ✓', { act: 'excuseOk' })}</div></div>`;
 }
 // A new message during a step comes as a card at the bottom; the screen waits for »V redu«.
 function noteHTML() {
@@ -3175,10 +3443,21 @@ function noteHTML() {
   const almost = hmm >= 0 || r.note === UI_AUDIO.lieHalf;
   const good = [UI_AUDIO.lastOne, UI_AUDIO.sceneDone, UI_AUDIO.askDone, UI_AUDIO.sceneDoneOn, UI_AUDIO.askDoneOn, UI_AUDIO.herringDone, UI_AUDIO.whenDone].includes(r.note);
   return `<div class="note-back" data-act="noteNudge"></div><div class="hint note ${almost ? 'almost' : good ? 'good' : 'tip'}" id="note">
-    <span class="hi">${almost ? '💡' : good ? '✅' : '💬'}</span><span class="txt">${almost ? `<b class="verdict">${UI_AUDIO.almost}</b> ` : ''}${esc(r.note)}</span>
-    ${spk(hmm >= 0 ? `${S.c.id}_lm${hmm + 1}` : 'ui_' + key)}<button class="btn" data-act="noteOk">V redu</button></div>`;
+    <span class="hi">${good ? '✓' : UI.coin(helperEmoji())}</span><span class="txt">${almost ? `<b class="verdict">${UI_AUDIO.almost}</b> ` : ''}${esc(r.note)}</span>
+    ${UI.btn('V redu', { act: 'noteOk', kind: good ? '' : 'is-soft' })}</div>`;
 }
-const qbarB = (text, clip) => `<div class="qbar"><span class="q bq" data-act="brief">${esc(text)}</span>${spk(clip)}</div>`;
+// what to do now: the helper says it; a tap opens the step's instruction card again
+const qbarB = (text) => `<div class="qbar">${UI.helper(text, { act: 'brief', tone: 'bq' })}</div>`;
+// The season band on every step of a case: the step, how far along (one dot per step), the question.
+const PUZZLES = ['words', 'lock', 'order', 'cipher', 'torn'];
+const bandScreen = () => stepCase() && S.c.steps.includes(S.screen) && !(S.screen === 'call' && !S.run.answered);
+function stepBand() {
+  const c = S.c, i = c.steps.indexOf(S.screen), f = FILES.find(x => x.id === c.file) || {};
+  const name = S.screen === 'call' ? (c.film ? 'Kamera' : 'Klic') : BRIEF[S.screen] ? BRIEF[S.screen][1] : '';
+  return UI.band({ step: `${c.final ? '⭐ Veliki primer' : 'Primer ' + c.no} · ${name}`, back: '←', dots: c.steps.map((_, k) => k < i),
+    at: c.steps.length > 1 ? i / (c.steps.length - 1) : 0, ball: f.icon || c.sticker, qAct: BRIEF[S.screen] ? 'brief' : '',
+    q: PUZZLES.includes(S.screen) ? '' : c.question });
+}
 
 // Where a sentence of a step case is found: a puzzle or UGOVOR gives it (from), an answer in the
 // questioning (ask), or else an object in the scene. A step counts only its own sentences.
@@ -3527,9 +3806,7 @@ const T = {
     const p = profile();
     const soon = f.soon || 0;
     const letter = letterDue(S.file);
-    return `<div class="screen">
-      <div class="board-head"><span class="q">${f.icon} ${esc(f.title)}</span>
-        <span class="count">✔ ${done} / ${cases.length + soon}</span></div>
+    return `${UI.band({ cls: 'board-band', step: `${f.icon} ${f.title}`, back: '←', backAct: 'toFiles', end: UI.pill(`✔ ${done} / ${cases.length + soon}`) })}<div class="screen">
       ${fileDone(S.file) ? `<div class="trophy">🏅 Pustolovščina rešena! Bravo, ${esc(detName(p))}!${f.book ? ' <button class="btn secondary" data-act="openBook">📖 Moja knjiga</button>' : f.cup ? ' <button class="btn secondary" data-act="openBook">🏆 Moj pokal</button>' : ''}</div>` : ''}
       ${S.toast && S.toast !== 'soon' ? `<div class="toast">${esc(S.toast)}</div>` : ''}
       ${soon && done === cases.length ? `<div class="waiting ${S.toast === 'soon' ? 'flash' : ''}"><span>⏳ Primer ${cases.length + 1} pride kmalu! Medtem reši druge pustolovščine.</span>
@@ -3544,8 +3821,7 @@ const T = {
           <span class="lvl">${'🔍'.repeat(c.rung)}</span></button>`;
       }).join('')}${Array.from({ length: soon }, (_, i) => `<button class="folder soon" data-act="soonCase">
           <span class="no">${cases.length + i + 1}</span><span class="stk">❓</span><span class="fq">Kmalu nov primer</span></button>`).join('')}</div>
-      <div class="footer"><button class="btn secondary" data-act="toFiles">← 🗺️ Pustolovščine</button>
-        <span class="grow"></span><button class="btn secondary" data-act="moreNo">Dovolj za danes</button></div>
+      <div class="footer">${UI.btn('Dovolj za danes', { act: 'moreNo', kind: 'is-quiet' })}</div>
     </div>${letter ? letterHTML(letter) : ''}`;
   },
 
@@ -3553,19 +3829,15 @@ const T = {
   call() {
     const c = S.c, r = S.run, cl = CHARACTERS[c.client];
     if (!r.answered) {
-      return `<div class="screen center call">
-        <div class="case-no">Primer ${c.no}${c.place ? ' · ' + esc(c.place) : ''}</div>
-        <div class="phone">📞</div>
-        <h1>Zvoni!</h1>
-        <div class="suspect">${avatar(c.client)}<span>${esc(cl.name)}</span></div>
-        <button class="btn big" data-act="answer">Javi se</button>
-        ${backTarget() === 'stay' ? '' : '<button class="btn secondary" data-act="back">← Nazaj</button>'}
-      </div>`;
+      return `<div class="ui-screen call"><div class="ui-top"></div>
+        <div class="ui-body is-center">${UI.pill(`${c.final ? '⭐ Veliki primer' : 'Primer ' + c.no}${c.place ? ' · ' + c.place : ''}`)}
+          <div class="phone">📞</div><h1 class="ui-big">Zvoni!</h1>
+          <div class="suspect">${avatar(c.client)}<span>${esc(cl.name)}</span></div></div>
+        <div class="ui-foot">${UI.btn('Javi se', { act: 'answer' })}${backTarget() === 'stay' ? '' : UI.btn('← Nazaj', { act: 'back', kind: 'is-quiet' })}</div></div>`;
     }
     return `<div class="screen center call">
       <div class="caller">${avatar(c.client, 'sm')}<div class="bubble">${c.call.map((t, i) =>
         `<div class="row" data-act="say" data-clip="${c.id}_c${i + 1}">${esc(t)}</div>`).join('')}</div></div>
-      ${qbar(c.question, c.id + '_q', 'big')}
       <div class="suspects mini">${c.suspects.map(id => suspectCard(id, false)).join('')}</div>
       ${c.film ? filmHTML(c, r) : `<button class="btn big" data-act="toScene">${stepLabel()}</button>`}
     </div>`;
@@ -4935,6 +5207,13 @@ gate.addEventListener('pointerdown', (e) => {
   gateTimer = setTimeout(openGate, 3000);
 });
 ['pointerup', 'pointerleave', 'pointercancel'].forEach(t => gate.addEventListener(t, () => clearTimeout(gateTimer)));
+// a short tap is the child's: it goes to what lies under the corner (the band's ← sits there)
+gate.addEventListener('click', (e) => {
+  gate.style.pointerEvents = 'none';
+  const under = document.elementFromPoint(e.clientX, e.clientY);
+  gate.style.pointerEvents = '';
+  if (under && under !== gate) under.click();
+});
 
 function openGate() {
   const a = 3 + Math.floor(Math.random() * 7), b = 3 + Math.floor(Math.random() * 7);

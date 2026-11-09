@@ -14,7 +14,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['plus14', 428, 926], ['land
   await p.reload(); await wait(400);
   const click = async (sel, ms) => { await p.click(sel); await wait(ms); };
   const card = () => p.evaluate(() => { const c = document.querySelector('.brief'); if (!c) return null;
-    const btn = c.querySelector('.btn.big').getBoundingClientRect(); return { text: c.innerText, fits: btn.bottom <= innerHeight && btn.top >= 0 }; });
+    const btn = c.querySelector('.ui-btn, .btn.big').getBoundingClientRect(); return { text: c.innerText, fits: btn.bottom <= innerHeight && btn.top >= 0 }; });
   // a tap in the middle of the screen while a card is open
   const tapBehind = async (sel) => { const r = await p.$eval(sel, e => { const x = e.getBoundingClientRect(); return [x.left + x.width / 2, x.top + x.height / 2]; }); await p.mouse.click(r[0], r[1]); await wait(); };
   await click('.file-card[data-file="galeb"]'); await click('.folder[data-no="1"]'); await click('[data-act="answer"]');
