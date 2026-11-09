@@ -1114,6 +1114,18 @@ tr.clickable { cursor: pointer; }
 .btn:disabled { opacity: 1; background: var(--season-soft); color: var(--season); border: 1.5px dashed var(--season-mid); box-shadow: none; }
 .screen .footer { padding-top: 10px; }
 .ui-band + .screen { padding-top: 14px; }
+.ui-band.is-short .ui-band-q { display: none; }   /* a puzzle needs the height: the short band */
+/* a phone held sideways (»Odrasli in velikosti« 17): the band is a rail on the left with the step and the question;
+   the step itself takes the full height on the right */
+@media (max-height: 500px) and (min-width: 640px) {
+  #app.rail { flex-direction: row; }
+  #app.rail > .ui-band { width: 300px; height: 100%; overflow-y: auto; border-radius: 0 var(--r-xl) var(--r-xl) 0; gap: 12px;
+    padding: calc(10px + var(--safe-top)) 16px calc(14px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+  #app.rail > .ui-band .ui-band-q { display: flex; font-size: 19px; min-height: 0; }
+  #app.rail > .ui-band .ui-band-top { flex-wrap: wrap; }
+  #app.rail .kdwrap > *, #app.rail .lwrap > *, #app.rail .twrap > * { min-width: 0; }
+  #app.rail > .ui-band + .screen { flex: 1; min-width: 0; padding-top: calc(10px + var(--safe-top)); padding-left: 16px; }
+}
 .ui-band + .screen .caseq { display: none; }   /* the question is in the band */
 .qbar { margin: 0 0 10px; }
 .qbar .ui-helper { width: 100%; }
@@ -1374,6 +1386,27 @@ tr.clickable { cursor: pointer; }
 .bcover .bsub { font: 400 17px/1.3 var(--font); }
 .cup .cname { font-family: var(--font); }
 .cup .cname.me { background: var(--glow); color: var(--ink); }
+
+/* the adult screens (»Odrasli in velikosti« 16): plain and dense, the same tokens */
+.adult { font: 400 16px/1.45 var(--font); gap: 14px; }
+.adult h1 { font: 600 26px/1.2 var(--font); margin: 0; }
+.adult h2 { font: 600 20px var(--font); }
+.adult .card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-m); padding: 14px 16px; margin: 0; }
+.adult .card h3 { font: 600 13px var(--font); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 10px; }
+.adult .btn { min-height: 48px; padding: 8px 16px; border-radius: var(--r-s); font: 600 16px var(--font); box-shadow: none; }
+.adult .btn.secondary { font-weight: 500; }
+.adult .btn.big { font-size: 18px; min-height: 56px; }
+.adult .btn:disabled { opacity: .5; background: var(--season-soft); color: var(--season); border: 1.5px dashed var(--season-mid); }
+.adult .footer { justify-content: flex-start; }
+.adult .footer .btn.big { margin-left: auto; }
+.adult table { font-size: 14px; background: var(--paper); border-radius: var(--r-m); overflow: hidden; }
+.adult th { font: 600 12px var(--font); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); border-bottom: 1.5px solid var(--line); }
+.adult .c-good { background: var(--green-soft); } .adult .c-warn { background: #fff4cf; } .adult .c-bad { background: #fbe4e0; }
+.adult .tag { background: #fff4cf; border-radius: var(--r-pill); padding: 1px 8px; }
+.adult input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--season); vertical-align: -3px; }
+.modal-box { background: var(--paper); border: 3px solid var(--season); border-radius: var(--r-xl); box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4.5px var(--season), 0 20px 50px rgba(0, 0, 0, .3); font: 400 18px/1.4 var(--font); }
+.modal-box input { border: 1.5px solid var(--line); border-radius: var(--r-s); font: 600 28px var(--font); text-align: center; }
+.modal-box .btn { min-height: 56px; }
 
 /* the component gallery (?ui): grown-ups only */
 .ui-gallery { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -2702,7 +2735,7 @@ function loadVoices() {
 }
 
 // No read-aloud (2026-11): the children's screens have no 🔊 and a tap on a sentence only selects it.
-// The little sounds (ring, stamp, whistle …) are sfx() below. The setup's sound check still uses play().
+// The little sounds (ring, stamp, whistle …) are sfx() below.
 const canSpeak = () => false;
 
 function markPlaying(el) {
@@ -2718,29 +2751,10 @@ function stopAudio() {
   markPlaying(null);
 }
 
-function play(id, text, el) {
+// Nothing is read aloud (2026-11): play() only stops what might still be playing. The recordings, the
+// voice lookup and the player stay so read-aloud can come back without new code.
+function play() {
   stopAudio();
-  if (S.screen !== 'setup') return;   // the adult sound check only
-  const tok = playToken;
-  let fellBack = false;
-  markPlaying(el);
-  const done = () => { if (tok === playToken) markPlaying(null); };
-  const speak = () => {
-    if (tok !== playToken || fellBack) return;
-    fellBack = true;
-    if (!slVoice) { setTimeout(done, 800); return; }
-    const u = new SpeechSynthesisUtterance(text);
-    u.voice = slVoice; u.lang = slVoice.lang; u.rate = 0.9;
-    u.onend = done; u.onerror = done;
-    speechSynthesis.speak(u);
-  };
-  // Without an embedded recording, speak right away: iPad Safari only allows speech inside the tap itself.
-  if (!AUDIO[id] && slVoice) { speak(); return; }
-  player.onended = done;
-  player.onerror = speak;
-  player.src = AUDIO[id] || `audio/${id}.m4a`;
-  const p = player.play();
-  if (p && p.catch) p.catch(speak);
 }
 
 // ---------------------------------------------------------------------------
@@ -3295,6 +3309,7 @@ function render() {
   app.style.setProperty('--hue', seasonHue());
   const keep = $('.kdwrap'), keepTop = keep ? keep.scrollTop : 0;   // ⏰: a tap must not jump the bands back to the top
   app.innerHTML = (bandScreen() ? stepBand() : '') + T[S.screen]();
+  app.classList.toggle('rail', !!$('#app > .ui-band + .screen'));   // a phone held sideways: the band becomes a rail on the left
   if (keep && $('.kdwrap')) $('.kdwrap').scrollTop = keepTop;
   if (briefOpen()) app.insertAdjacentHTML('beforeend', briefHTML());
   else if (truthOpen()) app.insertAdjacentHTML('beforeend', truthHTML());
@@ -3455,8 +3470,8 @@ function stepBand() {
   const c = S.c, i = c.steps.indexOf(S.screen), f = FILES.find(x => x.id === c.file) || {};
   const name = S.screen === 'call' ? (c.film ? 'Kamera' : 'Klic') : BRIEF[S.screen] ? BRIEF[S.screen][1] : '';
   return UI.band({ step: `${c.final ? '⭐ Veliki primer' : 'Primer ' + c.no} · ${name}`, back: '←', dots: c.steps.map((_, k) => k < i),
-    at: c.steps.length > 1 ? i / (c.steps.length - 1) : 0, ball: f.icon || c.sticker, qAct: BRIEF[S.screen] ? 'brief' : '',
-    q: PUZZLES.includes(S.screen) ? '' : c.question });
+    at: c.steps.length > 1 ? i / (c.steps.length - 1) : 0, ball: f.icon || c.sticker, qAct: BRIEF[S.screen] ? 'brief' : '', q: c.question,
+    cls: PUZZLES.includes(S.screen) ? 'is-short' : '' });
 }
 
 // Where a sentence of a step case is found: a puzzle or UGOVOR gives it (from), an answer in the
@@ -3684,11 +3699,10 @@ const T = {
   },
   setup() {
     const next = 'O' + pad(store.read(CHILD_KEY, 0) + 1);
-    const embedded = Object.keys(AUDIO).length;
     const ageBtn = (age, label) => `<button class="btn ${S.age === age ? '' : 'secondary'}" data-act="age" data-age="${age}">${label}</button>`;
     return `<div class="screen adult">
       <h1>${esc(BRAND)}</h1>
-      <p class="muted">Priprava seje – za odrasle.</p>
+      <p class="muted">Za starše in učitelje: priprava seje. Vse ostane na tej napravi.</p>
       <section class="card">
         <h3>1. Otrok</h3>
         <div class="seg">${ageBtn('6-7', '6–7 let · raven A')}${ageBtn('8-9', '8–9 let · raven B')}</div>
@@ -3706,14 +3720,8 @@ const T = {
           return `<button class="btn ${S.startAt === i ? '' : 'secondary'}" data-act="startAt" data-n="${i}">${FILES.find(f => f.id === file).icon} ${no} ${c.sticker}</button>`;
         }).join('')}</div>`}
       </section>
-      <section class="card">
-        <h3>2. Preizkus zvoka</h3>
-        <button class="btn secondary" data-act="say" data-clip="ui_test">🔊 Predvajaj »${UI_AUDIO.test}«</button>
-        <p class="muted">Vgrajeni posnetki: ${embedded} / ${CLIPS.size}. Slovenski sintetični glas: ${slVoice ? 'da (' + esc(slVoice.name) + ')' : 'ne'}.</p>
-        ${embedded < CLIPS.size && !slVoice ? '<p class="warn-text">Ni posnetkov in ni slovenskega glasu – otrok ne bo slišal stavkov. Na iPadu: Nastavitve → Dostopnost → Govorjena vsebina → Glasovi → Slovenščina.</p>' : ''}
-      </section>
       <div class="footer">
-        <a class="btn secondary" href="../">← Izbira igre</a>
+        <a class="btn secondary" href="../">← Domov</a>
         <button class="btn secondary" data-act="toDebrief">Pregled podatkov (${LOG.length} dogodkov)</button>
         <button class="btn big" data-act="startSession" ${S.age ? '' : 'disabled'}>Začni sejo</button>
       </div>
