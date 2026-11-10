@@ -2708,6 +2708,61 @@ function progressSnapshot() {
   };
 }
 
+// Every saved key of the game except the log, as raw strings: all detectives, solved cases, letters…
+// The export carries it so a move to another address (e.g. a custom domain) loses nothing.
+function savedData() {
+  const out = {};
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k.startsWith('dp_') && k !== LOG_KEY) out[k] = localStorage.getItem(k);
+    }
+  } catch (e) {}
+  return out;
+}
+
+function exportData() {
+  return { app: 'detektivska-pisarna', version: 2, exported: new Date().toISOString(), progress: progressSnapshot(), storage: savedData(), events: LOG };
+}
+
+// Files from before version 2 have only the active child's progress, not the full storage.
+function storageFromProgress(p) {
+  if (!p) return {};
+  const out = { dp_save_version: JSON.stringify(p.saveVersion || 1), dp_played_v1: JSON.stringify(p.solved || []), dp_tutorial_done: JSON.stringify(!!p.tutorialDone) };
+  if (p.player) out.dp_player_v1 = JSON.stringify(p.player);
+  if (p.profile) out.dp_profile_v1 = JSON.stringify(p.profile);
+  return out;
+}
+
+// Adds an exported file to this device: log events are merged (no duplicates), saved progress is
+// copied in. If this device already has a detective, the adult is asked before it is replaced.
+function importSave(data) {
+  if (!data || data.app !== 'detektivska-pisarna' || !Array.isArray(data.events)) {
+    alert('To ni izvoz Detektivske pisarne.');
+    return false;
+  }
+  const key = (e) => [e.session, e.ts, e.type, e.case || '', e.sentenceId || ''].join('|');
+  const have = new Set(LOG.map(key));
+  const added = data.events.filter(e => !have.has(key(e)));
+  const saved = data.storage || storageFromProgress(data.progress);
+  const hasKids = Object.keys(saved).some(k => k === PROFILE_KEY || k === DETECTIVES_KEY);
+  let copyProgress = hasKids;
+  if (hasKids && (raw.get(PROFILE_KEY) || detectives().list.length)) {
+    copyProgress = confirm('Na tej napravi že je detektiv. Ga zamenjam z detektivi iz datoteke? (Prekliči = uvozi samo dnevnik.)');
+  }
+  LOG = LOG.concat(added).sort((a, b) => a.ts - b.ts);
+  store.write(LOG_KEY, LOG);
+  if (copyProgress) {
+    for (const k of Object.keys(savedData())) if (k !== CHILD_KEY) raw.set(k, null);
+    for (const [k, v] of Object.entries(saved)) if (k.startsWith('dp_') && k !== LOG_KEY && k !== CHILD_KEY) raw.set(k, v);
+  }
+  // child codes keep counting from the higher of the two devices
+  const n = Math.max(store.read(CHILD_KEY, 0), Number(saved[CHILD_KEY]) || 0);
+  if (n) store.write(CHILD_KEY, n);
+  alert(`Uvoženo: ${added.length} novih dogodkov${copyProgress ? ' in napredek detektivov' : ''}.`);
+  return true;
+}
+
 const S = {
   session: null, child: null, age: null, level: null, pilot: false, ended: false,
   caseNo: 0, orderMode: 'board', startAt: 0, order: [], started: 0, suggest: null, c: null, run: null, screen: 'setup', resume: null, open: null,
@@ -4277,6 +4332,7 @@ const T = {
         ${S.session && S.resume && !S.ended ? '<button class="btn" data-act="resume">Nadaljuj igro</button>' : ''}
         <button class="btn secondary" data-act="toSetup">Nova seja</button>
         <button class="btn secondary" data-act="exportLog">Izvozi JSON</button>
+        <button class="btn secondary" data-act="importLog">Uvozi JSON</button>
         <button class="btn danger" data-act="wipe">Izbriši vse</button>
       </div>
       ${storeOk ? '' : '<p class="warn-text">Shranjevanje na napravo ne deluje – takoj izvozi JSON.</p>'}
@@ -4408,7 +4464,7 @@ const ACTIONS = {
   resume() { const to = S.resume; S.resume = null; go(to); },
   timeline(el) { S.open = S.open === el.dataset.key ? null : el.dataset.key; render(); },
   exportLog() {
-    const blob = new Blob([JSON.stringify({ app: 'detektivska-pisarna', version: 1, exported: new Date().toISOString(), progress: progressSnapshot(), events: LOG }, null, 1)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(exportData(), null, 1)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     const d = new Date();
@@ -4418,6 +4474,26 @@ const ACTIONS = {
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 5000);
+  },
+  importLog() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,application/json';
+    input.style.display = 'none';
+    input.onchange = () => {
+      const file = input.files && input.files[0];
+      input.remove();
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        let data = null;
+        try { data = JSON.parse(reader.result); } catch (e) {}
+        if (importSave(data)) location.reload();
+      };
+      reader.readAsText(file);
+    };
+    document.body.appendChild(input);
+    input.click();
   },
   wipe() {
     if (!confirm('Izbrišem vse zapise na tej napravi? Najprej izvozi JSON.')) return;
