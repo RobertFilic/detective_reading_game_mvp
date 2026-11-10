@@ -1,0 +1,1744 @@
+{
+  "_readme": [
+    "Every child-facing Slovenian text of Detektivska pisarna (solo game), exported from solo/index.html.",
+    "Keep the wording exactly; » « are Slovenian quotes. **word** in sentences is shown bold (a name).",
+    "ui.UI_AUDIO: instructions, hints and messages (key = what it is for: how* = step instruction, h* = hint, *Done = step done).",
+    "ui.BRIEF: instruction cards per step [icon, title, UI_AUDIO key of the how-line, case field with the puzzle note].",
+    "ui.STEP_LABEL: the main button that leads to the next step. ui.RANKS: m = boy, f = girl form.",
+    "seasons.pokal: the season to design first, all 6 cases with every step, puzzle, newspaper (paper, caught, excuse), corkboard card and letter.",
+    "seasons.galeb.cases g2: an extra case for the ✉️ cipher puzzle, which pokal does not use.",
+    "adventures: every adventure (title, icon, mystery, teaser, newspaper masthead); coming: announced seasons.",
+    "ui.screen_strings_raw: other literal strings from the screen templates, extracted automatically (may hold small fragments).",
+    "In a case: role \"evidence\" = the proof, \"clear\" + clears = an alibi that crosses that suspect off, \"partial\" = the culprit's own claim, \"distractor\" = a decoy."
+  ],
+  "ui": {
+    "UI_AUDIO": {
+      "test": "Ali me slišiš?",
+      "accuse": "Kdo je bil?",
+      "evidence": "Pokaži stavek, ki to dokaže.",
+      "evidencePair": "Pokaži dva stavka, ki to skupaj dokažeta.",
+      "h2": "Dokaz je v enem od svetlih stavkov. Poišči ga.",
+      "h3": "Samo še dva svetla stavka. Kateri je pravi?",
+      "h3pair": "Oba dokaza sta med temi tremi.",
+      "assist": "Poglej ta stavek in ga tapni.",
+      "assistPair": "Poglej ta dva stavka in ju tapni.",
+      "pairHalf": "Eden je pravi! Poišči še drugi dokaz.",
+      "partial": "To je pomembno! Ali kdo kasneje reče kaj drugega?",
+      "partialAlibi": "To je pomembno! Ali je res? Poišči, kaj pokaže drugače.",
+      "wrongSuspect": "Stavek je pravi, osumljenec pa ne. O kom govori stavek? Zamenjaj osumljenca.",
+      "solved": "Primer rešen!",
+      "more": "Še en primer?",
+      "soon": "Nov primer pride kmalu!",
+      "thanks": "Hvala za pomoč!",
+      "scene": "Preišči prostor. Tapni vsako stvar.",
+      "dark": "Tu je pretemno. Vzemi svetilko!",
+      "rub": "Na listu ni nič. Vzemi svinčnik!",
+      "sceneDone": "Vse je preiskano. Kdo je bil?",
+      "sceneDoneOn": "Vse je preiskano. Naprej! 👉",
+      "ask": "Zasliši vse. Tapni obraz, nato vprašanje.",
+      "askDone": "Vsi so odgovorili. Kdo je bil?",
+      "askDoneOn": "Vsi so odgovorili. Naprej! 👉",
+      "wordNo": "To ni beseda s seznama. Tapni prvo in zadnjo črko.",
+      "wordLook": "Beseda je v svetli vrsti.",
+      "wordAssist": "Tapni prvo črko, nato zadnjo. Utripata.",
+      "lockNo": "Ključavnica se ne odpre. Poskusi drugo šifro.",
+      "lockOpen": "Klik! Vrata so odprta.",
+      "orderNo": "Še ni prav. Preberi listke še enkrat.",
+      "orderAssist": "Ta listek pride naslednji. Utripa.",
+      "guessRight": "Prav si ugibal! 🎉",
+      "guessRightF": "Prav si ugibala! 🎉",
+      "guessWrong": "Tokrat ni bilo prav. Nič hudega!",
+      "guessChanged": "Spremenil si mnenje in imel prav! 🎉",
+      "guessChangedF": "Spremenila si mnenje in imela prav! 🎉",
+      "guessFirst": "Najprej si imel prav! Nič hudega.",
+      "guessFirstF": "Najprej si imela prav! Nič hudega.",
+      "lie": "Je vse res? Tapni trditev, nato stavek.",
+      "lieClaimFirst": "Najprej tapni, kaj kdo trdi. 💬",
+      "lieBoth": "Oba sta lahko res. Poišči drug stavek.",
+      "lieHalf": "Eden je pravi! Poišči še drugega.",
+      "lieH1": "To trdi. Ali je res? Poišči stavek, ki pove drugače.",
+      "lieLook": "Preberi svetel stavek. Se ujema s trditvijo?",
+      "lieAssist": "Tapni trditev, nato stavek, ki utripa.",
+      "lieShout": "To ni res! Zakliči na glas: UGOVOR!",
+      "lieStamp": "UGOVOR!",
+      "lieTruth": "Zdaj pove resnico.",
+      "lieDone": "Resnica je v žepu! 👝",
+      "lieBroken": "Ta stavek ni res. Na njem je žig.",
+      "truthLead": "Dobra sled! Kateri stavek to dokaže?",
+      "liarCaught": "Laž je že ujeta! Poišči stavek, ki to dokaže.",
+      "herring": "Kam kaže sled? Tapni sled, nato stavek.",
+      "howHerring": "Sled kaže na nekoga. Je res? Tapni sled, nato stavek, ki pove, zakaj.",
+      "herringFirst": "Najprej tapni sled. 👉",
+      "herringNo": "Ta stavek ne pove, zakaj.",
+      "herringTrue": "Ta sled drži. Poišči drugo.",
+      "herringH1": "Zakaj kaže sem? Poišči stavek, ki pove, zakaj.",
+      "herringLook": "Preberi svetle stavke. Kateri pove, zakaj?",
+      "herringAssist": "Tapni sled, nato stavek, ki utripa.",
+      "herringStamp": "NAPAČNA SLED!",
+      "herringDone": "Vse sledi so preverjene. Kdo je bil?",
+      "herringAway": "Ta sled vodi drugam. Poglej še enkrat!",
+      "herringExplained": "Res, sled ne drži! Poišči še drug stavek.",
+      "tooEasy": "Preveč lahko? Poglej še enkrat!",
+      "crossFirst": "Dobro! Najprej prečrtaj še vse, ki niso bili.",
+      "when": "Kdaj je to bilo? Tapni stavek, nato čas.",
+      "howWhen": "Kdaj se je to zgodilo? Tapni stavek, nato PREJ, TAKRAT ali POTEM.",
+      "when_before": "PREJ",
+      "when_during": "TAKRAT",
+      "when_after": "POTEM",
+      "whenFirst": "Najprej tapni stavek. 👇",
+      "whenNo": "Poglej, kdaj je to bilo.",
+      "whenH1": "Poišči v stavku, kdaj je to bilo.",
+      "whenLook": "Preberi svetle besede. Kdaj je to bilo?",
+      "whenAssist": "Tapni stavek, nato čas, ki utripa.",
+      "whenStamp": "NAPAČEN ČAS!",
+      "whenCounts": "To šteje!",
+      "whenDone": "Zdaj veš, kaj šteje. Kdo je bil?",
+      "wrongTime": "Napačen čas! Poglej uro še enkrat.",
+      "liarNotCulprit": "Kdor ne pove resnice, ni nujno kriv.",
+      "coachLie1": "Nekdo nekaj trdi. Ali je res? Tapni to.",
+      "coachLie2": "Kateri stavek pove drugače? Tapni ga.",
+      "cipherNo": "Ta črka ni prava. Poglej ključ.",
+      "cipherLook": "Poišči svetel znak v ključu.",
+      "cipherAssist": "Tapni črko, ki utripa.",
+      "cipherDone": "Preberi listek!",
+      "tornNo": "Še ni prav. Preberi ga na glas.",
+      "tornAssist": "Ta košček pride naslednji. Utripa.",
+      "tornDone": "Listek je cel!",
+      "geslo": "Ostale črke povedo skrivnost!",
+      "howScene": "Preišči prostor. Tapni vsako stvar in preberi, kaj najdeš.",
+      "howAsk": "Zasliši vse. Tapni obraz, nato vprašanje. Preberi odgovor.",
+      "howWords": "Poišči besede s seznama. Tapni prvo črko, nato zadnjo.",
+      "howLock": "Obračaj kolesca ▲ ▼. Ko je šifra prava, tapni »Odpri«.",
+      "howOrder": "Kaj je bilo najprej? Tapni listke po vrsti. Nato tapni »Preveri«.",
+      "howCipher": "Vsak znak je ena črka. Poglej ključ in tapni pravo črko.",
+      "howTorn": "Sestavi listek. Tapni koščke po vrsti, nato »Preveri«.",
+      "howLie": "Nekdo nekaj trdi. 💬 Je to res? Tapni 💬, nato stavek, ki pove drugače.",
+      "howSolve": "Prečrtaj, kdo ni bil. Tapni stavek, nato obraz. Na koncu pokaži dokaz.",
+      "truthTells": "pove resnico:",
+      "excuseSays": "pravi:",
+      "selfClaim": "To trdi o sebi. Ali je res? Poišči dokaz.",
+      "solve": "Prečrtaj, kdo ni bil. Tapni stavek, nato obraz.",
+      "lastOne": "Ostal je samo eden. Pokaži dokaz!",
+      "pickFirst": "Najprej tapni stavek, potem obraz.",
+      "notThis": "Ta stavek ne pove, kdo ni bil. Izberi drug stavek.",
+      "notWho": "Ta stavek govori o nekom drugem. Preberi, o kom govori, in tapni ta obraz.",
+      "elimLook": "Preberi svetel stavek. O kom govori? Tapni ta obraz.",
+      "elimAssist": "Tapni svetel stavek, nato obraz, ki utripa.",
+      "no": "Ni prav.",
+      "almost": "Skoraj!",
+      "again": "Poskusi znova",
+      "newCard": "Nov namig na tabli skrivnosti!",
+      "letter": "Prišlo je pismo!"
+    },
+    "BRIEF": {
+      "scene": [
+        "🔍",
+        "Na kraju dogodka",
+        "howScene"
+      ],
+      "ask": [
+        "🗣️",
+        "Zaslišanje",
+        "howAsk"
+      ],
+      "words": [
+        "🔤",
+        "Iskanka",
+        "howWords",
+        "words",
+        "wn"
+      ],
+      "lock": [
+        "🔐",
+        "Ključavnica",
+        "howLock",
+        "lock",
+        "kn"
+      ],
+      "order": [
+        "🕐",
+        "Po vrsti",
+        "howOrder",
+        "order",
+        "on"
+      ],
+      "cipher": [
+        "✉️",
+        "Skrivni listek",
+        "howCipher",
+        "cipher",
+        "cn"
+      ],
+      "torn": [
+        "📜",
+        "Raztrgan listek",
+        "howTorn",
+        "torn",
+        "pn"
+      ],
+      "lie": [
+        "❗",
+        "Je vse res?",
+        "howLie"
+      ],
+      "herring": [
+        "🧭",
+        "Kam kaže sled?",
+        "howHerring"
+      ],
+      "when": [
+        "⏰",
+        "Kdaj?",
+        "howWhen"
+      ],
+      "solve": [
+        "🕵️",
+        "Kdo je bil?",
+        "howSolve"
+      ]
+    },
+    "STEP_LABEL": {
+      "ask": "Zasliši osumljence 🗣️",
+      "words": "Preberi listek 🔤",
+      "lock": "K vratom 🔐",
+      "order": "Poglej slike 🕐",
+      "scene": "Na kraj dogodka 🔍",
+      "cipher": "Skrivni listek ✉️",
+      "torn": "Raztrgan listek 📜",
+      "lie": "Je vse res? ❗",
+      "herring": "Kam kaže sled? 🧭",
+      "when": "Kdaj? ⏰"
+    },
+    "RANKS": [
+      {
+        "n": 0,
+        "i": "🔰",
+        "m": "Vajenec",
+        "f": "Vajenka"
+      },
+      {
+        "n": 3,
+        "i": "🕵️",
+        "m": "Detektiv",
+        "f": "Detektivka"
+      },
+      {
+        "n": 6,
+        "i": "⭐",
+        "m": "Višji detektiv",
+        "f": "Višja detektivka"
+      },
+      {
+        "n": 10,
+        "i": "🎖️",
+        "m": "Inšpektor",
+        "f": "Inšpektorica"
+      },
+      {
+        "n": 15,
+        "i": "👑",
+        "m": "Glavni inšpektor",
+        "f": "Glavna inšpektorica"
+      }
+    ],
+    "AVATARS": [
+      {
+        "e": "🕵🏻‍♂️",
+        "g": "m"
+      },
+      {
+        "e": "🕵🏽‍♂️",
+        "g": "m"
+      },
+      {
+        "e": "🕵🏿‍♂️",
+        "g": "m"
+      },
+      {
+        "e": "🕵🏻‍♀️",
+        "g": "f"
+      },
+      {
+        "e": "🕵🏽‍♀️",
+        "g": "f"
+      },
+      {
+        "e": "🕵🏿‍♀️",
+        "g": "f"
+      }
+    ],
+    "SIDEKICKS": [
+      "🐶",
+      "🐱",
+      "🦉",
+      "🦊"
+    ],
+    "screen_strings_raw": [
+      "Kmalu",
+      "Jutri!",
+      "📅 Kmalu nove pustolovščine",
+      "🏅 Moje medalje",
+      "Zamenjaj osumljenca",
+      "📹 Poglej posnetek",
+      "🤔 Tvoje ugibanje:",
+      "Detektivska pisarna",
+      "Priprava seje – za odrasle.",
+      "Koda otroka:",
+      "ID igralca na tej napravi:",
+      "🗂️ Otrok izbira na tabli",
+      "Nov otrok: počisti izkaznico in kljukice",
+      "2. Preizkus zvoka",
+      "Vgrajeni posnetki:",
+      ". Slovenski sintetični glas:",
+      "← Izbira igre",
+      "Začni sejo",
+      "Med igro: drži zgornji levi kot 3 sekunde za pregled.",
+      "Začni",
+      "Postani detektiv!",
+      "Izberi svojega detektiva.",
+      "Izberi pomočnika",
+      "Kako ti je ime?",
+      "Naprej",
+      "Preskoči",
+      "To si ti!",
+      "Začni 🔍",
+      "Kdo igra?",
+      "Nov detektiv",
+      "za drugega otroka",
+      "🗺️ Izberi pustolovščino",
+      "▶ Začni",
+      "❓ Kako igram?",
+      "Dovolj za danes",
+      "🏅 Pustolovščina rešena! Bravo,",
+      "pride kmalu! Medtem reši druge pustolovščine.",
+      "⭐ Veliki primer",
+      "Kmalu nov primer",
+      "← 🗺️ Pustolovščine",
+      "Zvoni!",
+      "Javi se",
+      "Vem, kdo je bil!",
+      "Primer",
+      "Beri zgodbo",
+      "📖 Še enkrat preberi",
+      "sm caught",
+      "si! Zdaj si",
+      "Da!",
+      "Pregled",
+      "Nova seja",
+      "Izbriši vse",
+      "Povzetek po starosti",
+      "Nov otrok: počistim zadnjo izkaznico in njene kljukice? Drugi detektivi in zapisi v pregledu ostanejo.",
+      "⏳ Ta primer še ni napisan. Pride kmalu!",
+      "🔒 Zgodba gre po vrsti. Ta primer se odpre, ko rešiš primer",
+      "🔒 Veliki primer se odpre, ko rešiš ostale primere te pustolovščine.",
+      "Izbrišem vse zapise na tej napravi? Najprej izvozi JSON.",
+      "Hmm, ni še prav. Kdo je pojedel korenček? Preberi še enkrat.",
+      "To ni ta stavek. Poišči, kje piše, kdo je pojedel korenček.",
+      "Za odrasle: koliko je",
+      "Prekliči",
+      "Odpri"
+    ]
+  },
+  "tutorial": {
+    "id": "tut",
+    "no": 0,
+    "rung": 1,
+    "level": "A",
+    "sticker": "🥕",
+    "question": "Kdo je pojedel korenček?",
+    "suspects": [
+      "bine",
+      "jure",
+      "zala"
+    ],
+    "culprit": "bine",
+    "sentences": [
+      [
+        "s1",
+        "Na mizi je bil korenček."
+      ],
+      [
+        "s2",
+        "Jure je spal."
+      ],
+      [
+        "s3",
+        "Bine je pojedel korenček.",
+        "evidence"
+      ],
+      [
+        "s4",
+        "Zala je brala knjigo."
+      ]
+    ],
+    "h1": "Kdo je pojedel korenček? Poišči ta stavek.",
+    "h2": [
+      "s2",
+      "s3",
+      "s4"
+    ],
+    "h3": [
+      "s2",
+      "s3"
+    ],
+    "reveal": [
+      "Bine je pojedel korenček.",
+      "To piše v zgodbi!",
+      "Tako najdeš dokaz."
+    ]
+  },
+  "adventures": [
+    {
+      "id": "vesolje",
+      "icon": "🚀",
+      "title": "Vesoljska postaja",
+      "paper": "ZVEZDNI ČASNIK"
+    },
+    {
+      "id": "kmetija",
+      "icon": "🐄",
+      "title": "Pri babici na kmetiji",
+      "paper": "KMEČKI GLAS"
+    },
+    {
+      "id": "bip",
+      "icon": "👾",
+      "title": "Skrivnost v zračniku",
+      "season": true,
+      "mystery": "Kaj se skriva v zračniku?",
+      "paper": "ZVEZDNI ČASNIK"
+    },
+    {
+      "id": "galeb",
+      "icon": "🦔",
+      "title": "Skrivnost hotela Galeb",
+      "season": true,
+      "mystery": "Kdo v hotelu piše knjige o Ježku?",
+      "paper": "PIRANSKI GALEB"
+    },
+    {
+      "id": "muzej",
+      "icon": "🦕",
+      "title": "Duh v muzeju",
+      "season": true,
+      "mystery": "Kdo ponoči premika dinozavra?",
+      "teaser": "Kdo ponoči premika dinozavra?",
+      "paper": "MUZEJSKE NOVICE"
+    },
+    {
+      "id": "pokal",
+      "icon": "⚽",
+      "title": "Skrivnost zlatega pokala",
+      "season": true,
+      "mystery": "Kam je izginil zlati pokal?",
+      "teaser": "Kam je izginil zlati pokal?",
+      "opens": "2026-11-12",
+      "paper": "NOGOMETNE NOVICE"
+    }
+  ],
+  "coming": [
+    {
+      "id": "sneg",
+      "icon": "❄️",
+      "title": "Sneženi možje brez sledi",
+      "teaser": "Kdo ponoči dela snežene može?",
+      "opens": "2026-11-19"
+    }
+  ],
+  "seasons": {
+    "pokal": {
+      "file": {
+        "id": "pokal",
+        "icon": "⚽",
+        "title": "Skrivnost zlatega pokala",
+        "cast": [
+          "lan",
+          "zoja",
+          "luka",
+          "hana",
+          "pia",
+          "bor",
+          "tone",
+          "neza"
+        ],
+        "paper": "NOGOMETNE NOVICE",
+        "season": true,
+        "mystery": "Kam je izginil zlati pokal?",
+        "teaser": "Kam je izginil zlati pokal?",
+        "opens": "2026-11-12",
+        "guess": {
+          "after": 3,
+          "again": 5,
+          "q": "Kaj misliš, kdo je vzel zlati pokal?",
+          "q2": "Ali še vedno tako misliš?",
+          "options": [
+            [
+              "luka",
+              "👦🏼",
+              "Luka, ki je držal pokal"
+            ],
+            [
+              "tone",
+              "👨🏻‍🔧",
+              "hišnik Tone, ki vse popravi"
+            ],
+            [
+              "zoja",
+              "👧🏻",
+              "Zoja, ki vse nariše"
+            ]
+          ]
+        },
+        "answer": {
+          "id": "tone",
+          "icon": "🏆",
+          "text": "Pokal je bil pri hišniku Tonetu v kleti!"
+        },
+        "cup": {
+          "q": "Pokal je pod prtom. Ali ga odkriješ?",
+          "cloth": "Pod prtom je nekaj zlatega …",
+          "btn": "Odgrni prt!",
+          "cheer": "Bo že, bo! Vsaka ekipa mora na pokal!",
+          "names": [
+            "DINOZAVRI",
+            "KOZICE",
+            "JEŽKI",
+            "SOKOLI"
+          ]
+        }
+      },
+      "cast": {
+        "lan": {
+          "name": "Lan",
+          "animal": "👦🏽",
+          "color": "#dff0ff",
+          "re": "Lan(a|u|om|ov\\p{L}*)?"
+        },
+        "zoja": {
+          "name": "Zoja",
+          "animal": "👧🏻",
+          "color": "#f3e4ff",
+          "re": "Zoj(a|e|i|o|in\\p{L}*)"
+        },
+        "luka": {
+          "name": "Luka",
+          "animal": "👦🏼",
+          "color": "#dff0ff",
+          "re": "Luk(a|e|i|o|ov\\p{L}*)"
+        },
+        "hana": {
+          "name": "Hana",
+          "animal": "👧🏽",
+          "color": "#ffeccc",
+          "re": "Han(a|e|i|o|in\\p{L}*)"
+        },
+        "pia": {
+          "name": "Pia",
+          "animal": "👧🏼",
+          "color": "#ffe3ea",
+          "re": "Pi(a|o|e|ji|jin\\p{L}*)"
+        },
+        "bor": {
+          "name": "Bor",
+          "animal": "🧒🏻",
+          "color": "#f0f0e0",
+          "re": "Bor(a|u|om|ov\\p{L}*)?"
+        },
+        "tone": {
+          "name": "Hišnik Tone",
+          "animal": "👨🏻‍🔧",
+          "color": "#ece4d4",
+          "re": "Ton(e|eta|etu|etom|etov\\p{L}*)"
+        },
+        "neza": {
+          "name": "Sodnica Neža",
+          "animal": "👩🏼‍⚖️",
+          "color": "#e3f2e3",
+          "re": "Než(a|e|i|o|in\\p{L}*)"
+        }
+      },
+      "cases": [
+        {
+          "id": "p1",
+          "file": "pokal",
+          "no": 1,
+          "type": "elim",
+          "level": "A",
+          "sticker": "🦷",
+          "place": "Igrišče",
+          "steps": [
+            "call",
+            "scene",
+            "when",
+            "solve"
+          ],
+          "client": "lan",
+          "call": [
+            "Hej, pomagaj! Žoge imajo zobe!",
+            "Pred slikanjem ob osmih so bile še bele.",
+            "Sodnica Neža vse zapiše v zvezek."
+          ],
+          "question": "Kdo je ob osmih porisal žoge?",
+          "suspects": [
+            "luka",
+            "zoja",
+            "pia",
+            "tone"
+          ],
+          "culprit": "zoja",
+          "sentences": [
+            {
+              "id": "s1",
+              "text": "Na vsaki žogi so zeleni zobje dinozavra.",
+              "role": "neutral",
+              "obj": "🎒",
+              "label": "vreča"
+            },
+            {
+              "id": "s2",
+              "text": "Ob sedmih je Luka nosil žoge na igrišče.",
+              "role": "distractor",
+              "obj": "📓",
+              "label": "zvezek",
+              "rub": true
+            },
+            {
+              "id": "s3",
+              "text": "Ob osmih je Luka na sliki držal pokal.",
+              "role": "clear",
+              "obj": "🖼️",
+              "label": "slika",
+              "clears": "luka"
+            },
+            {
+              "id": "s5",
+              "text": "Luka in Zoja vpijeta: »Ta pokal bo naš!«",
+              "role": "neutral",
+              "obj": "🏟️",
+              "label": "tribuna"
+            },
+            {
+              "id": "s6",
+              "text": "Ob osmih je Pia v avli pazila Bora.",
+              "role": "clear",
+              "obj": "🎈",
+              "label": "balon",
+              "clears": "pia"
+            },
+            {
+              "id": "s7",
+              "text": "Ob osmih je Tone v avli slikal pokal.",
+              "role": "clear",
+              "obj": "📷",
+              "label": "kamera",
+              "clears": "tone"
+            },
+            {
+              "id": "s8",
+              "text": "Napise na vratih šole je vrezal hišnik Tone.",
+              "role": "neutral",
+              "obj": "🚪",
+              "label": "vrata"
+            },
+            {
+              "id": "s9",
+              "text": "Na klopi Dinozavrov je siva risba: DINOZAVRI.",
+              "role": "neutral",
+              "obj": "🪑",
+              "label": "klop"
+            },
+            {
+              "id": "s4",
+              "text": "Na Zojinih rokavicah so sveže packe zelenega flomastra.",
+              "role": "evidence",
+              "obj": "🥅",
+              "label": "gol"
+            }
+          ],
+          "when": {
+            "deed": "ob osmih: žoge dobijo zobe",
+            "cards": {
+              "s2": "before",
+              "s3": "during"
+            },
+            "h1": "Kdaj je bil Luka pri žogah?"
+          },
+          "h1": "Kdo NI mogel biti? Kje so zelene packe?",
+          "reveal": [
+            "Luka je nosil žoge že ob sedmih.",
+            "Ob osmih je Zoja na žoge risala zobe.",
+            "Zelene packe so ostale na rokavicah.",
+            "Kje pa je zlati pokal? Vitrina je prazna! 🏆"
+          ],
+          "caught": "Zojo",
+          "excuse": "Rrr! Dinozavri morajo imeti žoge z zobmi!",
+          "card": {
+            "icon": "🖍️",
+            "sid": "s9",
+            "think": "Kdo je narisal to sivo risbo? In kje je pokal? 🤔"
+          },
+          "letter": [
+            "Hvala! Z Zojo sva umila vse žoge.",
+            "Zoja zdaj riše zobe samo na papir. 🦖",
+            "P. S. Pijin bratec Bor ima kozji kostum! 🐐"
+          ],
+          "rung": 2
+        },
+        {
+          "id": "p2",
+          "file": "pokal",
+          "no": 2,
+          "type": "elim",
+          "level": "A",
+          "sticker": "🐐",
+          "place": "Mali gol",
+          "steps": [
+            "call",
+            "ask",
+            "when",
+            "solve"
+          ],
+          "client": "lan",
+          "call": [
+            "Hej! Gooool … ampak čigav?",
+            "Med tekmo je nekdo zabil v mali gol.",
+            "Kamera za telovadnico je vse posnela!"
+          ],
+          "film": [
+            [
+              "🥅",
+              "Pred tekmo: mali gol je prazen."
+            ],
+            [
+              "⚪",
+              "Med tekmo: nekaj belega skoči k žogi.",
+              "blur"
+            ],
+            [
+              "⚽",
+              "Bum! Žoga je v golu. Mreža se strga!"
+            ],
+            [
+              "🧍",
+              "Po tekmi nekdo pobere žogo.",
+              "blur"
+            ]
+          ],
+          "question": "Kdo je med tekmo zabil skrivni gol?",
+          "suspects": [
+            "hana",
+            "pia",
+            "luka",
+            "bor"
+          ],
+          "culprit": "bor",
+          "witnesses": [
+            "neza",
+            "tone"
+          ],
+          "sentences": [
+            {
+              "id": "s1",
+              "text": "»Pred tekmo je Bor plesal ob igrišču.«",
+              "role": "neutral",
+              "who": "pia",
+              "ask": "Kje je bil tvoj bratec Bor?"
+            },
+            {
+              "id": "s2",
+              "text": "»Meee! Imam bel kozji kostum z rogovi!«",
+              "role": "neutral",
+              "who": "bor",
+              "ask": "Si ti tudi Kozica?"
+            },
+            {
+              "id": "s3",
+              "text": "»Na rogu ima Bor kos mreže malega gola.«",
+              "role": "evidence",
+              "who": "tone",
+              "ask": "Kaj manjka na malem golu?"
+            },
+            {
+              "id": "s4",
+              "text": "»Med tekmo je Pia branila na velikem igrišču.«",
+              "role": "clear",
+              "who": "neza",
+              "ask": "Kje je bila Pia med tekmo?",
+              "clears": "pia"
+            },
+            {
+              "id": "s5",
+              "text": "»Po tekmi sem pobrala žogo iz malega gola.«",
+              "role": "distractor",
+              "who": "hana",
+              "ask": "Si bila ti pri malem golu?"
+            },
+            {
+              "id": "s6",
+              "text": "»Med tekmo je Luka z mano meril čas.«",
+              "role": "clear",
+              "who": "neza",
+              "ask": "Kdo vam je pomagal med tekmo?",
+              "clears": "luka"
+            },
+            {
+              "id": "s7",
+              "text": "»Med tekmo je Hana na tribuni štela gole.«",
+              "role": "clear",
+              "who": "luka",
+              "ask": "Kje je bila Hana med tekmo?",
+              "clears": "hana"
+            },
+            {
+              "id": "s8",
+              "text": "»Pred vsako tekmo postavim klopi.«",
+              "role": "neutral",
+              "who": "tone",
+              "ask": "Kaj delate pred vsako tekmo?"
+            },
+            {
+              "id": "s9",
+              "text": "»Na risbi KOZICE so bele črke.«",
+              "role": "neutral",
+              "who": "pia",
+              "ask": "Kaj je na klopi Kozic?"
+            }
+          ],
+          "when": {
+            "deed": "med tekmo: skrivni gol",
+            "cards": {
+              "s1": "before",
+              "s7": "during",
+              "s5": "after"
+            },
+            "h1": "Pred tekmo, med tekmo ali po tekmi?"
+          },
+          "h1": "Kdo NI mogel biti? Kje je kos mreže?",
+          "reveal": [
+            "Kos mreže je visel na Borovem rogu.",
+            "Med tekmo je Bor stekel k malemu golu.",
+            "Žogo je zabil z glavo, kot prava koza!",
+            "Ples je bil pred tekmo. Napačen čas! 🟨"
+          ],
+          "caught": "Bora",
+          "excuse": "Meee! Tudi jaz sem Kozica!",
+          "card": {
+            "icon": "🖍️",
+            "sid": "s9",
+            "think": "Bele črke na sivem? Kot z mojim svinčnikom! 🤔"
+          },
+          "letter": [
+            "Hvala! Boru so dali medaljo »najboljša maskota«. 🏅",
+            "Pia bo Boru zlepila rog. Meee!",
+            "P. S. Luka je kapetan Ježkov. Ima rdeč trak!"
+          ],
+          "rung": 2
+        },
+        {
+          "id": "p3",
+          "file": "pokal",
+          "no": 3,
+          "type": "elim",
+          "level": "A",
+          "sticker": "🎗️",
+          "place": "Klop Ježkov",
+          "steps": [
+            "call",
+            "ask",
+            "torn",
+            "herring",
+            "solve"
+          ],
+          "client": "lan",
+          "call": [
+            "Gooool! Zmagali smo 3 : 1!",
+            "Luka je pustil trak na klopi.",
+            "Med odmorom je trak izginil!"
+          ],
+          "question": "Kdo je med odmorom vzel kapetanski trak?",
+          "suspects": [
+            "zoja",
+            "tone",
+            "hana",
+            "pia"
+          ],
+          "culprit": "hana",
+          "witnesses": [
+            "lan",
+            "luka",
+            "neza"
+          ],
+          "sentences": [
+            {
+              "id": "s1",
+              "text": "»Pri naši klopi leži Pijina kapa.«",
+              "role": "distractor",
+              "who": "hana",
+              "ask": "Kaj si videla pri klopi?"
+            },
+            {
+              "id": "s2",
+              "text": "»Med odmorom sva bila s Pio v garderobi.«",
+              "role": "clear",
+              "who": "lan",
+              "ask": "Kje si bil med odmorom?",
+              "clears": "pia"
+            },
+            {
+              "id": "s3",
+              "text": "»Hana! Povsod nosi knjigo pravil.«",
+              "role": "neutral",
+              "who": "luka",
+              "ask": "Kdo pri Ježkih pozna pravila?",
+              "lead": true
+            },
+            {
+              "id": "s4",
+              "text": "»Iz Hanine knjige pravil gleda kapetanski trak.«",
+              "role": "evidence",
+              "who": "pia",
+              "ask": "Si kje videla trak?"
+            },
+            {
+              "id": "s5",
+              "text": "»Med odmorom je Zoja v telovadnici risala plakat.«",
+              "role": "clear",
+              "who": "luka",
+              "ask": "Koga si videl med odmorom?",
+              "clears": "zoja"
+            },
+            {
+              "id": "s6",
+              "text": "»Na risbi JEŽKI je obris ročaja.«",
+              "role": "neutral",
+              "who": "zoja",
+              "ask": "Kaj vidiš na sivi risbi?"
+            },
+            {
+              "id": "s7",
+              "text": "»Med odmorom sva s Tonetom popravljala mali gol.«",
+              "role": "clear",
+              "who": "neza",
+              "ask": "Kje je bil Tone med odmorom?",
+              "clears": "tone"
+            },
+            {
+              "id": "s8",
+              "text": "»Bo že, bo! Med tekmami delam v kleti.«",
+              "role": "neutral",
+              "who": "tone",
+              "ask": "Kaj delate med tekmami?"
+            },
+            {
+              "id": "s9",
+              "text": "Pia je izgubila kapo, preden so začeli.",
+              "role": "neutral",
+              "from": "torn"
+            }
+          ],
+          "torn": {
+            "note": "Žoga je strgala Nežin zapisnik. Sestavi ga.",
+            "parts": [
+              "Pia je",
+              "izgubila kapo,",
+              "preden so",
+              "začeli."
+            ],
+            "gives": "s9",
+            "h1": "Velika črka je na začetku, pika na koncu.",
+            "h2": "Kaj je Pia izgubila? Kdaj?"
+          },
+          "herring": {
+            "clues": [
+              "s1"
+            ],
+            "points": {
+              "s1": "pia"
+            },
+            "explains": {
+              "s1": [
+                [
+                  "s9"
+                ]
+              ]
+            },
+            "hmm": [
+              [
+                "s1",
+                "s2",
+                "Pia je bila res v garderobi. Kaj pa kapa?"
+              ],
+              [
+                "s1",
+                "s4",
+                "Res, trak je v Hanini knjigi. Zakaj pa je kapa tam?"
+              ]
+            ],
+            "h1": "Kdaj je Pia izgubila kapo? Preberi zapisnik."
+          },
+          "h1": "Kdo NI mogel biti? Kje je kapetanski trak?",
+          "reveal": [
+            "Hana je med odmorom vzela Lukov trak.",
+            "Trak je bil kazalo v knjigi pravil.",
+            "Pijina kapa je že prej ležala pri klopi.",
+            "Pia in Lan sta takrat lepila Borov rog."
+          ],
+          "caught": "Hano",
+          "excuse": "Ups! Rabila sem kazalo za pravilo sedem.",
+          "card": {
+            "icon": "🏆",
+            "sid": "s6",
+            "think": "Ročaj? Kaj ima tak ročaj? 🤔"
+          },
+          "letter": [
+            "Hvala! Luka ima spet svoj trak.",
+            "Hana je dobila pravo kazalo. 📖",
+            "P. S. Opoldne je kosilo. Juha! 🍲"
+          ],
+          "rung": 2
+        },
+        {
+          "id": "p4",
+          "file": "pokal",
+          "no": 4,
+          "type": "elim",
+          "level": "A",
+          "sticker": "🌼",
+          "place": "Veliko igrišče",
+          "steps": [
+            "call",
+            "words",
+            "scene",
+            "when",
+            "solve"
+          ],
+          "client": "lan",
+          "call": [
+            "Ježki so zmagali 2 : 0!",
+            "Medtem ko smo jedli, je gol zacvetel!",
+            "Ves gol je v venčkih! 🌼"
+          ],
+          "words": {
+            "note": "Hana ti je skrila kraje v iskanko. Reši uganke!",
+            "grid": [
+              "ČEMUBI",
+              "ZKLOPO",
+              "GIHEDK",
+              "OJAŠUN",
+              "LAFECO",
+              "STRAVA"
+            ],
+            "find": [
+              [
+                "🥅",
+                "GOL",
+                "Kje stoji vratar?"
+              ],
+              [
+                "🪑",
+                "KLOP",
+                "Kje sedijo igralci, ko ne igrajo?"
+              ],
+              [
+                "🌱",
+                "TRAVA",
+                "Kaj je zeleno in raste na igrišču?"
+              ],
+              [
+                "🪟",
+                "OKNO",
+                "Skozi kaj gledaš ven?"
+              ]
+            ],
+            "h1": "Besede gredo → in ↓. Črtice povedo, koliko je črk."
+          },
+          "question": "Kdo je med kosilom okrasil gol z venčki?",
+          "suspects": [
+            "pia",
+            "zoja",
+            "bor",
+            "tone"
+          ],
+          "culprit": "pia",
+          "sentences": [
+            {
+              "id": "s1",
+              "text": "Po kosilu je Zoja risala rože na golu.",
+              "role": "distractor",
+              "obj": "🥅",
+              "label": "gol"
+            },
+            {
+              "id": "s2",
+              "text": "Pred kosilom je Tone kosil travo pri golu.",
+              "role": "distractor",
+              "obj": "🌱",
+              "label": "trava"
+            },
+            {
+              "id": "s3",
+              "text": "Medtem ko so jedli, je Pia pletla venčke.",
+              "role": "evidence",
+              "obj": "🪟",
+              "label": "okno"
+            },
+            {
+              "id": "s4",
+              "text": "Po kosilu je Pia Hani pletla kitke.",
+              "role": "neutral",
+              "obj": "🪑",
+              "label": "klop"
+            },
+            {
+              "id": "s5",
+              "text": "Med kosilom je Zoja sedela poleg Lana.",
+              "role": "clear",
+              "obj": "🍽️",
+              "label": "miza",
+              "clears": "zoja"
+            },
+            {
+              "id": "s6",
+              "text": "»Med kosilom je Bor jedel z mano.«",
+              "role": "clear",
+              "obj": "📋",
+              "label": "zapisnik",
+              "who": "neza",
+              "clears": "bor"
+            },
+            {
+              "id": "s7",
+              "text": "Medtem ko so jedli, je Tone pomival lonce.",
+              "role": "clear",
+              "obj": "🍲",
+              "label": "kuhinja",
+              "clears": "tone"
+            },
+            {
+              "id": "s8",
+              "text": "Na risbi SOKOLI so zlate mrvice.",
+              "role": "neutral",
+              "obj": "📄",
+              "label": "risba"
+            },
+            {
+              "id": "s9",
+              "text": "Hišnik Tone ima za ušesom debel svinčnik.",
+              "role": "neutral",
+              "obj": "🧰",
+              "label": "orodje"
+            }
+          ],
+          "when": {
+            "deed": "med kosilom: venčki na golu",
+            "cards": {
+              "s2": "before",
+              "s7": "during",
+              "s1": "after",
+              "s4": "after"
+            },
+            "h1": "Medtem ko so jedli: to je med kosilom."
+          },
+          "h1": "Kdo NI mogel biti? Kdo je pletel venčke?",
+          "reveal": [
+            "Med kosilom je Pia pletla venčke iz marjetic.",
+            "Z njimi je okrasila gol za finale.",
+            "Tone je bil pri golu prej, Zoja potem.",
+            "Venčki bodo za zmagovalce! 🌼"
+          ],
+          "caught": "Pio",
+          "excuse": "Za finale mora biti gol lep! Marjetice so zastonj!",
+          "card": {
+            "icon": "✨",
+            "sid": "s8",
+            "think": "Zlate mrvice? Kdo je brusil zlato? 🤔"
+          },
+          "letter": [
+            "Hvala! Pia zdaj plete venčke za vse ekipe.",
+            "Tudi Bor hoče venček na rogove. Meee!",
+            "P. S. Po kosilu pride zlata žoga za finale! ✨"
+          ],
+          "rung": 2
+        },
+        {
+          "id": "p5",
+          "file": "pokal",
+          "no": 5,
+          "type": "elim",
+          "level": "A",
+          "sticker": "🏠",
+          "place": "Pri telovadnici",
+          "steps": [
+            "call",
+            "order",
+            "scene",
+            "lie",
+            "solve"
+          ],
+          "client": "lan",
+          "call": [
+            "Zlata žoga za finale je na strehi!",
+            "Ob enih je bila žoga še v mreži.",
+            "Kdo jo je brcnil gor? Pomagaj!"
+          ],
+          "order": {
+            "note": "Lan pove vse naenkrat. Kaj je bilo najprej?",
+            "cards": [
+              [
+                "🎁",
+                "Najprej so zlato žogo dali v mrežo."
+              ],
+              [
+                "🥅",
+                "Ob enih je bila žoga še v mreži."
+              ],
+              [
+                "💨",
+                "Preden je žoga pristala na strehi, je letela."
+              ],
+              [
+                "🪜",
+                "Šele ob dveh so žogo našli na strehi."
+              ]
+            ],
+            "h1": "Kje je bila žoga ob enih? Kje ob dveh?",
+            "h2": "Žoga je letela po enih in pred dvema.",
+            "done": "Žoga je poletela od enih do dveh!"
+          },
+          "question": "Kdo je od enih do dveh brcnil žogo?",
+          "suspects": [
+            "hana",
+            "neza",
+            "tone",
+            "luka"
+          ],
+          "culprit": "neza",
+          "sentences": [
+            {
+              "id": "s1",
+              "text": "Ob dveh je Tone splezal na streho.",
+              "role": "distractor",
+              "obj": "🪜",
+              "label": "lestev",
+              "when": "after"
+            },
+            {
+              "id": "s2",
+              "text": "»Pisk! Od enih sem že sodila tekmo.«",
+              "role": "neutral",
+              "obj": "⏱️",
+              "label": "štoparica",
+              "who": "neza"
+            },
+            {
+              "id": "s3",
+              "text": "»Po kosilu sem spal kot polh.«",
+              "role": "neutral",
+              "obj": "🎽",
+              "label": "dres",
+              "who": "luka"
+            },
+            {
+              "id": "s4",
+              "text": "»Od enih do dveh sem Hani pletla kitke.«",
+              "role": "clear",
+              "obj": "🎀",
+              "label": "garderoba",
+              "who": "pia",
+              "clears": "hana"
+            },
+            {
+              "id": "s5",
+              "text": "Na zadnji risbi so vsa štiri imena.",
+              "role": "neutral",
+              "obj": "📄",
+              "label": "klop"
+            },
+            {
+              "id": "s6",
+              "text": "Od enih do dveh Tone brusi v kleti.",
+              "role": "clear",
+              "obj": "⚙️",
+              "label": "klet",
+              "clears": "tone"
+            },
+            {
+              "id": "s7",
+              "text": "Na posnetku ob enih Neža vzame zlato žogo.",
+              "role": "evidence",
+              "obj": "📹",
+              "label": "kamera"
+            },
+            {
+              "id": "s8",
+              "text": "Na vratih kleti je nova ključavnica s šifro.",
+              "role": "neutral",
+              "obj": "🔒",
+              "label": "vrata",
+              "dark": true
+            },
+            {
+              "id": "s9",
+              "text": "Od enih do dveh je Luka trdno spal.",
+              "role": "clear",
+              "obj": "💤",
+              "label": "blazina",
+              "clears": "luka"
+            },
+            {
+              "id": "s10",
+              "text": "Nežin urnik: prva tekma po kosilu ob dveh.",
+              "role": "neutral",
+              "obj": "🗓️",
+              "label": "urnik"
+            },
+            {
+              "id": "s11",
+              "text": "»No ja … Zlato žogo sem hotela preizkusiti.«",
+              "role": "neutral",
+              "from": "lie",
+              "who": "neza"
+            }
+          ],
+          "lie": {
+            "claims": [
+              "s3",
+              "s2"
+            ],
+            "claim": "s2",
+            "breaks": [
+              [
+                "s10"
+              ]
+            ],
+            "truth": "s11",
+            "hmm": [
+              [
+                "s3",
+                "s9",
+                "Luka je res spal. To se ujema!"
+              ],
+              [
+                "s2",
+                "s7",
+                "Sodnica res vzame žogo. Ampak za katero tekmo?"
+              ]
+            ],
+            "h1": "Kdaj je bila prva tekma po kosilu?"
+          },
+          "h1": "Kdo NI mogel biti? Kaj je na posnetku?",
+          "reveal": [
+            "Ob enih je Neža vzela zlato žogo.",
+            "Samo enkrat je hotela streljati na gol.",
+            "Bum! Žoga je poletela na streho.",
+            "Ob dveh jo je Tone prinesel dol. 🪜"
+          ],
+          "caught": "sodnico Nežo",
+          "excuse": "Pisk! Samo enkrat sem hotela streljati. Previsoko!",
+          "card": {
+            "icon": "🔄",
+            "sid": "s5",
+            "think": "Vse ekipe na eni risbi! Kdo navija za vse? 🤔"
+          },
+          "letter": [
+            "Hvala! Zlata žoga je spet v mreži. ✨",
+            "Pred finalom sme Neža enkrat streljati. Pisk!",
+            "P. S. Ob petih je finale. Pridi! 🏆"
+          ],
+          "rung": 2
+        },
+        {
+          "id": "p6",
+          "file": "pokal",
+          "no": 6,
+          "final": true,
+          "type": "elim",
+          "level": "A",
+          "sticker": "🏆",
+          "place": "Zlati pokal",
+          "steps": [
+            "call",
+            "ask",
+            "lock",
+            "scene",
+            "when",
+            "solve"
+          ],
+          "client": "lan",
+          "call": [
+            "Ob petih je finale. Pokala še ni!",
+            "Pokal je izginil po slikanju ob osmih.",
+            "Klet je zaklenjena. Šifro je izbrala Neža."
+          ],
+          "question": "Kdo je po slikanju do devetih vzel pokal?",
+          "suspects": [
+            "luka",
+            "zoja",
+            "tone",
+            "neza"
+          ],
+          "culprit": "tone",
+          "witnesses": [
+            "hana",
+            "pia",
+            "lan"
+          ],
+          "sentences": [
+            {
+              "id": "s1",
+              "text": "»Pred slikanjem sem sam držal pokal.«",
+              "role": "distractor",
+              "who": "luka",
+              "ask": "Kdaj si ti držal pokal?"
+            },
+            {
+              "id": "s2",
+              "text": "»Po slikanju je Luka do devetih tekel kroge.«",
+              "role": "clear",
+              "who": "hana",
+              "ask": "Kaj je delal Luka po slikanju?",
+              "clears": "luka"
+            },
+            {
+              "id": "s3",
+              "text": "»Ob devetih je bila vitrina že prazna.«",
+              "role": "distractor",
+              "who": "zoja",
+              "ask": "Si danes videla vitrino?"
+            },
+            {
+              "id": "s4",
+              "text": "»Po slikanju je Zoja do devetih umivala žoge.«",
+              "role": "clear",
+              "who": "lan",
+              "ask": "Kaj je delala Zoja po slikanju?",
+              "clears": "zoja"
+            },
+            {
+              "id": "s5",
+              "text": "»Po slikanju je Tone nesel škatlo v klet.«",
+              "role": "evidence",
+              "who": "pia",
+              "ask": "Kaj si videla po slikanju?"
+            },
+            {
+              "id": "s6",
+              "text": "»Bo že, bo! Pokal se bo že našel.«",
+              "role": "neutral",
+              "who": "tone",
+              "ask": "Veste, kje je pokal?"
+            },
+            {
+              "id": "s7",
+              "text": "»Pisk! Pred slikanjem je Tone čistil fotoaparat.«",
+              "role": "neutral",
+              "who": "neza",
+              "ask": "Ste videli hišnika Toneta?"
+            },
+            {
+              "id": "s8",
+              "text": "»Po slikanju je Neža do devetih merila gol.«",
+              "role": "clear",
+              "who": "hana",
+              "ask": "Kaj je delala Neža po slikanju?",
+              "clears": "neza"
+            },
+            {
+              "id": "s9",
+              "text": "Za srečo: DINOZAVRI, KOZICE, JEŽKI, SOKOLI.",
+              "role": "neutral",
+              "obj": "🗒️",
+              "label": "blok",
+              "rub": true
+            },
+            {
+              "id": "s10",
+              "text": "Na mizi so zlate mrvice.",
+              "role": "neutral",
+              "obj": "✨",
+              "label": "miza"
+            },
+            {
+              "id": "s11",
+              "text": "V kleti je prazna škatla za pokal.",
+              "role": "evidence",
+              "obj": "📦",
+              "label": "polica"
+            }
+          ],
+          "lock": {
+            "note": "Šifra: rezultata obeh jutranjih tekem, po vrsti.",
+            "code": "3120",
+            "h1": "Rezultata je povedal Lan. Kdo je igral prvi?",
+            "h2": "Šifra je 3-1-2-0. Najprej Dinozavri, nato Ježki."
+          },
+          "when": {
+            "deed": "po slikanju do devetih: pokal izgine",
+            "cards": {
+              "s1": "before",
+              "s7": "before",
+              "s4": "during",
+              "s3": "after"
+            },
+            "h1": "Pokal je izginil do devetih. Kaj je bilo potem?"
+          },
+          "h1": "Kdo NI mogel biti? Kaj je v kleti?",
+          "reveal": [
+            "Tone je pokal v škatli nesel v klet.",
+            "Tam je vrezal imena vseh štirih ekip.",
+            "Sive risbe so odtisi teh imen.",
+            "Ob petih je pokal spet na igrišču! 🏆"
+          ],
+          "caught": "hišnika Toneta",
+          "excuse": "Bo že, bo! Vsaka ekipa mora na pokal.",
+          "card": {
+            "icon": "🏆",
+            "sid": "s9",
+            "think": "Vsa imena na enem pokalu! 🏆"
+          },
+          "letter": [
+            "Hvala! Vsi smo na zlatem pokalu! 🏆",
+            "Hišnik Tone pravi: »Naslednjič povem vsaj Neži.«",
+            "P. S. Pozimi gremo vsi na sneg! ❄️"
+          ],
+          "rung": 2
+        }
+      ]
+    },
+    "galeb": {
+      "file": {
+        "id": "galeb",
+        "icon": "🦔",
+        "title": "Skrivnost hotela Galeb",
+        "cast": [
+          "luka",
+          "hana",
+          "bepi",
+          "vera",
+          "gusti"
+        ],
+        "paper": "PIRANSKI GALEB",
+        "season": true,
+        "mystery": "Kdo v hotelu piše knjige o Ježku?",
+        "pages": true,
+        "guess": {
+          "after": 3,
+          "again": 5,
+          "q": "Kaj misliš, kdo piše knjige o Ježku?",
+          "q2": "Ali še vedno tako misliš?",
+          "options": [
+            [
+              "hana",
+              "👧🏽",
+              "Hana, ki ima vse knjige"
+            ],
+            [
+              "bepi",
+              "👴🏻",
+              "kapitan Bepi, ki pripoveduje zgodbe"
+            ],
+            [
+              "vera",
+              "👵🏼",
+              "gospa Vera, ki gleda z balkona"
+            ]
+          ]
+        },
+        "answer": {
+          "id": "vera",
+          "icon": "🦔",
+          "text": "Knjige o Ježku piše gospa Vera!"
+        },
+        "book": {
+          "q": "Ali smem napisati knjigo o tebi?",
+          "title": "in skrivnost hotela Galeb",
+          "by": "🦔 Ježek"
+        }
+      },
+      "cases": [
+        {
+          "id": "g2",
+          "file": "galeb",
+          "no": 2,
+          "type": "elim",
+          "level": "A",
+          "sticker": "🪣",
+          "place": "Hodnik",
+          "steps": [
+            "call",
+            "ask",
+            "cipher",
+            "lie",
+            "solve"
+          ],
+          "client": "rozi",
+          "call": [
+            "Cin-cin! Pred vsemi vrati je pesek!",
+            "Ob polnoči je bil hodnik še čist."
+          ],
+          "question": "Kdo je ponoči posul pesek pred vsa vrata?",
+          "suspects": [
+            "bepi",
+            "hana",
+            "gusti",
+            "luka"
+          ],
+          "culprit": "hana",
+          "sentences": [
+            {
+              "id": "s1",
+              "text": "»Ves večer sem bila v sobi.«",
+              "role": "distractor",
+              "who": "hana",
+              "ask": "Kje si bila zvečer?"
+            },
+            {
+              "id": "s2",
+              "text": "»Kriii!« Gusti prinese Lukovo lopatko.",
+              "role": "distractor",
+              "who": "gusti",
+              "ask": "Kaj si našla na hodniku?"
+            },
+            {
+              "id": "s3",
+              "text": "»Zvečer je Hana na plaži nabirala pesek.«",
+              "role": "evidence",
+              "who": "bepi",
+              "ask": "Koga si videl zvečer?"
+            },
+            {
+              "id": "s4",
+              "text": "»Ponoči je Luka z mano lovil ribe.«",
+              "role": "clear",
+              "who": "bepi",
+              "ask": "Kdo je bil ponoči s teboj?",
+              "clears": "luka"
+            },
+            {
+              "id": "s5",
+              "text": "»Gusti je ponoči na barki kradla ribe.«",
+              "role": "clear",
+              "who": "bepi",
+              "ask": "Kaj je ponoči delala Gusti?",
+              "clears": "gusti"
+            },
+            {
+              "id": "s8",
+              "text": "»Moja lopatka je izginila že včeraj.«",
+              "role": "neutral",
+              "who": "luka",
+              "ask": "Je to tvoja lopatka?"
+            },
+            {
+              "id": "s6",
+              "text": "Bepi je lovil ribe.",
+              "role": "clear",
+              "from": "cipher",
+              "clears": "bepi"
+            },
+            {
+              "id": "s7",
+              "text": "»Ponoči je nekdo tipkal: tik-tak-klink!«",
+              "role": "neutral",
+              "from": "lie",
+              "who": "hana"
+            }
+          ],
+          "cipher": {
+            "note": "Listek z ježkom! Hana ima ključ za Ježkovo pisavo.",
+            "key": {
+              "🐚": "B",
+              "🌊": "E",
+              "⚓": "P",
+              "⭐": "I",
+              "🦀": "J",
+              "🐟": "L",
+              "🌙": "O",
+              "⛵": "V",
+              "🐙": "R"
+            },
+            "gives": "s6",
+            "h1": "Vsak znak ima svojo črko. Poglej ključ."
+          },
+          "lie": {
+            "claims": [
+              "s1"
+            ],
+            "claim": "s1",
+            "breaks": [
+              [
+                "s3"
+              ]
+            ],
+            "truth": "s7",
+            "h1": "Kdo je zvečer videl Hano? Kje?"
+          },
+          "h1": "Kdo NI mogel biti? Kdo je nabiral pesek?",
+          "reveal": [
+            "Hana je rekla, da je bila v sobi.",
+            "Bepi pa je Hano videl na plaži.",
+            "Pesek je bil past za pisateljeve stopinje.",
+            "Tik-tak-klink je bil pisalni stroj. Z njim se piše."
+          ],
+          "caught": "Hano",
+          "excuse": "Rada bi ujela pisatelja! Ujela pa sem samo Rozi.",
+          "card": {
+            "icon": "⌨️",
+            "sid": "s7",
+            "think": "Kdo tipka ponoči? Kdo je takrat buden? 🤔"
+          },
+          "letter": [
+            "Hvala! Hana je pometla ves hodnik.",
+            "Pesek je nesla nazaj na plažo.",
+            "P. S. Luka pravi, da zjutraj pridejo delfini."
+          ],
+          "rung": 2
+        }
+      ],
+      "cast": {
+        "luka": {
+          "name": "Luka",
+          "animal": "👦🏼",
+          "color": "#dff0ff",
+          "re": "Luk(a|e|i|o|ov\\p{L}*)"
+        },
+        "hana": {
+          "name": "Hana",
+          "animal": "👧🏽",
+          "color": "#ffeccc",
+          "re": "Han(a|e|i|o|in\\p{L}*)"
+        },
+        "bepi": {
+          "name": "Bepi",
+          "animal": "👴🏻",
+          "color": "#e2ecf6",
+          "re": "Bepi(ja|ju|jem|jev\\p{L}*)?"
+        },
+        "vera": {
+          "name": "Vera",
+          "animal": "👵🏼",
+          "color": "#efe3f7",
+          "re": "Ver(a|e|i|o|in\\p{L}*)"
+        },
+        "gusti": {
+          "name": "Gusti",
+          "animal": "🐦",
+          "color": "#eef4f8",
+          "re": "Gusti(n\\p{L}*|jin\\p{L}*)?"
+        },
+        "rozi": {
+          "name": "Gospa Rozi",
+          "animal": "💁🏻‍♀️",
+          "color": "#fde8c8",
+          "re": "Roz(i|in\\p{L}*|ij\\p{L}*)"
+        },
+        "morje": {
+          "name": "Morje",
+          "animal": "🌊",
+          "color": "#d8f0fb",
+          "re": "[Mm]orj(e|a|u|em)"
+        }
+      }
+    }
+  }
+}

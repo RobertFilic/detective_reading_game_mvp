@@ -24,6 +24,7 @@ Decisions taken:
 - A "Še en primer?" fake door after case 3.
 - An on-device event log, shown on an adult debrief screen behind a gate, with JSON export and delete.
 - Placeholder art: coloured circles with animal emoji.
+- *Optional:* a case board that shows in-session progress (see section 4, step 7b). No points, streaks or unlocks.
 
 **Out:**
 - Accounts, names, analytics, network calls, a backend.
@@ -86,6 +87,7 @@ All children play the cases in order 1 → 2 → 3, which follows the ladder. Th
    - After 2 wrong taps, a "Zamenjaj osumljenca" button appears.
    - Every hint card has a "V redu" button. This slows down sweep-tapping without punishing it.
 7. **Reveal**: a "Primer rešen!" stamp, a short "ker…" explanation (each sentence can be played), and a sticker.
+7b. **Case board** (optional): a corkboard with 3 case folders. Solved folders show the stamp and that case's sticker, and the next folder is visibly waiting. It is shown after each reveal and before "Še en primer?". It is only visual progress: nothing is scored or locked, and it resets every session.
 8. **Še en primer?**: "Da" or "Dovolj za danes". After case 3, "Da" opens the fake door "Nov primer pride kmalu!", and the tap is logged.
 9. **Debrief** (adult): open by holding the top-left corner for 3 s, then solving a simple sum.
 
@@ -163,6 +165,8 @@ Word meanings may be explained once each, and each one is noted. Stop immediatel
 
 Anything between success and fail counts as *inconclusive*. Inconclusive means changing the content, not the concept.
 
+**Case board and Q3:** the board may raise the wish to continue on its own ("fill the board"). If it is built, every child sees it, including the pilot. The results write-up says it was present.
+
 ## 7. Top 5 risks
 1. **No Slovenian TTS on iPad.** Use pre-recorded clips, 100 short clips (`node tools/cases.mjs clips` lists them) at 32 kbps, roughly 1.5 MB inlined. The audio check screen confirms sound before each session.
 2. **Decoding load hides comprehension**, especially at ages 6–7. Mitigated by per-sentence audio and strict level limits. The log separates listening from reading (listens per sentence), so we can tell "can't read" apart from "can't infer".
@@ -170,11 +174,21 @@ Anything between success and fail counts as *inconclusive*. Inconclusive means c
 4. **Ambiguous evidence:** a child reasons correctly but taps a sentence we didn't anticipate. Before playtesting, 2 adults and 1 teacher solve every case blind. Wrong confirms in the debrief are reviewed for valid alternatives, which are added to `partial` or accepted.
 5. **Friendly-sample and observer bias:** children who know us say "yes, more!" to please. Q3 uses the logged fake-door tap, not the verbal answer. The facilitator is not the parent and follows the prompt script. Results are treated as directional, not as proof.
 
+## 8. Post-MVP progression (not in the prototype)
+Build this only after Q1–Q3 pass, so it doesn't hide whether the core loop is fun by itself.
+- **Skill-ladder path:** a Duolingo-style path where each rung (stated fact → inference → contradiction → distractors) is a stretch of cases. Clean solves unlock the next rung.
+- **Detective rank:** titles earned by rung (e.g. pripravnik → detektiv → glavni detektiv). These are not points.
+- **Sticker album:** one sticker per case, kept between sessions. This needs saved progress.
+- **Growing office:** the Pisarna slowly fills with objects from solved cases.
+- **Avoid for ages 6–9:** streaks, lost hearts or lives, timers, leaderboards and any loss-aversion mechanic. They clash with "no punishment" and push children to guess.
+- **Measure it:** run an A/B playtest with and without progression, and compare guess flags (Q1) and the wish to continue (Q3).
+
 ## Build plan (about 4 evenings) and verification
 - **Evening 1:** case data format, screen router, story and evidence screens.
 - **Evening 2:** hint ladder, logging, derived metrics.
 - **Evening 3:** debrief screen, export, adult gate, audio playback.
 - **Evening 4:** a native speaker reviews the texts and records the clips (`audio/c1A_s3.m4a` …); `node tools/build.mjs` base64-inlines them into `dist/index.html`.
+- **Optional evening 5:** the case board (step 7b). Decide whether to build it before the pilot, not during the playtest.
 
 **Verification:**
 - Play every case on both levels on the iPad in airplane mode after loading.

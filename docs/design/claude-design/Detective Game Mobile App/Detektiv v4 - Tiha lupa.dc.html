@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--w:oklch(0.37 0.07 160);--wMid:oklch(0.55 0.09 160);--wSoft:oklch(0.95 0.03 160);--bg:oklch(0.975 0.01 85);--paper:oklch(0.995 0.004 85);--ink:oklch(0.25 0.025 260);--ink2:oklch(0.45 0.02 260);--line:oklch(0.89 0.014 85);--ear:oklch(0.55 0.13 245);--earSoft:oklch(0.95 0.03 245);--glow:oklch(0.86 0.13 85);--stamp:oklch(0.56 0.18 27)}
+body{margin:0;background:#e7e4dd;font-family:'Lexend',Verdana,system-ui,sans-serif;color:oklch(0.25 0.025 260)}
+a{color:oklch(0.45 0.1 160)}a:hover{color:oklch(0.33 0.1 160)}
+button{font-family:inherit;-webkit-tap-highlight-color:transparent}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}.dv-tname{font:600 13px/1.2 system-ui,sans-serif;color:#1a1a1a}.dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.55)}.dv-card{max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}.dv-next{margin:22px 0 0;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.5)}
+@keyframes tShake0{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-2px)}}
+@keyframes tShake1{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-2px)}}
+@keyframes tGlow{0%,100%{box-shadow:0 0 0 3px oklch(0.86 0.13 85),0 0 16px 2px oklch(0.86 0.13 85 / .35)}50%{box-shadow:0 0 0 5px oklch(0.86 0.13 85),0 0 28px 8px oklch(0.86 0.13 85 / .55)}}
+@keyframes tSound{from{transform:scale(1)}to{transform:scale(1.15)}}
+@keyframes tStamp{0%{transform:scale(1.9) rotate(-12deg);opacity:0}75%{transform:scale(.97) rotate(-7deg);opacity:1}100%{transform:scale(1) rotate(-7deg);opacity:1}}
+@keyframes tPop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.06);opacity:1}100%{transform:scale(1)}}
+@keyframes tHop0{0%,100%{transform:translateY(0)}45%{transform:translateY(-5px)}}
+@keyframes tHop1{0%,100%{transform:translateY(0)}45%{transform:translateY(-5px)}}
+@keyframes tIn0{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+@keyframes tIn1{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+@keyframes tSheet{0%{transform:translateY(60px) rotate(-1deg);opacity:0}100%{transform:rotate(-1deg);opacity:1}}
+@keyframes tPaper{0%{transform:translateY(30px) rotate(-6deg) scale(.92);opacity:0}100%{transform:rotate(-1deg) scale(1);opacity:1}}
+@keyframes tBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes tRing{0%{box-shadow:0 0 0 0 oklch(0.55 0.09 160 / .45)}100%{box-shadow:0 0 0 26px oklch(0.55 0.09 160 / 0)}}
+@keyframes tBadge{0%{transform:scale(.85) rotate(-8deg);opacity:0}100%{transform:none;opacity:1}}
+@keyframes tLift{from{transform:translateY(4px)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important}}
+</style>
+</helmet>
+<section class="dv-turn" id="t4">
+<div class="dv-thd"><a class="dv-tid" href="#t4">4</a><span class="dv-tname">Variant: »Tiha lupa«, calmer, simpler, more grown-up</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="4a"><div class="dv-olabel"><a class="dv-oid" href="#4a">4a</a>What I kept, what I cut</div>
+<div class="dv-card" style="width:580px;padding:30px 34px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px;font:400 14px/1.55 Lexend,Verdana,sans-serif;color:oklch(0.38 0.02 260)">
+<div style="font:600 26px/1.15 Lexend;color:var(--ink)">A quiet notebook, with the season as a window at the top</div>
+<div style="text-wrap:pretty"><b>From <a class="dv-oid" href="Detektiv – Zlati pokal.dc.html#2c">2c</a></b> it keeps the light, calm paper. <b>From <a class="dv-oid" href="Detektiv v3 – Večerna tekma.dc.html#3b">3b</a></b> it keeps the season world (now one deep band at the top that holds the question), the glow for »svetel«, the ⚽ on the step line, the cases as a path, and the small tap animations. The changes: thin outlines instead of thick sticker edges, soft shadows instead of hard ones, two font weights, and fewer things on each screen.</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 22px">
+<div><b style="color:var(--ink)">Emoji always sit on a white coin.</b> This fixes the 👆 that disappeared on yellow. Any emoji placed on a coloured surface gets a white circle under it, so it stays visible in every season colour.</div>
+<div><b style="color:var(--ink)">Gold now means only light.</b> Picked is the deep season colour with white text. Gold is used only for the hint glow and highlighted words, so the two can never be confused.</div>
+<div><b style="color:var(--ink)">Calm motion.</b> Movements are 4–6 px, nothing bounces forever, and the ball slides to the next stop. The only loops are the helper breathing (4 s) and a slow hint glow (2 s). Exciting moments, like the stamp and the newspaper, happen once and end.</div>
+<div><b style="color:var(--ink)">Type.</b> Lexend 400 for reading and 600 for titles, with Verdana as fallback, and full č š ž. Sentences are 21–22 px, labels at least 15 px.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:16px;background:var(--bg)">
+<div style="font:500 11px ui-monospace,monospace;letter-spacing:.05em;color:#888">SENTENCE · idle / playing / heard / picked / svetel</div>
+<div style="min-height:60px;display:flex;align-items:center;padding:8px 16px;border-radius:16px;background:var(--paper);border:1.5px solid var(--line);box-shadow:0 2px 0 var(--line),0 6px 14px rgba(60,50,20,.05);font:400 19px/1.35 Lexend;color:var(--ink)">Ob osmih je Luka na sliki držal pokal.</div>
+<div style="min-height:60px;display:flex;align-items:center;gap:10px;padding:8px 16px;border-radius:16px;background:var(--earSoft);border:1.5px solid var(--ear);font:400 19px/1.35 Lexend;color:var(--ink)"><span style="flex:1">Ob osmih je Luka na sliki držal pokal.</span><span style="width:32px;height:32px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:16px">🔊</span></div>
+<div style="min-height:60px;display:flex;align-items:center;gap:10px;padding:8px 16px;border-radius:16px;background:var(--paper);border:1.5px solid var(--line);box-shadow:0 2px 0 var(--line);font:400 19px/1.35 Lexend;color:var(--ink)"><span style="flex:1;text-decoration:none;text-decoration-color:var(--ear);text-underline-offset:6px">Ob osmih je Luka na sliki držal pokal.</span><span style="width:32px;height:32px;border-radius:50%;background:var(--earSoft);display:grid;place-items:center;font-size:16px">👂</span></div>
+<div style="min-height:60px;display:flex;align-items:center;gap:10px;padding:8px 16px;border-radius:16px;background:var(--w);border:1.5px solid var(--w);box-shadow:0 8px 18px oklch(0.37 0.07 160 / .28);transform:translateY(-2px);font:500 19px/1.35 Lexend;color:#fff"><span style="flex:1">Na Zojinih rokavicah so sveže packe zelenega flomastra.</span><span style="width:36px;height:36px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:19px;flex:none">👆</span></div>
+<div style="min-height:60px;display:flex;align-items:center;padding:8px 16px;border-radius:16px;background:var(--paper);border:1.5px solid var(--line);box-shadow:0 0 0 4px var(--glow),0 0 22px 4px oklch(0.86 0.13 85 / .45);font:400 19px/1.35 Lexend;color:var(--ink)"><span><mark style="background:oklch(0.92 0.1 90);color:inherit;padding:0 4px;border-radius:5px">Ob osmih</mark> je Pia v avli pazila Bora.</span></div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="4b"><div class="dv-olabel"><a class="dv-oid" href="#4b">4b</a>iPhone, playable. Same journey, mechanics and Slovenian copy</div>
+<div style="display:flex;gap:28px;align-items:flex-start">
+<div style="width:414px;height:868px;border-radius:60px;background:#17191d;padding:12px;box-sizing:border-box;box-shadow:0 20px 50px rgba(0,0,0,.22);flex:none">
+<div style="position:relative;width:390px;height:844px;border-radius:48px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column;color:var(--ink)">
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;display:flex;flex-direction:column;min-height:0">
+<div style="background:var(--w);color:#fff;padding:0 16px 16px;border-radius:0 0 32px 32px;display:flex;flex-direction:column;align-items:center;gap:8px;flex:none">
+<div style="align-self:stretch;height:47px;display:flex;align-items:center;justify-content:space-between;padding:0 10px 0 16px;font:600 16px system-ui"><span>9:41</span><span style="width:120px;height:32px;border-radius:20px;background:#17191d;margin-top:4px"></span><span style="font-size:13px;white-space:nowrap">▮▮▮ 🔋</span></div>
+<div style="align-self:stretch;display:flex;align-items:center;justify-content:space-between"><button style="width:56px;height:56px;border-radius:50%;border:0;background:oklch(1 0 0 / .14);font-size:24px;cursor:pointer">🏅</button><span style="font:500 15px Lexend;letter-spacing:.12em;text-transform:uppercase;color:oklch(1 0 0 / .85)">Detektivska pisarna</span><button style="width:56px;height:56px;border-radius:50%;border:0;background:oklch(1 0 0 / .14);font-size:24px;cursor:pointer">❓</button></div>
+<div style="position:relative;width:140px;height:140px;margin-top:0;animation:tBadge 700ms cubic-bezier(.2,.8,.2,1) both">
+<div style="position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(var(--glow) 0 10deg,oklch(0.8 0.13 80) 10deg 20deg);box-shadow:0 18px 40px rgba(0,0,0,.3)"></div>
+<div style="position:absolute;inset:11px;border-radius:50%;background:var(--glow);box-shadow:inset 0 0 0 3px oklch(1 0 0 / .55)"></div>
+<div style="position:absolute;inset:20px;border-radius:50%;background:var(--paper);border:2.5px dashed var(--wMid);display:grid;place-items:center"><span style="font-size:52px;line-height:1">{{ avatar }}</span></div><span style="position:absolute;right:-8px;top:0;width:40px;height:40px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:24px;box-shadow:0 4px 10px rgba(0,0,0,.2)">{{ sidekick }}</span>
+<div style="position:absolute;left:50%;bottom:-16px;transform:translateX(-50%);white-space:nowrap;background:var(--paper);color:var(--w);border-radius:999px;padding:6px 18px;font:600 17px Lexend;box-shadow:0 6px 14px rgba(0,0,0,.2)">{{ rankIcon }} {{ rankWord }}</div>
+</div>
+<div style="font:600 27px/1.12 Lexend;padding-top:12px">{{ name }}</div>
+<div style="display:flex;align-items:center;gap:10px">
+<sc-for list="{{ badgeStamps }}" as="b" hint-placeholder-count="3"><span style="width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:19px;background:{{ b.bg }};border:{{ b.border }};box-sizing:border-box">{{ b.c }}</span></sc-for>
+<span style="font:500 16px Lexend;color:oklch(1 0 0 / .85);white-space:nowrap">→ 🕵️ {{ nextRank }}</span>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:14px 16px 4px">
+<button onClick="{{ toBoard }}" style="display:flex;align-items:center;gap:14px;padding:12px 16px 12px 12px;border-radius:18px;background:var(--paper);border:1.5px solid var(--line);box-shadow:0 2px 0 var(--line),0 6px 14px rgba(60,50,20,.05);text-align:left;cursor:pointer"><span style="width:52px;height:52px;flex:none;border-radius:16px;background:var(--wSoft);display:grid;place-items:center;font-size:28px">⚽</span><span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font:600 18px/1.2 Lexend;color:var(--ink)">Skrivnost zlatega pokala</span><span style="font:400 15px Lexend;color:var(--ink2)">{{ counter }}</span></span></button>
+<div style="font:600 17px Lexend;color:var(--ink);padding:4px 2px 0">🗺️ Izberi pustolovščino</div>
+<div style="flex:none;display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x proximity;scroll-padding-inline:16px;margin:0 -16px;padding:4px 16px 10px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 28px),transparent)">
+<sc-for list="{{ advs }}" as="a" hint-placeholder-count="6">
+<button onClick="{{ a.onTap }}" style="flex:none;width:150px;height:150px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:10px 12px;overflow:hidden;border-radius:18px;background:{{ a.bg }};border:1.5px {{ a.bs }} var(--line);box-shadow:{{ a.shadow }};text-align:left;cursor:pointer">
+<span style="width:44px;height:44px;flex:none;border-radius:14px;background:{{ a.coin }};display:grid;place-items:center;font-size:26px;transform:rotate(-4deg)">{{ a.icon }}</span>
+<span style="font:600 16px/1.2 Lexend;color:var(--ink);text-wrap:balance">{{ a.title }}</span>
+<sc-if value="{{ a.hasLine }}"><span style="font:400 15px/1.25 Lexend;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">{{ a.line }}</span></sc-if>
+<sc-if value="{{ a.soon }}"><span style="flex:none;white-space:nowrap;font:600 15px Lexend;color:var(--w);background:var(--wSoft);border-radius:999px;padding:2px 10px">📅 Kmalu</span></sc-if>
+</button>
+</sc-for>
+</div>
+<sc-if value="{{ hasAdvMsg }}"><button onClick="{{ hideAdvMsg }}" style="flex:none;border:1.5px solid var(--line);background:var(--paper);border-radius:18px;padding:10px 14px;text-align:left;font:400 18px/1.35 Lexend;color:var(--ink);box-shadow:0 10px 24px rgba(40,30,10,.1);animation:tIn0 200ms ease-out both;cursor:pointer">{{ advMsg }}</button></sc-if>
+</div>
+<div style="flex:none;padding:4px 16px 28px">
+<button onClick="{{ toBoard }}" style="width:100%;height:66px;border:0;border-radius:20px;background:var(--w);color:#fff;font:600 21px Lexend;box-shadow:0 10px 22px oklch(0.37 0.07 160 / .3);cursor:pointer">▶ Začni</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isBoard }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;min-height:0">
+<div style="background:var(--w);color:#fff;padding:0 20px 20px;border-radius:0 0 28px 28px;display:flex;flex-direction:column;gap:12px">
+<div style="height:47px;display:flex;align-items:center;justify-content:space-between;padding:0 10px 0 16px;font:600 16px system-ui"><span>9:41</span><span style="width:120px;height:32px;border-radius:20px;background:#17191d;margin-top:4px"></span><span style="font-size:13px;white-space:nowrap">▮▮▮ 🔋</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<div style="flex:none;display:flex;align-items:center;gap:10px;height:56px;padding:0 16px 0 6px;border-radius:28px;background:oklch(1 0 0 / .12)"><span style="width:44px;height:44px;flex:none;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:24px">{{ avatar }}</span><span style="font:500 16px Lexend;white-space:nowrap">{{ rankIcon }} {{ name }}</span></div>
+<span style="white-space:nowrap;font:600 17px Lexend;padding:6px 12px;border-radius:999px;background:oklch(1 0 0 / .14)">{{ counter }}</span>
+</div>
+<div style="font:600 27px/1.12 Lexend;text-wrap:balance">⚽ Skrivnost zlatega pokala</div>
+<button onClick="{{ hearMystery }}" style="text-align:left;cursor:pointer;border:0;border-radius:18px;background:oklch(1 0 0 / .1);padding:12px;display:flex;flex-direction:column;gap:10px;color:#fff">
+<span style="display:flex;gap:10px;align-items:center;font:500 19px/1.3 Lexend"><span style="width:32px;height:32px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:16px;flex:none">📌</span><span style="flex:1;text-decoration:{{ mysteryDeco }};text-decoration-color:#fff;text-underline-offset:6px">Kam je izginil zlati pokal?</span><sc-if value="{{ mysteryHasStatus }}"><span style="width:30px;height:30px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:15px">{{ mysteryStatus }}</span></sc-if></span>
+<span style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px">
+<sc-for list="{{ slots }}" as="sl" hint-placeholder-count="6"><span style="height:40px;border-radius:10px;display:grid;place-items:center;font:600 17px Lexend;background:{{ sl.bg }};border:{{ sl.border }};box-sizing:border-box;color:oklch(1 0 0 / .7);animation:{{ sl.anim }}">{{ sl.c }}</span></sc-for>
+</span>
+<sc-if value="{{ hasThink }}"><span style="background:var(--paper);color:var(--ink);border-radius:12px;padding:8px 10px;font:400 16px/1.35 Lexend">🖍️ Kdo je narisal to sivo risbo? In kje je pokal? 🤔</span></sc-if>
+</button>
+</div>
+<div style="flex:1;overflow:auto;padding:30px 20px 8px">
+<div style="position:relative;display:flex;flex-direction:column;gap:10px">
+<div style="position:absolute;left:27px;top:30px;bottom:30px;width:2px;background:repeating-linear-gradient(180deg,var(--line) 0 6px,transparent 6px 11px)"></div>
+<sc-for list="{{ cards }}" as="c" hint-placeholder-count="6">
+<button onClick="{{ c.onTap }}" style="position:relative;display:flex;align-items:center;gap:12px;min-height:72px;padding:10px 14px 10px 6px;border-radius:18px;border:{{ c.border }};background:{{ c.bg }};box-shadow:{{ c.shadow }};transform:{{ c.tf }};text-align:left;cursor:pointer;animation:{{ c.anim }};transition:transform 160ms">
+<span style="width:44px;height:44px;flex:none;border-radius:50%;display:grid;place-items:center;font:600 17px Lexend;background:{{ c.numBg }};color:{{ c.numC }};border:{{ c.numBorder }};box-sizing:border-box">{{ c.numText }}</span>
+<sc-if value="{{ c.isFront }}"><span style="width:58px;height:56px;flex:none;border-radius:18px;background:{{ c.emBg }};display:grid;place-items:center;font-size:32px;transform:rotate(-4deg)">{{ c.e }}</span><span style="flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding-right:34px"><span style="font:600 15px Lexend;color:var(--w);background:var(--wSoft);border-radius:999px;padding:2px 10px" data-comment-anchor="8481180191-span">{{ c.place }}</span><span style="font:500 16px/1.3 Lexend;color:var(--ink);text-wrap:pretty">{{ c.q }}</span></span></sc-if>
+<sc-if value="{{ c.isLocked }}"><span style="flex:1;font:500 16px Lexend;color:var(--ink2)">{{ c.place }}</span><span style="font-size:18px;opacity:.7">🔒</span></sc-if>
+<sc-if value="{{ c.isFinal }}"><span style="width:48px;height:48px;flex:none;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:28px">🏆</span><span style="flex:1;font:600 18px/1.2 Lexend;color:#fff">⭐ Veliki primer</span><span style="width:32px;height:32px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:15px">🔒</span></sc-if>
+<sc-if value="{{ c.isSolved }}"><span style="position:absolute;top:-14px;right:12px;display:flex;align-items:center;gap:6px;white-space:nowrap;padding:4px 12px 4px 5px;border-radius:12px;background:oklch(0.985 0.012 30);border:2.5px solid var(--stamp);box-shadow:inset 0 0 0 2px oklch(0.985 0.012 30),inset 0 0 0 3px oklch(0.56 0.18 27 / .55),0 4px 10px rgba(120,30,20,.12);color:var(--stamp);font:700 15px Lexend;letter-spacing:.02em;transform:rotate(-6deg);animation:tStamp 340ms cubic-bezier(.3,1.5,.5,1) both"><span style="width:24px;height:24px;border-radius:50%;background:var(--stamp);color:#fff;display:grid;place-items:center;font:700 13px Lexend">✓</span>Primer rešen!</span></sc-if>
+<sc-if value="{{ c.hasTag }}"><span style="position:absolute;top:-10px;right:10px;white-space:nowrap;font:600 15px Lexend;padding:4px 10px;border-radius:999px;background:{{ c.tagBg }};color:{{ c.tagC }};border:{{ c.tagBorder }};transform:{{ c.tagTf }}">{{ c.tag }}</span></sc-if>
+</button>
+</sc-for>
+</div>
+</div>
+<sc-if value="{{ hasLockMsg }}"><button onClick="{{ hideLock }}" style="margin:0 20px 10px;border:1.5px solid var(--line);background:var(--paper);border-radius:18px;padding:12px 14px;text-align:left;font:400 18px/1.35 Lexend;color:var(--ink);box-shadow:0 10px 24px rgba(40,30,10,.12);animation:tIn0 200ms ease-out both;cursor:pointer">{{ lockMsg }}</button></sc-if>
+<div style="display:flex;gap:8px;padding:6px 20px 30px">
+<button onClick="{{ toHome }}" style="flex:1;min-width:0;height:56px;padding:0 10px;white-space:nowrap;border-radius:18px;background:var(--paper);border:1.5px solid var(--line);font:500 16px Lexend;color:var(--ink);cursor:pointer">← 🗺️ Pustolovščine</button>
+<button style="flex:none;height:56px;padding:0 12px;white-space:nowrap;border-radius:18px;background:transparent;border:1.5px solid var(--line);font:500 16px Lexend;color:var(--ink2);cursor:pointer">Dovolj za danes</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ inCase }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;min-height:0;position:relative">
+<div style="background:var(--w);color:#fff;padding:0 16px 16px;border-radius:0 0 28px 28px;display:flex;flex-direction:column;gap:10px;flex:none">
+<div style="height:47px;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 20px;font:600 16px system-ui"><span>9:41</span><span style="width:120px;height:32px;border-radius:20px;background:#17191d;margin-top:4px"></span><span style="font-size:13px;white-space:nowrap">▮▮▮ 🔋</span></div>
+<div style="display:flex;align-items:center;gap:12px">
+<button onClick="{{ toBoard }}" style="width:56px;height:56px;flex:none;border-radius:50%;background:oklch(1 0 0 / .14);border:0;font:500 20px Lexend;color:#fff;cursor:pointer">✕</button>
+<div style="flex:1;display:flex;flex-direction:column;gap:6px">
+<div style="font:500 15px Lexend;color:oklch(1 0 0 / .85)">{{ stepTitle }}</div>
+<div style="position:relative;height:22px">
+<div style="position:absolute;left:8px;right:8px;top:10px;height:2px;background:oklch(1 0 0 / .25)"></div>
+<div style="position:absolute;left:8px;top:10px;height:2px;width:{{ progW }};background:#fff;transition:width 500ms cubic-bezier(.4,0,.2,1)"></div>
+<div style="position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center">
+<sc-for list="{{ trail }}" as="s" hint-placeholder-count="5"><span style="width:18px;height:18px;border-radius:50%;background:{{ s.bg }};border:2px solid {{ s.bc }};box-sizing:border-box;display:grid;place-items:center;font-size:9px">{{ s.content }}</span></sc-for>
+</div>
+<span style="position:absolute;top:-6px;left:{{ ballL }};width:30px;height:30px;margin-left:-15px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:20px;box-shadow:0 3px 8px rgba(0,0,0,.25);transition:left 500ms cubic-bezier(.4,0,.2,1)">⚽</span>
+</div>
+</div>
+</div>
+<button onClick="{{ hearQuestion }}" style="display:flex;gap:12px;align-items:center;text-align:left;border:0;background:transparent;padding:4px 2px;cursor:pointer;min-height:56px;color:#fff">
+<span style="width:40px;height:40px;flex:none;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:19px;animation:{{ qAnim }}">{{ qIcon }}</span>
+<span style="font:600 21px/1.3 Lexend;text-wrap:pretty;text-decoration:{{ qDeco }};text-decoration-color:#fff;text-underline-offset:6px" data-comment-anchor="8077803dcb-span">{{ question }}</span>
+</button>
+</div>
+
+<sc-if value="{{ isCall }}">
+<div style="flex:1;overflow:auto;padding:22px 20px 0;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:14px;padding-bottom:6px" data-comment-anchor="974199eb67-div">
+<div style="width:96px;height:96px;flex:none;border-radius:50%;background:#dff0ff;display:grid;place-items:center;font-size:58px;animation:{{ ringAnim }}">👦🏽</div>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font:600 22px Lexend">Lan</span><sc-if value="{{ ringing }}"><span style="font:500 16px Lexend;color:var(--wMid)">📞 Zvoni!</span></sc-if></div>
+</div>
+<sc-for list="{{ callLines }}" as="l" hint-placeholder-count="0">
+<button onClick="{{ l.onTap }}" style="align-self:flex-start;max-width:94%;text-align:left;border:1.5px solid {{ l.border }};background:{{ l.bg }};border-radius:20px 20px 20px 6px;padding:12px 16px;font:400 19px/1.35 Lexend;color:var(--ink);cursor:pointer;display:flex;gap:10px;align-items:center;box-shadow:0 4px 12px rgba(40,30,10,.06);animation:tIn{{ l.i }} 260ms ease-out both"><span style="text-decoration:{{ l.deco }};text-decoration-color:var(--ear);text-underline-offset:6px">{{ l.t }}</span><sc-if value="{{ l.hasStatus }}"><span style="width:32px;height:32px;flex:none;border-radius:50%;background:var(--earSoft);display:grid;place-items:center;font-size:15px">{{ l.status }}</span></sc-if></button>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isScene }}">
+<div style="flex:1;overflow:auto;padding:14px 16px 8px;display:flex;flex-direction:column;gap:8px">
+<div style="flex:none;display:flex;justify-content:space-between;align-items:center">
+<button onClick="{{ togglePencil }}" style="height:56px;padding:0 16px 0 6px;border-radius:18px;border:1.5px solid {{ pencilBc }};background:{{ pencilBg }};color:{{ pencilC }};font:500 15px Lexend;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:{{ pencilShadow }};animation:{{ pencilAnim }};transition:background 160ms"><span style="width:42px;height:42px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:26px;line-height:1">✏️</span>Svinčnik</button>
+<span style="font:500 15px Lexend;color:var(--ink2);white-space:nowrap">👜 {{ foundCount }} / 9</span>
+</div>
+<div style="flex:none;display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;scroll-padding-inline:16px;margin:0 -16px 6px;padding:6px 16px 8px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 28px),transparent)">
+<sc-for list="{{ objs }}" as="o" hint-placeholder-count="9">
+<button onClick="{{ o.onTap }}" style="position:relative;flex:none;width:76px;height:72px;scroll-snap-align:start;border-radius:18px;border:1.5px {{ o.bs }} {{ o.border }};background:{{ o.bg }};box-shadow:{{ o.shadow }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;animation:{{ o.anim }};transition:background 200ms,border-color 200ms">
+<span style="font-size:26px;line-height:1">{{ o.obj }}</span><span style="font:500 15px Lexend;color:var(--ink2)">{{ o.labelCap }}</span>
+<sc-if value="{{ o.found }}"><span style="position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:var(--w);color:#fff;display:grid;place-items:center;font:600 12px Lexend;animation:tPop 220ms ease-out both">✓</span></sc-if>
+</button>
+</sc-for>
+</div>
+<sc-for list="{{ notebook }}" as="r" hint-placeholder-count="0">
+<button onClick="{{ r.onTap }}" style="flex:none;text-align:left;min-height:56px;display:flex;align-items:center;gap:10px;padding:6px 12px 6px 6px;border-radius:18px;cursor:pointer;background:{{ r.bg }};border:1.5px solid {{ r.bc }};font:400 18px/1.35 Lexend;color:var(--ink);animation:{{ r.anim }}"><span style="width:36px;height:36px;flex:none;border-radius:50%;background:var(--wSoft);display:grid;place-items:center;font-size:18px">{{ r.obj }}</span><span style="flex:1;text-decoration:{{ r.deco }};text-decoration-color:var(--ear);text-underline-offset:6px">{{ r.t }}</span><sc-if value="{{ r.hasStatus }}"><span style="width:32px;height:32px;flex:none;border-radius:50%;background:var(--earSoft);display:grid;place-items:center;font-size:15px">{{ r.status }}</span></sc-if></button>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isWhen }}">
+<div style="flex:1;overflow:auto;padding:18px 16px 8px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:12px;padding:10px 14px 10px 10px;border-radius:18px;background:var(--wSoft)"><span style="width:42px;height:42px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:22px">⏰</span><span style="font:500 19px/1.3 Lexend">ob osmih: žoge dobijo zobe</span></div>
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="2">
+<button onClick="{{ r.onTap }}" style="position:relative;text-align:left;min-height:60px;display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:18px;cursor:pointer;background:{{ r.bg }};border:1.5px solid {{ r.bc }};box-shadow:{{ r.shadow }};transform:{{ r.tf }};color:{{ r.color }};animation:{{ r.anim }};transition:background 160ms,transform 160ms,box-shadow 160ms">
+<span style="flex:1;font:400 19px/1.35 Lexend;font-weight:{{ r.fw }};text-decoration:{{ r.deco }};text-decoration-color:var(--ear);text-underline-offset:6px">{{ r.pre }}<sc-if value="{{ r.hasMark }}"><mark style="background:oklch(0.92 0.1 90);color:var(--ink);padding:0 4px;border-radius:5px">{{ r.mark }}</mark></sc-if>{{ r.post }}</span>
+<sc-if value="{{ r.hasStatus }}"><span style="width:32px;height:32px;flex:none;border-radius:50%;background:{{ r.coinBg }};display:grid;place-items:center;font-size:18px;animation:{{ r.statusAnim }}">{{ r.status }}</span></sc-if>
+<sc-if value="{{ r.hasChip }}"><span style="position:absolute;right:12px;bottom:-14px;z-index:1;background:oklch(0.99 0.008 85);border:2.5px solid {{ r.chipC }};box-shadow:inset 0 0 0 2px oklch(0.99 0.008 85),inset 0 0 0 3px {{ r.chipC }},0 4px 10px rgba(40,30,10,.12);color:{{ r.chipC }};border-radius:12px;padding:2px 10px 2px 3px;display:flex;align-items:center;gap:6px;white-space:nowrap;font:700 14px Lexend;letter-spacing:.02em;transform:rotate(-5deg);animation:tStamp 300ms cubic-bezier(.3,1.5,.5,1) both"><span style="width:20px;height:20px;flex:none;border-radius:50%;background:{{ r.chipC }};color:#fff;display:grid;place-items:center;font:700 11px Lexend">{{ r.chipG }}</span>{{ r.chip }}</span></sc-if>
+</button>
+</sc-for>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px">
+<sc-for list="{{ times }}" as="tm" hint-placeholder-count="3"><button onClick="{{ tm.onTap }}" style="height:84px;border-radius:18px;border:1.5px solid var(--line);background:var(--paper);color:var(--w);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font:600 17px Lexend;letter-spacing:.04em;cursor:pointer;box-shadow:{{ tm.shadow }};animation:{{ tm.anim }}"><span style="width:34px;height:34px;border-radius:50%;background:var(--wSoft);display:grid;place-items:center;font-size:17px">{{ tm.e }}</span>{{ tm.label }}</button></sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isSolve }}">
+<div style="flex:1;overflow:auto;display:flex;flex-direction:column;min-height:0">
+<div style="position:sticky;top:0;z-index:2;background:linear-gradient(var(--bg) 82%,oklch(0.975 0.01 85 / 0));padding:10px 14px 12px;display:flex;justify-content:space-between">
+<sc-for list="{{ faces }}" as="f" hint-placeholder-count="4">
+<button onClick="{{ f.onTap }}" style="position:relative;width:84px;display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:transparent;padding:0;cursor:pointer;animation:{{ f.anim }};transform:{{ f.tf }};transition:transform 180ms">
+<span style="position:relative;width:60px;height:60px;border-radius:50%;background:{{ f.bg }};border:{{ f.border }};box-sizing:border-box;box-shadow:{{ f.shadow }};display:grid;place-items:center;font-size:32px;transition:box-shadow 180ms"><span style="opacity:{{ f.op }}">{{ f.e }}</span><sc-if value="{{ f.cleared }}"><span style="position:absolute;left:4px;right:4px;top:50%;height:3px;margin-top:-1.5px;border-radius:2px;background:var(--ink);transform:rotate(-35deg);animation:tPop 220ms ease-out both"></span></sc-if></span>
+<span style="font:500 15px Lexend;color:var(--ink);text-decoration:{{ f.deco }}">{{ f.name }}</span>
+</button>
+</sc-for>
+</div>
+<div style="padding:0 14px 14px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="9">
+<button onClick="{{ r.onTap }}" style="position:relative;text-align:left;min-height:56px;display:flex;align-items:center;gap:8px;padding:7px 12px 7px 14px;border-radius:18px;cursor:pointer;background:{{ r.bg }};border:1.5px solid {{ r.bc }};box-shadow:{{ r.shadow }};transform:{{ r.tf }};color:{{ r.color }};animation:{{ r.anim }};transition:background 160ms,transform 160ms,box-shadow 160ms">
+<span style="flex:1;font:400 18px/1.35 Lexend;font-weight:{{ r.fw }};text-decoration:{{ r.deco }};text-decoration-color:var(--ear);text-underline-offset:6px">{{ r.pre }}<sc-if value="{{ r.hasMark }}"><mark style="background:oklch(0.92 0.1 90);color:var(--ink);padding:0 4px;border-radius:5px">{{ r.mark }}</mark></sc-if>{{ r.post }}</span>
+<sc-if value="{{ r.hasUsed }}"><span style="flex:none;display:flex;align-items:center;gap:4px;background:var(--wSoft);border-radius:999px;padding:2px 8px 2px 3px;font:500 14px Lexend;color:var(--w)"><span style="width:26px;height:26px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:15px">{{ r.usedE }}</span>✕</span></sc-if>
+<sc-if value="{{ r.hasStatus }}"><span style="width:32px;height:32px;flex:none;border-radius:50%;background:{{ r.coinBg }};display:grid;place-items:center;font-size:18px;animation:{{ r.statusAnim }}">{{ r.status }}</span></sc-if>
+<sc-if value="{{ r.hasChip }}"><span style="position:absolute;right:12px;bottom:-14px;z-index:1;background:oklch(0.99 0.008 85);border:2.5px solid {{ r.chipC }};box-shadow:inset 0 0 0 2px oklch(0.99 0.008 85),inset 0 0 0 3px {{ r.chipC }},0 4px 10px rgba(40,30,10,.12);color:{{ r.chipC }};border-radius:12px;padding:2px 10px 2px 3px;display:flex;align-items:center;gap:6px;white-space:nowrap;font:700 14px Lexend;letter-spacing:.02em;transform:rotate(-5deg);animation:tStamp 300ms cubic-bezier(.3,1.5,.5,1) both"><span style="width:20px;height:20px;flex:none;border-radius:50%;background:{{ r.chipC }};color:#fff;display:grid;place-items:center;font:700 11px Lexend">{{ r.chipG }}</span>{{ r.chip }}</span></sc-if>
+</button>
+</sc-for>
+</div>
+</div>
+<sc-if value="{{ done }}"><div style="position:absolute;left:0;right:0;top:330px;display:flex;justify-content:center;pointer-events:none;z-index:3"><span style="background:oklch(0.99 0.008 85);border:2.5px solid var(--stamp);box-shadow:inset 0 0 0 2px oklch(0.99 0.008 85),inset 0 0 0 3px var(--stamp),0 4px 10px rgba(40,30,10,.12);color:var(--stamp);border-radius:12px;padding:8px 22px 8px 10px;display:flex;align-items:center;gap:6px;white-space:nowrap;font:700 34px Lexend;letter-spacing:.02em;border-width:4px;box-shadow:inset 0 0 0 3px oklch(0.99 0.008 85),inset 0 0 0 5px var(--stamp),0 14px 30px rgba(40,30,10,.18);border-radius:18px;animation:tStamp 340ms cubic-bezier(.3,1.5,.5,1) both"><span style="width:40px;height:40px;flex:none;border-radius:50%;background:var(--stamp);color:#fff;display:grid;place-items:center;font:700 22px Lexend">✓</span>Primer rešen!</span></div></sc-if>
+</sc-if>
+
+<div style="padding:10px 16px 30px;display:flex;flex-direction:column;gap:10px;flex:none;background:linear-gradient(oklch(0.975 0.01 85 / 0),var(--bg) 26%)">
+<sc-if value="{{ hasOwl }}">
+<button onClick="{{ hearOwl }}" style="display:flex;gap:10px;align-items:center;border:0;background:transparent;padding:0;text-align:left;cursor:pointer;animation:{{ owlAnim }}">
+<span style="width:56px;height:56px;flex:none;border-radius:50%;background:var(--paper);border:1.5px solid var(--line);display:grid;place-items:center;font-size:30px;animation:tBreathe 4000ms ease-in-out infinite">{{ sidekick }}</span>
+<span style="flex:1;background:var(--paper);border:1.5px solid {{ owlBc }};box-shadow:{{ owlShadow }};border-radius:18px 18px 18px 6px;padding:10px 14px;font:400 18px/1.35 Lexend;color:var(--ink);display:flex;gap:8px;align-items:center;transition:box-shadow 200ms"><span style="flex:1;text-decoration:{{ owlDeco }};text-decoration-color:var(--ear);text-underline-offset:6px">{{ owlText }}</span><sc-if value="{{ owlHasStatus }}"><span style="width:32px;height:32px;flex:none;border-radius:50%;background:var(--earSoft);display:grid;place-items:center;font-size:14px">{{ owlStatus }}</span></sc-if></span>
+</button>
+</sc-if>
+<sc-if value="{{ canNext }}"><button onClick="{{ next }}" style="width:100%;height:66px;border:0;border-radius:20px;background:var(--w);color:#fff;font:600 21px Lexend;box-shadow:0 10px 22px oklch(0.37 0.07 160 / .3);cursor:pointer;animation:tIn1 240ms ease-out both">{{ nextLabel }}</button></sc-if>
+</div>
+
+<sc-if value="{{ brief }}">
+<div onClick="{{ closeBrief }}" style="position:absolute;inset:0;z-index:5;display:flex;align-items:flex-end;padding:0 12px 14px">
+<div style="width:100%;position:relative;z-index:6;background:var(--paper);border:3px solid var(--w);border-radius:28px;box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4.5px var(--w),0 0 0 10px oklch(0.975 0.01 85 / .92),0 -10px 50px rgba(40,30,10,.28);padding:24px 20px 20px;transform:rotate(-1deg);display:flex;flex-direction:column;gap:14px;animation:tSheet 320ms cubic-bezier(.2,.8,.2,1) both" data-comment-anchor="6792177579-div">
+<div style="display:flex;align-items:center;gap:14px"><span style="width:56px;height:56px;flex:none;border-radius:50%;background:var(--w);box-shadow:inset 0 0 0 3px var(--w),inset 0 0 0 5px #fff;display:grid;place-items:center;font-size:30px">{{ briefIcon }}</span><span style="font:600 25px/1.2 Lexend">{{ briefTitle }}</span></div>
+<button onClick="{{ hearBrief }}" style="border:1.5px solid {{ briefBc }};background:{{ briefBg }};border-radius:18px;padding:12px 14px 12px 10px;display:flex;gap:12px;align-items:center;text-align:left;cursor:pointer;min-height:60px"><span style="width:40px;height:40px;flex:none;border-radius:50%;background:#fff;border:1.5px solid var(--line);display:grid;place-items:center;font-size:19px">🔊</span><span style="font:400 19px/1.35 Lexend;color:var(--ink);text-decoration:{{ briefDeco }};text-decoration-color:var(--ear);text-underline-offset:6px">{{ briefHow }}</span></button>
+<span style="height:66px;border-radius:20px;background:var(--w);color:#fff;display:flex;align-items:center;justify-content:center;font:600 21px Lexend">Naprej</span>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isNews }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;min-height:0;background:var(--w)">
+<div style="height:47px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 36px;font:600 16px system-ui;color:#fff"><span>9:41</span><span style="width:120px;height:32px;border-radius:20px;background:#17191d;margin-top:4px"></span><span style="font-size:13px;white-space:nowrap">▮▮▮ 🔋</span></div>
+<div style="flex:1;overflow:auto;padding:10px 18px 0">
+<div style="background:oklch(0.97 0.012 90);padding:16px 18px 18px;border-radius:4px;box-shadow:0 24px 50px rgba(0,0,0,.3);animation:tPaper 600ms cubic-bezier(.2,.8,.2,1) both;display:flex;flex-direction:column;gap:12px;position:relative">
+<div style="border-bottom:3px double var(--ink);padding-bottom:6px;text-align:center;font:700 25px Lexend;letter-spacing:.06em">NOGOMETNE NOVICE</div>
+<div style="font:700 28px/1.1 Lexend;text-wrap:balance">{{ headline }}</div>
+<div style="position:relative;height:118px;border-radius:4px;background:var(--wSoft);display:flex;align-items:center;justify-content:center;gap:16px">
+<span style="width:78px;height:78px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:44px">{{ avatar }}</span><span style="width:78px;height:78px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:44px">👧🏻</span>
+<span style="position:absolute;right:-6px;top:-16px;background:oklch(0.99 0.008 85);border:2.5px solid var(--stamp);box-shadow:inset 0 0 0 2px oklch(0.99 0.008 85),inset 0 0 0 3px var(--stamp),0 4px 10px rgba(40,30,10,.12);color:var(--stamp);border-radius:12px;padding:4px 14px 4px 5px;display:flex;align-items:center;gap:6px;white-space:nowrap;font:700 21px Lexend;letter-spacing:.02em;border-width:3px;transform:rotate(-7deg);animation:tStamp 340ms 650ms cubic-bezier(.3,1.5,.5,1) both"><span style="width:28px;height:28px;flex:none;border-radius:50%;background:var(--stamp);color:#fff;display:grid;place-items:center;font:700 15px Lexend">✓</span>Primer rešen!</span>
+</div>
+<button onClick="{{ hearExcuse }}" style="border:0;background:transparent;text-align:left;padding:2px 0;cursor:pointer;font:italic 400 18px/1.4 Lexend;color:var(--ink);min-height:48px"><span style="text-decoration:{{ excuseDeco }};text-decoration-color:var(--ear);text-underline-offset:6px">Zoja pravi: »Rrr! Dinozavri morajo imeti žoge z zobmi!«</span></button>
+<sc-for list="{{ reveal }}" as="r" hint-placeholder-count="4"><button onClick="{{ r.onTap }}" style="text-align:left;border:0;border-top:1px solid oklch(0.87 0.015 90);background:{{ r.bg }};padding:8px 2px;font:400 18px/1.35 Lexend;color:var(--ink);cursor:pointer;display:flex;gap:8px;align-items:center;min-height:52px"><span style="flex:1;text-decoration:{{ r.deco }};text-decoration-color:var(--ear);text-underline-offset:6px">{{ r.t }}</span><sc-if value="{{ r.hasStatus }}"><span style="width:32px;height:32px;flex:none;border-radius:50%;background:var(--earSoft);display:grid;place-items:center;font-size:14px">{{ r.status }}</span></sc-if></button></sc-for>
+<div style="display:flex;align-items:center;gap:12px;border-top:2px solid var(--ink);padding-top:12px">
+<div style="display:flex;gap:6px"><span style="width:42px;height:42px;border-radius:50%;background:var(--wSoft);display:grid;place-items:center;font-size:21px;animation:tPop 260ms 1000ms ease-out both">🦷</span><span style="width:42px;height:42px;border-radius:50%;border:2px dashed oklch(0.8 0.015 90);box-sizing:border-box"></span><span style="width:42px;height:42px;border-radius:50%;border:2px dashed oklch(0.8 0.015 90);box-sizing:border-box"></span></div>
+<span style="font:500 16px Lexend">→ 🕵️ {{ nextRank }}</span>
+</div>
+</div>
+<div style="margin:18px 0 6px;background:oklch(0.9 0.11 90);border-radius:18px;padding:12px 14px;display:flex;gap:12px;align-items:center;color:var(--ink);box-shadow:0 12px 26px rgba(0,0,0,.28);transform:rotate(-1deg);animation:tIn0 300ms 1200ms ease-out both"><span style="width:48px;height:48px;flex:none;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:24px">🖍️</span><span style="display:flex;flex-direction:column;gap:3px"><span style="font:600 17px Lexend">📌 Nov namig na tabli skrivnosti!</span><span style="font:500 17px/1.35 Lexend" data-comment-anchor="428905edc9-span">Na klopi Dinozavrov je siva risba: DINOZAVRI.</span></span></div>
+</div>
+<div style="padding:12px 18px 32px"><button onClick="{{ toLetter }}" style="width:100%;height:66px;border:0;border-radius:20px;background:#fff;color:var(--w);font:600 21px Lexend;cursor:pointer">Naprej</button></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isLetter }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;min-height:0;padding:0 18px 32px;gap:16px">
+<div style="height:47px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 18px;font:600 16px system-ui"><span>9:41</span><span style="width:120px;height:32px;border-radius:20px;background:#17191d;margin-top:4px"></span><span style="font-size:13px;white-space:nowrap">▮▮▮ 🔋</span></div>
+<div style="font:600 27px/1.12 Lexend;text-align:center;padding-top:6px">📬 Prišlo je pismo!</div>
+<div style="flex:1;background:var(--paper);border:1.5px solid var(--line);border-radius:6px;padding:20px 20px 24px;box-shadow:0 14px 30px rgba(40,30,10,.08);display:flex;flex-direction:column;gap:12px;animation:tPaper 480ms cubic-bezier(.2,.8,.2,1) both">
+<div style="display:flex;align-items:center;gap:12px"><span style="width:56px;height:56px;border-radius:50%;background:#dff0ff;display:grid;place-items:center;font-size:30px">👦🏽</span><span style="font:600 21px Lexend">Lan</span></div>
+<div style="display:flex;flex-direction:column;background-image:repeating-linear-gradient(transparent 0 46px,oklch(0.9 0.035 245) 46px 48px)">
+<sc-for list="{{ letter }}" as="l" hint-placeholder-count="3"><button onClick="{{ l.onTap }}" style="text-align:left;border:0;background:{{ l.bg }};border-radius:0;padding:0 4px;margin:0;font:400 20px/48px Lexend;color:var(--ink);cursor:pointer;display:flex;gap:8px;align-items:flex-start;min-height:48px"><span style="flex:1;text-decoration:{{ l.deco }};text-decoration-color:var(--ear);text-underline-offset:6px">{{ l.t }}</span><sc-if value="{{ l.hasStatus }}"><span style="width:32px;height:32px;flex:none;border-radius:50%;background:var(--earSoft);display:grid;place-items:center;font-size:15px;margin-top:8px">{{ l.status }}</span></sc-if></button></sc-for>
+</div>
+</div>
+<button onClick="{{ finish }}" style="width:100%;height:66px;border:0;border-radius:20px;background:var(--w);color:#fff;font:600 21px Lexend;box-shadow:0 10px 22px oklch(0.37 0.07 160 / .3);cursor:pointer">📌 Na tablo</button>
+</div>
+</sc-if>
+
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink);opacity:.5;z-index:9"></div>
+</div>
+</div>
+
+<div style="width:290px;display:flex;flex-direction:column;gap:16px;padding-top:8px">
+<div style="font:600 12px ui-monospace,monospace;letter-spacing:.06em;color:#777">JUMP TO</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{ jumps }}" as="j" hint-placeholder-count="8"><button onClick="{{ j.go }}" style="height:36px;padding:0 12px;border-radius:8px;border:1px solid rgba(0,0,0,.12);background:{{ j.bg }};color:{{ j.color }};font:500 13px system-ui;cursor:pointer">{{ j.label }}</button></sc-for>
+</div>
+<div style="font:400 13px/1.55 system-ui;color:#555">The flow, hint ladder and copy are the same as before.<br>· <b>World band:</b> the season colour holds only the step, the ⚽ progress and the question. Everything below it is quiet paper.<br>· <b>Board:</b> the cases are one list joined by a dotted line, in story order. A locked row shows only its number and a 🔒.<br>· <b>Faces:</b> round coins, crossed off with a single pencil line.<br>· <b>Picked</b> is deep green with white text, and the 👆 sits on a white coin.<br><br>Tweaks: <b>season</b> changes only the band hue.</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="4c"><div class="dv-olabel"><a class="dv-oid" href="#4c">4c</a>Motion: light and finite</div>
+<div class="dv-card" style="width:540px;padding:24px 28px;box-sizing:border-box;font:13px/1.45 system-ui">
+<div style="display:grid;grid-template-columns:120px 1fr 160px;gap:6px 14px;padding:8px 0;border-bottom:2px solid #222;font:600 11px ui-monospace,monospace;color:#555"><span>MOMENT</span><span>WHAT MOVES</span><span>TIMING</span></div>
+<div style="display:grid;grid-template-columns:120px 1fr 160px;gap:6px 14px;padding:8px 0;border-bottom:1px solid #eee"><b>Press</b><span>everything you can tap lifts 2 px and its shadow deepens</span><code>160ms ease-out</code></div>
+<div style="display:grid;grid-template-columns:120px 1fr 160px;gap:6px 14px;padding:8px 0;border-bottom:1px solid #eee"><b>Pick</b><span>row fills with the season colour, the 👆 coin pops in, faces hop 5 px once</span><code>160ms · hop 360ms</code></div>
+<div style="display:grid;grid-template-columns:120px 1fr 160px;gap:6px 14px;padding:8px 0;border-bottom:1px solid #eee"><b>Not yet</b><span>a ±4 px sway. The helper’s bubble rim turns gold.</span><code>280ms · 250ms tap lock</code></div>
+<div style="display:grid;grid-template-columns:120px 1fr 160px;gap:6px 14px;padding:8px 0;border-bottom:1px solid #eee"><b>Svetel</b><span>a gold ring breathing slowly</span><code>2000ms ease-in-out loop</code></div>
+<div style="display:grid;grid-template-columns:120px 1fr 160px;gap:6px 14px;padding:8px 0;border-bottom:1px solid #eee"><b>Next step</b><span>the ⚽ rolls along the line to the next stop and the line fills white</span><code>500ms cubic-bezier(.4,0,.2,1)</code></div>
+<div style="display:grid;grid-template-columns:120px 1fr 160px;gap:6px 14px;padding:8px 0;border-bottom:1px solid #eee"><b>Brief</b><span>a bottom sheet slides up 60 px. No scrim, no tilt.</span><code>320ms cubic-bezier(.2,.8,.2,1)</code></div>
+<div style="display:grid;grid-template-columns:120px 1fr 160px;gap:6px 14px;padding:8px 0;border-bottom:1px solid #eee"><b>Cross off</b><span>one pencil line pops across the coin and the name gets struck through</span><code>220ms ease-out</code></div>
+<div style="display:grid;grid-template-columns:120px 1fr 160px;gap:6px 14px;padding:8px 0;border-bottom:1px solid #eee"><b>Primer rešen!</b><span>one stamp, 1.9 → 1, with no confetti or shake</span><code>340ms soft spring</code></div>
+<div style="display:grid;grid-template-columns:120px 1fr 160px;gap:6px 14px;padding:8px 0"><b>Newspaper</b><span>slides up and settles at −1°. It no longer spins.</span><code>600ms · stamp +650ms</code></div>
+</div></div>
+
+</div>
+<p class="dv-next">Try next: “take <a class="dv-oid" href="#4b">4b</a> to the five puzzles and UGOVOR” · “<a class="dv-oid" href="#4b">4b</a> on iPad and a phone held sideways” · “start page, Kdo igra? and the ID card in this style”</p>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;playerName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Maja&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Player&quot;},&quot;gender&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;f&quot;,&quot;m&quot;],&quot;default&quot;:&quot;f&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Player&quot;},&quot;sidekick&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;🦉&quot;,&quot;🐶&quot;,&quot;🐱&quot;,&quot;🦊&quot;],&quot;default&quot;:&quot;🦉&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Player&quot;},&quot;season&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;pokal&quot;,&quot;galeb&quot;,&quot;sneg&quot;],&quot;default&quot;:&quot;pokal&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Season&quot;},&quot;audio&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Audio&quot;}}">
+const UI={scene:'Preišči prostor. Tapni vsako stvar.',rub:'Na listu ni nič. Vzemi svinčnik!',sceneDoneOn:'Vse je preiskano. Naprej! 👉',when:'Kdaj je to bilo? Tapni stavek, nato čas.',whenFirst:'Najprej tapni stavek. 👇',whenNo:'Poglej, kdaj je to bilo.',whenLook:'Preberi svetle besede. Kdaj je to bilo?',whenAssist:'Tapni stavek, nato čas, ki utripa.',whenStamp:'NAPAČEN ČAS!',whenCounts:'To šteje!',whenDone:'Zdaj veš, kaj šteje. Kdo je bil?',solve:'Prečrtaj, kdo ni bil. Tapni stavek, nato obraz.',lastOne:'Ostal je samo eden. Pokaži dokaz!',pickFirst:'Najprej tapni stavek, potem obraz.',notThis:'Ta stavek ne pove, kdo ni bil. Izberi drug stavek.',notWho:'Ta stavek govori o nekom drugem. Preberi, o kom govori, in tapni ta obraz.',elimLook:'Preberi svetel stavek. O kom govori? Tapni ta obraz.',elimAssist:'Tapni svetel stavek, nato obraz, ki utripa.',h2:'Dokaz je v enem od svetlih stavkov. Poišči ga.',h3:'Samo še dva svetla stavka. Kateri je pravi?',assist:'Poglej ta stavek in ga tapni.',solved:'Primer rešen!'};
+const BRIEF={scene:['🔍','Na kraju dogodka','Preišči prostor. Tapni vsako stvar in preberi, kaj najdeš.'],when:['⏰','Kdaj?','Kdaj se je to zgodilo? Tapni stavek, nato PREJ, TAKRAT ali POTEM.'],solve:['🕵️','Kdo je bil?','Prečrtaj, kdo ni bil. Tapni stavek, nato obraz. Na koncu pokaži dokaz.']};
+const CALL=['Hej, pomagaj! Žoge imajo zobe!','Pred slikanjem ob osmih so bile še bele.','Sodnica Neža vse zapiše v zvezek.'];
+const Q='Kdo je ob osmih porisal žoge?',H1='Kdo NI mogel biti? Kje so zelene packe?',WH1='Kdaj je bil Luka pri žogah?';
+const S=[{id:'s1',text:'Na vsaki žogi so zeleni zobje dinozavra.',role:'neutral',obj:'🎒',label:'vreča'},{id:'s2',text:'Ob sedmih je Luka nosil žoge na igrišče.',role:'distractor',obj:'📓',label:'zvezek',rub:true},{id:'s3',text:'Ob osmih je Luka na sliki držal pokal.',role:'clear',obj:'🖼️',label:'slika',clears:'luka'},{id:'s5',text:'Luka in Zoja vpijeta: »Ta pokal bo naš!«',role:'neutral',obj:'🏟️',label:'tribuna'},{id:'s6',text:'Ob osmih je Pia v avli pazila Bora.',role:'clear',obj:'🎈',label:'balon',clears:'pia'},{id:'s7',text:'Ob osmih je Tone v avli slikal pokal.',role:'clear',obj:'📷',label:'kamera',clears:'tone'},{id:'s8',text:'Napise na vratih šole je vrezal hišnik Tone.',role:'neutral',obj:'🚪',label:'vrata'},{id:'s9',text:'Na klopi Dinozavrov je siva risba: DINOZAVRI.',role:'neutral',obj:'🪑',label:'klop'},{id:'s4',text:'Na Zojinih rokavicah so sveže packe zelenega flomastra.',role:'evidence',obj:'🥅',label:'gol'}];
+const BY={};S.forEach(s=>BY[s.id]=s);
+const WHEN={s2:'before',s3:'during'};
+const TIMES=[['before','⏪','PREJ'],['during','🎯','TAKRAT'],['after','⏩','POTEM']];
+const SUS=[['luka','👦🏼','Luka'],['zoja','👧🏻','Zoja'],['pia','👧🏼','Pia'],['tone','👨🏻‍🔧','Tone']];
+const SUSE={};SUS.forEach(x=>SUSE[x[0]]=x[1]);
+const REVEAL=['Luka je nosil žoge že ob sedmih.','Ob osmih je Zoja na žoge risala zobe.','Zelene packe so ostale na rokavicah.','Kje pa je zlati pokal? Vitrina je prazna! 🏆'];
+const LETTER=['Hvala! Z Zojo sva umila vse žoge.','Zoja zdaj riše zobe samo na papir. 🦖','P. S. Pijin bratec Bor ima kozji kostum! 🐐'];
+const CASES=[['🦷','Igrišče'],['🐐','Mali gol'],['🎗️','Klop Ježkov'],['🌼','Veliko igrišče'],['🏠','Pri telovadnici'],['🏆','Zlati pokal']];
+const ADVS=[['👾','Skrivnost v zračniku','Kaj se skriva v zračniku?'],['🦔','Skrivnost hotela Galeb','Kdo v hotelu piše knjige o Ježku?'],['🦕','Duh v muzeju','Kdo ponoči premika dinozavra?'],['🚀','Vesoljska postaja',''],['🐄','Pri babici na kmetiji',''],['❄️','Sneženi možje brez sledi','Kdo ponoči dela snežene može?',1]];
+const CASE_Q=['Kdo je ob osmih porisal žoge?','Kdo je med tekmo zabil skrivni gol?','Kdo je med odmorom vzel kapetanski trak?','Kdo je med kosilom okrasil gol z venčki?','Kdo je od enih do dveh brcnil žogo?','Kdo je po slikanju do devetih vzel pokal?'];
+const STEPS=['call','scene','when','solve'],TR_ICON=['📞','🔍','⏰','🕵️','📰'],TITLES={call:'Zvoni!',scene:'Na kraju dogodka',when:'Kdaj?',solve:'Kdo je bil?'};
+const RANKS=[{n:0,i:'🔰',m:'Vajenec',f:'Vajenka'},{n:3,i:'🕵️',m:'Detektiv',f:'Detektivka'}];
+const HUES={pokal:160,galeb:235,sneg:275};
+const PAPER='var(--paper)',LINE='var(--line)';
+const SOFT='0 2px 0 var(--line),0 6px 14px rgba(60,50,20,.05)';
+const GLOW='0 0 0 4px var(--glow),0 0 22px 4px oklch(0.86 0.13 85 / .45)';
+const TIME_RE=/^(Ob \S+|Pred \S+|Med \S+|Po \S+)/;
+function split(t,re){const m=re&&t.match(re);if(!m)return{pre:t,mark:'',post:'',hasMark:false};const i=m.index;return{pre:t.slice(0,i),mark:m[0],post:t.slice(i+m[0].length),hasMark:true};}
+const INIT={screen:'home',solved:false,reached:-1,brief:false,callN:0,answered:false,found:{},order:[],pencil:false,heard:{},playing:null,sel:null,when:{},cleared:{},tries:0,evTries:0,done:false,msg:null,tone:'info',shake:null,nudge:0,lockMsg:null};
+class Component extends DCLogic {
+  state={...INIT};
+  componentDidMount(){this.applyHue();}
+  componentDidUpdate(pp){if(pp.season!==this.props.season)this.applyHue();}
+  componentWillUnmount(){clearTimeout(this._t);clearInterval(this._c);try{speechSynthesis.cancel()}catch(e){}}
+  applyHue(){const h=HUES[this.props.season]??160,r=document.documentElement.style;r.setProperty('--w',`oklch(0.37 0.07 ${h})`);r.setProperty('--wMid',`oklch(0.55 0.09 ${h})`);r.setProperty('--wSoft',`oklch(0.95 0.03 ${h})`);}
+  speak(text,key){
+    clearTimeout(this._t);
+    const done=()=>{clearTimeout(this._t);this.setState(st=>({playing:st.playing===key?null:st.playing,heard:{...st.heard,[key]:1}}));};
+    this.setState({playing:key});let used=false;
+    if(this.props.audio!==false){try{const ss=window.speechSynthesis;if(ss){ss.cancel();const u=new SpeechSynthesisUtterance(text.replace(/[»«]/g,''));u.lang='sl-SI';u.rate=0.85;u.onend=done;u.onerror=done;ss.speak(u);used=true;}}catch(e){}}
+    this._t=setTimeout(done,used?8000:Math.max(1100,text.length*50));
+  }
+  lock(){const n=Date.now();if(this._l&&n-this._l<250)return true;this._l=n;return false;}
+  say(msg,tone){this.setState({msg,tone:tone||'hint'});}
+  shake(k){this.setState(st=>({shake:{k,n:((st.shake&&st.shake.n)||0)+1}}));}
+  go(screen,extra){const idx=STEPS.indexOf(screen);this.setState(st=>({screen,brief:['scene','when','solve'].includes(screen),msg:null,sel:null,tries:0,evTries:0,reached:Math.max(st.reached,idx),...(extra||{})}));}
+  answer(){this.setState({answered:true,callN:1});clearInterval(this._c);let n=1;this._c=setInterval(()=>{n++;this.setState({callN:Math.min(n,3)});if(n>=3)clearInterval(this._c);},500);}
+  tapObj(o){
+    if(this.lock())return;const st=this.state;
+    if(st.found[o.id]){this.speak(o.text,o.id);return;}
+    if(o.rub&&!st.pencil){this.shake(o.id);this.say(UI.rub,'hint');return;}
+    const found={...st.found,[o.id]:1},order=[o.id,...st.order];
+    this.setState({found,order,msg:Object.keys(found).length===S.length?UI.sceneDoneOn:null,tone:'good'});this.speak(o.text,o.id);
+  }
+  tapWhenRow(id){if(this.state.when[id]){this.speak(BY[id].text,id);return;}this.setState(st=>({sel:id,nudge:st.nudge+1}));this.speak(BY[id].text,id);}
+  tapTime(cat){
+    if(this.lock())return;const st=this.state;
+    if(!st.sel){this.say(UI.whenFirst,'hint');return;}
+    if(WHEN[st.sel]===cat){const when={...st.when,[st.sel]:cat},all=Object.keys(when).length===Object.keys(WHEN).length;this.setState({when,sel:null,tries:0,msg:all?UI.whenDone:(cat==='during'?UI.whenCounts:UI.whenStamp),tone:'good'});return;}
+    const t=st.tries+1;this.shake('t'+cat);this.setState({tries:t,msg:[UI.whenNo,WH1,UI.whenLook,UI.whenAssist][Math.min(t,4)-1],tone:'hint'});
+  }
+  tapSolveRow(id){
+    const st=this.state;if(st.done){this.speak(BY[id].text,id);return;}
+    if(Object.keys(st.cleared).length===3){
+      if(this.lock())return;this.speak(BY[id].text,id);
+      if(BY[id].role==='evidence'){this.setState({done:true,sel:id,msg:UI.solved,tone:'good'});return;}
+      const t=st.evTries+1;this.shake(id);this.setState({evTries:t,msg:[UI.h2,UI.h3,UI.assist][Math.min(t,3)-1],tone:'hint'});return;
+    }
+    this.setState(s=>({sel:id,nudge:s.nudge+1}));this.speak(BY[id].text,id);
+  }
+  tapFace(sid){
+    if(this.lock())return;const st=this.state;if(st.cleared[sid]||st.done)return;
+    const used=Object.values(st.cleared);
+    if(used.length===3){this.say(UI.lastOne,'hint');return;}
+    if(!st.sel){this.say(UI.pickFirst,'hint');this.shake('f'+sid);return;}
+    const s=BY[st.sel];
+    if(s.role==='clear'&&s.clears===sid&&!used.includes(s.id)){const cleared={...st.cleared,[sid]:s.id},n=Object.keys(cleared).length;this.setState({cleared,sel:null,tries:0,msg:n===3?UI.lastOne:null,tone:'good'});return;}
+    const t=st.tries+1;this.shake('f'+sid);
+    const first=s.role==='clear'&&!used.includes(s.id)?UI.notWho:UI.notThis;
+    this.setState({tries:t,msg:[first,H1,UI.elimLook,UI.elimAssist][Math.min(t,4)-1],tone:'hint'});
+  }
+  renderVals(){
+    const st=this.state,p=this.props,name=p.playerName||'Maja',g=p.gender==='m'?'m':'f',sidekick=p.sidekick||'🦉';
+    const avatar=g==='f'?'🕵🏻‍♀️':'🕵🏻‍♂️',solvedN=st.solved?1:0,rank=RANKS[0];
+    const shakeAnim=k=>st.shake&&st.shake.k===k?`tShake${st.shake.n%2} 280ms ease-in-out`:null;
+    const hearState=key=>{const s=st.playing===key?'🔊':st.heard[key]?'👂':'';return{deco:st.heard[key]?'none':'none',status:s,hasStatus:!!s};};
+    const cards=CASES.map(([e,place],i)=>{
+      const k=i===0?(st.solved?'solved':st.reached>=0?'progress':'next'):i===1&&st.solved?'next':i===5?'final':'locked';
+      const front=k==='solved'||k==='progress'||k==='next';
+      return{e,place,q:CASE_Q[i],isFront:front,isLocked:k==='locked',isFinal:k==='final',tf:front?`rotate(${i%2?0.8:-0.8}deg)`:'none',emBg:k==='next'?'oklch(0.93 0.08 90)':k==='solved'?'var(--wSoft)':'oklch(0.94 0.05 90)',
+        numText:k==='solved'?'✓':String(i+1),numBg:k==='solved'||k==='progress'||k==='next'?'var(--w)':k==='final'?'#fff':'transparent',numC:k==='final'?'var(--w)':k==='locked'?'var(--ink2)':'#fff',numBorder:k==='locked'?'2px dashed var(--line)':'0',
+        bg:k==='final'?'var(--w)':k==='locked'?'transparent':PAPER,border:k==='locked'?'1.5px dashed var(--line)':k==='progress'?'1.5px solid var(--w)':'1.5px solid var(--line)',
+        shadow:k==='next'?`${SOFT},${GLOW}`:k==='locked'?'none':SOFT,anim:k==='next'?'tGlow 2000ms ease-in-out infinite':'none',
+        isSolved:k==='solved',hasTag:k==='progress'||k==='next',tag:k==='solved'?'✔ Primer rešen!':k==='progress'?`👣 ${Math.max(st.reached,0)+1}/4`:'👣',
+        tagBg:k==='solved'?'transparent':k==='progress'?'var(--wSoft)':'oklch(0.94 0.06 90)',tagC:k==='solved'?'var(--stamp)':'var(--ink)',tagBorder:k==='solved'?'2px solid var(--stamp)':'0',tagTf:k==='solved'?'rotate(-5deg)':'none',
+        onTap:()=>{if(i===0&&!st.solved){st.reached>=1?this.go(STEPS[st.reached]):this.setState({...INIT,heard:st.heard,screen:'call',reached:0});}
+          else if(k==='final')this.setState({lockMsg:'🔒 Veliki primer se odpre, ko rešiš ostale primere te pustolovščine.'});
+          else if(k==='locked')this.setState({lockMsg:`🔒 Zgodba gre po vrsti. Ta primer se odpre, ko rešiš primer ${i}.`});}};});
+    const slots=CASES.map((c,i)=>i===0&&st.solved?{c:'🖍️',bg:'#fff',border:'0',anim:'tPop 260ms ease-out both'}:{c:'?',bg:'transparent',border:'1.5px dashed oklch(1 0 0 / .45)',anim:'none'});
+    const scr=st.screen,cur=STEPS.indexOf(scr),pct=Math.max(cur,0)/4;
+    const trail=TR_ICON.map((ic,i)=>({content:'',bg:i<=cur?'#fff':'transparent',bc:i<=cur?'#fff':'oklch(1 0 0 / .45)'}));
+    const ballL=`calc(9px + (100% - 18px) * ${pct})`,progW=`calc((100% - 16px) * ${pct})`;
+    const row=(s,o)=>{const sel=st.sel===s.id&&!st.done,pl=st.playing===s.id,h=st.heard[s.id];
+      const status=sel?o.arrow:pl?'🔊':h?'👂':'';
+      return{key:s.id,...split(s.text,o.mark?TIME_RE:null),fw:sel?500:400,
+        bg:sel?'var(--w)':pl?'var(--earSoft)':PAPER,color:sel?'#fff':'var(--ink)',bc:sel?'var(--w)':pl?'var(--ear)':LINE,
+        shadow:o.bright?`${SOFT},${GLOW}`:sel?'0 8px 18px oklch(0.37 0.07 160 / .28)':o.flat?'none':SOFT,
+        tf:sel?'translateY(-2px)':'none',
+        anim:shakeAnim(s.id)||(o.assist?'tGlow 2000ms ease-in-out infinite':sel?'tLift 160ms ease-out':'none'),
+        deco:h&&!sel?'none':'none',status,hasStatus:!!status,coinBg:sel?'#fff':pl||h?'var(--earSoft)':'#fff',
+        statusAnim:pl?'tSound 700ms ease-in-out infinite alternate':sel?'tPop 200ms ease-out both':'none',
+        hasChip:!!o.chip,chip:o.chip||'',chipC:o.chipC||'',chipG:o.chipG||'',hasUsed:!!o.usedE,usedE:o.usedE||''};};
+    const stampFor=id=>{const c=st.when[id];return c?(c==='during'?{chip:UI.whenCounts,chipC:'oklch(0.5 0.12 150)',chipG:'✓'}:{chip:UI.whenStamp,chipC:'var(--ear)',chipG:'!'}):{};};
+    let rows=[],times=[],faces=SUS.map(([id,e,nm])=>({e,name:nm}));
+    if(scr==='when'){
+      const target=st.sel||Object.keys(WHEN).find(k=>!st.when[k]);
+      rows=Object.keys(WHEN).map(id=>({...row(BY[id],{arrow:'👇',mark:st.tries>=3,...stampFor(id),flat:!!st.when[id]}),onTap:()=>this.tapWhenRow(id)}));
+      times=TIMES.map(([c,e,label])=>{const as=st.tries>=4&&target&&WHEN[target]===c;return{e,label,shadow:as?`${SOFT},${GLOW}`:SOFT,anim:shakeAnim('t'+c)||(as?'tGlow 2000ms ease-in-out infinite':'none'),onTap:()=>this.tapTime(c)};});
+    }
+    if(scr==='solve'){
+      const used=Object.values(st.cleared),ev=used.length===3;
+      const unusedClear=S.filter(s=>s.role==='clear'&&!used.includes(s.id)).map(s=>s.id);
+      const bright=ev?(st.evTries===1?['s4','s1','s9']:st.evTries>=2?['s4','s1']:[]):(st.tries>=3?unusedClear:[]);
+      const assistId=ev?(st.evTries>=3?'s4':null):(st.tries>=4?unusedClear[0]:null);
+      const usedBy={};Object.entries(st.cleared).forEach(([sid,s])=>usedBy[s]=sid);
+      rows=S.filter(s=>st.found[s.id]).map(s=>{const r=row(s,{arrow:'👆',bright:bright.includes(s.id),assist:assistId===s.id,usedE:usedBy[s.id]?SUSE[usedBy[s.id]]:'',...stampFor(s.id)});if(st.done&&s.id==='s4'){r.bg='var(--w)';r.color='#fff';r.bc='var(--w)';r.fw=500;r.status='✓';r.hasStatus=true;r.coinBg='#fff';}return{...r,onTap:()=>this.tapSolveRow(s.id)};});
+      const assistFace=!ev&&assistId&&st.sel===assistId?BY[assistId].clears:null;
+      faces=SUS.map(([id,e,nm])=>{const c=!!st.cleared[id],last=ev&&!c,armed=!!st.sel&&!c&&!ev&&!st.done,as=assistFace===id;
+        return{e,name:nm,cleared:c,op:c?.4:1,deco:c?'line-through 2px':'none',
+          bg:c?'var(--bg)':PAPER,border:armed?'2px solid var(--w)':c?'1.5px dashed var(--line)':'1.5px solid var(--line)',
+          shadow:last||as?GLOW:armed?'0 6px 14px oklch(0.37 0.07 160 / .25)':c?'none':SOFT,tf:armed?'translateY(-3px)':'none',
+          anim:shakeAnim('f'+id)||(as||last?'tGlow 2000ms ease-in-out infinite':armed?`tHop${st.nudge%2} 360ms ease-out`:'none'),onTap:()=>this.tapFace(id)};});
+    }
+    const objs=S.map(s=>{const f=!!st.found[s.id];return{...s,labelCap:s.label.charAt(0).toLocaleUpperCase('sl')+s.label.slice(1),found:f,bg:f?'var(--wSoft)':PAPER,border:f?'var(--wSoft)':'var(--line)',bs:'solid',shadow:f?'none':SOFT,anim:shakeAnim(s.id)||(f?'tPop 220ms ease-out':'none'),onTap:()=>this.tapObj(s)};});
+    const notebook=st.order.map((id,i)=>{const s=BY[id],pl=st.playing===id;return{obj:s.obj,t:s.text,...hearState(id),bg:pl?'var(--earSoft)':PAPER,bc:pl?'var(--ear)':LINE,anim:i===0?'tIn0 240ms ease-out both':'none',onTap:()=>this.speak(s.text,id)};});
+    const allFound=Object.keys(st.found).length===S.length,whenAll=Object.keys(st.when).length===2;
+    const def={scene:UI.scene,when:UI.when,solve:Object.keys(st.cleared).length===3?UI.lastOne:UI.solve}[scr];
+    const owlText=st.msg||def||'',ok='owl:'+owlText,owlS=st.playing===ok?'🔊':st.heard[ok]?'👂':'';
+    let canNext=false,nextLabel='',next=()=>{};
+    if(scr==='call'){canNext=true;if(!st.answered){nextLabel='📞 Javi se';next=()=>this.answer();}else{nextLabel='Na kraj dogodka 🔍';next=()=>this.go('scene');}}
+    if(scr==='scene'&&allFound){canNext=true;nextLabel='Kdaj? ⏰';next=()=>this.go('when');}
+    if(scr==='when'&&whenAll){canNext=true;nextLabel='Vem, kdo je bil!';next=()=>this.go('solve');}
+    if(scr==='solve'&&st.done){canNext=true;nextLabel='Naprej';next=()=>this.setState({screen:'news',reached:4});}
+    const br=BRIEF[scr]||['','',''],bk='b'+scr;
+    const callLines=CALL.slice(0,st.callN).map((t,i)=>{const k='c'+i,pl=st.playing===k;return{t,i:i%2,...hearState(k),bg:pl?'var(--earSoft)':PAPER,border:pl?'var(--ear)':LINE,onTap:()=>this.speak(t,k)};});
+    const titleWord=g==='f'?rank.f:rank.m;
+    const lineList=(arr,pre)=>arr.map((t,i)=>{const k=pre+i,pl=st.playing===k;return{t,...hearState(k),bg:pl?'var(--earSoft)':'transparent',onTap:()=>this.speak(t,k)};});
+    const all={};S.forEach(s=>all[s.id]=1);
+    const ms=st.playing==='m'?'🔊':st.heard.m?'👂':'';
+    const J=[['Domov',()=>this.setState({screen:'home'})],['Tabla',()=>this.setState({screen:'board',lockMsg:null})],['Zvoni',()=>this.setState({...INIT,heard:st.heard,screen:'call',reached:0})],['Kraj',()=>this.go('scene',{found:{},order:[]})],['Kdaj?',()=>this.go('when',{found:all,order:S.map(s=>s.id).reverse(),when:{}})],['Kdo je bil?',()=>this.go('solve',{found:all,when:{...WHEN},cleared:{},done:false})],['Časnik',()=>this.setState({screen:'news',found:all})],['Pismo',()=>this.setState({screen:'letter'})],['↺ Reset',()=>this.setState({...INIT})]];
+    const curJ={home:'Domov',board:'Tabla',call:'Zvoni',scene:'Kraj',when:'Kdaj?',solve:'Kdo je bil?',news:'Časnik',letter:'Pismo'}[scr];
+    return{
+      name,avatar,sidekick,rankIcon:rank.i,counter:`✔ ${solvedN} / 6`,cards,slots,hasThink:st.solved,
+      hearMystery:()=>this.speak('Kam je izginil zlati pokal?','m'),mysteryDeco:st.heard.m?'none':'none',mysteryStatus:ms,mysteryHasStatus:!!ms,
+      hasLockMsg:!!st.lockMsg&&scr==='board',lockMsg:st.lockMsg||'',hideLock:()=>this.setState({lockMsg:null}),
+      isHome:scr==='home',advs:ADVS.map(([icon,title,line,soon],i)=>({icon,title,line,hasLine:!!line,soon:!!soon,bg:soon?'transparent':'var(--paper)',bs:soon?'dashed':'solid',shadow:soon?'none':'0 2px 0 var(--line),0 6px 14px rgba(60,50,20,.05)',coin:soon?'var(--wSoft)':['oklch(0.94 0.05 300)','oklch(0.94 0.05 230)','oklch(0.94 0.05 60)','oklch(0.94 0.05 270)','oklch(0.94 0.05 120)','var(--wSoft)'][i],onTap:()=>this.setState({advMsg:soon?'Nov primer pride kmalu!':'🗺️ '+title})})),hasAdvMsg:!!st.advMsg&&scr==='home',advMsg:st.advMsg||'',hideAdvMsg:()=>this.setState({advMsg:null}),toHome:()=>this.setState({screen:'home',lockMsg:null}),rankWord:titleWord,badgeStamps:[0,1,2].map(i=>i===0&&st.solved?{c:'🦷',bg:'#fff',border:'0'}:{c:'',bg:'transparent',border:'2px dashed oklch(1 0 0 / .45)'}),isBoard:scr==='board',inCase:cur>=0,isCall:scr==='call',isScene:scr==='scene',isWhen:scr==='when',isSolve:scr==='solve',isNews:scr==='news',isLetter:scr==='letter',
+      toBoard:()=>this.setState({screen:'board',brief:false}),trail,ballL,progW,stepTitle:TITLES[scr]||'',question:Q,
+      hearQuestion:()=>this.speak(Q,'q'),qDeco:st.heard.q?'none':'none',qIcon:st.playing==='q'?'🔊':'❓',qAnim:st.playing==='q'?'tSound 700ms ease-in-out infinite alternate':'none',
+      ringing:!st.answered,ringAnim:st.answered?'none':'tRing 1600ms ease-out infinite',callLines,callAll:st.callN>=3,faces,
+      togglePencil:()=>this.setState(s=>({pencil:!s.pencil,msg:null})),pencilBg:st.pencil?'var(--w)':PAPER,pencilC:st.pencil?'#fff':'var(--ink)',pencilBc:st.pencil?'var(--w)':LINE,pencilShadow:st.msg===UI.rub&&!st.pencil?GLOW:SOFT,pencilAnim:st.msg===UI.rub&&!st.pencil?'tGlow 2000ms ease-in-out infinite':'none',
+      foundCount:Object.keys(st.found).length,objs,notebook,rows,times,done:st.done,
+      hasOwl:cur>=1,owlText,hearOwl:()=>this.speak(owlText,ok),owlDeco:st.heard[ok]?'none':'none',owlStatus:owlS,owlHasStatus:!!owlS,
+      owlBc:st.msg?(st.tone==='good'?'oklch(0.6 0.12 150)':'var(--glow)'):LINE,owlShadow:st.msg&&st.tone!=='good'?'0 0 0 3px oklch(0.86 0.13 85 / .5)':'0 6px 14px rgba(40,30,10,.06)',owlAnim:`tIn${(owlText.length+st.tries+st.evTries)%2} 220ms ease-out both`,
+      canNext,nextLabel,next,
+      brief:st.brief,briefIcon:br[0],briefTitle:br[1],briefHow:br[2],closeBrief:()=>this.setState({brief:false}),
+      hearBrief:e=>{e&&e.stopPropagation&&e.stopPropagation();this.speak(br[2],bk);},briefDeco:st.heard[bk]?'none':'none',briefBg:st.playing===bk?'var(--earSoft)':'var(--bg)',briefBc:st.playing===bk?'var(--ear)':LINE,
+      headline:`${titleWord} ${name} je ujel${g==='f'?'a':''} Zojo!`,nextRank:g==='f'?RANKS[1].f:RANKS[1].m,
+      hearExcuse:()=>this.speak('Zoja pravi: Rrr! Dinozavri morajo imeti žoge z zobmi!','ex'),excuseDeco:st.heard.ex?'none':'none',
+      reveal:lineList(REVEAL,'r'),letter:lineList(LETTER,'l'),
+      toLetter:()=>this.setState({screen:'letter'}),finish:()=>this.setState({solved:true,screen:'board',reached:4}),
+      jumps:J.map(([label,go])=>({label,go,bg:label===curJ?'#1a1a1a':'#fff',color:label===curJ?'#fff':label==='↺ Reset'?'#b44':'#1a1a1a'}))
+    };
+  }
+}
+</script>
+</body>
+</html>
+
