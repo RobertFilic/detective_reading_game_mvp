@@ -1,8 +1,9 @@
 // Network first, cache fallback: the iPad gets updates when online and still opens offline.
-const CACHE = 'detektiv-solo-v2';
+// No index.html in the cache: Cloudflare Pages redirects it to ./, and a redirected response can't open a page offline.
+const CACHE = 'detektiv-solo-v3';
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html', './vendor/qrcode.js', './vendor/jsQR.js'])));
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './vendor/qrcode.js', './vendor/jsQR.js'])));
   self.skipWaiting();
 });
 
@@ -21,6 +22,6 @@ self.addEventListener('fetch', (e) => {
         caches.open(CACHE).then(c => c.put(e.request, copy));
         return res;
       })
-      .catch(() => caches.match(e.request, { ignoreSearch: true }).then(r => r || caches.match('./index.html')))
+      .catch(() => caches.match(e.request, { ignoreSearch: true }).then(r => r || caches.match('./')))
   );
 });
