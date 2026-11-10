@@ -1,12 +1,15 @@
 // Network first, cache fallback: the iPad gets updates when online and still opens offline.
-const CACHE = 'detektiv-solo-v1';
+const CACHE = 'detektiv-solo-v2';
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html'])));
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html', './vendor/qrcode.js', './vendor/jsQR.js'])));
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+self.addEventListener('activate', (e) => e.waitUntil(
+  caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('detektiv-solo-') && k !== CACHE).map(k => caches.delete(k))))
+    .then(() => self.clients.claim())
+));
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;

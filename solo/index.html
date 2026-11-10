@@ -735,6 +735,24 @@ mark.tw { background: #ffe27a; border-radius: 4px; padding: 0 2px; color: inheri
 #gate { position: fixed; top: 0; left: 0; width: 64px; height: 64px; z-index: 40; }
 #modal { position: fixed; inset: 0; background: rgba(0, 0, 0, .4); display: flex; align-items: center; justify-content: center; z-index: 50; }
 #modal[hidden] { display: none; }
+.xfer { position: fixed; inset: 0; background: rgba(0, 0, 0, .4); display: flex; align-items: center; justify-content: center; z-index: 60; padding: 8px; }
+.xfer .modal-box { width: min(460px, 100%); max-height: 100%; overflow-y: auto; padding: 16px 18px; }
+.xfer-head { display: flex; align-items: center; gap: 8px; }
+.xfer-head h3 { flex: 1; }
+.xfer-x { appearance: none; flex: none; width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--card); color: inherit; font-size: 20px; cursor: pointer; }
+.xfer .qr { display: block; width: min(300px, 100%, 40vh); height: auto; margin: 4px auto; }
+/* a landscape phone: the code on the left, the words on the right */
+@media (orientation: landscape) and (max-height: 520px) {
+  .xfer .modal-box.has-qr { width: min(760px, 100%); display: grid; grid-template-columns: auto 1fr; column-gap: 18px; align-content: start; }
+  .xfer .has-qr > * { grid-column: 2; }
+  .xfer .has-qr > .qr-wrap { grid-column: 1; grid-row: 1 / span 6; align-self: center; }
+  .xfer .has-qr .qr { width: min(300px, calc(100vh - 56px)); }
+}
+.xfer video { display: block; width: 100%; max-height: 50vh; object-fit: cover; border-radius: 12px; background: #000; }
+.xfer h3 { margin: 0 0 4px; }
+.xfer p, .xfer ol { font-size: 15px; margin: 6px 0; }
+.xfer ol { padding-left: 20px; }
+.xfer .footer { padding-top: 8px; }
 .modal-box { background: var(--card); border-radius: 20px; padding: 24px; width: min(420px, calc(100% - 32px)); }
 .modal-box input { width: 100%; font-size: 28px; padding: 10px; border: 2px solid var(--line); border-radius: 12px; }
 
@@ -2759,8 +2777,107 @@ function importSave(data) {
   // child codes keep counting from the higher of the two devices
   const n = Math.max(store.read(CHILD_KEY, 0), Number(saved[CHILD_KEY]) || 0);
   if (n) store.write(CHILD_KEY, n);
-  alert(`Uvoženo: ${added.length} novih dogodkov${copyProgress ? ' in napredek detektivov' : ''}.`);
+  alert(copyProgress && !added.length ? 'Detektivi so preneseni na to napravo.'
+    : `Uvoženo: ${added.length} novih dogodkov${copyProgress ? ' in napredek detektivov' : ''}.`);
   return true;
+}
+
+// ---- QR transfer ----
+// The debrief shows a QR code with every detective's progress (not the log) as a link,
+// solo/#prenos=<code>. The other device scans it with its camera app, which opens the link in the
+// browser, or with "Skeniraj kodo" in the game: a Home Screen app keeps its own storage, so it has to
+// scan from inside. The QR libraries in vendor/ load only when used.
+const VENDOR = {};
+function loadVendor(name) {
+  return VENDOR[name] || (VENDOR[name] = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = `vendor/${name}.js`;
+    s.onload = resolve;
+    s.onerror = () => { delete VENDOR[name]; reject(new Error(name)); };
+    document.head.appendChild(s);
+  }));
+}
+
+const b64url = (bytes) => {
+  let s = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+};
+const unb64url = (s) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+const pipeBytes = async (bytes, stream) => new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer());
+
+// "z" + compressed JSON, or "j" + plain JSON where the browser cannot compress
+async function packTransfer() {
+  const saved = savedData();
+  delete saved[CHILD_KEY];
+  const bytes = new TextEncoder().encode(JSON.stringify(saved));
+  if (typeof CompressionStream === 'function') return 'z' + b64url(await pipeBytes(bytes, new CompressionStream('deflate')));
+  return 'j' + b64url(bytes);
+}
+
+async function unpackTransfer(code) {
+  let bytes;
+  try { bytes = unb64url(code.slice(1)); } catch (e) { throw new Error('bad'); }
+  if (code[0] === 'z') {
+    if (typeof DecompressionStream !== 'function') throw new Error('old');
+    try { bytes = await pipeBytes(bytes, new DecompressionStream('deflate')); } catch (e) { throw new Error('bad'); }
+  } else if (code[0] !== 'j') throw new Error('bad');
+  let saved = null;
+  try { saved = JSON.parse(new TextDecoder().decode(bytes)); } catch (e) {}
+  if (!saved || typeof saved !== 'object' || Array.isArray(saved)) throw new Error('bad');
+  return saved;
+}
+
+function detectiveNames(saved) {
+  const names = [];
+  const add = (json) => { try { const p = JSON.parse(json); if (p && p.name) names.push(p.name); } catch (e) {} };
+  if (saved[PROFILE_KEY]) add(saved[PROFILE_KEY]);
+  try {
+    const d = JSON.parse(saved[DETECTIVES_KEY] || 'null');
+    for (const x of (d && d.list) || []) if (x.data && x.data[PROFILE_KEY]) add(x.data[PROFILE_KEY]);
+  } catch (e) {}
+  return names;
+}
+
+function qrSvg(text) {
+  const qr = qrcode(0, 'L');
+  qr.addData(text);
+  qr.make();   // throws when the text does not fit in the largest QR code
+  const n = qr.getModuleCount(), m = 4;
+  let d = '';
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) d += `M${c + m} ${r + m}h1v1h-1z`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" class="qr" viewBox="0 0 ${n + 2 * m} ${n + 2 * m}" shape-rendering="crispEdges" role="img" aria-label="QR koda">`
+    + `<rect width="100%" height="100%" fill="#fff"/><path d="${d}" fill="#000"/></svg>`;
+}
+
+let scanStop = null;
+const xferHead = (title) => `<div class="xfer-head"><h3>${title}</h3><button class="xfer-x" data-x="close" aria-label="Zapri">✕</button></div>`;
+function xferOpen(html, cls = '') {
+  xferClose();
+  const el = document.createElement('div');
+  el.className = 'xfer';
+  el.id = 'xfer';
+  el.innerHTML = `<div class="modal-box ${cls}">${html}</div>`;
+  el.addEventListener('click', (e) => { if (e.target.closest('[data-x="close"]')) xferClose(); });
+  document.body.appendChild(el);
+  return el;
+}
+function xferClose() {
+  if (scanStop) scanStop();
+  const el = $('#xfer');
+  if (el) el.remove();
+}
+
+async function receiveTransfer(code) {
+  history.replaceState(null, '', location.pathname + location.search);
+  let saved;
+  try { saved = await unpackTransfer(code); } catch (e) {
+    alert(e.message === 'old' ? 'Ta brskalnik je prestar za to kodo. Uporabi Izvozi / Uvozi JSON.' : 'Kode ni mogoče prebrati. Poskusi znova ali uporabi Izvozi / Uvozi JSON.');
+    return;
+  }
+  const names = detectiveNames(saved);
+  if (!confirm(`Prenesem detektive na to napravo${names.length ? ': ' + names.join(', ') : ''}?`)) return;
+  if (importSave({ app: 'detektivska-pisarna', version: 2, storage: saved, events: [] })) location.replace(location.pathname + '?play');
 }
 
 const S = {
@@ -4333,6 +4450,8 @@ const T = {
         <button class="btn secondary" data-act="toSetup">Nova seja</button>
         <button class="btn secondary" data-act="exportLog">Izvozi JSON</button>
         <button class="btn secondary" data-act="importLog">Uvozi JSON</button>
+        <button class="btn secondary" data-act="qrShow">📱 QR prenos</button>
+        <button class="btn secondary" data-act="qrScan">📷 Skeniraj kodo</button>
         <button class="btn danger" data-act="wipe">Izbriši vse</button>
       </div>
       ${storeOk ? '' : '<p class="warn-text">Shranjevanje na napravo ne deluje – takoj izvozi JSON.</p>'}
@@ -4494,6 +4613,65 @@ const ACTIONS = {
     };
     document.body.appendChild(input);
     input.click();
+  },
+  async qrShow() {
+    xferOpen('<p>Pripravljam kodo …</p>');
+    let url = null, svg;
+    try {
+      await loadVendor('qrcode');
+      url = location.origin + location.pathname + '#prenos=' + await packTransfer();
+      svg = qrSvg(url);
+    } catch (e) {
+      xferOpen(`<p>${url ? 'Podatkov je preveč za eno QR kodo.' : 'QR kode ni bilo mogoče pripraviti.'} Uporabi <b>Izvozi JSON</b>.</p>
+        <div class="footer"><button class="btn" data-x="close">Zapri</button></div>`);
+      return;
+    }
+    const names = detectiveNames(savedData());
+    xferOpen(`${xferHead('Prenos na drugo napravo')}
+      <p>${names.length ? 'Detektivi: <b>' + names.map(esc).join(', ') + '</b>' : 'Na tej napravi še ni detektiva.'}</p>
+      <div class="qr-wrap" data-url="${esc(url)}">${svg}</div>
+      <ol>
+        <li>Na drugi napravi odpri <b>Kamero</b>, usmeri jo v kodo in tapni povezavo. Igra se odpre v brskalniku in prevzame detektive.</li>
+        <li>Če otrok na drugi napravi igra z ikone na začetnem zaslonu: odpri igro z ikone → <b>Za odrasle</b> → <b>Pregled podatkov</b> → <b>📷 Skeniraj kodo</b>.</li>
+      </ol>
+      <p class="muted">Koda vsebuje imena detektivov – pokaži jo le na svoji napravi. Dnevnik igranja prenese samo Izvozi JSON.</p>
+      <div class="footer"><button class="btn" data-x="close">Zapri</button></div>`, 'has-qr');
+  },
+  async qrScan() {
+    const box = xferOpen(`${xferHead('Skeniraj kodo')}<video playsinline muted></video>
+      <p class="muted" id="scanMsg">Usmeri kamero v QR kodo na drugi napravi.</p>
+      <div class="footer"><button class="btn secondary" data-x="close">Prekliči</button></div>`);
+    const msg = (t) => { const m = $('#scanMsg'); if (m) m.textContent = t; };
+    let stream;
+    try {
+      [stream] = await Promise.all([navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false }), loadVendor('jsQR')]);
+    } catch (e) {
+      msg('Kamera ni na voljo. Uporabi kamero naprave ali Izvozi / Uvozi JSON.');
+      return;
+    }
+    if (!document.body.contains(box)) { stream.getTracks().forEach(t => t.stop()); return; }   // closed while the camera was asked for
+    const video = box.querySelector('video');
+    video.srcObject = stream;
+    await video.play().catch(() => {});
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    let timer = 0, stopped = false;
+    scanStop = () => { stopped = true; clearTimeout(timer); stream.getTracks().forEach(t => t.stop()); scanStop = null; };
+    const tick = () => {
+      if (stopped) return;
+      if (video.videoWidth) {
+        const w = Math.min(video.videoWidth, 1280), h = Math.round(video.videoHeight * w / video.videoWidth);
+        canvas.width = w;
+        canvas.height = h;
+        ctx.drawImage(video, 0, 0, w, h);
+        const hit = jsQR(ctx.getImageData(0, 0, w, h).data, w, h, { inversionAttempts: 'dontInvert' });
+        const i = hit ? hit.data.indexOf('#prenos=') : -1;
+        if (i >= 0) { xferClose(); receiveTransfer(hit.data.slice(i + 8)); return; }
+        if (hit) msg('To ni koda Detektivske pisarne.');
+      }
+      timer = setTimeout(tick, 200);
+    };
+    tick();
   },
   wipe() {
     if (!confirm('Izbrišem vse zapise na tej napravi? Najprej izvozi JSON.')) return;
@@ -5591,6 +5769,14 @@ if (new URLSearchParams(location.search).has('ui')) {
 } else {
   render();
 }
+// a QR transfer link opened by the camera app: solo/#prenos=<code> (a fresh load, or a tab already on the game)
+const transferFromHash = () => {
+  if (!location.hash.startsWith('#prenos=')) return;
+  const code = location.hash.slice(8);
+  setTimeout(() => receiveTransfer(code), 300);
+};
+transferFromHash();
+addEventListener('hashchange', transferFromHash);
 if ('speechSynthesis' in window) {
   loadVoices();
   speechSynthesis.onvoiceschanged = loadVoices;

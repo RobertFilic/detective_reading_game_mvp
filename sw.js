@@ -1,10 +1,10 @@
 // Start page: network first, cache fallback. Also caches every game so the
 // iPad can open any of them offline after a single online visit.
-const CACHE = 'detektiv-start-v8';
-const PAGES = ['./', './index.html', './home/', './home/index.html', './solo/', './solo/index.html',
+const CACHE = 'detektiv-start-v9';
+const PAGES = ['./', './index.html', './home/', './home/index.html', './solo/', './solo/index.html', './solo/vendor/qrcode.js', './solo/vendor/jsQR.js',
   './manifest.webmanifest', './solo/fonts/lexend-sl.woff2', './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png'];
 // The first version cached the solo game here at the root; drop it so offline never shows the old page.
-const LEGACY = ['detektiv-v1', 'detektiv-start-v1', 'detektiv-start-v2', 'detektiv-start-v3', 'detektiv-start-v4', 'detektiv-start-v5', 'detektiv-start-v6', 'detektiv-start-v7'];
+const LEGACY = ['detektiv-v1', 'detektiv-start-v1', 'detektiv-start-v2', 'detektiv-start-v3', 'detektiv-start-v4', 'detektiv-start-v5', 'detektiv-start-v6', 'detektiv-start-v7', 'detektiv-start-v8'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(PAGES)));
