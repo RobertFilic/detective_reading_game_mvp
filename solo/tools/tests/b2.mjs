@@ -58,6 +58,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   ok(t.includes('Detektiv Luka je ujel Robija!'), `${name}: "Detektiv Luka je ujel Robija!"`);
   await check('reveal');
   await p.click('[data-act="next"]'); await wait();
+  ok(await p.$('.pin-wrap'), `${name}: the new card comes alone`); await p.click('.pin-wrap [data-act="next"]'); await wait();
   ok((await p.$$('.cork .pincard:not(.empty)')).length === 2 || name === 'land', `${name}: 2 cards pinned`);
   if (name !== 'land') {
     ok(await p.$('.pincard.new') && await p.$('.string.draw') && (await p.$eval('.think', e => e.innerText)).includes('isto bitje'), `${name}: new card flies in, string draws, thought shown`);

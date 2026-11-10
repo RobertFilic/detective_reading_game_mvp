@@ -74,6 +74,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   ok((await text()).includes('Detektiv Luka je ujel Elo!'), `${name}: "Detektiv Luka je ujel Elo!"`);
   await check('reveal');
   await p.click('[data-act="next"]'); await wait();
+  ok(await p.$('.pin-wrap'), `${name}: the new card comes alone`); await p.click('.pin-wrap [data-act="next"]'); await wait();
   ok(name === 'land' || (await p.$$('.cork .pincard:not(.empty)')).length === 4, `${name}: 4 cards pinned`);
   ok(await p.$('.folder[data-no="5"]:not(.soon)'), `${name}: case 5 is open next`);
   await wait(1500); await shot('board');

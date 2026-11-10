@@ -128,6 +128,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
     await wait(1800);
     await fits(`${id}-reveal`);
     await click('[data-act="next"]', 300);
+    if (await p.$('.pin-wrap')) await click('.pin-wrap [data-act="next"]', 300);   // the new corkboard card, alone
     if (await p.$('.letter-wrap')) await click('.letter [data-act="letterOk"]');
     if (no === 3) {
       ok((await text()).includes('Kaj misliš, kdo ponoči premika Rexa?'), `${name}: the guess after case 3`);

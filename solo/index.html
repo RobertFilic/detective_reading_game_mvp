@@ -1243,6 +1243,19 @@ tr.clickable { cursor: pointer; }
 .ui-sheet-note { background: var(--bg); border: 1.5px solid var(--line); border-radius: var(--r-m); padding: 12px 14px; font: 400 var(--t-story)/1.35 var(--font); }
 .brief-wrap.later { animation: fadein .3s 1.6s both; }
 
+/* 📌 the new corkboard card, alone after the solved screen: the screen behind goes dim and soft */
+.reveal.still, .reveal.still * { animation: none !important; }   /* behind the card the stamp doesn't slam again */
+.pin-wrap { position: fixed; inset: 0; z-index: 25; display: flex; align-items: center; justify-content: center; padding: calc(16px + var(--safe-top)) 16px calc(16px + env(safe-area-inset-bottom));
+  background: rgba(43, 38, 60, .55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: fadein .25s both; }
+.pin-card { width: min(440px, 100%); max-height: 100%; overflow-y: auto; background: var(--paper); border: 3px solid var(--glow); border-radius: var(--r-xl);
+  box-shadow: 0 0 0 6px rgba(248, 202, 101, .3), 0 20px 50px rgba(0, 0, 0, .3); padding: 22px 20px 18px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; animation: drop .45s .1s both; }
+.pin-pic { display: flex; align-items: center; gap: 8px; }
+.pin-pic .pin { font-size: 34px; }
+.pin-pic .ci { font-size: 64px; line-height: 1; }
+.pin-title { font: 600 var(--t-body)/1.25 var(--font); color: var(--season); cursor: pointer; }
+.pin-text { font: 400 var(--t-row)/1.35 var(--font); color: var(--ink); }
+.pin-card .btn { align-self: stretch; min-height: 60px; }
+
 /* the board: the season band, then the case folders on paper */
 .board-band .ui-band-top > .ui-pill { background: rgba(255, 255, 255, .14); color: #fff; font-size: var(--t-label); padding: 6px 12px; }
 .board-band .ui-step-name { font: 600 22px/1.15 var(--font); color: #fff; }
@@ -1250,6 +1263,10 @@ tr.clickable { cursor: pointer; }
 /* the whole board screen scrolls: a tall corkboard (the guess question on a phone) never leaves the folders a sliver */
 .boardscreen { overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
 .boardscreen > .board { flex: none; min-height: 0; overflow: visible; }
+/* the scene scrolls as one page: on a short phone (Safari's bars) the clues are not a sliver under the objects; »Vem, kdo je bil!« stays at the bottom */
+.screen.scene { overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding-bottom: 0; }
+.scene > .pocket { flex: none; overflow: visible; min-height: 0; }
+.scene > .footer { position: sticky; bottom: 0; margin-top: auto; z-index: 2; background: var(--bg); padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
 .folder { background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--r-m); box-shadow: var(--sh-soft); padding: 14px 10px 10px; min-height: 150px; gap: 6px; }
 .folder .no { top: 8px; left: 10px; width: 26px; height: 26px; border-radius: 50%; background: var(--season-soft); color: var(--season); display: grid; place-items: center; font: 600 14px var(--font); }
 .folder .stk { font-size: 44px; }
@@ -1298,7 +1315,7 @@ tr.clickable { cursor: pointer; }
 .film-top { font: 600 14px var(--font); letter-spacing: .06em; padding: 4px 10px; color: #e3e6ec; }
 .film-top .rec { color: var(--stamp); }
 .film-pic { border-radius: 16px; background: radial-gradient(circle at 50% 45%, #4a5a70, #28303e); font-size: 96px; padding: 18px 0; }
-.film-pic.blur { filter: blur(3px); }
+.film-pic.blur { filter: blur(6px); }   /* "someone small": a shape, not a face — the camera must not name the culprit before the reading does */
 .film .row { background: var(--paper); border: 0; box-shadow: none; border-radius: 16px; font-size: var(--t-story); margin: 8px 0; }
 .film-nav .steps-dots i { width: 22px; height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .25); }
 .film-nav .steps-dots i.on { background: #fff; }
@@ -3240,7 +3257,7 @@ function endTutorial() {
 function coachStep() {
   const t = S.tut, r = S.run;
   // the first UGOVOR ever: the owl shows the two taps (a finger only when there is one claim to point at)
-  if (briefOpen() || truthOpen() || excuseOpen() || (stepCase() && r.note)) return null;
+  if (briefOpen() || truthOpen() || excuseOpen() || pinOpen() || (stepCase() && r.note)) return null;
   if (S.screen === 'lie' && r && r.lcoach && !r.caught && !r.hint) {
     const one = S.c.lie.claims.length === 1;
     return r.lcoach === 1 ? { text: UI_AUDIO.coachLie1, sel: one ? '.claim' : '.claims', point: one }
@@ -3482,13 +3499,14 @@ function seasonHue() {
 function render() {
   app.className = 'level-' + (S.level || 'B');
   app.style.setProperty('--hue', seasonHue());
-  const keep = ['.kdwrap', '.boardscreen'].find(s => $(s)), keepTop = keep ? $(keep).scrollTop : 0;   // a tap must not jump ⏰'s bands or the board back to the top
+  const keep = ['.kdwrap', '.boardscreen', '.screen.scene'].find(s => $(s)), keepTop = keep ? $(keep).scrollTop : 0;   // a tap must not jump ⏰'s bands or the board back to the top
   app.innerHTML = (bandScreen() ? stepBand() : '') + T[S.screen]();
   app.classList.toggle('rail', !!$('#app > .ui-band + .screen'));   // a phone held sideways: the band becomes a rail on the left
   if (keep && $(keep)) $(keep).scrollTop = keepTop;
   if (briefOpen()) app.insertAdjacentHTML('beforeend', briefHTML());
   else if (truthOpen()) app.insertAdjacentHTML('beforeend', truthHTML());
   else if (excuseOpen()) app.insertAdjacentHTML('beforeend', excuseHTML());
+  else if (pinOpen()) app.insertAdjacentHTML('beforeend', pinHTML());
   else if (stepCase() && S.run.note && !S.run.hint) app.insertAdjacentHTML('beforeend', noteHTML());
   const chat = $('.chat');
   if (chat) chat.scrollTop = chat.scrollHeight;
@@ -3625,6 +3643,17 @@ function excuseHTML() {
   return `<div class="brief-wrap ui-sheet-wrap later"><div class="brief excuse-card ui-sheet">
     ${UI.say(who, `${who.name} ${UI_AUDIO.excuseSays}`, `»${esc(c.excuse)}«`, { excuse: true })}
     ${UI.btn('Razumem ✓', { act: 'excuseOk' })}</div></div>`;
+}
+// After »Naprej« on the solved screen the new corkboard card comes alone, on a dimmed screen: in the solved text it was lost.
+const pinCase = () => S.screen === 'reveal' && S.c && S.c.card && S.run && !(S.c.final && (FILES.find(x => x.id === S.c.file) || {}).answer);
+const pinOpen = () => pinCase() && S.run.pinOpen;
+function pinHTML() {
+  const c = S.c, card = sent(c.card.sid);
+  return `<div class="pin-wrap"><div class="pin-card" role="dialog" aria-label="${esc(UI_AUDIO.newCard)}">
+    <div class="pin-pic"><span class="pin">📌</span><span class="ci">${c.card.icon}</span></div>
+    <div class="pin-title" data-act="say" data-clip="ui_newCard">${UI_AUDIO.newCard}</div>
+    <div class="pin-text">${esc(card.text)}</div>
+    ${UI.btn('Naprej', { act: 'next' })}</div></div>`;
 }
 // A new message during a step comes as a card at the bottom; the screen waits for »V redu«.
 function noteHTML() {
@@ -4299,7 +4328,7 @@ const T = {
       <div class="caseq">❓ ${esc(c.question)}</div>
       ${qbarB(done ? UI_AUDIO[doneKey('sceneDone')] : UI_AUDIO.scene, done ? 'ui_' + doneKey('sceneDone') : 'ui_scene')}
       <div class="toolbar-kid">
-        <button class="tool ${r.torch ? 'on' : ''}" data-act="torch">🔦 Svetilka</button>
+        <button class="tool ${r.torch ? 'on' : r.darkMiss && mine.some(s => s.dark && !r.found.includes(s.id)) ? 'pulse' : ''}" data-act="torch">🔦 Svetilka</button>
         ${mine.some(s => s.rub) ? `<button class="tool ${r.pencil ? 'on' : r.rubMiss >= 2 ? 'pulse' : ''}" data-act="pencil">🖍️ Svinčnik</button>` : ''}
         <span class="pocket-count">👝 ${found.length} / ${all}</span>
       </div>
@@ -4374,10 +4403,9 @@ const T = {
     const f = FILES.find(x => x.id === c.file);
     const me = p && S.orderMode === 'board';
     const sub = me ? (c.caught ? `${detName()} je ${ga('ujel', 'ujela')} ${c.caught}!` : `Bravo, ${detName()}!`) : '';
-    const card = c.card && sent(c.card.sid);
     // the season's mystery guest shows its real face, and the child's guess is checked
     const real = CHARACTERS[c.culprit].real, who = { ...CHARACTERS[c.culprit], ...real };
-    return `<div class="screen center reveal ${c.final && f && f.answer ? 'final' : ''}">
+    return `<div class="screen center reveal ${c.final && f && f.answer ? 'final' : ''} ${r && r.pinOpen ? 'still' : ''}">
       <div class="paper">
         <div class="mast">${esc(f ? f.paper : 'DETEKTIVSKE NOVICE')}</div>
         <div class="qbar"><span class="stamp slam">${UI_AUDIO.solved}</span>${spk('ui_solved')}</div>
@@ -4389,8 +4417,7 @@ const T = {
       ${c.final && f && f.answer ? answerHTML(f) : ''}
       ${c.excuse ? `<div class="excuse" data-act="say" data-clip="${c.id}_x">${avatar(c.culprit, 'sm', who)}<span>»${esc(c.excuse)}«</span></div>` : ''}
       <div class="rows reveal-rows">${c.reveal.map((t, i) => `<div class="row" data-act="say" data-clip="${c.id}_r${i + 1}">${names(t)}</div>`).join('')}</div>
-      ${card ? `<div class="pinned" data-act="say" data-clip="ui_newCard"><span class="pin">📌</span><span class="ci">${c.card.icon}</span>
-        <span><b>${UI_AUDIO.newCard}</b><br>${esc(card.text)}</span></div>` : `<div class="sticker">${c.sticker}</div>`}
+      <div class="sticker">${c.sticker}</div>
       <button class="btn big" data-act="next">Naprej</button>
     </div>`;
   },
@@ -5296,6 +5323,7 @@ const ACTIONS = {
     if (s.dark && !r.torch) {
       r.note = UI_AUDIO.dark;
       sfx('nope');
+      r.darkMiss = true;   // the 🔦 button pulses until the dark spots are lit
       log('clue_dark', { sentenceId: s.id });
       render();
       play('ui_dark', UI_AUDIO.dark);
@@ -5438,6 +5466,12 @@ const ACTIONS = {
   next() {
     if (S.tut) { endTutorial(); return; }
     const f = S.c && FILES.find(x => x.id === S.c.file);
+    if (pinCase() && !S.run.pinOpen) {   // the new card first, on its own
+      S.run.pinOpen = true;
+      log('pin_show', { caseId: S.c.id });
+      render();
+      return;
+    }
     if (S.screen === 'reveal' && S.c.final && f && (f.book || f.cup)) {
       go('book');
       return;

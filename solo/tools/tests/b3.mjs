@@ -39,7 +39,11 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   await check('film4');
   await p.click('[data-act="toScene"]'); await wait();
   ok((await p.$$('.obj')).length === 7 && (await p.$$('.obj.dark')).length === 1, `${name}: scene: 7 objects, 1 dark`);
+  ok(!(await p.$('.tool.pulse[data-act="torch"]')), `${name}: 🔦 calm before a dark tap`);
+  await p.click('.obj.dark'); await wait(60);
+  ok((await text()).includes('pretemno') && await p.$('.tool.pulse[data-act="torch"]'), `${name}: dark tap → "pretemno" and 🔦 pulses`);
   await p.click('[data-act="torch"]'); await wait(60);
+  ok(!(await p.$('.tool.pulse[data-act="torch"]')), `${name}: 🔦 on, no pulse`);
   for (const s of ['s1', 's2', 's3', 's4', 's5', 's6', 's7']) { await p.click(`.obj[data-sid="${s}"]`); await wait(60); }
   ok((await text()).includes('spet droben zelen odtis'), `${name}: the green footprint is back`);
   await check('scene');
@@ -54,6 +58,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   ok((await text()).includes('Detektivka Ana je ujela Kiki!'), `${name}: "Detektivka Ana je ujela Kiki!"`);
   await check('reveal');
   await p.click('[data-act="next"]'); await wait();
+  ok(await p.$('.pin-wrap'), `${name}: the new card comes alone`); await p.click('.pin-wrap [data-act="next"]'); await wait();
   ok((await p.$$('.cork .pincard:not(.empty)')).length === 3, `${name}: 3 cards pinned`);
   ok((await p.$eval('.think', e => e.innerText)).includes('bleščeča žlička'), `${name}: thought about the spoon`);
   ok((await p.$$('.guess-opts .btn')).length === 3, `${name}: vent guess with 3 options`);

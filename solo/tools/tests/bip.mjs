@@ -75,10 +75,14 @@ for (const [name, w, h] of devices) {
   const t = await text();
   ok(t.includes('ZVEZDNI ČASNIK') && t.includes('Detektivka Ana je ujela Tima!'), `${name}: newspaper "Detektivka Ana je ujela Tima!"`);
   ok(t.includes('Napredovala si! Zdaj si 🕵️ Detektivka.'), `${name}: rank-up "Napredovala si!"`);
-  ok(t.includes('Nov namig na tabli skrivnosti'), `${name}: the footprint card is pinned`);
+  ok(!t.includes('Nov namig na tabli skrivnosti'), `${name}: the solved screen has no card in it`);
   ok(await inView('[data-act="next"]'), `${name}: "Naprej" visible on the solved screen`);
   await check('reveal');
-  await p.click('[data-act="next"]'); await wait();
+  await p.click('[data-act="next"]'); await wait(500);
+  ok(await st() === 'reveal' && await p.$('.pin-wrap') && (await text()).includes('Nov namig na tabli skrivnosti') && (await p.$eval('.pin-text', e => e.innerText)).includes('zelen odtis'), `${name}: »Naprej« → the new card alone, on a dimmed screen`);
+  ok(await inView('.pin-wrap [data-act="next"]'), `${name}: the card's »Naprej« on screen`);
+  await check('pin');
+  await p.click('.pin-wrap [data-act="next"]'); await wait();
   ok(await p.$('.folder[data-no="1"].solved') && !(await p.$('.letter')), `${name}: ✔ on the board, no letter yet in the same visit`);
   if (name !== 'land') ok(await p.$('.think') && !(await p.$('.vent')), `${name}: thought after 1 card, no eyes yet`);
   if (name !== 'land') ok((await p.$$('.cork .pincard:not(.empty)')).length === 1, `${name}: 1 card on the corkboard`);
