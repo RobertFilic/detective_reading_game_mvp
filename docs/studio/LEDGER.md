@@ -66,7 +66,8 @@ The 🚀 v and 🐄 k cases were removed from the game on 2026-11-08; they stay 
 - Animal twist (Kiki, Meta). The mystery guest who is a new being (Bip). The client is never a suspect (yet: rung 9 will break this on purpose).
 - Season shape: 6 cases, corkboard, guess after case 3, final case unmask.
 - Puzzles: 📹 camera film, 🔤 word search, 🔐 lock with a code from an earlier case, 🕐 timeline.
+- Nobody did it (🦔 g5, the sea; ❄️ pitches the roof's snow as a decoy case). A witness who lies about someone else (🦔 g4). ✉️ cipher and 📜 torn note (several seasons since 🦔). (Moved from »Never used« on 2026-11-11: the list was stale.)
 
 ## Never used yet (fresh ground)
 
-A witness who lies about someone else · two culprits · nobody did it (an accident, the wind) · the client did it · a missing clue (nothing happened that should have) · a clue in a list · a code in letters (cipher) · a torn note · a logic grid · a map · a denouement where the child explains · a case told in a diary · a recurring rival detective · a season where the red thread is a person to find, not a thing.
+Two culprits · the client did it · a missing clue (nothing happened that should have; pitched for ❄️) · a clue in a list · a logic grid · a map · a denouement where the child explains · a case told in a diary · a recurring rival detective · a season where the red thread is a person to find, not a thing.

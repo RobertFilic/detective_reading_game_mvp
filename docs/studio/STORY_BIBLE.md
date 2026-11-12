@@ -48,7 +48,7 @@ The world, the people and the voice of Detektivska pisarna. The showrunner owns 
 - Babica could grow into the child's **Miss Marple**: an old owl who has seen everything and asks the one quiet question. Not yet used in seasons.
 
 ### Planned (not canon until a season is approved)
-🦕 Noč v muzeju (the museum ghost is the night guard Rambo; [PUZZLES.md](../PUZZLES.md)), ⚽ football tournament, 🏝️ Gran Canaria, 🏫 school, 🏴‍☠️ pirate island ([CASE_FILES.md](../CASE_FILES.md)).
+❄️ Sneženi možje brez sledi (pitched 2026-11-11, [seasons/sneg.md](seasons/sneg.md)): Penzion pri Smreki in the village Smrečje; new: gospa Cilka (the host), Ajda (her granddaughter, the answer, a possible returning rival detective), Marko (the plough driver); Lan's cowbell on the front door as a running gag. 🦕 Noč v muzeju (the museum ghost is the night guard Rambo; [PUZZLES.md](../PUZZLES.md)), ⚽ football tournament, 🏝️ Gran Canaria, 🏫 school, 🏴‍☠️ pirate island ([CASE_FILES.md](../CASE_FILES.md)).
 
 ## Naming rules for new characters
 

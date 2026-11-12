@@ -5,8 +5,8 @@ Agreed with the producer on 2026-11-05: one new season a week. A season is built
 | Season | Live on | Pitch | Pushed (with `opens`) by | Release check |
 |---|---|---|---|---|
 | 🦕 Duh v muzeju | 2026-11-05 (live on push) | 2026-11-05 | 2026-11-05 | – |
-| ⚽ Skrivnost zlatega pokala | **2026-11-12** | 2026-11-06 | 2026-11-06 ✅ (built, reviewed, pushed in one day) | 2026-11-12 morning |
-| ❄️ Sneženi možje brez sledi | **2026-11-19** | 2026-11-11 (A); B 11-12, C 11-13, D 11-16 | 2026-11-17 | 2026-11-19 morning |
+| ⚽ Skrivnost zlatega pokala | **2026-11-12** | 2026-11-06 | 2026-11-06 ✅ (built, reviewed, pushed in one day) | 2026-11-12 ✅ (live, teaser gone, case 1 opens) |
+| ❄️ Sneženi možje brez sledi | **2026-11-19** | 2026-11-11 (A) ✅ approved; B 11-12, C 11-13, D 11-16 | 2026-11-17 | 2026-11-19 morning |
 
 ## The steps for each season (docs/studio/README.md has the details)
 
