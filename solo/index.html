@@ -1556,7 +1556,7 @@ const FILES = [
       options: [['luka', '👦🏼', 'Luka, ki je držal pokal'], ['tone', '👨🏻‍🔧', 'hišnik Tone, ki vse popravi'], ['zoja', '👧🏻', 'Zoja, ki vse nariše']] },
     answer: { id: 'tone', icon: '🏆', text: 'Pokal je bil pri hišniku Tonetu v kleti!' },
     // the final's solved screen goes on to the cup: the cloth comes off, every team's name lights up, the child's last
-    cup: { q: 'Pokal je pod prtom. Ali ga odkriješ?', cloth: 'Pod prtom je nekaj zlatega …', btn: 'Odgrni prt!', cheer: 'Bo že, bo! Vsaka ekipa mora na pokal!', names: ['DINOZAVRI', 'KOZICE', 'JEŽKI', 'SOKOLI'] } },
+    cup: { q: 'Pokal je pod prtom. Ali ga odkriješ?', cloth: 'Pod prtom je nekaj zlatega …', btn: 'Odgrni prt!', cheer: 'Bo že, bo! Vsaka ekipa mora na pokal!', names: ['BARCELONA', 'REAL', 'CITY', 'BAYERN'] } },
 ];
 // Adventures announced but not written yet: the same teaser card. When one is written, it moves into
 // FILES with its teaser line (and opens, if it has a date).
@@ -2345,14 +2345,14 @@ const CASES = [
   },
   // ======== ⚽ Skrivnost zlatega pokala (season 4): one Saturday, 8:00 to the 17:00 final ========
   {
-    id: 'p1', file: 'pokal', no: 1, type: 'elim', level: 'A', sticker: '🦷', place: 'Igrišče',
+    id: 'p1', file: 'pokal', no: 1, type: 'elim', level: 'A', sticker: '🔵', place: 'Igrišče',
     steps: ['call', 'scene', 'when', 'solve'],
-    // Lan found the teeth after the photo (the final's alibi for Zoja leans on it); the notebook makes the rub tempting
-    client: 'lan', call: ['Hej, pomagaj! Žoge imajo zobe!', 'Pred slikanjem ob osmih so bile še bele.', 'Sodnica Neža vse zapiše v zvezek.'],
+    // Lan found the stripes after the photo (the final's alibi for Zoja leans on it); the notebook makes the rub tempting
+    client: 'lan', call: ['Hej, pomagaj! Žoge imajo proge!', 'Pred slikanjem ob osmih so bile še bele.', 'Sodnica Neža vse zapiše v zvezek.'],
     question: 'Kdo je ob osmih porisal žoge?',
     suspects: ['luka', 'zoja', 'pia', 'tone'], culprit: 'zoja',
     sentences: [
-      ['s1', 'Na vsaki žogi so zeleni zobje dinozavra.', 'neutral', { obj: '🎒', label: 'vreča' }],
+      ['s1', 'Na vsaki žogi so modro-rdeče proge.', 'neutral', { obj: '🎒', label: 'vreča' }],
       // 🖍️ the decoy: Neža's next page, written at seven (the ⏰ PREJ card): Luka was at the balls while they were white
       ['s2', 'Ob sedmih je Luka nosil žoge na igrišče.', 'distractor', { obj: '📓', label: 'zvezek', rub: true }],
       ['s3', 'Ob osmih je Luka na sliki držal pokal.', 'clear', { obj: '🖼️', label: 'slika', clears: 'luka' }],
@@ -2363,18 +2363,18 @@ const CASES = [
       ['s7', 'Ob osmih je Tone v avli slikal pokal.', 'clear', { obj: '📷', label: 'kamera', clears: 'tone' }],
       ['s8', 'Napise na vratih šole je vrezal hišnik Tone.', 'neutral', { obj: '🚪', label: 'vrata' }],
       // card 1: the first rubbing (names no suspect)
-      ['s9', 'Na klopi Dinozavrov je siva risba: DINOZAVRI.', 'neutral', { obj: '🪑', label: 'klop' }],
+      ['s9', 'Na klopi Barcelone je siva risba: BARCELONA.', 'neutral', { obj: '🪑', label: 'klop' }],
       // the proof, in the last row (p2–p4 have it in rows 3–4), behind the place (the goal), not the gloves; fresh, so it is from the deed's time
-      ['s4', 'Na Zojinih rokavicah so sveže packe zelenega flomastra.', 'evidence', { obj: '🥅', label: 'gol' }],
+      ['s4', 'Na Zojinih rokavicah so modre in rdeče packe.', 'evidence', { obj: '🥅', label: 'gol' }],
     ],
     // ⏰ 2 cards, owl-guided, both about Luka: same place, which hour?
-    when: { deed: 'ob osmih: žoge dobijo zobe', cards: { s2: 'before', s3: 'during' },
+    when: { deed: 'ob osmih: žoge dobijo proge', cards: { s2: 'before', s3: 'during' },
       h1: 'Kdaj je bil Luka pri žogah?' },
-    h1: 'Kdo NI mogel biti? Kje so zelene packe?',
-    reveal: ['Luka je nosil žoge že ob sedmih.', 'Ob osmih je Zoja na žoge risala zobe.', 'Zelene packe so ostale na rokavicah.', 'Kje pa je zlati pokal? Vitrina je prazna! 🏆'],
-    caught: 'Zojo', excuse: 'Rrr! Dinozavri morajo imeti žoge z zobmi!',
+    h1: 'Kdo NI mogel biti? Kje so packe?',
+    reveal: ['Luka je nosil žoge že ob sedmih.', 'Ob osmih je Zoja risala proge na žoge.', 'Packe so ostale na rokavicah.', 'Kje pa je zlati pokal? Vitrina je prazna! 🏆'],
+    caught: 'Zojo', excuse: 'Tudi žoge navijajo za Barcelono! Kot Yamal!',
     card: { icon: '🖍️', sid: 's9', think: 'Kdo je narisal to sivo risbo? In kje je pokal? 🤔' },
-    letter: ['Hvala! Z Zojo sva umila vse žoge.', 'Zoja zdaj riše zobe samo na papir. 🦖', 'P. S. Pijin bratec Bor ima kozji kostum! 🐐'],
+    letter: ['Hvala! Z Zojo sva umila vse žoge.', 'Zoja zdaj riše proge samo na papir. ⚽', 'P. S. Pijin bratec Bor je maskota Reala! 🐐'],
   },
   {
     id: 'p2', file: 'pokal', no: 2, type: 'elim', level: 'A', sticker: '🐐', place: 'Mali gol',
@@ -2396,7 +2396,7 @@ const CASES = [
       // the culprit's »alibi« from his happy sister: true, but before the match (a yellow card)
       ['s1', '»Pred tekmo je Bor plesal ob igrišču.«', 'neutral', { who: 'pia', ask: 'Kje je bil tvoj bratec Bor?' }],
       // a lead, not a proof: white (the film's blur) and horns (the proof)
-      ['s2', '»Meee! Imam bel kozji kostum z rogovi!«', 'neutral', { who: 'bor', ask: 'Si ti tudi Kozica?' }],
+      ['s2', '»Meee! Jaz sem bela maskota Reala z rogovi!«', 'neutral', { who: 'bor', ask: 'Kdo si ti na tekmi?' }],
       // the proof, in the upper half: a trace of the deed (the net tore on the film) on the culprit
       ['s3', '»Na rogu ima Bor kos mreže malega gola.«', 'evidence', { who: 'tone', ask: 'Kaj manjka na malem golu?' }],
       ['s4', '»Med tekmo je Pia branila na velikem igrišču.«', 'clear', { who: 'neza', ask: 'Kje je bila Pia med tekmo?', clears: 'pia' }],
@@ -2408,7 +2408,7 @@ const CASES = [
       // plant for the big mystery: Tone is at every bench before every match
       ['s8', '»Pred vsako tekmo postavim klopi.«', 'neutral', { who: 'tone', ask: 'Kaj delate pred vsako tekmo?' }],
       // card 2: white letters (a rubbing, as the child made in p1)
-      ['s9', '»Na risbi KOZICE so bele črke.«', 'neutral', { who: 'pia', ask: 'Kaj je na klopi Kozic?' }],
+      ['s9', '»Na risbi REAL so bele črke.«', 'neutral', { who: 'pia', ask: 'Kaj je na klopi Reala?' }],
     ],
     // ⏰ 3 cards: Bor before (true, no alibi), Hana's alibi during, Hana at the goal after
     when: { deed: 'med tekmo: skrivni gol',
@@ -2416,12 +2416,12 @@ const CASES = [
       h1: 'Pred tekmo, med tekmo ali po tekmi?' },
     h1: 'Kdo NI mogel biti? Kje je kos mreže?',
     reveal: ['Kos mreže je visel na Borovem rogu.', 'Med tekmo je Bor stekel k malemu golu.', 'Žogo je zabil z glavo, kot prava koza!', 'Ples je bil pred tekmo. Napačen čas! 🟨'],
-    caught: 'Bora', excuse: 'Meee! Tudi jaz sem Kozica!',
+    caught: 'Bora', excuse: 'Meee! Tudi jaz sem Mbappe!',
     card: { icon: '🖍️', sid: 's9', think: 'Bele črke na sivem? Kot z mojim svinčnikom! 🤔' },
-    letter: ['Hvala! Boru so dali medaljo »najboljša maskota«. 🏅', 'Pia bo Boru zlepila rog. Meee!', 'P. S. Luka je kapetan Ježkov. Ima rdeč trak!'],
+    letter: ['Hvala! Boru so dali medaljo »najboljša maskota«. 🏅', 'Pia bo Boru zlepila rog. Meee!', 'P. S. Luka je kapetan Cityja. Ima rdeč trak!'],
   },
   {
-    id: 'p3', file: 'pokal', no: 3, type: 'elim', level: 'A', sticker: '🎗️', place: 'Klop Ježkov',
+    id: 'p3', file: 'pokal', no: 3, type: 'elim', level: 'A', sticker: '🎗️', place: 'Klop Cityja',
     steps: ['call', 'ask', 'torn', 'herring', 'solve'],
     // the score is half of the final's lock code (3-1-2-0): no other digits in this case
     client: 'lan', call: ['Gooool! Zmagali smo 3 : 1!', 'Luka je pustil trak na klopi.', 'Med odmorom je trak izginil!'],
@@ -2434,13 +2434,13 @@ const CASES = [
       ['s1', '»Pri naši klopi leži Pijina kapa.«', 'distractor', { who: 'hana', ask: 'Kaj si videla pri klopi?' }],
       ['s2', '»Med odmorom sva bila s Pio v garderobi.«', 'clear', { who: 'lan', ask: 'Kje si bil med odmorom?', clears: 'pia' }],
       // a lead, not a proof: it names Hana in bold and makes the rulebook familiar before the proof
-      ['s3', '»Hana! Povsod nosi knjigo pravil.«', 'neutral', { who: 'luka', ask: 'Kdo pri Ježkih pozna pravila?', lead: true }],
+      ['s3', '»Hana! Povsod nosi knjigo pravil.«', 'neutral', { who: 'luka', ask: 'Kdo pri Cityju pozna pravila?', lead: true }],
       // the proof, in the upper half: the armband is in the culprit's thing, away from the bench (a bookmark)
       ['s4', '»Iz Hanine knjige pravil gleda kapetanski trak.«', 'evidence', { who: 'pia', ask: 'Si kje videla trak?' }],
       // Luka left the bench at half-time (the call: he left the armband there), so he could see the gym
       ['s5', '»Med odmorom je Zoja v telovadnici risala plakat.«', 'clear', { who: 'luka', ask: 'Koga si videl med odmorom?', clears: 'zoja' }],
-      // card 3: the drawing on the Ježki bench; Zoja the artist notices the handle
-      ['s6', '»Na risbi JEŽKI je obris ročaja.«', 'neutral', { who: 'zoja', ask: 'Kaj vidiš na sivi risbi?' }],
+      // card 3: the drawing on the City bench; Zoja the artist notices the handle
+      ['s6', '»Na risbi CITY je obris ročaja.«', 'neutral', { who: 'zoja', ask: 'Kaj vidiš na sivi risbi?' }],
       // the small goal is behind the gym, far from the bench (its net was torn in case 2)
       ['s7', '»Med odmorom sva s Tonetom popravljala mali gol.«', 'clear', { who: 'neza', ask: 'Kje je bil Tone med odmorom?', clears: 'tone' }],
       // plant for the big mystery (the cellar, »bzzz«); »med tekmami« is not »med odmorom«, and it is his own word
@@ -2465,13 +2465,13 @@ const CASES = [
     reveal: ['Hana je med odmorom vzela Lukov trak.', 'Trak je bil kazalo v knjigi pravil.', 'Pijina kapa je že prej ležala pri klopi.', 'Pia in Lan sta takrat lepila Borov rog.'],
     caught: 'Hano', excuse: 'Ups! Rabila sem kazalo za pravilo sedem.',
     card: { icon: '🏆', sid: 's6', think: 'Ročaj? Kaj ima tak ročaj? 🤔' },
-    letter: ['Hvala! Luka ima spet svoj trak.', 'Hana je dobila pravo kazalo. 📖', 'P. S. Opoldne je kosilo. Juha! 🍲'],
+    letter: ['Hvala! Luka ima trak in dres Haalanda.', 'Hana je dobila pravo kazalo. 📖', 'P. S. Opoldne je kosilo. Juha! 🍲'],
   },
   {
     id: 'p4', file: 'pokal', no: 4, type: 'elim', level: 'A', sticker: '🌼', place: 'Veliko igrišče',
     steps: ['call', 'words', 'scene', 'when', 'solve'],
     // the call carries the second half of the final's lock code (2 : 0), and the case's two time phrases meet in ⏰
-    client: 'lan', call: ['Ježki so zmagali 2 : 0!', 'Medtem ko smo jedli, je gol zacvetel!', 'Ves gol je v venčkih! 🌼'],
+    client: 'lan', call: ['City je zmagal 2 : 0!', 'Medtem ko smo jedli, je gol zacvetel!', 'Ves gol je v venčkih! 🌼'],
     // 🔤 iskanka with riddles: the words are the four places to search (scene labels gol, klop, trava, okno)
     words: {
       note: 'Hana ti je skrila kraje v iskanko. Reši uganke!',
@@ -2495,7 +2495,7 @@ const CASES = [
       ['s6', '»Med kosilom je Bor jedel z mano.«', 'clear', { obj: '📋', label: 'zapisnik', who: 'neza', clears: 'bor' }],
       ['s7', 'Medtem ko so jedli, je Tone pomival lonce.', 'clear', { obj: '🍲', label: 'kuhinja', clears: 'tone' }],
       // card 4 (names nobody) and the season's plant for the final
-      ['s8', 'Na risbi SOKOLI so zlate mrvice.', 'neutral', { obj: '📄', label: 'risba' }],
+      ['s8', 'Na risbi BAYERN so zlate mrvice.', 'neutral', { obj: '📄', label: 'risba' }],
       ['s9', 'Hišnik Tone ima za ušesom debel svinčnik.', 'neutral', { obj: '🧰', label: 'orodje' }],
     ],
     // ⏰ 4 cards: Tone before, Tone during (his alibi, the new phrase under TAKRAT), Zoja and Pia after
@@ -2506,7 +2506,7 @@ const CASES = [
     reveal: ['Med kosilom je Pia pletla venčke iz marjetic.', 'Z njimi je okrasila gol za finale.', 'Tone je bil pri golu prej, Zoja potem.', 'Venčki bodo za zmagovalce! 🌼'],
     caught: 'Pio', excuse: 'Za finale mora biti gol lep! Marjetice so zastonj!',
     card: { icon: '✨', sid: 's8', think: 'Zlate mrvice? Kdo je brusil zlato? 🤔' },
-    letter: ['Hvala! Pia zdaj plete venčke za vse ekipe.', 'Tudi Bor hoče venček na rogove. Meee!', 'P. S. Po kosilu pride zlata žoga za finale! ✨'],
+    letter: ['Hvala! Pia plete venčke za vse ekipe.', 'Tudi Bor hoče venček na rogove. Meee!', 'P. S. Po kosilu pride zlata žoga za finale! ✨'],
   },
   {
     id: 'p5', file: 'pokal', no: 5, type: 'elim', level: 'A', sticker: '🏠', place: 'Pri telovadnici',
@@ -2558,7 +2558,7 @@ const CASES = [
     reveal: ['Ob enih je Neža vzela zlato žogo.', 'Samo enkrat je hotela streljati na gol.', 'Bum! Žoga je poletela na streho.', 'Ob dveh jo je Tone prinesel dol. 🪜'],
     caught: 'sodnico Nežo', excuse: 'Pisk! Samo enkrat sem hotela streljati. Previsoko!',
     card: { icon: '🔄', sid: 's5', think: 'Vse ekipe na eni risbi! Kdo navija za vse? 🤔' },
-    letter: ['Hvala! Zlata žoga je spet v mreži. ✨', 'Pred finalom sme Neža enkrat streljati. Pisk!', 'P. S. Ob petih je finale. Pridi! 🏆'],
+    letter: ['Hvala! Zlata žoga je spet v mreži. ✨', 'Pred finalom sme Neža streljati. Kot Musiala!', 'P. S. Ob petih je finale. Pridi! 🏆'],
   },
   {
     id: 'p6', file: 'pokal', no: 6, final: true, type: 'elim', level: 'A', sticker: '🏆', place: 'Zlati pokal',
@@ -2581,7 +2581,7 @@ const CASES = [
       ['s7', '»Pisk! Pred slikanjem je Tone čistil fotoaparat.«', 'neutral', { who: 'neza', ask: 'Ste videli hišnika Toneta?' }],
       ['s8', '»Po slikanju je Neža do devetih merila gol.«', 'clear', { who: 'hana', ask: 'Kaj je delala Neža po slikanju?', clears: 'neza' }],
       // the cellar (behind the lock): Tone's workshop, three objects
-      ['s9', 'Za srečo: DINOZAVRI, KOZICE, JEŽKI, SOKOLI.', 'neutral', { obj: '🗒️', label: 'blok', rub: true }],
+      ['s9', 'Za srečo: BARCELONA, REAL, CITY, BAYERN.', 'neutral', { obj: '🗒️', label: 'blok', rub: true }],
       ['s10', 'Na mizi so zlate mrvice.', 'neutral', { obj: '✨', label: 'miza' }],
       // … and the cup's empty box names nobody
       ['s11', 'V kleti je prazna škatla za pokal.', 'evidence', { obj: '📦', label: 'polica' }],
@@ -2591,7 +2591,7 @@ const CASES = [
       note: 'Šifra: rezultata obeh jutranjih tekem, po vrsti.',
       code: '3120',
       h1: 'Rezultata je povedal Lan. Kdo je igral prvi?',
-      h2: 'Šifra je 3-1-2-0. Najprej Dinozavri, nato Ježki.',
+      h2: 'Šifra je 3-1-2-0. Najprej Barcelona, nato City.',
     },
     // ⏰ a window with two edges: two PREJ (Luka, Tone), one TAKRAT (Zoja's alibi), one POTEM (Zoja at nine)
     when: { deed: 'po slikanju do devetih: pokal izgine',
@@ -3889,7 +3889,7 @@ const T = {
       ${UI.band({ step: 'Tabla', dots: [true, true, false, false, false, false], at: .2, ball: '🦕', backAct: 'uiTap', back: '←', player: p })}
       <h2>Stavek · ui-row</h2>
       ${UI.row(names('Ob osmih je Luka na sliki držal pokal.'), tap)}
-      ${UI.row(names('Na Zojinih rokavicah so sveže packe zelenega flomastra.'), { ...tap, state: 'is-picked' })}
+      ${UI.row(names('Na Zojinih rokavicah so modre in rdeče packe.'), { ...tap, state: 'is-picked' })}
       ${UI.row('<mark>Ob osmih</mark> je Pia v avli pazila Bora.', { ...tap, state: 'is-glow' })}
       ${UI.row(names('Ob osmih je Tone v avli slikal pokal.'), { ...tap, state: 'is-used', end: UI.used('👨🏻‍🔧') })}
       ${UI.row(names('Ob sedmih je Luka nosil žoge na igrišče.'), { ...tap, end: UI.stamp('NAPAČEN ČAS!', { color: 'is-blue', mark: '🟨' }) })}

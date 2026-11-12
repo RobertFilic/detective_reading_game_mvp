@@ -13,11 +13,11 @@
 | Ura | Kaj | Case |
 |---|---|---|
 | ob osmih | slikanje s pokalom v avli (the group photo with the cup) | 1 |
-| ob devetih | 1. polfinale: 🦖 Dinozavri : 🐐 Kozice → **3 : 1** | 2 |
-| ob desetih | 2. polfinale: 🦔 Ježki : 🦅 Sokoli → **2 : 0** | 3 |
+| ob devetih | 1. polfinale: 🔵 Barcelona : ⚪ Real → **3 : 1** | 2 |
+| ob desetih | 2. polfinale: 🩵 City : 🔴 Bayern → **2 : 0** | 3 |
 | opoldne | kosilo (lunch, until one) | 4 |
-| ob dveh | tekma za tretje mesto: Kozice : Sokoli | 5 |
-| ob petih | finale: Dinozavri : Ježki | 6 ⭐ |
+| ob dveh | tekma za tretje mesto: Real : Bayern | 5 |
+| ob petih | finale: Barcelona : City | 6 ⭐ |
 
 - **Level:** A (first line on the board: »Stopnja A«). At most 8 words a sentence, 4 suspects a case, 7–9 sentences (the final 10–11).
 - **Reading knob raised (only one): time words**, one notch past the museum's clock hours. The museum had *ob šestih, ob osmih*. This season adds the **relative** words:
@@ -35,7 +35,7 @@
 ## 2. The big mystery and the true answer
 
 - **The big mystery, as a child would say it:** »Zlati pokal je izginil. Pred vsako tekmo pa se pojavi čudna risba. Kdo je vzel pokal?«
-- **Background:** at eight the four teams take a photo in the hall with the golden cup; Luka holds it. Soon after, the cabinet is empty. The tournament goes on, because the final is not until five. And before the matches, a strange grey drawing turns up on a bench: a team's name in **white letters on grey**. First DINOZAVRI, then KOZICE, JEŽKI, SOKOLI, and at last all four together. Nobody says they drew them.
+- **Background:** at eight the four teams take a photo in the hall with the golden cup; Luka holds it. Soon after, the cabinet is empty. The tournament goes on, because the final is not until five. And before the matches, a strange grey drawing turns up on a bench: a team's name in **white letters on grey**. First BARCELONA, then REAL, CITY, BAYERN, and at last all four together. Nobody says they drew them.
 - **The true answer:** **hišnik Tone**, the school caretaker. He made every metal sign on the school's doors. Right after the photo he carried the cup to his cellar workshop in its box. He wanted to **engrave the name of every team** on it, so that whoever wins the final, every child is on the golden cup. After each name he checked his letters the way you check a coin: paper on the cup, rub with his thick pencil. **The strange drawings are those rubbings.** The cut letters stay white and the gold around them goes grey. He left each one on that team's bench before a match, »za srečo« (for luck). He never signed them, because he wanted to keep the surprise.
 - **Why it is fair (the clue chain the child can follow):**
   1. In case 1 the child **makes a rubbing themselves** with the new 🖍️ pencil and sees white letters come out of grey (§6.2). From then on the drawings look like rubbings. Card 2's thought says so: »Bele črke na sivem? Kot moje drgnjenje!«
@@ -43,10 +43,10 @@
   3. Who cuts letters into metal? »Napise na vratih šole je vrezal hišnik Tone.« (case 1). Who is at the benches before every match? Tone: »Pred vsako tekmo postavim klopi.« (case 2). Who is in the cellar all day while a buzzing comes from there? Tone (his alibis in cases 3 and 5, the 🔊 »bzzz!« on the corkboard).
   4. Card 5: **all four names** on one drawing. Whoever made them cheers for everyone, not for one team.
 - **Why the tempting ones are innocent:**
-  - **Luka** held the cup at the photo and says »Ta pokal bo naš!«. But he held it *before* and *at* the photo, and the cup vanished *after* it. From the photo to nine he was running laps. Also, a Ježki fan wouldn't wish DINOZAVRI luck.
+  - **Luka** held the cup at the photo and says »Ta pokal bo naš!«. But he held it *before* and *at* the photo, and the cup vanished *after* it. From the photo to nine he was running laps. Also, a City fan wouldn't wish BARCELONA luck.
   - **Zoja** draws everything (green teeth on the balls in case 1). But her drawings are coloured, and these are grey rubbings. From the photo to nine she was washing the balls with Lan.
 - **The warm ending:**
-  - **The cup comes back** (a new kind of reveal, after Bip's »???«, Galeb's book and the museum's slipper). At five, Tone walks onto the pitch with the cup under a cloth. He pulls the cloth away and the names light up one by one, »bzzz«: DINOZAVRI · KOZICE · JEŽKI · SOKOLI. The crowd cheers. Last, a line lights up with the child's name from the ID card, on the device only (the producer, 2026-11-06).
+  - **The cup comes back** (a new kind of reveal, after Bip's »???«, Galeb's book and the museum's slipper). At five, Tone walks onto the pitch with the cup under a cloth. He pulls the cloth away and the names light up one by one, »bzzz«: BARCELONA · REAL · CITY · BAYERN. The crowd cheers. Last, a line lights up with the child's name from the ID card, on the device only (the producer, 2026-11-06).
   - Tone: »Bo že, bo! Vsaka ekipa mora na pokal.«
   - The final is played; the winner lifts the cup, and every team's name is on it. The newspaper (as built) carries the child's name: the detective who found the golden cup.
 - **A wink for the grown-ups:** the timetable mystery (*4.50 from Paddington*, *Five Little Pigs*) with no crime. The »thief« is the kindest man in the school.
@@ -57,10 +57,10 @@ The cards are **the strange drawings**: five of them, all true, all nameless, ea
 
 | After case | Card (draft, words) | What it seems to mean | What it means at the end |
 |---|---|---|---|
-| 1 | 🖍️ »Na klopi Dinozavrov je siva risba: DINOZAVRI.« (7) | A fan's drawing. Zoja draws, and she plays for Dinozavri. | A rubbing of the first name cut into the cup. |
-| 2 | ⬜ »Na klopi Kozic je risba z belimi črkami.« (8) | Odd style. The thought: »Bele črke na sivem? Kot moje drgnjenje!« (4 + 4) | Rubbed, not drawn: the letters are cut into something (the child did it in case 1). |
-| 3 | 🏆 »Na risbi JEŽKI je obris ročaja.« (6) | A drawing of a mug? | The rubbed thing has a handle: it is **the cup**. Someone is cutting names into it. |
-| 4 | ✨ »Na risbi SOKOLI so zlate mrvice.« (6) | Glitter? | Fresh crumbs of gold: the cutting is happening today. Who cuts letters? Tone (case 1). |
+| 1 | 🖍️ »Na klopi Barcelone je siva risba: BARCELONA.« (7) | A fan's drawing. Zoja draws, and she plays for Barcelona. | A rubbing of the first name cut into the cup. |
+| 2 | ⬜ »Na risbi REAL so bele črke.« (6) | Odd style. The thought: »Bele črke na sivem? Kot moje drgnjenje!« (4 + 4) | Rubbed, not drawn: the letters are cut into something (the child did it in case 1). |
+| 3 | 🏆 »Na risbi CITY je obris ročaja.« (6) | A drawing of a mug? | The rubbed thing has a handle: it is **the cup**. Someone is cutting names into it. |
+| 4 | ✨ »Na risbi BAYERN so zlate mrvice.« (6) | Glitter? | Fresh crumbs of gold: the cutting is happening today. Who cuts letters? Tone (case 1). |
 | 5 | 🔄 »Na zadnji risbi so vsa štiri imena.« (7) | Somebody likes everyone? | All teams go on the cup. Not one team's fan (not Luka, not Zoja). |
 | 6 ⭐ | the cup with all four names | | |
 
@@ -91,15 +91,15 @@ The cards are **the strange drawings**: five of them, all true, all nameless, ea
 
 ## 4. The six cases
 
-The client is **Lan**, the Dinozavri captain, a child who calls a child: »Hej, detektiv!«. His running line is the score (»Zmagali smo 3 : 1!«), and **two of those scores are the final's lock code**. ⏰ = the new step »Kdaj?« (§6.1); 🖍️ = the new pencil (§6.2); ❗ = UGOVOR; 🧭 = »Kam kaže sled?«; 👁️ = a witness who is not a suspect.
+The client is **Lan**, the Barcelona captain, a child who calls a child: »Hej, detektiv!«. His running line is the score (»Zmagali smo 3 : 1!«), and **two of those scores are the final's lock code**. ⏰ = the new step »Kdaj?« (§6.1); 🖍️ = the new pencil (§6.2); ❗ = UGOVOR; 🧭 = »Kam kaže sled?«; 👁️ = a witness who is not a suspect.
 
 ### 4.1 The cases at a glance
 
 | # | Title · question | Time of the deed · place | Culprit · motive | Tempting suspect(s), and why the time clears them | Proof | Steps · puzzle | Learning goal (the skill's moment) | Thread |
 |---|---|---|---|---|---|---|---|---|
-| 1 | **Zobje na žogah** · »Kdo je ob osmih porisal žoge?« (6) | *ob osmih*, during the photo (call: »Pred slikanjem so bile še bele.«) · the ball bag on the pitch | **Zoja**: green dinosaur teeth on every ball, for luck. »Rrr! Dinozavri morajo imeti žoge z zobmi!« (to cheer her team) | **Luka**: the rubbing shows »Ob sedmih je Luka nosil žoge na igrišče.« (8). He was at the balls, but at **seven**, when they were still white. At eight he was in the photo. | trace: »Na Zojinih rokavicah je zelen flomaster.« (6) + the call's »zeleni zobje« | call → scene (🖍️ one object) → ⏰ (2 cards, owl-guided) → solve · 🖍️ rubbing | Gentle, clock hours: same place, which hour? | card 1: DINOZAVRI |
-| 2 | **Kozji gol** · »Kdo je med tekmo zabil skrivni gol?« (7) | *med tekmo* (the nine o'clock match) · the empty goal on the small pitch behind the gym | **Bor**, Pia's little brother and the Kozice mascot, too small for the team. In his white goat costume he sneaked to the empty goal and headed the spare ball in, like a real goat. »Meee! Tudi jaz sem Kozica!« (1 + 4) (to play, once) | **Bor** looks cleared by Pia's »Pred tekmo je Bor plesal ob igrišču.« (7). True, but **before** the match, so it doesn't count (🟨). **Hana** is at the goal **after**: »Po tekmi je Hana pobrala žogo iz gola.« (8); during the match she was on the tribune. | trace: Pia: »Bor ima na rogu kos mreže.« (6). The call sets it up: Lan: »Bor ima bel kozji kostum z rogovi.« (7) | call + 📹 film → ask → ⏰ (3 cards) → solve · 📹 posnetek | Gentle: *pred / med / po*; **a true alibi for the wrong time** | card 2: white letters |
-| 3 | **Kapetanski trak** · »Kdo je med odmorom vzel kapetanski trak?« (7) | *med odmorom* (half-time of the ten o'clock match) · the Ježki bench | **Hana**: she used Luka's red armband as a bookmark in the rulebook. »Ups! Rabila sem kazalo za pravilo sedem.« (1 + 6) (funny; to read) | **Pia**: 🧭 »Pri naši klopi leži Pijina kapa.« (6, said by Hana). Luka 👁️ explains it with a time: »Pia je kapo izgubila, preden so začeli.« (7). The arrow bends away. At half-time Pia was in the changing room with Lan. | a thing in the culprit's place, hidden away from the bench: Pia: »Trak je v Hanini knjigi pravil.« (6) | call → ask → 📜 torn → 🧭 → solve · 📜 Neža's report, torn by a ball: »Žoga je zadela Nežin zapisnik.« (5) | Practice: *preden*. A trace at the place can be from **before** the deed. | card 3: the handle |
+| 1 | **Proge na žogah** · »Kdo je ob osmih porisal žoge?« (6) | *ob osmih*, during the photo (call: »Pred slikanjem so bile še bele.«) · the ball bag on the pitch | **Zoja**: blue-and-red Barcelona stripes on every ball, for luck (the proof: blue marker on her gloves). »Tudi žoge navijajo za Barcelono! Kot Yamal!« (to cheer her team) | **Luka**: the rubbing shows »Ob sedmih je Luka nosil žoge na igrišče.« (8). He was at the balls, but at **seven**, when they were still white. At eight he was in the photo. | trace: »Na Zojinih rokavicah je zelen flomaster.« (6) + the call's »zeleni zobje« | call → scene (🖍️ one object) → ⏰ (2 cards, owl-guided) → solve · 🖍️ rubbing | Gentle, clock hours: same place, which hour? | card 1: DINOZAVRI |
+| 2 | **Kozji gol** · »Kdo je med tekmo zabil skrivni gol?« (7) | *med tekmo* (the nine o'clock match) · the empty goal on the small pitch behind the gym | **Bor**, Pia's little brother and the Real mascot, too small for the team. In his white goat costume he sneaked to the empty goal and headed the spare ball in, like a real goat. »Meee! Tudi jaz sem Mbappé!« (1 + 4) (to play, once) | **Bor** looks cleared by Pia's »Pred tekmo je Bor plesal ob igrišču.« (7). True, but **before** the match, so it doesn't count (🟨). **Hana** is at the goal **after**: »Po tekmi je Hana pobrala žogo iz gola.« (8); during the match she was on the tribune. | trace: Pia: »Bor ima na rogu kos mreže.« (6). The call sets it up: Lan: »Bor ima bel kozji kostum z rogovi.« (7) | call + 📹 film → ask → ⏰ (3 cards) → solve · 📹 posnetek | Gentle: *pred / med / po*; **a true alibi for the wrong time** | card 2: white letters |
+| 3 | **Kapetanski trak** · »Kdo je med odmorom vzel kapetanski trak?« (7) | *med odmorom* (half-time of the ten o'clock match) · the City bench | **Hana**: she used Luka's red armband as a bookmark in the rulebook. »Ups! Rabila sem kazalo za pravilo sedem.« (1 + 6) (funny; to read) | **Pia**: 🧭 »Pri naši klopi leži Pijina kapa.« (6, said by Hana). Luka 👁️ explains it with a time: »Pia je kapo izgubila, preden so začeli.« (7). The arrow bends away. At half-time Pia was in the changing room with Lan. | a thing in the culprit's place, hidden away from the bench: Pia: »Trak je v Hanini knjigi pravil.« (6) | call → ask → 📜 torn → 🧭 → solve · 📜 Neža's report, torn by a ball: »Žoga je zadela Nežin zapisnik.« (5) | Practice: *preden*. A trace at the place can be from **before** the deed. | card 3: the handle |
 | 4 | **Venčki na golu** · »Kdo je med kosilom okrasil gol z venčki?« (8) | *med kosilom*, »medtem ko so jedli« (opoldne → ob enih) · the big goal | **Pia**: daisy chains all over the final's goal. »Za finale mora biti gol lep!« (6) (a surprise). Once this season, »likes it« is the real clue: Pia weaves daisy chains. | **Tone** at the goal **before**: »Pred kosilom je Tone kosil travo pri golu.« (8). **Zoja** at the goal **after**: »Po kosilu je Zoja risala rože na golu.« (8). Both were somewhere else during lunch. | a time sighting: »Medtem ko so jedli, je Pia pletla venčke.« (8) | call → 🔤 words → scene → ⏰ (3 cards) → solve · 🔤 iskanka (clues in words, no emoji) | Practice: *medtem ko*; two »at the place, wrong time« at once | card 4: gold crumbs |
 | 5 | **Žoga na strehi** · »Kdo je od enih do dveh brcnil žogo?« (8) | *od enih do dveh*: »Ob enih je bila žoga še v mreži.« (8), and on the gym roof by two · the big pitch by the gym | **sodnica Neža** (surprise: the strict referee): she tried one shot with the golden final ball, and it flew onto the roof. »Pisk! Samo enkrat sem hotela streljati!« (1 + 5) (to play, for once) | **Tone** is on the roof **after**: »Ob dveh je Tone splezal na streho.« (7). There is no step this time; using it gets 🟨 in solve. From one to two he was in the cellar. | a time sighting: »Od enih je Neža sama streljala na gol.« (8), after UGOVOR | call → 🕐 order → scene → ❗ → solve · 🕐 časovnica | Practice, **scaffold off**. ❗ breaks a claim with the **timetable**. | card 5: all four names |
 | 6 ⭐ | **Zlati pokal** · »Kdo je po slikanju vzel zlati pokal?« (7) | the window **after the photo (ob osmih) and before nine** (»po slikanju … do devetih«) · the hall → the cellar | **hišnik Tone**: to engrave every team's name. »Bo že, bo! Vsaka ekipa mora na pokal.« (3 + 5) (a surprise for everyone) | **Luka** held the cup **before** the photo: »Pred slikanjem sem sam držal pokal.« (6). **Zoja** passed the cabinet **after**: »Ob devetih sem tekla mimo prazne vitrine.« (7). Both have alibis covering the whole window. | a pair: Pia 👁️: »Po slikanju je Tone nesel škatlo v klet.« (8, names Tone) + »V kleti je prazna škatla za pokal.« (7, names nobody) | call → ask → 🔐 lock → scene (🖍️) → ⏰ (4 cards) → solve · 🔐 + 🖍️ | **Needs it:** a window with two edges; four cards, only one TAKRAT | the cup |
@@ -127,14 +127,14 @@ The client is **Lan**, the Dinozavri captain, a child who calls a child: »Hej, 
 
 ### 4.3 Hooks (letters from Lan; they arrive next session, so none is a clue)
 
-- 1 → »P. S. Pijin bratec Bor ima kozji kostum! 🐐« (7 after »P. S.«; letter: »Z Zojo sva umila vse žoge.«). Not a clue: case 2's call says it again.
-- 2 → »P. S. Luka je kapetan Ježkov. Ima rdeč trak!«
+- 1 → »P. S. Pijin bratec Bor je maskota Reala! 🐐« (7 after »P. S.«; letter: »Z Zojo sva umila vse žoge.«). Not a clue: case 2's call says it again.
+- 2 → »P. S. Luka je kapetan Cityja. Ima rdeč trak!«
 - 3 → »P. S. Opoldne je kosilo. Juha! 🍲«
 - 4 → »P. S. Po kosilu pride zlata žoga za finale! ✨«
 - 5 → »P. S. Ob petih je finale. Pridi! 🏆«
 - 6 → »P. S. Pozimi gremo vsi na sneg! ❄️« (a teaser for ❄️; it promises nothing)
 
-**Running jokes:** Lan's »Gooool!« and the score in every call; Bor's »Meee!« (he bleats instead of saying »ja«, even with the costume's head off); Neža's »Pisk!« and »Točno ob devetih!«; Tone's »Bo že, bo!«; Zoja's dinosaur teeth on everything; Hana's »Po pravilu številka sedem …«; Luka's »Ta pokal bo naš!«.
+**Running jokes:** Lan's »Gooool!« and the score in every call; Bor's »Meee!« (he bleats instead of saying »ja«, even with the costume's head off); Neža's »Pisk!« and »Točno ob devetih!«; Tone's »Bo že, bo!«; Zoja's Barcelona stripes on everything; Hana's »Po pravilu številka sedem …«; Luka's »Ta pokal bo naš!«.
 
 ## 5. Fair-play check: the producer's rules, case by case
 
@@ -145,8 +145,8 @@ The call names the time, the question repeats it (it is on the solve screen), an
 | # | Deed: time · place | Innocent → their one alibi (draft, words) | Wrong time, **at** the place (tempting, not guilty) | Wrong time, **away** (not cleared) |
 |---|---|---|---|---|
 | 1 | *ob osmih* · ball bag on the pitch | Luka → »Ob osmih je Luka na sliki držal pokal.« (8) · Pia → »Ob osmih je Pia v avli držala Bora.« (8) · Tone → »Ob osmih je Tone slikal vse v avli.« (8) | Luka *ob sedmih* (the rubbing) | (none: case 1 is gentle) |
-| 2 | *med tekmo* · small pitch, empty goal | Pia → Neža 👁️: »Med tekmo je Pia stala v golu Kozic.« (8) · Luka → Hana: »Med tekmo sva z Luko sedela na tribuni.« (8) · Hana → Neža 👁️: »Med tekmo je Hana na tribuni štela gole.« (8) | Hana *po tekmi* | **Bor *pred tekmo*** (Pia's true sentence: the culprit) |
-| 3 | *med odmorom* · Ježki bench | Zoja → 📜 »Med odmorom je Zoja v telovadnici risala plakat.« (8) · Tone → Neža 👁️: »Med odmorom je Tone z mano menjal mrežo.« (8) · Pia → Lan 👁️: »Med odmorom sva bila s Pio v garderobi.« (8; Lan was with her, so he could see. They were gluing Bor's torn horn back on: flavour for the call, not needed) | Pia's cap, lost *preden so začeli* (🧭) | (none) |
+| 2 | *med tekmo* · small pitch, empty goal | Pia → Neža 👁️: »Med tekmo je Pia branila na velikem igrišču.« (8) · Luka → Hana: »Med tekmo sva z Luko sedela na tribuni.« (8) · Hana → Neža 👁️: »Med tekmo je Hana na tribuni štela gole.« (8) | Hana *po tekmi* | **Bor *pred tekmo*** (Pia's true sentence: the culprit) |
+| 3 | *med odmorom* · City bench | Zoja → 📜 »Med odmorom je Zoja v telovadnici risala plakat.« (8) · Tone → Neža 👁️: »Med odmorom je Tone z mano menjal mrežo.« (8) · Pia → Lan 👁️: »Med odmorom sva bila s Pio v garderobi.« (8; Lan was with her, so he could see. They were gluing Bor's torn horn back on: flavour for the call, not needed) | Pia's cap, lost *preden so začeli* (🧭) | (none) |
 | 4 | *med kosilom* / *medtem ko so jedli* · the big goal | Zoja → »Med kosilom je Zoja sedela poleg Lana.« (7) · Tone → »Medtem ko so jedli, je Tone pomival lonce.« (8) · Bor → »Med kosilom je Bor sedel v jedilnici.« (7) | Tone *pred kosilom*, Zoja *po kosilu* | **Pia *po kosilu***: »Po kosilu je Pia pila čaj na klopi.« (8, the culprit) |
 | 5 | *od enih do dveh* · big pitch, gym roof | Hana → »Od enih do dveh je Hana na tribuni.« (8) · Luka → »Od enih do dveh je Luka spal.« (7) · Tone → »Od enih do dveh je Tone v kleti.« (8) | Tone *ob dveh* on the roof | (Neža's claim, broken by UGOVOR) |
 | 6 | *po slikanju … do devetih* · hall → cellar | Luka → Hana 👁️: »Po slikanju je Luka do devetih tekel kroge.« (8) · Zoja → Lan 👁️: »Po slikanju je Zoja do devetih umivala žoge.« (8) · Neža → Hana 👁️: »Po slikanju je Neža do devetih merila gol.« (8) | Luka *pred slikanjem*, Zoja *ob devetih* | **Tone *pred slikanjem***: »Pred slikanjem sem čistil fotoaparat.« (5, the culprit) |
@@ -256,16 +256,16 @@ A scene object with `rub: true` needs the pencil, the way a `dark` one needs the
 
 | Who | Role | One trait the child remembers (and can use) | Name pattern | Address |
 |---|---|---|---|---|
-| **Lan** 👦🏽 | the client, every case; Dinozavri captain; a witness in 3 and 6 | reports the score in every call, »Gooool!«; knows every dinosaur | `lan` (built) | ti |
-| **Zoja** 👧🏻 | Dinozavri goalkeeper; culprit of 1; tempting in the guess | draws dinosaur teeth on everything; big goalkeeper gloves | `zoja` (built) | ti |
-| **Luka** 👦🏼 | Ježki captain (red armband); never a culprit this season; tempting in the guess | »Ta pokal bo naš!«; held the cup in the photo | `luka` (built) | ti |
-| **Hana** 👧🏽 | Ježki; culprit of 3 | knows the rulebook by heart, »Po pravilu številka sedem …« | `hana` (built) | ti |
-| **Pia** 👧🏼 | Kozice goalkeeper, from the farm; culprit of 4 | weaves daisy chains; Bor's big sister | `pia` (built) | ti |
-| **Bor** 🧒🏻 (new) | Pia's little brother, the Kozice mascot, too small to play; culprit of 2 | always in a white goat costume with horns; says »Meee!« instead of »ja« | `Bor(a\|u\|om\|ov\p{L}*)?` ⚠ | ti |
+| **Lan** 👦🏽 | the client, every case; Barcelona captain; a witness in 3 and 6 | reports the score in every call, »Gooool!«; Yamal fan | `lan` (built) | ti |
+| **Zoja** 👧🏻 | Barcelona goalkeeper; culprit of 1; tempting in the guess | draws Barcelona stripes on everything; big goalkeeper gloves | `zoja` (built) | ti |
+| **Luka** 👦🏼 | City captain (red armband; wears a Haaland shirt); never a culprit this season; tempting in the guess | »Ta pokal bo naš!«; held the cup in the photo | `luka` (built) | ti |
+| **Hana** 👧🏽 | City; culprit of 3 | knows the rulebook by heart, »Po pravilu številka sedem …« | `hana` (built) | ti |
+| **Pia** 👧🏼 | Real goalkeeper, from the farm; culprit of 4 | weaves daisy chains; Bor's big sister | `pia` (built) | ti |
+| **Bor** 🧒🏻 (new) | Pia's little brother, the Real mascot, too small to play; culprit of 2 | always in a white goat costume with horns; says »Meee!« instead of »ja« | `Bor(a\|u\|om\|ov\p{L}*)?` ⚠ | ti |
 | **hišnik Tone** 👨🏻‍🔧 | the caretaker; the answer; never a culprit of a small case | a thick pencil behind his ear; made every metal sign on the doors; sets up the benches before every match; works in the cellar, »bzzz«; »Bo že, bo!« | `Ton(e\|eta\|etu\|etom\|etov\p{L}*)` ⚠ | **Vi** |
 | **sodnica Neža** 👩🏼‍⚖️ | the referee and organiser; a witness in 2, 3; culprit of 5 | »Pisk!«; exact times, »Točno ob devetih!«; writes everything down; makes codes from scores; secretly longs to play | `Než(a\|e\|i\|o\|in\p{L}*)` | **Vi** |
 
-- **Teams:** 🦖 Dinozavri (Lan, Zoja: the museum's Dino klub), 🦔 Ježki (Luka, Hana from Piran, named after the Ježek books), 🐐 Kozice (Pia from the farm, with her little brother Bor as the mascot in a goat costume), 🦅 Sokoli (the host school, no named players). None of the team names matches a name pattern.
+- **Teams (real clubs, producer 2026-11-12):** 🔵 Barcelona (Lan, Zoja), 🩵 City (Luka, Hana), ⚪ Real (Pia, with her little brother Bor as the mascot in a white goat costume; Real wears white), 🔴 Bayern (the host school, no named players). **Stars as role models only** (never suspects, witnesses or in a clue line): Yamal (Barcelona) in p1's excuse, Mbappé (Real) in p2's excuse, Haaland (City) in p3's letter, Kane (Bayern) in p5's letter. None of the team names matches a name pattern.
 - **Name checks** against `CHARACTERS`: Tone, Neža and Bor are new and look like nobody in the cast (no other Bo- name; Bepi, Bine and Breda are in other files). ⚠ The match is case-sensitive, so only a sentence's first word can clash: never start a sentence with »Ton …« (a sound), »Bor …« meaning »pine« or »Borovnice …« (both match Bor's pattern). Meta 🐐 stays in `CHARACTERS` for the farm cases but is not in this file. Lan 👦🏽 and Luka 👦🏼 look alike: Lan is on the call screen only, never in a line-up. Bor is the younger child 🧒🏻 with a white-and-grey colour (his costume), so he never looks like Luka. Zoja, Hana and Pia need clearly different colours (UX check).
 - **»Vi«** to Tone and Neža in every question chip (»Kje ste bili med odmorom?«), as the producer confirmed for adult staff (2026-11-05). »Ti« to the children. The formal participle stays masculine plural (»ste bili«).
 
@@ -296,7 +296,7 @@ One puzzle a case, two in the final. A 🔐 lock with a score code. No type in t
 | 5 | 🕐 časovnica, 4 cards (*Najprej / Ob enih / Preden / Šele*), order by meaning | the clauses decide, not just the first word | `done`: »Žoga je poletela od enih do dveh!« (the window) |
 | 6 | 🔐 **ključavnica, 4 wheels: 3-1-2-0** + 🖍️ rubbing one notch up | the code is **two scores**, ordered by the clock (which semifinal was first?) | opens the cellar; the rubbing gives a neutral line |
 
-- **The lock:** note »Šifra: rezultata polfinalov, po vrsti.« (5), `h1` »Kdo je igral ob devetih? In ob desetih?« (5 + 3), `h2` »3 : 1 in 2 : 0. Šifra je 3-1-2-0.« (5 + 3). The scores are in Lan's calls: case 3 »Zmagali smo 3 : 1!« (4), case 4 »Ježki so zmagali 2 : 0!« (5). Neža set it after lunch (case 5 plant: the new lock on the cellar door). It is plausible because both scores were known by then. The final's call says »Klet je zaklenjena. Šifro je izbrala Neža.« (3 + 4).
+- **The lock:** note »Šifra: rezultata polfinalov, po vrsti.« (5), `h1` »Kdo je igral ob devetih? In ob desetih?« (5 + 3), `h2` »3 : 1 in 2 : 0. Šifra je 3-1-2-0.« (5 + 3). The scores are in Lan's calls: case 3 »Zmagali smo 3 : 1!« (4), case 4 »City je zmagal 2 : 0!« (5). Neža set it after lunch (case 5 plant: the new lock on the cellar door). It is plausible because both scores were known by then. The final's call says »Klet je zaklenjena. Šifro je izbrala Neža.« (3 + 4).
 - **The 🖍️ rubbing counts as case 1's puzzle** (the producer, 2026-11-06). The final has two: the 🔐 lock and the 🖍️ rubbing. The museum's case 1 also had no classic puzzle, so the new step had the stage.
 - **Not used:** ✉️ cipher (twice in Galeb), 🔤 geslo (Galeb 5, Muzej 5), 🟦 logic grid, 🗺️ map (not built; a »who was where« grid would fit rung 7).
 
@@ -460,7 +460,7 @@ order: {
 
 #### Case 6 ⭐ · Zlati pokal (`call → ask → lock → scene → when → solve`)
 - **Puzzle 1: 🔐 lock, 3-1-2-0** (kept as pitched; it is fair). Neža locked the cellar after lunch (the case 5 plant »Na vratih kleti je nova ključavnica s šifro.«) and made the code from the morning's two scores, which everyone knew by then. The final's call says »Klet je zaklenjena. Šifro je izbrala Neža.« (3 + 4).
-  - **Found by reading:** case 3's call »Zmagali smo 3 : 1!« (Dinozavri, ob devetih), case 4's call »Ježki so zmagali 2 : 0!« (ob desetih).
+  - **Found by reading:** case 3's call »Zmagali smo 3 : 1!« (Barcelona, ob devetih), case 4's call »City je zmagal 2 : 0!« (ob desetih).
   - **The reasoning point:** each score fills two wheels (the colon is not a digit), and the earlier match comes first. The calls come in the same order, so a careful reader has both.
   - **⚠ The pitch's `h2` fails the checker:** »3 : 1 in 2 : 0. Šifra je 3-1-2-0.« has the digits twice (`h2` minus non-digits must equal the code). Fixed below.
 
@@ -469,11 +469,11 @@ lock: {
   note: 'Šifra: rezultata obeh jutranjih tekem, po vrsti.',     // 7, counted as one string
   code: '3120',
   h1: 'Rezultate je povedal Lan. Kdo je igral prvi?',           // 8
-  h2: 'Šifra je 3-1-2-0. Najprej Dinozavri, nato Ježki.',       // 7; its only digits are the code
+  h2: 'Šifra je 3-1-2-0. Najprej Barcelona, nato City.',       // 7; its only digits are the code
 },
 ```
   - **Ladder (as built):** 1st wrong »Ključavnica se ne odpre. Poskusi drugo šifro.« → 2nd `h1` (where) → 4th `h2` (the code, so a child who forgot the calls is never stuck). No check while the wheels turn.
-- **Puzzle 2: 🖍️ rubbing** on Tone's workbench pad: `['sO', 'Za srečo: DINOZAVRI, KOZICE, JEŽKI, SOKOLI.', 'neutral', { obj: '📝', label: 'blok', rub: true }]` (6). It names nobody (team names in capitals match no name pattern) and ties the cellar to card 5 and the cup. It is one of the three cellar sentences in the 11-sentence budget.
+- **Puzzle 2: 🖍️ rubbing** on Tone's workbench pad: `['sO', 'Za srečo: BARCELONA, REAL, CITY, BAYERN.', 'neutral', { obj: '📝', label: 'blok', rub: true }]` (6). It names nobody (team names in capitals match no name pattern) and ties the cellar to card 5 and the cup. It is one of the three cellar sentences in the 11-sentence budget.
 - **⏰** (4 cards, a window with two edges):
 
 ```js
@@ -498,7 +498,7 @@ when: { deed: 'po slikanju do devetih: pokal izgine',    // 6
 
 ### 11.4 For the writers: what the puzzles need in other sentences
 
-- **Scores in the calls, and no other score before the final:** case 3's call »Zmagali smo 3 : 1!«, case 4's »Ježki so zmagali 2 : 0!«. Case 2's call happens during the first match: no score there (»Tekma še traja!« or nothing). No other digits in any call, card or letter of cases 1–5, so nothing else looks like a code.
+- **Scores in the calls, and no other score before the final:** case 3's call »Zmagali smo 3 : 1!«, case 4's »City je zmagal 2 : 0!«. Case 2's call happens during the first match: no score there (»Tekma še traja!« or nothing). No other digits in any call, card or letter of cases 1–5, so nothing else looks like a code.
 - **Case 1:** Neža's notebook is in the scene, and the call or a scene line says Neža writes everything down. The rubbing is the PREJ card, so it is neutral.
 - **Case 2:** the film's four captions as above; Hana's POTEM line matches the fourth frame.
 - **Case 3:** the torn note is the explanation (Neža's report); Zoja's alibi is Luka's answer (§11.2).
@@ -515,3 +515,4 @@ when: { deed: 'po slikanju do devetih: pokal izgine',    // 6
   - the riddle list (case 4);
   - the 🖍️ sweep on a narrow object (cases 1 and 6) and the white-on-grey row in the pocket and in solve;
   - the 4-card order (case 5), longest card »Preden je žoga pristala na strehi, je letela.«.
+- 2026-11-12 · Revision (producer): real clubs and stars. Teams Dinozavri → Barcelona, Kozice → Real, Ježki → City, Sokoli → Bayern; scores, times, code 3120, culprits and proofs unchanged. Zoja's green dino teeth became blue-red Barcelona stripes (the proof is now blue marker on her gloves); Bor stays a goat-costume mascot, now Real's; p1's sticker 🦷 → 🔵. Stars (Yamal, Mbappé, Haaland, Kane) only in excuses and letters. The pitch/puzzle text above that still says »zobje«, »Kozice« etc. is history; the data in `solo/index.html` is the truth. — case writer

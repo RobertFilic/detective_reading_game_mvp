@@ -14,6 +14,7 @@ Agreed with the producer on 2026-11-05: one new season a week. A season is built
 2. **Puzzles** (puzzle designer): one puzzle a case, two in the final. A number lock 🔐 in every season (the children's favourite, 2026-11-05).
 3. **Writing** (case writers, one case each) into `solo/index.html`; `node tools/cases.mjs` passes.
 4. **Review:** the fair-play tester (exactly one answer per case: every alibi covers the deed's time and place; the decoy is never a second answer), the Slovenian editor and the book editor (the fun checklist). Fix every 🔴 and 🟠 (or record why not in »Decisions«), at most two rounds.
+   After the fixes, the producer reads the season in Slovenian: `node tools/read.mjs <file>` (from `solo/`) opens every text of the season on one page.
 5. **Screens** (UX reviewer): `node tools/shots.mjs <caseId>` on a small phone, an iPad and a landscape phone.
 6. **Ship:** the browser tests pass; the season's `FILES` entry gets `teaser`, `opens` and its colour `hue` (0–359; pick one far from the other seasons, see `solo/?ui`), and its line leaves `COMING`; the ledger and the curriculum are updated; commit and push.
 7. **Release check** on the day: the live site has the season, the teaser is gone, case 1 opens.
