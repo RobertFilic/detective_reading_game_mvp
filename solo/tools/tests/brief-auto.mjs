@@ -6,6 +6,7 @@ puppeteer.launch = async (o) => {
   const b = await launch(o), newPage = b.newPage.bind(b);
   b.newPage = async () => {
     const p = await newPage();
+    await p.evaluateOnNewDocument(() => { window.NO_READ_WAIT = true; });   // "all found" comes at once (bip.mjs tests the wait)
     await p.evaluateOnNewDocument(() => {
       new MutationObserver(() => { const k = document.querySelector('[data-act="briefOk"], [data-act="truthOk"], [data-act="excuseOk"]'); if (k) k.click(); })
         .observe(document, { childList: true, subtree: true });
