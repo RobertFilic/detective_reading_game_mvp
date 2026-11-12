@@ -22,6 +22,8 @@ ok(!(await p.$('.file-card[data-file="vesolje"], .file-card[data-file="kmetija"]
 ok(total === open.length * 6, `every adventure has 6 cases (${total})`);
 await p.click('.file-card[data-file="bip"]');
 ok((await st()).screen === 'board' && (await p.$$('.folder')).length === 6, 'board shows 6 cases');
+ok(await p.$('.folder[data-no="1"].coach-target') && await p.$('.coach-spot') && await p.$('.coach-hand')
+  && (await p.$eval('.coach .say', e => e.innerText)).includes('Tapni primer 1'), 'the first board: spotlight and finger on case 1, "Tapni primer 1 in začni!"');
 ok((await p.$$('.folder.locked')).length === 5 && !(await p.$('.folder.locked[data-no="1"]')), 'a season opens one case at a time: only case 1 is open');
 await p.click('.folder[data-no="3"]'); await wait();
 ok((await st()).screen === 'board' && (await p.evaluate(() => document.body.innerText)).includes('se odpre, ko rešiš primer 2'), 'a locked case says which case opens it');
@@ -33,6 +35,7 @@ ok((await st()).screen === 'call' && (await st()).no === 1, 'case 1 opens on the
 await p.evaluate(() => { localStorage.setItem('dp_played_v1', JSON.stringify(['bip:1', 'bip:2', 'bip:3'])); toBoard(); });
 await wait();
 ok(JSON.stringify(await ticks()) === '[1,2,3]', 'solved cases have ✔');
+ok(!(await p.$('.coach')) && !(await p.$('.coach-spot')), 'with a case solved, no spotlight on the board');
 ok(!(await p.$('.folder.locked[data-no="4"]')) && await p.$('.folder.locked[data-no="5"]'), 'case 4 opens after case 3, case 5 waits');
 await p.evaluate(() => ACTIONS.toSetup());
 await p.click('[data-act="age"][data-age="6-7"]');

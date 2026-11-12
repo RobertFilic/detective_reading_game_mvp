@@ -3269,6 +3269,11 @@ function coachStep() {
     return r.lcoach === 1 ? { text: UI_AUDIO.coachLie1, sel: one ? '.claim' : '.claims', point: one }
       : { text: UI_AUDIO.coachLie2, sel: '.liestep .rows', point: false };
   }
+  // the very first board (nothing solved yet): the spotlight and the finger on the case to start with
+  if (S.screen === 'board' && !solvedKeys().length) {
+    const f = $('.folder.suggest') || $('.folder:not(.locked):not(.solved):not(.soon)');
+    if (f) return { text: `Tukaj so tvoji primeri. Tapni primer ${f.dataset.no} in začni!`, sel: `.folder[data-no="${f.dataset.no}"]` };
+  }
   if (!t) return null;
   if (S.screen === 'files') return t.board ? { text: 'Zdaj izberi pustolovščino in reši svoj primer!', sel: '.file-card', ok: true } : null;
   if (S.screen === 'board') return null;

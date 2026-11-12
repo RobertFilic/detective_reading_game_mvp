@@ -7,6 +7,7 @@ const wait = (ms = 150) => new Promise(r => setTimeout(r, ms));
 for (const [name, w, h] of [['iphone14', 390, 844], ['plus14', 428, 926], ['land', 852, 393]]) {
   const p = await b.newPage();
   const errors = []; p.on('pageerror', e => errors.push(e.message));
+  await p.evaluateOnNewDocument(() => { if (window.speechSynthesis) speechSynthesis.getVoices = () => []; });   // a late voice list re-renders mid-tap
   await p.setViewport({ width: w, height: h, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
   await p.goto('http://localhost:8765/solo/?play');
   await p.evaluate(() => { localStorage.clear(); localStorage.setItem('dp_save_version', '4'); localStorage.setItem('dp_tutorial_done', 'true');
