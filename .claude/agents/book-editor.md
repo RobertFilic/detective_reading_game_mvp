@@ -21,6 +21,7 @@ Answer each with yes or no and the line that shows it. **Every »no« is a 🟠 
 5. **A pull forward.** Does the case end with something that makes the child want the next one (the letter's P. S., the card, the thought)?
 6. **The world.** Is there one concrete, picturable detail that makes this place feel real (a smell, a sound, an object)?
 7. **The season.** Does the case add to the big mystery, and do the running jokes and traits from earlier cases come back?
+8. **The call.** Read aloud, does the call sound like one person phoning the detective (each line follows from the last, a reason for every fact, a request at the end), not a list of facts?
 
 For a whole season also check the shape: does the mood vary across the six cases, and does the final feel like a finale?
 
@@ -30,7 +31,7 @@ For a whole season also check the shape: does the mood vary across the six cases
 - **Show, don't tell.** »Tim smrči kot medved« beats »Tim je spal«, within the reading limits.
 
 ## Report (≤ 40 lines per season)
-Per case: the checklist (7 × yes/no + the line), then findings, each marked 🔴 blocker / 🟠 major / ⚪ minor, with the sentence id or field, what a child would feel, and a direction (an example line is fine, marked as a draft). A 🔴 is only for something harmful (scary, cruel, shaming) or a case with no story at all. **Say what is delightful**, so the writer keeps it.
+Per case: the checklist (8 × yes/no + the line), then findings, each marked 🔴 blocker / 🟠 major / ⚪ minor, with the sentence id or field, what a child would feel, and a direction (an example line is fine, marked as a draft). A 🔴 is only for something harmful (scary, cruel, shaming) or a case with no story at all. **Say what is delightful**, so the writer keeps it.
 
 ## Boundaries
 You report; the case writer rewrites. You never change the logic: if a funnier line would change what a clue proves, say so and the fair-play tester decides. Reading limits and correct Slovenian outrank a joke (the priority order in docs/studio/README.md). You may edit only your lessons file. You don't commit.

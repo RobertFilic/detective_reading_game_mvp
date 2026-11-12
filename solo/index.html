@@ -2396,11 +2396,11 @@ const CASES = [
     id: 'p1', file: 'pokal', no: 1, type: 'elim', level: 'A', sticker: '🔵', place: 'Igrišče',
     steps: ['call', 'scene', 'when', 'solve'],
     // Lan found the stripes after the photo (the final's alibi for Zoja leans on it); the notebook makes the rub tempting
-    client: 'lan', call: ['Hej, pomagaj! Žoge imajo proge!', 'Pred slikanjem ob osmih so bile še bele.', 'Sodnica Neža vse zapiše v zvezek.'],
+    client: 'lan', call: ['Hej, pomagaj! Naše žoge imajo črte!', 'Ob osmih smo se slikali. Prej so bile še bele.', 'Sodnica Neža vse zapiše v zvezek. Poglej vanj!'],
     question: 'Kdo je ob osmih porisal žoge?',
     suspects: ['luka', 'zoja', 'pia', 'tone'], culprit: 'zoja',
     sentences: [
-      ['s1', 'Na vsaki žogi so modro-rdeče proge.', 'neutral', { obj: '🎒', label: 'vreča' }],
+      ['s1', 'Na vsaki žogi so modro-rdeče črte.', 'neutral', { obj: '🎒', label: 'vreča' }],
       // 🖍️ the decoy: Neža's next page, written at seven (the ⏰ PREJ card): Luka was at the balls while they were white
       ['s2', 'Ob sedmih je Luka nosil žoge na igrišče.', 'distractor', { obj: '📓', label: 'zvezek', rub: true }],
       ['s3', 'Ob osmih je Luka na sliki držal pokal.', 'clear', { obj: '🖼️', label: 'slika', clears: 'luka' }],
@@ -2416,13 +2416,13 @@ const CASES = [
       ['s4', 'Na Zojinih rokavicah so modre in rdeče packe.', 'evidence', { obj: '🥅', label: 'gol' }],
     ],
     // ⏰ 2 cards, owl-guided, both about Luka: same place, which hour?
-    when: { deed: 'ob osmih: žoge dobijo proge', cards: { s2: 'before', s3: 'during' },
+    when: { deed: 'ob osmih: žoge dobijo črte', cards: { s2: 'before', s3: 'during' },
       h1: 'Kdaj je bil Luka pri žogah?' },
     h1: 'Kdo NI mogel biti? Kje so packe?',
-    reveal: ['Luka je nosil žoge že ob sedmih.', 'Ob osmih je Zoja risala proge na žoge.', 'Packe so ostale na rokavicah.', 'Kje pa je zlati pokal? Vitrina je prazna! 🏆'],
+    reveal: ['Luka je nosil žoge že ob sedmih.', 'Ob osmih je Zoja risala črte na žoge.', 'Packe so ostale na rokavicah.', 'Kje pa je zlati pokal? Vitrina je prazna! 🏆'],
     caught: 'Zojo', excuse: 'Tudi žoge navijajo za Barcelono! Kot Yamal!',
     card: { icon: '🖍️', sid: 's9', think: 'Kdo je narisal to sivo risbo? In kje je pokal? 🤔' },
-    letter: ['Hvala! Z Zojo sva umila vse žoge.', 'Zoja zdaj riše proge samo na papir. ⚽', 'P. S. Pijin bratec Bor je maskota Reala! 🐐'],
+    letter: ['Hvala! Z Zojo sva umila vse žoge.', 'Zoja zdaj riše črte samo na papir. ⚽', 'P. S. Pijin bratec Bor je maskota Reala! 🐐'],
   },
   {
     id: 'p2', file: 'pokal', no: 2, type: 'elim', level: 'A', sticker: '🐐', place: 'Mali gol',
