@@ -1159,6 +1159,7 @@ tr.clickable { cursor: pointer; }
 .row.selected { background: var(--season); border-color: var(--season); color: #fff; font-weight: 500; box-shadow: var(--sh-lift); transform: translateY(-2px); }
 .row.selected .nm, .row.selected .who { color: #fff; }
 .row.dim { opacity: 1; background: transparent; border-style: dashed; box-shadow: none; color: var(--ink-2); }
+.btn.pulse { animation: ui-glow 2s ease-in-out infinite; }   /* everything found: the way on glows */
 .row.pulse, .wcell.pulse, .tcard.pulse, .claim.pulse, .hclue.pulse, .suspect.pulse, .obj.pulse, .tool.pulse, .ctile.pulse, .strip.pulse { border-color: var(--glow); animation: ui-glow 2s ease-in-out infinite; }
 .row.used { text-decoration: line-through 2px; text-decoration-color: var(--ink-2); color: var(--ink-2); opacity: 1; box-shadow: none; }
 .row.broke { border-color: var(--glow); animation: ui-glow 2s ease-in-out 1; }
@@ -1587,9 +1588,11 @@ const UI_AUDIO = {
   dark: 'Tu je pretemno. Vzemi svetilko!',
   rub: 'Na listu ni nič. Vzemi svinčnik!',
   sceneDone: 'Vse je preiskano. Kdo je bil?',
+  sceneDoneFirst: 'Vse je preiskano! Preberi namige. Ko veš, kdo je bil, tapni »Vem, kdo je bil!«.',
   sceneDoneOn: 'Vse je preiskano. Naprej! 👉',
   ask: 'Zasliši vse. Tapni obraz, nato vprašanje.',
   askDone: 'Vsi so odgovorili. Kdo je bil?',
+  askDoneFirst: 'Vsi so odgovorili! Preberi namige. Ko veš, kdo je bil, tapni »Vem, kdo je bil!«.',
   askDoneOn: 'Vsi so odgovorili. Naprej! 👉',
   wordNo: 'To ni beseda s seznama. Tapni prvo in zadnjo črko.',
   wordLook: 'Beseda je v svetli vrsti.',
@@ -3610,6 +3613,8 @@ function wordSpots(w) {
 const stepNext = (d = 1) => S.c.steps[S.c.steps.indexOf(S.screen) + d];
 // »Vse je preiskano. Kdo je bil?« only when solve comes next; before another step it says »Naprej!«
 const doneKey = (k) => stepNext() === 'solve' ? k : k + 'On';
+// until the first case is solved, the message says which button comes next
+const doneMsg = (k) => stepNext() === 'solve' && !solvedKeys().length ? UI_AUDIO[k + 'First'] : UI_AUDIO[doneKey(k)];
 // The button that goes on is always »Naprej 👉« (the next step's own card says what to do there), and
 // »Vem, kdo je bil!« before solve. A step's name on the button read like a riddle (»Napačna sled? 🤔«).
 const stepLabel = () => stepNext() === 'solve' ? 'Vem, kdo je bil!' : 'Naprej 👉';
@@ -3671,7 +3676,7 @@ function noteHTML() {
   const r = S.run, hmm = S.c.lie ? (S.c.lie.hmm || []).findIndex(m => m[2] === r.note) : -1;
   const key = Object.keys(UI_AUDIO).find(k => UI_AUDIO[k] === r.note);
   const almost = hmm >= 0 || r.note === UI_AUDIO.lieHalf;
-  const good = [UI_AUDIO.lastOne, UI_AUDIO.sceneDone, UI_AUDIO.askDone, UI_AUDIO.sceneDoneOn, UI_AUDIO.askDoneOn, UI_AUDIO.herringDone, UI_AUDIO.whenDone].includes(r.note);
+  const good = [UI_AUDIO.lastOne, UI_AUDIO.sceneDone, UI_AUDIO.askDone, UI_AUDIO.sceneDoneOn, UI_AUDIO.askDoneOn, UI_AUDIO.sceneDoneFirst, UI_AUDIO.askDoneFirst, UI_AUDIO.herringDone, UI_AUDIO.whenDone].includes(r.note);
   return `<div class="note-back" data-act="noteNudge"></div><div class="hint note ${almost ? 'almost' : good ? 'good' : 'tip'}" id="note">
     <span class="hi">${good ? '✓' : UI.coin(helperEmoji())}</span><span class="txt">${almost ? `<b class="verdict">${UI_AUDIO.almost}</b> ` : ''}${esc(r.note)}</span>
     ${UI.btn('V redu', { act: 'noteOk', kind: good ? '' : 'is-soft' })}</div>`;
@@ -4282,7 +4287,7 @@ const T = {
     const me = profile() ? profile().av : '🕵️';
     return `<div class="screen scene ask">
       <div class="caseq">❓ ${esc(c.question)}</div>
-      ${qbarB(done ? UI_AUDIO[doneKey('askDone')] : UI_AUDIO.ask, done ? 'ui_' + doneKey('askDone') : 'ui_ask')}
+      ${qbarB(done ? doneMsg('askDone') : UI_AUDIO.ask, done ? 'ui_' + doneKey('askDone') : 'ui_ask')}
       <div class="suspects mini">${[...c.suspects, ...(c.witnesses || [])].map(id => {
         const left = mine.filter(s => s.who === id && !r.found.includes(s.id)).length, eye = (c.witnesses || []).includes(id);
         return `<button class="suspect ${r.who === id ? 'on' : ''} ${eye ? 'witness' : ''}" data-act="askWho" data-id="${id}">
@@ -4296,7 +4301,7 @@ const T = {
       ${open.length && !r.typing ? `<div class="qs">${open.map(s => `<button class="qbtn" data-act="askQ" data-sid="${s.id}">${esc(s.ask)}</button>`).join('')}</div>` : ''}
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
         <span class="pocket-count">👝 ${got} / ${all}</span>
-        <span class="grow"></span><button class="btn big" data-act="toSolve" ${done ? '' : 'disabled'}>${done ? stepLabel() : leftLabel(all - got, ['vprašanje', 'vprašanji', 'vprašanja', 'vprašanj'], '💬')}</button></div>
+        <span class="grow"></span><button class="btn big ${done && !r.note ? 'pulse' : ''}" data-act="toSolve" ${done ? '' : 'disabled'}>${done ? stepLabel() : leftLabel(all - got, ['vprašanje', 'vprašanji', 'vprašanja', 'vprašanj'], '💬')}</button></div>
     </div>`;
   },
 
@@ -4337,7 +4342,7 @@ const T = {
     const found = r.found.filter(sid => stepOf(sent(sid)) === 'scene'), done = found.length === all;
     return `<div class="screen scene">
       <div class="caseq">❓ ${esc(c.question)}</div>
-      ${qbarB(done ? UI_AUDIO[doneKey('sceneDone')] : UI_AUDIO.scene, done ? 'ui_' + doneKey('sceneDone') : 'ui_scene')}
+      ${qbarB(done ? doneMsg('sceneDone') : UI_AUDIO.scene, done ? 'ui_' + doneKey('sceneDone') : 'ui_scene')}
       <div class="toolbar-kid">
         <button class="tool ${r.torch ? 'on' : r.darkMiss && mine.some(s => s.dark && !r.found.includes(s.id)) ? 'pulse' : ''}" data-act="torch">🔦 Svetilka</button>
         ${mine.some(s => s.rub) ? `<button class="tool ${r.pencil ? 'on' : r.rubMiss >= 2 ? 'pulse' : ''}" data-act="pencil">🖍️ Svinčnik</button>` : ''}
@@ -4351,7 +4356,7 @@ const T = {
       <div class="rows pocket">${found.slice().reverse().map((sid, i) =>
         `<div class="row ${i === 0 && r.fresh ? 'fresh' : ''} ${sent(sid).rub ? 'rubbed' : ''}" data-act="listenClue" data-sid="${sid}">${sayHTML(sent(sid))}</div>`).join('')}</div>
       <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
-        <span class="grow"></span><button class="btn big" data-act="toSolve" ${done ? '' : 'disabled'}>${done ? stepLabel() : leftLabel(all - found.length, ['stvar', 'stvari', 'stvari', 'stvari'], '👆')}</button></div>
+        <span class="grow"></span><button class="btn big ${done && !r.note ? 'pulse' : ''}" data-act="toSolve" ${done ? '' : 'disabled'}>${done ? stepLabel() : leftLabel(all - found.length, ['stvar', 'stvari', 'stvari', 'stvari'], '👆')}</button></div>
     </div>`;
   },
 
@@ -5284,7 +5289,7 @@ const ACTIONS = {
     setTimeout(() => {
       if (S.screen !== 'ask' || r.typing !== s.id) return;
       r.typing = null;
-      if (own('ask').every(x => r.found.includes(x.id))) r.note = UI_AUDIO[doneKey('askDone')];
+      if (own('ask').every(x => r.found.includes(x.id))) r.note = doneMsg('askDone');
       sfx('pop');
       render();
     }, 900);
@@ -5342,7 +5347,7 @@ const ACTIONS = {
     }
     r.found.push(s.id);
     r.fresh = true;
-    r.note = own('scene').every(x => r.found.includes(x.id)) ? UI_AUDIO[doneKey('sceneDone')] : null;
+    r.note = own('scene').every(x => r.found.includes(x.id)) ? doneMsg('sceneDone') : null;
     r.heard.add(s.id);
     sfx('pop');
     log('clue_open', { sentenceId: s.id, role: s.role, n: r.found.length });

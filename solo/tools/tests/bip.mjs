@@ -52,6 +52,11 @@ for (const [name, w, h] of devices) {
   await p.click('[data-act="torch"]'); await wait();
   await p.click('.obj[data-sid="s6"]'); await wait();
   ok((await p.$$('.pocket .row')).length === 7 && !(await p.$eval('[data-act="toSolve"]', el => el.disabled)), `${name}: torch reveals the footprint, all 7 found`);
+  ok((await text()).includes('Vse je preiskano. Kdo je bil?') && !(await text()).includes('tapni »Vem'), `${name}: a case already solved: the short »Vse je preiskano. Kdo je bil?«`);
+  ok(await p.evaluate(() => { const k = localStorage.getItem('dp_played_v1'); localStorage.setItem('dp_played_v1', '[]'); const m = doneMsg('sceneDone'); localStorage.setItem('dp_played_v1', k); return m; }) === 'Vse je preiskano! Preberi namige. Ko veš, kdo je bil, tapni »Vem, kdo je bil!«.', `${name}: nothing solved yet: the message says which button`);
+  ok(!(await p.$('[data-act="toSolve"].pulse')), `${name}: »Vem« calm while the message is open`);
+  await p.evaluate(() => document.querySelector('[data-act="noteOk"]').click()); await wait();
+  ok(await p.$('[data-act="toSolve"].pulse'), `${name}: message closed → »Vem, kdo je bil!« glows`);
   await check('scene');
   await p.click('[data-act="toSolve"]'); await wait();
   ok(await st() === 'solve', `${name}: solve screen`);
