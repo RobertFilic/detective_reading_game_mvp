@@ -38,8 +38,8 @@ const storageOf = (p) => p.evaluate(() => Object.fromEntries(Object.keys(localSt
 const a = await page(OLD);
 await a.evaluate(fixture);
 await a.reload(); await wait(400);
-const sent = await storageOf(a);
 await a.evaluate(() => go('debrief'));
+const sent = await storageOf(a);   // after the review: it notes the active detective's help state (dp_help_v1)
 await a.click('[data-act=qrShow]');
 await a.waitForSelector('.qr-wrap svg', { timeout: 5000 });
 const url = await a.$eval('.qr-wrap', el => el.dataset.url);

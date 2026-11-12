@@ -14,7 +14,16 @@ Status: spec for the developer and the case writer, written 2026-11-12 by the pu
 
 Producer's decisions on section 10 (2026-11-12): 1 the child sees the two buttons · 2 Babica is parked · 3 one word per companion (Hov! Mijav! Uhu! Juhu!) · 4 no offer · 5 the warm-up is not a solved case · 6 **no »starejši otrok« setting**: one rule for all, an older child skips by themselves with the offer · 7 the newest season is the big card, the others stay open · 8 the labels as drafted · 9 no lock in `w2` · 10 timings from the first playtest.
 
-Not built yet: steps 7–12 (the level moving after real cases, help that differs by level, tappable hard words, one sentence at a time, the adult's block in the review, the clean-up). All Slovenian is a draft for the Slovenian editor. Every child-facing line is ≤ 8 words (the checker counts emoji and »…«).
+**Built on 2026-11-13: steps 7 and 11** (the level engine and the adult's »Detektivi in pomoč« block in the review; test `solo/tools/tests/help-level.mjs`). Where the build differs:
+- One hint asked from the coin is free: a case with at most one wrong try and one coin hint is still clean.
+- A case solved again (already ticked) doesn't move the level, the skills or the history.
+- A skill is marked hard again whenever an appearance goes badly (shown the answer, or 3 wrong tries), not only the first time.
+- A detective from before the warm-up gets the steps of their solved cases marked as known, so old steps are not treated as new.
+- The adult's choice (`over`) doesn't freeze `g`: the game keeps working it out, and the row says »samodejno bi bilo 2«.
+- The session table has one new column »Pomoč« (level at the start · coin taps · pause nudges), not five.
+- The level changes nothing on screen yet (step 8); the block says so to the adult.
+
+Not built yet: steps 8–10 and 12 (help that differs by level and the coin's full ladder in every step, tappable hard words, one sentence at a time, the clean-up). All Slovenian is a draft for the Slovenian editor. Every child-facing line is ≤ 8 words (the checker counts emoji and »…«).
 
 **Design in one paragraph.** Two tiny step cases (`w1` »Skupaj«, `w2` »Ti delaš, jaz gledam«) replace the 🎓 practice case. After them the child's **companion** (🐶 🐱 🦉 🦊, one shared set of lines) does what a parent does, in **three help levels** (1 = today's game, 2, 3), set **per detective** from the run's own counters and moved **between cases only**. The companion's coin sits in the footer on every step screen; a tap on it is a free hint at every level, so nobody is ever stuck, whatever the level.
 

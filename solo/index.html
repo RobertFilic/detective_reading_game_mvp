@@ -1169,8 +1169,11 @@ tr.clickable { cursor: pointer; }
   background: var(--paper); border: 2px solid var(--glow); border-radius: var(--r-m); padding: 8px 12px; font: 500 var(--t-body)/1.35 var(--font); color: var(--ink); box-shadow: var(--sh-float); animation: ui-in 300ms ease-out both; transition: opacity 600ms; }
 .pal-say.out { opacity: 0; }
 .pal-say .ui-coin { background: var(--bg); }
-.row.nglow, .obj.nglow { border-color: var(--glow); box-shadow: 0 0 0 3px rgba(248, 202, 101, .55); }
+.row.nglow, .obj.nglow, .rows:has(.row.dim) .row:not(.dim):not(.used):not(.selected):not(.pulse) { border-color: var(--glow); box-shadow: 0 0 0 3px rgba(248, 202, 101, .55); }   /* »stavek, ki sveti«: a hint dimmed the others */
 .brief.offer .ui-btn + .ui-btn { margin-top: 10px; }
+.helpblock .seg { margin: 0; flex-wrap: nowrap; gap: 6px; }
+.helpblock td { vertical-align: middle; }
+.adult .help-trail .tag.c-good { background: var(--green-soft); } .adult .help-trail .tag.c-bad { background: #fbe4e0; }
 #app.rail .wordsearch > .footer .pal { position: fixed; left: max(14px, env(safe-area-inset-left)); bottom: calc(10px + env(safe-area-inset-bottom)); }   /* a phone held sideways: the footer lies over the word list, so the coin sits on the rail */
 .row.pulse, .wcell.pulse, .tcard.pulse, .claim.pulse, .hclue.pulse, .suspect.pulse, .obj.pulse, .tool.pulse, .ctile.pulse, .strip.pulse { border-color: var(--glow); animation: ui-glow 2s ease-in-out infinite; }
 .row.used { text-decoration: line-through 2px; text-decoration-color: var(--ink-2); color: var(--ink-2); opacity: 1; box-shadow: none; }
@@ -1673,7 +1676,7 @@ const UI_AUDIO = {
   leadCall1: 'Telefon zvoni! Tapni tukaj.',
   leadCall2: 'Preberiva, kaj pravi.',
   leadCall3: 'Greva na kraj dogodka!',
-  leadScene: 'Poglej stvari. Tapni vsako.',
+  leadScene: 'Poglej stvari in tapni vsako.',
   leadObj: 'Tapni to stvar.',
   leadRead: 'Preberi stavek.',
   leadSceneDone: 'Vse imava! Tapni tukaj.',
@@ -3157,7 +3160,8 @@ function newRun() {
     used: [],
     // help: the solve ladder's rung reached (1 h1, 2 the next sentence lit, 3 the answer), taps on the companion's
     // coin, sentences tapped, pause nudges shown per screen; lead / w2: the warm-up cases' state
-    rung: 0, coin: 0, seen: [], nudged: {}, glow: false, lead: null, w2: null, offer: false,
+    // coined: the steps where the coin gave a hint; help: the help level when the case began
+    rung: 0, coin: 0, coined: [], seen: [], nudged: {}, glow: false, lead: null, w2: null, offer: false, help: helpLevel(),
   };
 }
 
@@ -3359,21 +3363,77 @@ const HELP_KEY = 'dp_help_v1';
 const HELP_PIN = [1, 2, 3].find(n => String(n) === new URLSearchParams(location.search).get('help')) || null;
 // seconds without a tap before the companion speaks (the goal, then the next thing to read glows); fade: the goal's bubble
 const HELP = { idle: { 1: [60], warm: [12, 25] }, fade: 6 };
+// streak: clean cases in a row; skills: per step type, how often the detective has met it (n) and whether it
+// went badly (hard); hist: the last 8 cases as { c: id, g: level at its start, v: verdict }; wv: how w2 went.
 function help() {
   let h = store.read(HELP_KEY, null);
-  if (!h) {
-    h = { v: 1, g: 1, over: null, warm: store.read(TUT_KEY, false) || solvedKeys().length ? 'legacy' : 'new', streak: 0, skills: {}, hist: [] };
-    if (profile()) store.write(HELP_KEY, h);
+  if (!h) h = { v: 1, g: 1, over: null, warm: store.read(TUT_KEY, false) || solvedKeys().length ? 'legacy' : 'new', streak: 0, skills: {}, hist: [] };
+  else if (h.v >= 2) return h;
+  // once: the steps of the cases already solved are not new to this detective
+  const skills = { ...h.skills };
+  for (const k of solvedKeys()) {
+    const [file, no] = k.split(':'), c = caseFor(file, Number(no));
+    for (const st of (c && c.steps) || []) if (st !== 'call' && st !== 'solve') skills[st] = { n: ((skills[st] || {}).n || 0) + 1, hard: !!(skills[st] || {}).hard };
   }
+  h = { ...h, v: 2, skills };
+  if (profile()) store.write(HELP_KEY, h);
   return h;
 }
 const helpSet = (patch) => store.write(HELP_KEY, { ...help(), ...patch });
 const helpLevel = () => HELP_PIN || help().over || help().g;
-// How a case went, from the run's own counters: clean (alone), helped, or hard (shown the answer, or many wrong tries).
-function helpVerdict(r) {
-  const wrong = r.wrong + r.wwrong + r.kwrong + r.owrong + r.cwrong + r.lwrong + r.hwrong + r.wmiss;
-  if (r.assisted || r.lassisted || r.hassisted || r.wassisted || wrong >= 4) return 'hard';
-  return wrong <= 1 && r.rung === 0 && r.coin <= 1 ? 'clean' : 'helped';
+// Per step of a finished case: its wrong tries, and the highest rung of its hint ladder that was shown
+// (1 a hint, 2 where to look, 3 the answer). [the run's counter, the wrong tries that bring rung 1, 2, 3]
+const LADDER = { lock: ['kwrong', [2, 0, 4]], order: ['owrong', [2, 3, 4]], torn: ['owrong', [2, 3, 4]], words: ['wwrong', [2, 4, 6]],
+  cipher: ['cwrong', [2, 4, 6]], lie: ['lwrong', [2, 3, 4]], herring: ['hwrong', [2, 3, 4]], when: ['wmiss', [2, 3, 4]] };
+function stepStats(c, r) {
+  return c.steps.filter(st => st !== 'call').map(step => {
+    if (step === 'solve') return { step, wrong: r.wrong, rung: r.rung, assisted: r.assisted };
+    if (!LADDER[step]) return { step, wrong: 0, rung: 0, assisted: false };   // scene, questioning: nothing can go wrong
+    const [key, at] = LADDER[step], wrong = r[key];
+    let rung = at[2] && wrong >= at[2] ? 3 : at[1] && wrong >= at[1] ? 2 : wrong >= at[0] ? 1 : 0;
+    if ({ lie: r.lassisted, herring: r.hassisted, when: r.wassisted }[step] || (step === 'cipher' && r.cmiss >= 3)) rung = 3;
+    if (r.coined.includes(step)) rung = Math.max(rung, 1);
+    return { step, wrong, rung, assisted: rung === 3 };
+  });
+}
+// How a case went: hard (shown an answer, 4 wrong tries, or told where to look in two steps), clean (alone:
+// at most one wrong try, and one hint asked from the coin is free), or helped.
+function helpVerdict(stats, coin) {
+  const wrong = sum(stats, 'wrong'), rung = Math.max(0, ...stats.map(x => x.rung));
+  if (stats.some(x => x.assisted) || wrong >= 4 || stats.filter(x => x.rung >= 2).length >= 2) return 'hard';
+  return wrong <= 1 && coin <= 1 && rung <= coin ? 'clean' : 'helped';
+}
+// After a real case solved for the first time: one hard case gives more help, two clean ones in a row less,
+// one notch at a time. A step type met for the first time doesn't count for the level: it is judged alone
+// (skills), so trouble with a new kind of step brings help for that step only.
+function helpAfterCase(c, r) {
+  const h = help(), stats = stepStats(c, r), skills = { ...h.skills };
+  const judged = stats.filter(x => x.step === 'solve' || (h.skills[x.step] || {}).n);
+  const v = helpVerdict(judged, r.coin);
+  for (const x of stats) if (x.step !== 'solve') {
+    const k = skills[x.step] || { n: 0, hard: false }, rough = x.assisted || x.wrong >= 3;
+    skills[x.step] = { n: k.n + 1, hard: rough || (k.hard && !(x.wrong <= 1 && !x.rung)) };
+  }
+  let { g, streak } = h;
+  if (v === 'hard') { g = Math.min(3, g + 1); streak = 0; }
+  else if (v === 'helped') streak = 0;
+  else if (++streak >= 2) { g = Math.max(1, g - 1); streak = 0; }
+  helpSet({ g, streak, skills, hist: [...h.hist, { c: c.id, g: r.help, v }].slice(-8) });
+  log('help_level', { from: h.g, to: g, verdict: v, wrong: sum(judged, 'wrong'), rung: Math.max(0, ...judged.map(x => x.rung)), coin: r.coin });
+}
+// The adult's review: any detective's help state (the one playing from the live keys, the others from their
+// copies), and a change to it.
+function helpRead(key) {
+  const d = detectives(), x = d.list.find(y => y.key === key);
+  if (key === d.active || !x) return help();
+  const get = (k, def) => { try { const v = x.data && x.data[k]; return (v && JSON.parse(v)) || def; } catch (e) { return def; } };
+  return get(HELP_KEY, null) || { v: 1, g: 1, over: null, warm: get(TUT_KEY, false) || get(PLAYED_KEY, []).length ? 'legacy' : 'new', streak: 0, skills: {}, hist: [] };
+}
+function helpWrite(key, patch) {
+  const d = detectives();
+  if (key === d.active) { helpSet(patch); return; }
+  d.list = d.list.map(x => x.key === key ? { ...x, data: { ...x.data, [HELP_KEY]: JSON.stringify({ ...helpRead(key), ...patch }) } } : x);
+  store.write(DETECTIVES_KEY, d);
 }
 
 // The two warm-up cases: w1 with the companion leading every tap, then w2 alone. replay: from »❓ Kako igram?«.
@@ -3402,9 +3462,10 @@ function leaveWarm() {
 function warmSolved() {
   const c = S.c, r = S.run;
   if (S.warmReplay) return;
-  if (c.warm === 1) { helpSet({ warm: 'w2' }); return; }
-  const v = helpVerdict(r), g = { clean: 1, helped: 2, hard: 3 }[v];
-  helpSet({ warm: 'done', g, streak: 0 });
+  const seen = { scene: { n: ((help().skills.scene || {}).n || 0) + 1, hard: false } };
+  if (c.warm === 1) { helpSet({ warm: 'w2', skills: { ...help().skills, ...seen } }); return; }
+  const v = helpVerdict(stepStats(c, r), r.coin), g = { clean: 1, helped: 2, hard: 3 }[v];
+  helpSet({ warm: 'done', wv: v, g, streak: 0, skills: { ...help().skills, ...seen } });
   log('help_level', { from: null, to: g, verdict: v, wrong: r.wrong, rung: r.rung, coin: r.coin });
 }
 // After w1's solved screen: a child who followed every step may go on alone; the others play w2.
@@ -3506,12 +3567,26 @@ function coach() {
       + (step.point === false ? '' : '<div class="coach-hand">👆</div>'));
     placeSpot();
   }
-  // Put the bubble on the side with more room, so it doesn't cover what to tap.
-  const rect = target ? spotRect(target) : null;
-  const top = rect ? rect.top > innerHeight - rect.bottom : false;
-  document.body.insertAdjacentHTML('beforeend', `<div class="coach ${top ? 'top' : 'bottom'}">
+  document.body.insertAdjacentHTML('beforeend', `<div class="coach bottom">
     ${UI.coin(helperEmoji())}<span class="say">${esc(step.text)}</span>
     ${step.ok ? UI.btn('V redu', { attrs: `data-coach="ok" data-k="${step.ok === true ? '' : step.ok}"` }) : ''}</div>`);
+  placeCoach();
+}
+
+// The bubble (with its »V redu«) sits right under what it points at, so the eye finds both at once; above it
+// when there is no room below; at the roomier edge of the screen when neither fits. Without a target: at the bottom.
+function placeCoach() {
+  const el = $('.coach'), t = document.querySelector('.coach-target'), hand = $('.coach-hand');
+  if (!el || !t) return;
+  const r = spotRect(t), h = el.offsetHeight, gap = 18, edge = 12;
+  const handDown = hand && hand.classList.contains('down');
+  const under = r.bottom + gap + (hand && !handDown ? 46 : 0), over = r.top - gap - (handDown ? 62 : 0) - h;
+  const fits = under + h <= innerHeight - edge || over >= edge, rail = !fits && $('#app.rail > .ui-band');
+  // a phone held sideways: when it fits neither under nor over, it goes on the rail at the left
+  Object.assign(el.style, rail ? { left: edge + 'px', right: 'auto', width: rail.getBoundingClientRect().width - 2 * edge + 'px' } : { left: '', right: '', width: '' });
+  const top = under + h <= innerHeight - edge ? under : over >= edge ? over : r.top > innerHeight - r.bottom && !rail ? edge : innerHeight - edge - el.offsetHeight;
+  el.classList.remove('bottom');
+  el.style.top = Math.max(edge, top) + 'px';
 }
 
 // What the spotlight rings: the target, or for a list that scrolls (.rows) only the sentences on screen.
@@ -3527,15 +3602,17 @@ function spotRect(t) {
 function placeSpot() {
   const t = document.querySelector('.coach-target'), spot = $('.coach-spot'), hand = $('.coach-hand');
   if (!t || !spot) return;
-  const r = spotRect(t), pad = 8;
-  Object.assign(spot.style, { left: r.left - pad + 'px', top: r.top - pad + 'px', width: r.width + 2 * pad + 'px', height: r.height + 2 * pad + 'px' });
-  if (!hand) return;
+  // the ring keeps off the screen's edge, so all of it shows around a wide target (a sentence, a button)
+  const r = spotRect(t), pad = 8, left = Math.max(12, r.left - pad), right = Math.min(innerWidth - 12, r.right + pad);
+  Object.assign(spot.style, { left: left + 'px', top: r.top - pad + 'px', width: right - left + 'px', height: r.height + 2 * pad + 'px' });
+  if (!hand) { placeCoach(); return; }
   // below the target pointing up, or above it pointing down when there is no room below
   const below = innerHeight - r.bottom > 80 || r.top < 80;
   hand.textContent = below ? '👆' : '👇';
   hand.classList.toggle('down', !below);
   hand.style.left = Math.min(Math.max(r.left + r.width / 2, 34), innerWidth - 34) + 'px';
   hand.style.top = (below ? Math.min(r.bottom + 6, innerHeight - 60) : r.top - 62) + 'px';
+  placeCoach();
 }
 addEventListener('scroll', placeSpot, { capture: true, passive: true });
 addEventListener('resize', placeSpot);
@@ -4633,19 +4710,19 @@ const T = {
       <div class="caseq">❓ ${esc(c.question)}</div>
       ${qbarB(done ? doneMsg('sceneDone') : UI_AUDIO.scene, done ? 'ui_' + doneKey('sceneDone') : 'ui_scene')}
       <div class="toolbar-kid">
-        <button class="tool ${r.torch ? 'on' : r.darkMiss && mine.some(s => s.dark && !r.found.includes(s.id)) ? 'pulse' : ''}" data-act="torch">🔦 Svetilka</button>
+        ${c.warm ? '' : `<button class="tool ${r.torch ? 'on' : r.darkMiss && mine.some(s => s.dark && !r.found.includes(s.id)) ? 'pulse' : ''}" data-act="torch">🔦 Svetilka</button>`}
         ${mine.some(s => s.rub) ? `<button class="tool ${r.pencil ? 'on' : r.rubMiss >= 2 ? 'pulse' : ''}" data-act="pencil">🖍️ Svinčnik</button>` : ''}
         <span class="pocket-count">👝 ${found.length} / ${all}</span>
       </div>
       <div class="objs ${r.torch ? 'torch' : ''} ${r.pencil ? 'pencil' : ''}">${mine.map(s => {
         const got = r.found.includes(s.id);
-        return `<button class="obj ${got ? 'got' : ''} ${s.dark && !got ? 'dark' : ''} ${s.rub && !got ? 'rub' : ''} ${r.rubbing === s.id ? 'rubbing' : ''} ${!got && (all - found.length <= 2 || r.glow) ? 'pulse' : ''}" data-act="openClue" data-sid="${s.id}">
+        return `<button class="obj ${got ? 'got' : ''} ${s.dark && !got ? 'dark' : ''} ${s.rub && !got ? 'rub' : ''} ${r.rubbing === s.id ? 'rubbing' : ''} ${!got && !r.lead && (all - found.length <= 2 || r.glow) ? 'pulse' : ''}" data-act="openClue" data-sid="${s.id}">
           <span class="oe">${s.dark && !got ? '🌑' : s.obj}</span><span class="ol">${esc(s.label)}</span>${got ? '<span class="ok">✓</span>' : ''}</button>`;
       }).join('')}</div>
       <div class="rows pocket">${found.slice().reverse().map((sid, i) =>
         `<div class="row ${i === 0 && r.fresh ? 'fresh' : ''} ${sent(sid).rub ? 'rubbed' : ''}" data-act="listenClue" data-sid="${sid}">${sayHTML(sent(sid))}</div>`).join('')}</div>
       <div class="footer">${footBack()}
-        <span class="grow"></span><button class="btn big ${done && !r.note && !r.donePending ? 'pulse' : ''}" data-act="toSolve" ${done ? '' : 'disabled'}>${done ? stepLabel() : leftLabel(all - found.length, ['stvar', 'stvari', 'stvari', 'stvari'], '👆')}</button></div>
+        <span class="grow"></span><button class="btn big ${done && !r.note && !r.donePending && !r.lead ? 'pulse' : ''}" data-act="toSolve" ${done ? '' : 'disabled'}>${done ? stepLabel() : leftLabel(all - found.length, ['stvar', 'stvari', 'stvari', 'stvari'], '👆')}</button></div>
     </div>`;
   },
 
@@ -4788,6 +4865,7 @@ const T = {
       </div>
       <p class="muted">Vse ostane na tej napravi. <a href="../zasebnost/">Zasebnost in pogoji</a></p>
       ${storeOk ? '' : '<p class="warn-text">Shranjevanje na napravo ne deluje – takoj izvozi JSON.</p>'}
+      ${helpBlockHTML()}
       <h2>Povzetek po starosti</h2>
       ${['6-7', '8-9'].map(age => groupHTML(age, counted.filter(s => s.age === age))).join('')}
       <h2>Seje (${sessions.length})</h2>
@@ -4919,6 +4997,7 @@ const ACTIONS = {
     } else {
       const [, , how, part] = BRIEF[S.screen], src = c[part || S.screen];
       r.coin++;
+      if (!r.coined.includes(S.screen)) r.coined.push(S.screen);
       r.hint = { key: 'h1', text: (src && src.h1) || UI_AUDIO[how], level: 1 };
       log(part ? 'puzzle_hint' : S.screen + '_hint', { hint: 'h1', hintLevel: 1, via: 'coin' });
     }
@@ -4943,7 +5022,22 @@ const ACTIONS = {
     Object.assign(S, { session: null, ended: false, resume: null, c: null, run: null, level: null, pilot: false, startAt: 0, order: [] });
     go('setup');
   },
-  resume() { const to = S.resume; S.resume = null; go(to); },
+  resume() { const to = S.resume; S.resume = null; if (to === 'home') toHome(); else go(to); },
+  // the review's »Detektivi in pomoč«: the adult's own level (0 = the game decides), and the warm-up again or off
+  helpOver(el) {
+    helpWrite(el.dataset.key, { over: Number(el.dataset.n) || null });
+    log('help_over', { level: Number(el.dataset.n) });
+    render();
+  },
+  warmAgain(el) { ACTIONS.warmSet(el, 'new'); },
+  warmOff(el) { ACTIONS.warmSet(el, 'skipped'); },
+  warmSet(el, warm) {
+    helpWrite(el.dataset.key, { warm });
+    log('warm_set', { warm });
+    // the detective playing now: the game goes on from the start screen, not from the case that was open
+    if (el.dataset.key === detectives().active && S.session && !S.ended) Object.assign(S, { c: null, run: null, tut: null, warmReplay: false, resume: 'home' });
+    render();
+  },
   timeline(el) { S.open = S.open === el.dataset.key ? null : el.dataset.key; render(); },
   exportLog() {
     const blob = new Blob([JSON.stringify(exportData(), null, 1)], { type: 'application/json' });
@@ -5760,8 +5854,9 @@ const ACTIONS = {
     }
     if (proof) {
       r.crossed = c.suspects.filter(x => x !== c.culprit);
-      log('case_done', { assisted: r.assisted, wrong: r.wrong });
-      if (c.warm) warmSolved(); else markSolved(c);
+      log('case_done', { assisted: r.assisted, wrong: r.wrong, help: r.help });
+      if (c.warm) warmSolved();
+      else { if (!isSolved(c)) helpAfterCase(c, r); markSolved(c); }   // a case solved again says nothing new
       sfx('tada');
       go('reveal');
       return;
@@ -5921,6 +6016,8 @@ function newMetrics(id) {
     when: !!(c && c.when), whenWrong: 0, whenHints: 0, whenAssisted: false, wrongTime: 0,
     // »Najprej navodilo«: instruction cards read, and how many were closed in under 3 s (not read)
     briefs: 0, briefFast: 0,
+    // help: the level when the case began (from case_done), taps on the companion's coin, pause nudges
+    help: null, coin: 0, nudges: 0,
   };
 }
 
@@ -5985,7 +6082,9 @@ function analyzeSession(evs) {
       case 'brief_ok': m.briefs++; if (e.ms < BRIEF_FAST) m.briefFast++; break;
       case 'lie_assisted': m.lieAssisted = true; break;
       case 'assisted': m.assisted = true; break;
-      case 'case_done': m.done = true; break;
+      case 'case_done': m.done = true; m.help = e.help || null; break;
+      case 'help_tap': m.coin++; break;
+      case 'help_nudge': m.nudges++; break;
       case 'more_yes': m.more = 'yes'; break;
       case 'more_no': m.more = 'no'; break;
       case 'fake_door': m.more = 'door'; break;
@@ -6068,6 +6167,35 @@ function groupHTML(age, ss) {
   </section>`;
 }
 
+// »Detektivi in pomoč«: per detective on this device, how much help the game gives now, how the last cases
+// went, the warm-up, and the adult's own choice (Samodejno = the game decides).
+const HELP_LABEL = ['', 'Malo pomoči', 'Nekaj pomoči', 'Veliko pomoči'];
+const HELP_WARM = { new: 'še ni začeta', w1: 'v teku (1. primer)', w2: 'v teku (2. primer)', skipped: 'preskočena', legacy: 'ni je bilo (igra od prej)' };
+const HELP_WV = { clean: 'brez pomoči', helped: 'z namigi', hard: 'z veliko pomoči' };
+const HELP_CLS = { clean: 'c-good', helped: 'c-warn', hard: 'c-bad' };
+function helpBlockHTML() {
+  const cards = detectiveCards();
+  if (!cards.length) return '';
+  const rows = cards.map(x => {
+    const h = helpRead(x.key), now = h.over || h.g, open = ['new', 'w1', 'w2'].includes(h.warm);
+    const seg = [0, 1, 2, 3].map(n => `<button class="btn ${(h.over || 0) === n ? '' : 'secondary'}" data-act="helpOver" data-key="${x.key}" data-n="${n}">${n || 'Samodejno'}</button>`).join('');
+    return `<tr data-det="${x.key}"><td>${x.p.av}${x.p.sk} <b>${esc(x.p.name || detTitle(x.p))}</b>${x.live ? ' <span class="tag">igra zdaj</span>' : ''}<br><span class="muted">${esc(rankName(rankFor(x.n), x.p))} · ${solvedLabel(x.n)}</span></td>
+      <td class="help-now"><b>${HELP_LABEL[now]} (${now})</b>${h.over ? `<br><span class="muted">samodejno bi bilo ${h.g}</span>` : ''}</td>
+      <td class="help-trail">${h.hist.slice(-6).map(e => `<span class="tag ${HELP_CLS[e.v]}" title="${esc(e.c)}">${e.g}</span>`).join(' ') || '<span class="muted">–</span>'}</td>
+      <td class="help-warm">${h.warm === 'done' ? HELP_WV[h.wv] || 'končana' : HELP_WARM[h.warm]}</td>
+      <td><div class="seg">${seg}</div></td>
+      <td><div class="seg"><button class="btn secondary" data-act="warmAgain" data-key="${x.key}" ${h.warm === 'new' ? 'disabled' : ''}>Ponovi vajo</button>${
+        open ? `<button class="btn secondary" data-act="warmOff" data-key="${x.key}">Preskoči vajo</button>` : ''}</div></td></tr>`;
+  }).join('');
+  return `<h2>Detektivi in pomoč</h2><section class="card helpblock">
+    <div class="tablewrap"><table>
+      <tr><th>Detektiv</th><th>Pomoč zdaj</th><th title="raven pomoči ob začetku zadnjih primerov; zeleno = sam, rumeno = z namigi, rdeče = pokazana rešitev ali veliko napačnih">Zadnji primeri</th><th>Vaja</th><th>Pomoč določi</th><th></th></tr>
+      ${rows}</table></div>
+    <p class="muted">1 = malo, 2 = nekaj, 3 = veliko pomoči. Igra jo določa sama: po težkem primeru jo poveča, po dveh primerih brez pomoči zmanjša. Velja od naslednjega primera; otrok ravni ne vidi.
+      Za zdaj se raven samo beleži: pomočnikov namig in opomnik po premoru sta na vseh ravneh enaka.</p>
+  </section>`;
+}
+
 const OUTCOME = {
   clean: ['rešeno', 'c-good'], helped: ['s pomočjo', 'c-warn'],
   assisted: ['vodeno', 'c-bad'], unfinished: ['ni rešeno', 'c-bad'],
@@ -6095,16 +6223,17 @@ function sessionHTML(s) {
         : m.herring ? `🧭 ${m.herWrong} / ${m.herHints}${m.herAssisted ? ' (vodeno)' : ''}` : m.when ? `⏰ ${m.whenWrong} / ${m.whenHints}${m.whenAssisted ? ' (vodeno)' : ''}` : '–'}${
           m.obviousBlamed ? ` · ${m.obviousBlamed}× očiten osumljenec` : ''}${m.wrongTime ? ` · ${m.wrongTime}× napačen čas` : ''}</td>
       <td class="${m.briefFast * 2 > m.briefs ? 'c-warn' : ''}">${m.briefs ? `${m.briefFast} / ${m.briefs}` : '–'}</td>
+      <td>${m.help || '–'} · ${m.coin} · ${m.nudges}</td>
     </tr>`;
-    return row + (S.open === key ? `<tr><td colspan="13">${timelineHTML(s, m.id)}</td></tr>` : '');
+    return row + (S.open === key ? `<tr><td colspan="14">${timelineHTML(s, m.id)}</td></tr>` : '');
   }).join('');
   return `<section class="card">
     <p><b>${esc(s.child)}</b> · ${esc(s.age)} let · raven ${esc(s.level)} · ${fmtDate(s.start)}
       ${s.pilot ? '<span class="tag">pilot</span>' : ''} · rešenih ${s.doneCount} · želi še: ${s.wantMore ? 'da' : 'ne'}</p>
     <div class="tablewrap"><table>
       <tr><th>Primer</th><th>Izid</th><th>Čas zgodba / dokaz</th><th>Poslušanja</th><th>Ponovna branja</th><th>1. potrditev</th>
-        <th>Napačne</th><th>Namigi</th><th>Ugibanja</th><th>Prezgodaj</th><th>Še?</th><th title="napačni poskusi / namigi (❗ ugovor ali 🧭 sled); kolikokrat je obtožil nedolžnega, ki je lagal, ali tistega, na katerega kaže napačna sled">Ugovor / sled</th><th title="kartice z navodilom, zaprte prej kot v 3 s / vse">Navodila hitro</th></tr>
-      ${rows || '<tr><td colspan="12" class="muted">Ni začetih primerov.</td></tr>'}
+        <th>Napačne</th><th>Namigi</th><th>Ugibanja</th><th>Prezgodaj</th><th>Še?</th><th title="napačni poskusi / namigi (❗ ugovor ali 🧭 sled); kolikokrat je obtožil nedolžnega, ki je lagal, ali tistega, na katerega kaže napačna sled">Ugovor / sled</th><th title="kartice z navodilom, zaprte prej kot v 3 s / vse">Navodila hitro</th><th title="raven pomoči ob začetku primera · tapi na pomočnika (namig) · opomniki po premoru">Pomoč</th></tr>
+      ${rows || '<tr><td colspan="14" class="muted">Ni začetih primerov.</td></tr>'}
     </table></div>
   </section>`;
 }

@@ -46,12 +46,18 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['se', 375, 667], ['land', 84
   const p = await open(dev, w, h, newKid);
   ok(await p.st() === 'call' && await p.evaluate(() => S.c.id) === 'w1' && (await p.evaluate(() => document.body.innerText)).includes('Vaja'), `${dev}: a new detective starts with the warm-up case w1 (»Vaja«)`);
   ok((await p.say()).includes('Juhu! Telefon zvoni!') && await p.$('.coach-hand') && !(await p.$('[data-act="back"]')), `${dev}: the fox says hello and points at the phone; no way back`);
-  const seen = new Set(); let fit = true, briefs = 0;
-  const done = await follow(p, async () => { seen.add(await p.say()); fit = fit && await p.fits(); briefs += (await p.$('.brief:not(.excuse-card):not(.offer)')) ? 1 : 0; return !!(await p.$('.offer')); });
+  const seen = new Set(), bad = []; let fit = true, briefs = 0;
+  const done = await follow(p, async () => { seen.add(await p.say()); fit = fit && await p.fits();
+    // the bubble: on the screen, never on what it points at; the ring: whole on the screen
+    const g = await p.evaluate(() => { const c = document.querySelector('.coach'), s = document.querySelector('.coach-spot'), t = document.querySelector('.coach-target'); if (!c || !s || !t) return null;
+      const cr = c.getBoundingClientRect(), sr = s.getBoundingClientRect(), tr = t.getBoundingClientRect();
+      return { say: c.querySelector('.say').textContent, over: cr.top < tr.bottom - 1 && cr.bottom > tr.top + 1 && cr.left < tr.right - 1 && cr.right > tr.left + 1, ring: sr.left >= 12 && sr.right <= innerWidth - 12, on: cr.top >= 0 && cr.bottom <= innerHeight, gap: Math.round(Math.min(Math.abs(cr.top - tr.bottom), Math.abs(tr.top - cr.bottom))) }; });
+    if (g && (g.over || !g.ring || !g.on || (h > w && g.gap > 90))) bad.push(JSON.stringify(g)); briefs += (await p.$('.brief:not(.excuse-card):not(.offer)')) ? 1 : 0; return !!(await p.$('.offer')); });
   ok(done, `${dev}: following the ring alone solves w1 and brings the offer`);
-  for (const t of ['Preberiva, kaj pravi.', 'Poglej stvari. Tapni vsako.', 'Preberi stavek.', 'Kdo ni bil? Prečrtajva ga.', 'Preberi stavek, ki sveti. Tapni ga.', 'O kom govori? Tapni obraz.', 'Ostal je eden. Kje je dokaz?', 'Juhu! Bravo, detektivka!'])
+  for (const t of ['Preberiva, kaj pravi.', 'Poglej stvari in tapni vsako.', 'Preberi stavek.', 'Kdo ni bil? Prečrtajva ga.', 'Preberi stavek, ki sveti. Tapni ga.', 'O kom govori? Tapni obraz.', 'Ostal je eden. Kje je dokaz?', 'Juhu! Bravo, detektivka!'])
     ok(seen.has(t), `${dev}: the companion says »${t}«`);
   ok(fit && !briefs && !(await p.$('.pal')), `${dev}: no sideways scroll, no instruction cards, no coin in w1`);
+  ok(!bad.length, `${dev}: the bubble sits next to what it points at, never on it, and the ring is whole on the screen ${bad.join(' ')}`);
   ok(await p.evaluate(() => S.run.lead.miss === 0 && S.run.wrong === 0 && !LOG.some(e => e.type === 'hint_shown')), `${dev}: nothing counted as wrong, no hints`);
   ok((await p.$eval('.offer', e => e.innerText)).includes('Poskusi sama!') && (await p.$$('.offer .ui-btn')).length === 2, `${dev}: »Že znaš? Poskusi sama!« with two buttons`);
   await p.screenshot({ path: `shots/warm-${dev}-offer.png` });
@@ -86,7 +92,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['se', 375, 667], ['land', 84
   await p.click('[data-coach="ok"]'); await p.click('[data-act="toScene"]'); await wait(200);
   ok(await p.$('.brief') && !(await p.$('.coach')), 'w2: the scene opens with its instruction card, the companion is quiet');
   await p.click('[data-act="briefOk"]'); await wait(100);
-  ok(await p.$('.footer .pal') && (await p.$eval('.pal', e => e.textContent)).includes('🦊'), 'w2: the companion\'s coin is in the footer');
+  ok(await p.$('.footer .pal') && (await p.$eval('.pal', e => e.textContent)).includes('🦊') && !(await p.$('[data-act="torch"]')), 'w2: the companion\'s coin is in the footer; no torch (nothing is dark in a warm-up)');
   await p.click('.pal'); await wait(150);
   ok((await p.$eval('#note', e => e.innerText)).includes('Tapni vsako stvar.') && await p.evaluate(() => S.run.coin === 0), 'scene: the coin says the goal (not a hint)');
   await p.click('[data-act="noteOk"]'); await wait(100);
@@ -100,7 +106,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['se', 375, 667], ['land', 84
   await p.click('[data-act="hintOk"]'); await wait(100);
   ok(!(await p.$('.coach')), 'the coin\'s line comes only once');
   await p.click('.pal'); await wait(150);
-  ok((await p.$eval('#hint', e => e.innerText)).includes('Preberi stavek, ki sveti') && (await p.$$('.row.dim')).length === 4, 'second tap: the next sentence is lit, the others dimmed');
+  ok((await p.$eval('#hint', e => e.innerText)).includes('Preberi stavek, ki sveti') && (await p.$$('.row.dim')).length === 4 && await p.$eval('.row[data-sid="s4"]', e => getComputedStyle(e).boxShadow.includes('248, 202, 101')), 'second tap: the next sentence shines, the others are dimmed');
   await p.click('[data-act="hintOk"]'); await p.click('.pal'); await wait(150);
   ok((await p.$eval('#hint', e => e.innerText)).includes('To ni Bine.') && await p.$('.row.pulse[data-sid="s4"]') && await p.$('.suspect.pulse[data-id="bine"]'), 'third tap: the answer with its reason (»To ni Bine.«), sentence and face pulse');
   await p.screenshot({ path: 'shots/warm-w2-answer.png' });
