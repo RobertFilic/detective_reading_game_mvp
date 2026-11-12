@@ -5,7 +5,8 @@ Status: spec for the developer and the case writer, written 2026-11-12 by the pu
 **Built on 2026-11-12: steps 1–6 of section 11** (help state, the coin, the two warm-up cases and their checker rules, the new beginning with the newest season as the big card; test `solo/tools/tests/warm.mjs`). Where the build differs from this spec:
 - The coin gives the whole ladder only in solve. In the scene and the questioning it says the goal; in a puzzle, UGOVOR, 🧭 or ⏰ it gives the first hint only (the other rungs still need wrong tries). Giving every ladder from the coin is part of step 8.
 - The warm-up cases are `WARMUPS`, a list beside `CASES`, not a hidden entry in `FILES`.
-- The reason on the answer rung is »{ime} odpade.« (not »ima alibi«) and »Ta stavek dokaže: {ime}.«
+- The reason on the answer rung is »To ni {ime}.« (not »ima alibi«) and »To je dokaz: {ime}!«
+- The Slovenian editor reworded ten of the companion's lines (2026-11-12); the game's `UI_AUDIO` is the text of record, not the drafts quoted below (e.g. »Ne gre? Tapni me.« for »Zagata? Tapni me.«, »Še ena vaja« for »Še en z mano«).
 - In `w1` the instruction line on top is hidden too, and the coin is hidden (the companion leads anyway). The hard word is in the data and the checker, but can't be tapped yet (step 9), so `w1` has no »Težka beseda? Tapni jo.«
 - `w2`'s coin line stays until the coin is tapped in solve or someone is crossed off.
 - A detective from before the warm-up always starts at level 1 (the old log is not read).

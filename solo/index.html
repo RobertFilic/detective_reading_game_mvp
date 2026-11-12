@@ -1583,8 +1583,8 @@ const UI_AUDIO = {
   accuse: 'Kdo je bil?',
   evidence: 'Pokaži stavek, ki to dokaže.',
   evidencePair: 'Pokaži dva stavka, ki to skupaj dokažeta.',
-  h2: 'Dokaz je v enem od svetlih stavkov. Poišči ga.',
-  h3: 'Samo še dva svetla stavka. Kateri je pravi?',
+  h2: 'Dokaz je v enem od stavkov, ki svetijo. Poišči ga.',
+  h3: 'Samo še dva stavka svetita. Kateri je pravi?',
   h3pair: 'Oba dokaza sta med temi tremi.',
   assist: 'Poglej ta stavek in ga tapni.',
   assistPair: 'Poglej ta dva stavka in ju tapni.',
@@ -1627,7 +1627,7 @@ const UI_AUDIO = {
   lieBoth: 'Oba sta lahko res. Poišči drug stavek.',
   lieHalf: 'Eden je pravi! Poišči še drugega.',
   lieH1: 'To trdi. Ali je res? Poišči stavek, ki pove drugače.',
-  lieLook: 'Preberi svetel stavek. Se ujema s trditvijo?',
+  lieLook: 'Preberi stavek, ki sveti. Se ujema s trditvijo?',
   lieAssist: 'Tapni trditev, nato stavek, ki utripa.',
   lieShout: 'To ni res! Zakliči na glas: UGOVOR!',
   lieStamp: 'UGOVOR!',
@@ -1644,7 +1644,7 @@ const UI_AUDIO = {
   herringNo: 'Ta stavek ne pove, zakaj.',
   herringTrue: 'Ta sled drži. Poišči drugo.',
   herringH1: 'Zakaj kaže sem? Poišči stavek, ki pove, zakaj.',
-  herringLook: 'Preberi svetle stavke. Kateri pove, zakaj?',
+  herringLook: 'Preberi stavke, ki svetijo. Kateri pove, zakaj?',
   herringAssist: 'Tapni sled, nato stavek, ki utripa.',
   herringStamp: 'NAPAČNA SLED!',
   herringDone: 'Vse sledi so preverjene. Kdo je bil?',
@@ -1671,27 +1671,27 @@ const UI_AUDIO = {
   // The warm-up cases (docs/WARMUP_AND_HELP.md): in the first the companion leads every tap, in the second it
   // only says that a hint is free. One set of lines for all four companions: imperative and dual, no gender.
   leadCall1: 'Telefon zvoni! Tapni tukaj.',
-  leadCall2: 'Preberiva, kaj prosi.',
+  leadCall2: 'Preberiva, kaj pravi.',
   leadCall3: 'Greva na kraj dogodka!',
   leadScene: 'Poglej stvari. Tapni vsako.',
   leadObj: 'Tapni to stvar.',
   leadRead: 'Preberi stavek.',
   leadSceneDone: 'Vse imava! Tapni tukaj.',
-  leadGoal: 'Kdo ni bil? Prečrtajva tiste.',
-  leadRow: 'Preberi svetel stavek. Tapni ga.',
+  leadGoal: 'Kdo ni bil? Prečrtajva ga.',
+  leadRow: 'Preberi stavek, ki sveti. Tapni ga.',
   leadFace: 'O kom govori? Tapni obraz.',
   leadLast: 'Ostal je eden. Kje je dokaz?',
-  leadProofFace: 'Kdo je to? Tapni obraz.',
+  leadProofFace: 'Kdo je bil? Tapni obraz.',
   leadOops: 'Skoraj!',
   warm2Start: 'Zdaj ti. Jaz gledam.',
-  warm2Coin: 'Zagata? Tapni me. Namig je zastonj.',
-  warm2Done: 'Zdaj znaš! Gremo na pravi primer.',
-  warmMore: 'Še en z mano',
+  warm2Coin: 'Ne gre? Tapni me. Namig je zastonj.',
+  warm2Done: 'Zdaj znaš! Greva na pravi primer.',
+  warmMore: 'Še ena vaja skupaj',
   // what the companion says after a pause (the step's goal), and when its coin is tapped where nothing can go wrong
-  goalScene: 'Odpri vse stvari.',
-  goalAsk: 'Vprašaj vse. Vsak odgovori.',
+  goalScene: 'Tapni vsako stvar.',
+  goalAsk: 'Vprašaj vse. Vsak nekaj pove.',
   goalSolve: 'Kdo ni bil? Prečrtaj ga.',
-  goalLast: 'Ostal je eden: dokaz!',
+  goalLast: 'Ostal je eden. Pokaži dokaz!',
   goalWords: 'Najdi besede s seznama.',
   goalLock: 'Kje je šifra? Poišči jo.',
   goalOrder: 'Kaj je bilo najprej?',
@@ -1729,8 +1729,8 @@ const UI_AUDIO = {
   pickFirst: 'Najprej tapni stavek, potem obraz.',
   notThis: 'Ta stavek ne pove, kdo ni bil. Izberi drug stavek.',
   notWho: 'Ta stavek govori o nekom drugem. Preberi, o kom govori, in tapni ta obraz.',
-  elimLook: 'Preberi svetel stavek. O kom govori? Tapni ta obraz.',
-  elimAssist: 'Tapni svetel stavek, nato obraz, ki utripa.',
+  elimLook: 'Preberi stavek, ki sveti. O kom govori? Tapni ta obraz.',
+  elimAssist: 'Tapni stavek, ki sveti, nato obraz, ki utripa.',
   no: 'Ni prav.',
   almost: 'Skoraj!',
   again: 'Poskusi znova',
@@ -2677,14 +2677,14 @@ const WARMUPS = [
     question: 'Kdo je vzel korenček?',
     suspects: ['jure', 'bine', 'zala'], culprit: 'bine',
     sentences: [
-      ['s1', 'Od korenčka je ostal samo zeleni rep.', 'neutral', { obj: '🍽️', label: 'krožnik' }],
+      ['s1', 'Od korenčka so ostali samo listi.', 'neutral', { obj: '🍽️', label: 'krožnik' }],
       ['s2', 'Jure je ves čas spal na kavču.', 'clear', { obj: '🛋️', label: 'kavč', clears: 'jure' }],
-      ['s3', 'Zala je bila ves dan v šoli.', 'clear', { obj: '🎒', label: 'torba', clears: 'zala' }],
-      ['s4', 'Bine ima v žepu pol korenčka.', 'evidence', { obj: '🧥', label: 'jopica' }],
+      ['s3', 'Zala je bila ves dan v šoli.', 'clear', { obj: '📅', label: 'urnik', clears: 'zala' }],
+      ['s4', 'Bine ima v žepu pol korenčka.', 'evidence', { obj: '🧥', label: 'jakna' }],
     ],
     hard: { 'korenčka': 'ko-ren-čka' },
     h1: 'Kdo NI mogel biti? Poišči stavek o njem.',
-    reveal: ['Bine je imel v žepu pol korenčka.', 'Jure je spal. Zala je bila v šoli.', 'Tako detektiv najde krivca!'],
+    reveal: ['Bine je imel v žepu pol korenčka.', 'Jure je spal. Zala je bila v šoli.', 'Tako najdeš krivca!'],
     caught: 'Bineta', excuse: 'Korenček je bil tako hrustljav!',
   },
   {
@@ -2695,7 +2695,7 @@ const WARMUPS = [
     suspects: ['bine', 'jure', 'zala'], culprit: 'zala',
     sentences: [
       ['s1', 'Ob palčku leži moker čopič.', 'neutral', { obj: '🖌️', label: 'čopič' }],
-      ['s2', 'Zala je zjutraj zalivala rože.', 'distractor', { obj: '🪣', label: 'vedro' }],
+      ['s2', 'Zala je zjutraj zalivala rože.', 'distractor', { obj: '🌷', label: 'rože' }],
       ['s3', 'Zala si umiva roza prste.', 'evidence', { obj: '🚰', label: 'pipa' }],
       ['s4', 'Bine je ves dan pri babici.', 'clear', { obj: '📝', label: 'listek', clears: 'bine' }],
       ['s5', 'Dedek je z Juretom ves čas igral šah.', 'clear', { obj: '♟️', label: 'šah', clears: 'jure' }],
@@ -3772,7 +3772,7 @@ function solveRung(n) {
   if (n >= 3) {
     if (!r.assisted) { r.assisted = true; log('assisted'); }
     const t = elimTarget(), name = CHARACTERS[t.who].name;
-    const why = name === '???' ? '' : t.who === c.culprit ? ` Ta stavek dokaže: ${name}.` : ` ${name} odpade.`;
+    const why = name === '???' ? '' : t.who === c.culprit ? ` To je dokaz: ${name}!` : ` To ni ${name}.`;
     return { key: 'assist', text: UI_AUDIO.elimAssist + why, clip: 'ui_elimAssist', level: 4 };
   }
   if (n === 2) { r.highlight = true; return { key: 'h2', text: UI_AUDIO.elimLook, clip: 'ui_elimLook', level: 2 }; }
@@ -4175,7 +4175,7 @@ const T = {
       <div class="ui-wrap">${UI.stamp('Primer rešen!', { big: true })}</div>
       <h2>Pomočnik · ui-helper</h2>
       ${UI.helper('Prečrtaj, kdo ni bil. Tapni stavek, nato obraz.', { ...tap, e: p.sk })}
-      ${UI.helper('Dokaz je v enem od svetlih stavkov.', { ...tap, e: p.sk, glow: true })}
+      ${UI.helper('Dokaz je v enem od stavkov, ki svetijo.', { ...tap, e: p.sk, glow: true })}
       ${UI.helper('To šteje! Še en.', { ...tap, e: p.sk, tone: 'is-good' })}
       <h2>Sporočilo · ui-note</h2>
       ${UI.note('Ta stavek ne pove, kdo ni bil. Izberi drug stavek.', { act: 'uiTap' })}

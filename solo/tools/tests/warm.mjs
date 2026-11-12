@@ -49,7 +49,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['se', 375, 667], ['land', 84
   const seen = new Set(); let fit = true, briefs = 0;
   const done = await follow(p, async () => { seen.add(await p.say()); fit = fit && await p.fits(); briefs += (await p.$('.brief:not(.excuse-card):not(.offer)')) ? 1 : 0; return !!(await p.$('.offer')); });
   ok(done, `${dev}: following the ring alone solves w1 and brings the offer`);
-  for (const t of ['Preberiva, kaj prosi.', 'Poglej stvari. Tapni vsako.', 'Preberi stavek.', 'Kdo ni bil? Prečrtajva tiste.', 'Preberi svetel stavek. Tapni ga.', 'O kom govori? Tapni obraz.', 'Ostal je eden. Kje je dokaz?', 'Juhu! Bravo, detektivka!'])
+  for (const t of ['Preberiva, kaj pravi.', 'Poglej stvari. Tapni vsako.', 'Preberi stavek.', 'Kdo ni bil? Prečrtajva ga.', 'Preberi stavek, ki sveti. Tapni ga.', 'O kom govori? Tapni obraz.', 'Ostal je eden. Kje je dokaz?', 'Juhu! Bravo, detektivka!'])
     ok(seen.has(t), `${dev}: the companion says »${t}«`);
   ok(fit && !briefs && !(await p.$('.pal')), `${dev}: no sideways scroll, no instruction cards, no coin in w1`);
   ok(await p.evaluate(() => S.run.lead.miss === 0 && S.run.wrong === 0 && !LOG.some(e => e.type === 'hint_shown')), `${dev}: nothing counted as wrong, no hints`);
@@ -88,29 +88,29 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['se', 375, 667], ['land', 84
   await p.click('[data-act="briefOk"]'); await wait(100);
   ok(await p.$('.footer .pal') && (await p.$eval('.pal', e => e.textContent)).includes('🦊'), 'w2: the companion\'s coin is in the footer');
   await p.click('.pal'); await wait(150);
-  ok((await p.$eval('#note', e => e.innerText)).includes('Odpri vse stvari.') && await p.evaluate(() => S.run.coin === 0), 'scene: the coin says the goal (not a hint)');
+  ok((await p.$eval('#note', e => e.innerText)).includes('Tapni vsako stvar.') && await p.evaluate(() => S.run.coin === 0), 'scene: the coin says the goal (not a hint)');
   await p.click('[data-act="noteOk"]'); await wait(100);
   ok((await p.$$('.obj.pulse')).length === 5, 'scene: after the coin every thing still closed pulses');
   await openAll(p); await p.click('[data-act="toSolve"]'); await wait(200);
   await p.click('[data-act="briefOk"]'); await wait(150);
-  ok((await p.say()) === 'Zagata? Tapni me. Namig je zastonj.' && await p.$('.pal.coach-target'), 'w2 solve: »Zagata? Tapni me. Namig je zastonj.« with the ring on the coin');
+  ok((await p.say()) === 'Ne gre? Tapni me. Namig je zastonj.' && await p.$('.pal.coach-target'), 'w2 solve: »Ne gre? Tapni me. Namig je zastonj.« with the ring on the coin');
   await p.screenshot({ path: 'shots/warm-w2-coin.png' });
   await p.click('.pal'); await wait(150);
   ok((await p.$eval('#hint', e => e.innerText)).includes('Kdo NI mogel biti?') && !(await p.$eval('#hint', e => e.innerText)).includes('Ni prav') && !(await p.$('.coach')), 'the coin gives the case\'s hint, without »Ni prav«; the line is gone');
   await p.click('[data-act="hintOk"]'); await wait(100);
   ok(!(await p.$('.coach')), 'the coin\'s line comes only once');
   await p.click('.pal'); await wait(150);
-  ok((await p.$eval('#hint', e => e.innerText)).includes('Preberi svetel stavek') && (await p.$$('.row.dim')).length === 4, 'second tap: the next sentence is lit, the others dimmed');
+  ok((await p.$eval('#hint', e => e.innerText)).includes('Preberi stavek, ki sveti') && (await p.$$('.row.dim')).length === 4, 'second tap: the next sentence is lit, the others dimmed');
   await p.click('[data-act="hintOk"]'); await p.click('.pal'); await wait(150);
-  ok((await p.$eval('#hint', e => e.innerText)).includes('Bine odpade.') && await p.$('.row.pulse[data-sid="s4"]') && await p.$('.suspect.pulse[data-id="bine"]'), 'third tap: the answer with its reason (»Bine odpade.«), sentence and face pulse');
+  ok((await p.$eval('#hint', e => e.innerText)).includes('To ni Bine.') && await p.$('.row.pulse[data-sid="s4"]') && await p.$('.suspect.pulse[data-id="bine"]'), 'third tap: the answer with its reason (»To ni Bine.«), sentence and face pulse');
   await p.screenshot({ path: 'shots/warm-w2-answer.png' });
   await p.click('[data-act="hintOk"]');
   await pair(p, 's4', 'bine'); await pair(p, 's5', 'jure');
   await p.click('[data-act="noteOk"]'); await p.click('.pal'); await wait(150);
-  ok((await p.$eval('#hint', e => e.innerText)).includes('Ta stavek dokaže: Zala.'), 'the last one: »Ta stavek dokaže: Zala.«');
+  ok((await p.$eval('#hint', e => e.innerText)).includes('To je dokaz: Zala!'), 'the last one: »To je dokaz: Zala!«');
   await p.click('[data-act="hintOk"]'); await pair(p, 's3', 'zala');
   await p.click('[data-act="excuseOk"]'); await wait(150);
-  ok(await p.st() === 'reveal' && (await p.say()) === 'Zdaj znaš! Gremo na pravi primer.', 'w2 solved: »Zdaj znaš! Gremo na pravi primer.«');
+  ok(await p.st() === 'reveal' && (await p.say()) === 'Zdaj znaš! Greva na pravi primer.', 'w2 solved: »Zdaj znaš! Greva na pravi primer.«');
   await p.click('[data-act="next"]'); await wait(300);
   const hp = await p.help();
   ok(await p.st() === 'files' && hp.warm === 'done' && hp.g === 3, 'shown the answer in w2 → a lot of help (3) to start with');
@@ -163,7 +163,7 @@ for (const [name, slip, g] of [['clean', false, 1], ['one wrong pair', true, 2]]
   await wait(700);
   ok(!(await p.$('.pal-say')), 'the goal comes once per screen');
   await p.click('.pal'); await wait(100); await p.click('[data-act="hintOk"]'); await p.click('.pal'); await wait(100); await p.click('[data-act="hintOk"]'); await p.click('.pal'); await wait(150);
-  ok((await p.$eval('#hint', e => e.innerText)).includes('odpade') && await p.evaluate(() => S.run.assisted && S.run.wrong === 0 && S.run.coin === 3), 'three taps on the coin, no wrong pair: hint, lit sentence, the answer');
+  ok((await p.$eval('#hint', e => e.innerText)).includes('To ni ') && await p.evaluate(() => S.run.assisted && S.run.wrong === 0 && S.run.coin === 3), 'three taps on the coin, no wrong pair: hint, lit sentence, the answer');
   ok(await p.fits() && await p.evaluate(() => { const m = document.querySelector('.footer'); return m.getBoundingClientRect().bottom <= innerHeight; }), 'the footer with the coin fits the screen');
   ok(!p.errors.length, `no page errors ${p.errors.join('|')}`);
   await p.close();
