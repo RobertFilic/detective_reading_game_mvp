@@ -23,7 +23,15 @@ Producer's decisions on section 10 (2026-11-12): 1 the child sees the two button
 - The session table has one new column »Pomoč« (level at the start · coin taps · pause nudges), not five.
 - The level changes nothing on screen yet (step 8); the block says so to the adult.
 
-Not built yet: steps 8–10 and 12 (help that differs by level and the coin's full ladder in every step, tappable hard words, one sentence at a time, the clean-up). All Slovenian is a draft for the Slovenian editor. Every child-facing line is ≤ 8 words (the checker counts emoji and »…«).
+**Built on 2026-11-13: steps 8, 10 and 12** (help that differs by level, one sentence at a time, the clean-up; test `solo/tools/tests/help-aids.mjs`). **Step 9, tappable hard words, is dropped** (producer, 2026-11-13: not needed); the `hard` data and its checker rules are gone, and everything this spec says about C / hard words no longer applies. Where the build differs:
+- **Level 3's goal is not a second line above the footer.** The helper line that is already on top of every step shows the short goal instead of the whole instruction (»Kdo ni bil? Prečrtaj ga.«), in the steps that are read (scene, questioning, solve, UGOVOR, 🧭, ⏰). A puzzle keeps its own note and gets the goal bubble on entering, as at level 2.
+- The glow covers the steps that are read; puzzles keep their own ladders.
+- One ladder per step (`stepHint`), used after wrong tries and by the coin (`coinStep`). The coin moves the step's counter to the next rung; those tries are noted in `free` and never count as the child's wrong tries. Level 3 starts each ladder one try in.
+- One sentence at a time: the previous sentence shows small above the card; »Vsi stavki« sits at the end of the dots' row; the button is »Naslednji stavek ▶«; the level-2 offer is a chip »Beri po en stavek« in the footer after two wrong pairs.
+- Not built: the companion-coached first taps for 🧭 and ⏰ (UGOVOR keeps its own), time words marked earlier in ⏰ at level 2, and the five separate debrief columns.
+- The old 🎓 practice case and its coach lines are removed. The classic story screens stay: the engine and the checker still support a case without steps.
+
+The spec is built except for the points listed in these status notes. All Slovenian is a draft for the Slovenian editor. Every child-facing line is ≤ 8 words (the checker counts emoji and »…«).
 
 **Design in one paragraph.** Two tiny step cases (`w1` »Skupaj«, `w2` »Ti delaš, jaz gledam«) replace the 🎓 practice case. After them the child's **companion** (🐶 🐱 🦉 🦊, one shared set of lines) does what a parent does, in **three help levels** (1 = today's game, 2, 3), set **per detective** from the run's own counters and moved **between cases only**. The companion's coin sits in the footer on every step screen; a tap on it is a free hint at every level, so nobody is ever stuck, whatever the level.
 

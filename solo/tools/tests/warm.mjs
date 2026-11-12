@@ -157,7 +157,7 @@ for (const [name, slip, g] of [['clean', false, 1], ['one wrong pair', true, 2]]
   ok(await p.evaluate(() => S.c.id === 'w1' && S.warmReplay) && await p.$('[data-act="back"]'), '❓ plays w1 again, with a way back');
   await p.click('[data-act="back"]'); await wait(200);
   ok(await p.st() === 'files' && (await p.help()).warm === 'legacy' && !(await p.$('.coach')), 'back from the replay: the adventures, nothing changed');
-  await p.evaluate(() => { HELP.idle[1][0] = 0.4; S.file = 'bip'; playCase(1); }); await wait(100);
+  await p.evaluate(() => { HELP.idle[1][0][0] = 0.4; S.file = 'bip'; playCase(1); }); await wait(100);
   await p.click('[data-act="answer"]'); await p.click('[data-act="toScene"]'); await wait(100);
   await p.click('[data-act="briefOk"]');
   await openAll(p); await p.click('[data-act="torch"]'); await openAll(p);

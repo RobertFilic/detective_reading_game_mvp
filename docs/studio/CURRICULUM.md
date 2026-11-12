@@ -13,7 +13,7 @@ The game is made for children of 7–8 who can play **alone**; 9–10-year-olds 
   - **A season stands on its own.** Cases 1–2 teach its new skill and briefly re-teach any older skill it needs (UGOVOR, »Kdaj?«); it never assumes the child played an earlier season.
   - **Reading load stays within reach of a new 7-year-old who has help.** It may rise slowly, but the help, not the calendar, is what bridges the gap between children.
 
-## Help that fades (direction approved 2026-11-12; the warm-up and the companion's free hint are built, the levels not yet: [WARMUP_AND_HELP.md](../WARMUP_AND_HELP.md))
+## Help that fades (direction approved 2026-11-12; built 2026-11-13, see [WARMUP_AND_HELP.md](../WARMUP_AND_HELP.md))
 
 Children of 7–8 differ a lot: some read a case alone, some need a parent at every step. The seasons can't be written for both, so the **text stays the same and the help changes**. The game does the parent's job, so a child can play alone, and steps back as the child improves.
 
@@ -36,7 +36,6 @@ Children of 7–8 differ a lot: some read a case alone, some need a parent at ev
 |---|---|
 | reminds the goal (»Koga lahko prečrtamo?«) | the companion repeats the question |
 | points at the right place | the sentence to read next glows |
-| helps with a hard word | a tap splits the word into syllables or shows a small picture |
 | reduces the load | one sentence at a time instead of the whole list |
 
 - **How much help** is set from what the game sees on the device (hints reached, wrong picks, assisted solves): a child who needed a lot gets help early, a child who needed none gets it only after a long pause or a wrong pick.
@@ -44,7 +43,7 @@ Children of 7–8 differ a lot: some read a case alone, some need a parent at ev
 - **Nobody is ever stuck alone:** the last hint always leads to the answer, with the reason shown.
 - Help never costs anything and nothing is taken away (IMPROVEMENTS.md §9).
 
-**For the writers:** a season is still written once, at its level. Every case needs what the help uses: an `h1` that sends the child back to a sentence, and, for words a 7-year-old may not know, a syllable split or a picture (to be specified with the puzzle designer when this is built).
+**For the writers:** a season is still written once, at its level. Every case needs what the help uses: an `h1` that sends the child back to a sentence. (Help with single hard words was dropped: producer, 2026-11-13.)
 
 **9–10-year-olds** get the same warm-up and the help drops to its lowest quickly. Their numbers in the debrief say whether level A bores them; only then do we write harder tellings (level B) or extra reading for them.
 

@@ -40,7 +40,7 @@ const base = { dp_save_version: '4', dp_profile_v1: JSON.stringify(kid) };
     ['wrong tries add up across steps (2 + 2)', ['call', 'scene', 'when', 'solve'], { wmiss: 2, wrong: 2, rung: 1 }, 0, 'hard'],
     ['told where to look in two steps', ['call', 'words', 'scene', 'lie', 'solve'], { wwrong: 0, lwrong: 3, rung: 2, wrong: 0 }, 0, 'hard'],
     ['UGOVOR shown the answer', ['call', 'scene', 'lie', 'solve'], { lassisted: true }, 0, 'hard'],
-    ['a puzzle hint from the coin', ['call', 'cipher', 'scene', 'solve'], { coined: ['cipher'] }, 1, 'clean'],
+    ['a puzzle hint from the coin', ['call', 'cipher', 'scene', 'solve'], { cwrong: 2, free: { cwrong: 2 } }, 1, 'clean'],
   ]) {
     const got = await verdict(steps, over, coin);
     ok(got === want, `${name} → ${want}${got === want ? '' : ' (got ' + got + ')'}`);

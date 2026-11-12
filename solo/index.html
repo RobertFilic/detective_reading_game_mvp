@@ -1171,6 +1171,21 @@ tr.clickable { cursor: pointer; }
 .pal-say .ui-coin { background: var(--bg); }
 .row.nglow, .obj.nglow, .rows:has(.row.dim) .row:not(.dim):not(.used):not(.selected):not(.pulse) { border-color: var(--glow); box-shadow: 0 0 0 3px rgba(248, 202, 101, .55); }   /* »stavek, ki sveti«: a hint dimmed the others */
 .brief.offer .ui-btn + .ui-btn { margin-top: 10px; }
+.pal.pulse { animation: ui-glow 2s ease-in-out infinite; border-color: var(--glow); }
+.nglow { border-color: var(--glow) !important; box-shadow: 0 0 0 3px rgba(248, 202, 101, .55); border-radius: var(--r-m); }
+.suspect.nglow { box-shadow: none; } .suspect.nglow .avatar { box-shadow: 0 0 0 4px rgba(248, 202, 101, .8); }
+/* solve one sentence at a time (help level 3): the sentence in focus on a card, the one before it small above, a dot per sentence */
+.rows.walk { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+.walk-card { display: flex; flex-direction: column; gap: 8px; }
+.walk-all { min-height: 44px; padding: 0 14px; font-size: 15px; margin-left: auto; }
+.walk-prev { padding: 0 8px; font: 400 var(--t-body)/1.35 var(--font); color: var(--ink-2); }
+.walk-dots { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.wdot { appearance: none; width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); font: 600 16px var(--font); cursor: pointer; }
+.wdot.on { background: var(--season); border-color: var(--season); color: #fff; }
+.wdot.used { text-decoration: line-through; color: var(--ink-2); background: var(--bg); }
+.wdot.lit { border-color: var(--glow); box-shadow: 0 0 0 3px rgba(248, 202, 101, .55); }
+.walk-offer { min-height: 48px; }
+.locked .walk-dots, .locked .walk-all { pointer-events: none; }
 .helpblock .seg { margin: 0; flex-wrap: nowrap; gap: 6px; }
 .helpblock td { vertical-align: middle; }
 .adult .help-trail .tag.c-good { background: var(--green-soft); } .adult .help-trail .tag.c-bad { background: #fbe4e0; }
@@ -1703,6 +1718,9 @@ const UI_AUDIO = {
   goalLie: 'Kdo ne govori resnice?',
   goalHerring: 'Je ta sled prava?',
   goalWhen: 'Kdaj je bilo to?',
+  walkOffer: 'Beri po en stavek',
+  walkAll: 'Vsi stavki',
+  walkNext: 'Naslednji stavek ▶',
   coachLie1: 'Nekdo nekaj trdi. Ali je res? Tapni to.',
   coachLie2: 'Kateri stavek pove drugače? Tapni ga.',
   // ✉️ cipher, 📜 torn note, 🔤 the word search's secret message
@@ -2653,25 +2671,9 @@ const CASES = [
   },
 ];
 
-// Practice case for the first-time tutorial: very easy, the answer is stated plainly.
-const TUTORIAL = {
-  id: 'tut', no: 0, rung: 1, level: 'A', sticker: '🥕',
-  question: 'Kdo je pojedel korenček?',
-  suspects: ['bine', 'jure', 'zala'], culprit: 'bine',
-  sentences: [
-    ['s1', 'Na mizi je bil korenček.'],
-    ['s2', 'Jure je spal.'],
-    ['s3', 'Bine je pojedel korenček.', 'evidence'],
-    ['s4', 'Zala je brala knjigo.'],
-  ],
-  h1: 'Kdo je pojedel korenček? Poišči ta stavek.', h2: ['s2', 's3', 's4'], h3: ['s2', 's3'],
-  reveal: ['Bine je pojedel korenček.', 'To piše v zgodbi!', 'Tako najdeš dokaz.'],
-};
-
 // The two warm-up cases every new detective plays before the first season (docs/WARMUP_AND_HELP.md):
 // tiny step cases with known faces. In w1 the companion leads every tap; in w2 the child plays alone.
 // They are not in FILES: they are never on the start screen, and don't count for ranks or medals.
-// hard: a word the child may tap to see it in syllables.
 const WARMUPS = [
   {
     id: 'w1', file: 'warm', no: 1, warm: 1, type: 'elim', level: 'A', sticker: '🥕', place: 'Kuhinja',
@@ -2685,7 +2687,6 @@ const WARMUPS = [
       ['s3', 'Zala je bila ves dan v šoli.', 'clear', { obj: '📅', label: 'urnik', clears: 'zala' }],
       ['s4', 'Bine ima v žepu pol korenčka.', 'evidence', { obj: '🧥', label: 'jakna' }],
     ],
-    hard: { 'korenčka': 'ko-ren-čka' },
     h1: 'Kdo NI mogel biti? Poišči stavek o njem.',
     reveal: ['Bine je imel v žepu pol korenčka.', 'Jure je spal. Zala je bila v šoli.', 'Tako najdeš krivca!'],
     caught: 'Bineta', excuse: 'Korenček je bil tako hrustljav!',
@@ -2703,7 +2704,6 @@ const WARMUPS = [
       ['s4', 'Bine je ves dan pri babici.', 'clear', { obj: '📝', label: 'listek', clears: 'bine' }],
       ['s5', 'Dedek je z Juretom ves čas igral šah.', 'clear', { obj: '♟️', label: 'šah', clears: 'jure' }],
     ],
-    hard: { 'zalivala': 'za-li-va-la' },
     h1: 'Kdo NI mogel biti? Poišči stavek o njem.',
     reveal: ['Zala si je umivala roza prste.', 'Roza je bil tudi palček.', 'Dokaz je bil pri pipi!'],
     caught: 'Zalo', excuse: 'Roza palček je veliko lepši!',
@@ -2711,7 +2711,7 @@ const WARMUPS = [
 ];
 
 function normalizeCases() {
-  for (const c of [...CASES, ...WARMUPS, TUTORIAL]) {
+  for (const c of [...CASES, ...WARMUPS]) {
     c.rung = RUNG[c.type || 'fact'];
     c.sentences = c.sentences.map(([id, text, role = 'neutral', more = {}]) => ({ id, text, role, ...more }));
   }
@@ -2721,7 +2721,7 @@ normalizeCases();
 // Every audio clip the app can play: [clipId, text]. Recordings go in audio/<clipId>.m4a.
 function clipList() {
   const out = Object.entries(UI_AUDIO).map(([k, t]) => ['ui_' + k, t]);
-  for (const c of [TUTORIAL, ...WARMUPS, ...CASES]) {
+  for (const c of [...WARMUPS, ...CASES]) {
     out.push([c.id + '_q', c.question]);
     (c.call || []).forEach((t, i) => out.push([`${c.id}_c${i + 1}`, t]));
     (c.film || []).forEach((f, i) => out.push([`${c.id}_f${i + 1}`, f[1]]));
@@ -3160,8 +3160,13 @@ function newRun() {
     used: [],
     // help: the solve ladder's rung reached (1 h1, 2 the next sentence lit, 3 the answer), taps on the companion's
     // coin, sentences tapped, pause nudges shown per screen; lead / w2: the warm-up cases' state
-    // coined: the steps where the coin gave a hint; help: the help level when the case began
-    rung: 0, coin: 0, coined: [], seen: [], nudged: {}, glow: false, lead: null, w2: null, offer: false, help: helpLevel(),
+    // help: the help level when the case began
+    // fixed: the level is an adult's choice (or pinned), so a new kind of step doesn't raise it; skills: as they were when the case began
+    // free: tries added to a step's counter by the coin or by level 3 (not the child's own); eased: the steps level 3 already eased
+    // said: steps whose goal was said on entering; lit: steps where the next thing to read glows; walk: solve one sentence at a time
+    rung: 0, coin: 0, seen: [], nudged: {}, glow: false, lead: null, w2: null, offer: false, help: helpLevel(),
+    fixed: !!(HELP_PIN || help().over), skills: help().skills, free: {}, eased: [], said: [], lit: {}, palPulse: false,
+    walk: false, walkAt: null, walkAsked: false, walkAll: false,
   };
 }
 
@@ -3335,25 +3340,8 @@ const cleanName = (v) => v.replace(/[^\p{L} '-]/gu, '').replace(/\s+/g, ' ').tri
 
 const idCard = (p, o) => UI.id(p, o);
 
-// ---- First-time tutorial: a guided practice case before the board ----
+// set for a detective who played the practice case of the first versions: they skip the warm-up cases (help().warm = 'legacy')
 const TUT_KEY = 'dp_tutorial_done';
-
-function startTutorial() {
-  S.c = TUTORIAL;
-  S.run = newRun();
-  S.tut = { read: false, msg: null, board: false };
-  log('tutorial_start');
-  go('intro');
-}
-
-function endTutorial() {
-  store.write(TUT_KEY, true);
-  log('tutorial_done');
-  S.c = null;
-  S.run = null;
-  S.tut = { board: true };   // one last bubble on the file picker
-  toHome();
-}
 
 // ---- Help that fades (docs/WARMUP_AND_HELP.md) ----
 // Per detective: g = how much help (1 little, 2 some, 3 a lot; an adult's choice in over), and how far the
@@ -3361,8 +3349,8 @@ function endTutorial() {
 // The warm-up sets g; the child never sees it. ?help=1|2|3 pins the level (tests).
 const HELP_KEY = 'dp_help_v1';
 const HELP_PIN = [1, 2, 3].find(n => String(n) === new URLSearchParams(location.search).get('help')) || null;
-// seconds without a tap before the companion speaks (the goal, then the next thing to read glows); fade: the goal's bubble
-const HELP = { idle: { 1: [60], warm: [12, 25] }, fade: 6 };
+// per help level, the seconds without a tap before the companion says the goal, the next thing to read glows, and its coin pulses; fade: how long the goal's bubble stays
+const HELP = { idle: { 1: [[60, 'goal'], [90, 'glow']], 2: [[25, 'goal'], [45, 'glow'], [70, 'coin']], 3: [[10, 'goal'], [20, 'glow'], [35, 'coin']], warm: [[12, 'goal'], [25, 'glow']] }, fade: 6 };
 // streak: clean cases in a row; skills: per step type, how often the detective has met it (n) and whether it
 // went badly (hard); hist: the last 8 cases as { c: id, g: level at its start, v: verdict }; wv: how w2 went.
 function help() {
@@ -3383,19 +3371,100 @@ const helpSet = (patch) => store.write(HELP_KEY, { ...help(), ...patch });
 const helpLevel = () => HELP_PIN || help().over || help().g;
 // Per step of a finished case: its wrong tries, and the highest rung of its hint ladder that was shown
 // (1 a hint, 2 where to look, 3 the answer). [the run's counter, the wrong tries that bring rung 1, 2, 3]
-const LADDER = { lock: ['kwrong', [2, 0, 4]], order: ['owrong', [2, 3, 4]], torn: ['owrong', [2, 3, 4]], words: ['wwrong', [2, 4, 6]],
+const LADDER = { lock: ['kwrong', [2, 4, 4]], order: ['owrong', [2, 3, 4]], torn: ['owrong', [2, 3, 4]], words: ['wwrong', [2, 4, 6]],
   cipher: ['cwrong', [2, 4, 6]], lie: ['lwrong', [2, 3, 4]], herring: ['hwrong', [2, 3, 4]], when: ['wmiss', [2, 3, 4]] };
 function stepStats(c, r) {
   return c.steps.filter(st => st !== 'call').map(step => {
     if (step === 'solve') return { step, wrong: r.wrong, rung: r.rung, assisted: r.assisted };
     if (!LADDER[step]) return { step, wrong: 0, rung: 0, assisted: false };   // scene, questioning: nothing can go wrong
-    const [key, at] = LADDER[step], wrong = r[key];
-    let rung = at[2] && wrong >= at[2] ? 3 : at[1] && wrong >= at[1] ? 2 : wrong >= at[0] ? 1 : 0;
+    const [key, at] = LADDER[step], n = r[key], wrong = n - ((r.free || {})[key] || 0);
+    let rung = n >= at[2] ? 3 : n >= at[1] ? 2 : n >= at[0] ? 1 : 0;
     if ({ lie: r.lassisted, herring: r.hassisted, when: r.wassisted }[step] || (step === 'cipher' && r.cmiss >= 3)) rung = 3;
-    if (r.coined.includes(step)) rung = Math.max(rung, 1);
     return { step, wrong, rung, assisted: rung === 3 };
   });
 }
+// The help level of a step of the case being played: the level the case began with, and at least 2 for a kind
+// of step this detective has not met yet or that went badly last time. The warm-up cases have their own help.
+function lvl(step = S.screen) {
+  const r = S.run, k = r.skills[step];
+  if (S.c.warm) return 1;
+  return r.fixed || step === 'solve' || step === 'call' || (k && k.n && !k.hard) ? r.help : Math.max(r.help, 2);
+}
+// a step's wrong tries that were the child's own (the coin and level 3 move the counter too)
+const tries = (key) => S.run[key] - (S.run.free[key] || 0);
+// The hint a puzzle or a reasoning step gives after n tries, as the step's own ladder says; null = only a gentle note.
+function stepHint(step, n = S.run[LADDER[step][0]]) {
+  const r = S.run, c = S.c, H = (key, text, clip, level) => ({ key, text, clip, level });
+  if (READ_STEPS.includes(step)) r.lit[step] = true;   // after a wrong try the next thing to read glows
+  switch (step) {
+    case 'lock': return n >= 4 ? H('h2', c.lock.h2, c.id + '_kh2', 2) : n === 2 ? H('h1', c.lock.h1, c.id + '_kh1', 1) : null;
+    case 'order': case 'torn': {
+      const torn = step === 'torn', o = c[step], p = c.id + (torn ? '_p' : '_o'), assist = torn ? 'tornAssist' : 'orderAssist';
+      return n === 4 ? H(assist, UI_AUDIO[assist], 'ui_' + assist, 3) : n === 3 ? H('h2', o.h2, p + 'h2', 2) : n === 2 ? H('h1', o.h1, p + 'h1', 1) : null;
+    }
+    case 'words': return n === 6 ? H('wordAssist', UI_AUDIO.wordAssist, 'ui_wordAssist', 3) : n === 4 ? H('wordLook', UI_AUDIO.wordLook, 'ui_wordLook', 2)
+      : n === 2 ? H('h1', c.words.h1, c.id + '_wh', 1) : null;
+    case 'cipher': return n === 6 ? H('cipherAssist', UI_AUDIO.cipherAssist, 'ui_cipherAssist', 3) : n === 4 ? H('cipherLook', UI_AUDIO.cipherLook, 'ui_cipherLook', 2)
+      : n === 2 ? H('h1', c.cipher.h1, c.id + '_ch1', 1) : null;
+    case 'lie': {
+      const L = c.lie;
+      if (r.lassisted || n >= 4) {
+        if (!r.lassisted) { r.lassisted = true; log('lie_assisted'); }
+        r.lclaim = L.claim;
+        return H('lieAssist', UI_AUDIO.lieAssist, 'ui_lieAssist', 3);
+      }
+      if (n === 3) { r.llook = true; r.lclaim = L.claim; return H('lieLook', UI_AUDIO.lieLook, 'ui_lieLook', 2); }
+      return n === 2 ? (L.h1 ? H('h1', L.h1, c.id + '_lh1', 1) : H('h1', UI_AUDIO.lieH1, 'ui_lieH1', 1)) : null;
+    }
+    case 'herring': {
+      if (r.hassisted || n >= 4) {
+        if (!r.hassisted) { r.hassisted = true; log('herring_assisted'); }
+        return H('herringAssist', UI_AUDIO.herringAssist, 'ui_herringAssist', 3);
+      }
+      if (n === 3) { r.hlook = true; return H('herringLook', UI_AUDIO.herringLook, 'ui_herringLook', 2); }
+      return n === 2 ? (c.herring.h1 ? H('h1', c.herring.h1, c.id + '_hh1', 1) : H('h1', UI_AUDIO.herringH1, 'ui_herringH1', 1)) : null;
+    }
+    case 'when': {
+      if (r.wassisted || n >= 4) {
+        if (!r.wassisted) { r.wassisted = true; log('when_assisted'); }
+        return H('whenAssist', UI_AUDIO.whenAssist, 'ui_whenAssist', 3);
+      }
+      if (n === 3) { r.wlook = true; return H('whenLook', UI_AUDIO.whenLook, 'ui_whenLook', 2); }
+      return n === 2 ? (c.when.h1 ? H('h1', c.when.h1, c.id + '_th1', 1) : H('h1', UI_AUDIO.whenH1, 'ui_whenH1', 1)) : null;
+    }
+  }
+  return null;
+}
+// the cipher's missing symbol has its own ladder: read the word, the letter, then the tile pulses
+const cipherMissHint = (n, c = S.c) => n === 1 ? { key: 'h1', text: c.cipher.h1, clip: c.id + '_ch1', level: 1 } : n === 2 ? { key: 'h2', text: c.cipher.h2, clip: c.id + '_ch2', level: 2 }
+  : n === 3 ? { key: 'cipherAssist', text: UI_AUDIO.cipherAssist, clip: 'ui_cipherAssist', level: 3 } : null;
+// The coin in a puzzle or a reasoning step: the counter jumps to the ladder's next rung, as if the tries in
+// between had been made (they are noted in free, so they don't count as the child's wrong tries).
+function coinStep(step) {
+  const r = S.run, [key, at] = LADDER[step], add = (k, n) => { r.free[k] = (r.free[k] || 0) + n; r[k] += n; };
+  if (step === 'cipher') {
+    const want = cipherCells(S.c.cipher).flat()[r.cring];
+    if (want && want.e === S.c.cipher.missing) { if (r.cmiss < 3) add('cmiss', 1); return cipherMissHint(r.cmiss); }
+  }
+  const next = at.find(n => n > r[key]);
+  if (next) add(key, next - r[key]);
+  return stepHint(step, next || Math.max(...at));
+}
+// has the step on screen nothing left to do? (then the coin has nothing to say)
+function stepDone() {
+  const r = S.run, c = S.c;
+  switch (S.screen) {
+    case 'lock': return r.open;
+    case 'order': case 'torn': return r.ordered;
+    case 'words': return r.words.length === c.words.find.length;
+    case 'cipher': return cipherCells(c.cipher).flat().every(x => !x.e || r.cgot.includes(x.ch));
+    case 'lie': return r.caught;
+    case 'herring': return Object.keys(c.herring.explains).every(k => r.hdone.includes(k));
+    case 'when': return Object.keys(c.when.cards).every(k => r.wplaced[k]);
+  }
+  return false;
+}
+
 // How a case went: hard (shown an answer, 4 wrong tries, or told where to look in two steps), clean (alone:
 // at most one wrong try, and one hint asked from the coin is free), or helped.
 function helpVerdict(stats, coin) {
@@ -3418,7 +3487,9 @@ function helpAfterCase(c, r) {
   if (v === 'hard') { g = Math.min(3, g + 1); streak = 0; }
   else if (v === 'helped') streak = 0;
   else if (++streak >= 2) { g = Math.max(1, g - 1); streak = 0; }
-  helpSet({ g, streak, skills, hist: [...h.hist, { c: c.id, g: r.help, v }].slice(-8) });
+  // one sentence at a time, opened by the game: »Vsi stavki« in two cases in a row switches it off until a hard case
+  const walkOff = v === 'hard' ? 0 : r.walkAuto ? (r.walkAll ? (h.walkOff || 0) + 1 : 0) : h.walkOff || 0;
+  helpSet({ g, streak, skills, walkOff, hist: [...h.hist, { c: c.id, g: r.help, v }].slice(-8) });
   log('help_level', { from: h.g, to: g, verdict: v, wrong: sum(judged, 'wrong'), rung: Math.max(0, ...judged.map(x => x.rung)), coin: r.coin });
 }
 // The adult's review: any detective's help state (the one playing from the live keys, the others from their
@@ -3437,6 +3508,7 @@ function helpWrite(key, patch) {
 }
 
 // The two warm-up cases: w1 with the companion leading every tap, then w2 alone. replay: from »❓ Kako igram?«.
+// S.tut = { board: true } afterwards: one last bubble on the file picker.
 function startWarm(n, replay = false) {
   S.c = WARMUPS[n - 1];
   S.file = null;
@@ -3538,20 +3610,6 @@ function coachStep() {
   }
   if (!t) return null;
   if (S.screen === 'files') return t.board ? { text: 'Zdaj izberi pustolovščino in reši svoj primer!', sel: '.file-card', ok: true } : null;
-  if (S.screen === 'board') return null;
-  if (t.msg) return { text: t.msg, sel: null, ok: true };
-  switch (S.screen) {
-    case 'intro': return { text: 'Tvoj prvi primer! Najprej preberi zgodbo.', sel: '[data-act="toStory"]' };
-    case 'story': return t.read
-      ? { text: 'Ko veš, kdo je bil, tapni tukaj.', sel: '[data-act="know"]' }
-      : { text: 'Preberi vse stavke. Kdo je pojedel korenček?', sel: '.rows', ok: true, point: false };
-    // a group (the suspects, the sentences) gets the spotlight but no finger: it would point at one answer
-    case 'accuse': return { text: 'Kdo je bil? Tapni pravo osebo.', sel: '.suspects', point: false };
-    case 'evidence': return r && r.picks.length
-      ? { text: 'Tapni »To je dokaz!«', sel: '[data-act="confirm"]' }
-      : { text: 'Kateri stavek to dokaže? Tapni ga.', sel: '.rows', point: false };
-    case 'reveal': return { text: `Bravo, ${detTitle().toLowerCase()}! Tako se igra. 🎉`, sel: '[data-act="next"]' };
-  }
   return null;
 }
 
@@ -3629,9 +3687,7 @@ document.body.addEventListener('click', (e) => {
     return;
   }
   if (!ok || !S.tut) return;
-  if (S.tut.msg) S.tut.msg = null;
-  else if (S.screen === 'story') S.tut.read = true;
-  else if (S.screen === 'files') S.tut = null;
+  S.tut = null;   // the last bubble on the file picker
   coach();
 });
 
@@ -3734,6 +3790,18 @@ function startCase(n) {
 function go(screen) {
   stopAudio();
   stopRing();
+  // help level 3: solve opens one sentence at a time, unless the child chose the whole list in the last two cases
+  if (screen === 'solve' && S.run && S.c && !S.c.warm && S.run.walkAuto == null) {
+    S.run.walkAuto = lvl('solve') === 3 && !((help().walkOff || 0) >= 2);
+    S.run.walk = S.run.walkAuto;
+  }
+  // help level 3: this step's hints come one wrong try earlier
+  if (S.run && S.c && S.c.steps && LADDER[screen] && !S.run.eased.includes(screen) && lvl(screen) === 3) {
+    const key = LADDER[screen][0];
+    S.run.eased.push(screen);
+    S.run[key]++;
+    S.run.free[key] = (S.run.free[key] || 0) + 1;
+  }
   if (screen !== 'board') S.pinNew = null;
   if (screen !== 'who') S.whoEdit = false;
   S.screen = screen;
@@ -3751,7 +3819,6 @@ function go(screen) {
 // ---------- Back: one step back, for the ← button and for the browser / swipe back.
 // Returns what to do, 'stay' (nothing sensible behind this screen) or null (leave the game).
 function backTarget() {
-  const tut = S.tut && !S.tut.board;
   switch (S.screen) {
     case 'make':
       if (S.mk.step > (S.mk.hello ? 0 : 1)) return () => { S.mk.step--; render(); };
@@ -3760,7 +3827,6 @@ function backTarget() {
     case 'board': return () => { S.toast = null; toHome(); };
     case 'who': return S.whoEdit ? ACTIONS.whoEdit : profile() ? toHome : 'stay';
     case 'intro':
-      if (tut) return store.read(TUT_KEY, false) ? () => { S.tut = null; S.c = null; toHome(); } : () => { ACTIONS.editCard(); S.mk.step = 4; render(); };
       return S.orderMode === 'board' ? toBoard : 'stay';
     case 'call': return S.c.warm ? (S.warmReplay ? leaveWarm : 'stay') : S.orderMode === 'board' ? toBoard : 'stay';
     case 'scene': case 'ask': case 'words': case 'lock': case 'order': case 'cipher': case 'torn': return S.run.hint ? 'stay' : () => go(stepNext(-1));
@@ -3770,7 +3836,7 @@ function backTarget() {
     case 'story': return () => go('intro');
     case 'accuse': return () => go('story');
     case 'evidence': return S.run.hint ? 'stay' : () => { S.run.picks = []; go('accuse'); };
-    case 'reveal': return tut ? endTutorial : S.c.warm ? 'stay' : S.orderMode === 'board' ? toBoard : 'stay';
+    case 'reveal': return S.c.warm ? 'stay' : S.orderMode === 'board' ? toBoard : 'stay';
     case 'book': return S.run && S.run.fromBoard ? toBoard : () => go('reveal');
     case 'soon': return () => go('more');
     case 'thanks': return KID_MODE ? ACTIONS.backToBoard : 'stay';
@@ -3832,12 +3898,17 @@ function render() {
     watchScroll();
   }
   coach();
-  armIdle();
+  helpAids();
 }
 
 // ---- The companion in the footer: its coin is a free hint at any time, and after a pause it speaks by itself.
 // In w1 it leads anyway, so the coin waits until w2.
-const palBtn = () => S.run && S.run.lead ? '' : `<button class="pal" data-act="pal" aria-label="Namig">${helperEmoji()}<i>?</i></button>`;
+const palBtn = () => S.run && S.run.lead ? '' : `<button class="pal ${S.run && S.run.palPulse ? 'pulse' : ''}" data-act="pal" aria-label="Namig">${helperEmoji()}<i>?</i></button>`;
+// At help level 3 the line on top of the steps that are read is the short goal (»Kdo ni bil? Prečrtaj ga.«) instead of
+// the whole instruction, until the step has nothing left to do. A puzzle has its own note on top.
+const READ_STEPS = ['scene', 'ask', 'solve', 'lie', 'herring', 'when'];
+const readDone = () => S.screen === 'solve' ? false : LADDER[S.screen] ? stepDone() : own(S.screen).every(x => S.run.found.includes(x.id));
+const pinGoal = () => stepCase() && !S.c.warm && READ_STEPS.includes(S.screen) && lvl() === 3 && !readDone();
 const footBack = () => `<button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>${palBtn()}`;
 const goalText = () => S.screen === 'solve' ? (S.c.suspects.length - S.run.crossed.length === 1 ? UI_AUDIO.goalLast : UI_AUDIO.goalSolve)
   : UI_AUDIO['goal' + S.screen[0].toUpperCase() + S.screen.slice(1)];
@@ -3849,36 +3920,75 @@ function solveRung(n) {
   if (n >= 3) {
     if (!r.assisted) { r.assisted = true; log('assisted'); }
     const t = elimTarget(), name = CHARACTERS[t.who].name;
+    if (r.walk) r.sel = r.walkAt = t.sid;
     const why = name === '???' ? '' : t.who === c.culprit ? ` To je dokaz: ${name}!` : ` To ni ${name}.`;
     return { key: 'assist', text: UI_AUDIO.elimAssist + why, clip: 'ui_elimAssist', level: 4 };
   }
-  if (n === 2) { r.highlight = true; return { key: 'h2', text: UI_AUDIO.elimLook, clip: 'ui_elimLook', level: 2 }; }
+  if (n === 2) { r.highlight = true; if (r.walk) r.sel = r.walkAt = elimTarget().sid; return { key: 'h2', text: UI_AUDIO.elimLook, clip: 'ui_elimLook', level: 2 }; }
   return { key: 'h1', text: c.h1, clip: c.id + '_h1', level: 1 };
 }
-// Pause nudges: after a while without a tap the companion says the step's goal in a bubble that blocks nothing;
-// later (warm-up) the next thing to read glows. Once per screen each; any tap takes them away.
+// Pause nudges: after a while without a tap the companion says the step's goal in a bubble that blocks nothing,
+// later the next thing to read glows, then its coin pulses (HELP.idle, by help level). Once per screen each.
 let idleTimer = null, lastTap = Date.now();
 const canNudge = () => stepCase() && !!BRIEF[S.screen] && !S.run.lead && !S.run.hint && !S.run.note && !briefOpen() && !truthOpen() && !$('.coach') && !document.hidden;
+function sayGoal() {
+  document.querySelectorAll('.pal-say').forEach(el => el.remove());
+  document.body.insertAdjacentHTML('beforeend', `<div class="pal-say">${UI.coin(helperEmoji())}<span>${esc(goalText())}</span></div>`);
+  setTimeout(() => { const b = $('.pal-say'); if (b) b.classList.add('out'); }, HELP.fade * 1000);
+}
+// What to read or open next (never the answer): the next thing still closed, the next face with questions,
+// the next sentence not looked at yet, the claims or clue cards before one is picked, the next ⏰ card.
+function glowSel() {
+  const r = S.run, c = S.c;
+  if (r.hint || r.note || briefOpen() || truthOpen()) return null;
+  switch (S.screen) {
+    case 'scene': { const x = own('scene').find(y => !r.found.includes(y.id)); return x && `.obj[data-sid="${x.id}"]`; }
+    case 'ask': {
+      const open = own('ask').filter(y => !r.found.includes(y.id));
+      if (r.typing || !open.length) return null;
+      return open.some(y => y.who === r.who) ? '.qs' : `.suspect[data-id="${open[0].who}"]`;
+    }
+    case 'solve': {
+      if (r.walk || r.highlight || r.assisted) return null;
+      const x = c.sentences.find(y => !r.seen.includes(y.id) && !r.used.includes(y.id));
+      return x && `.row[data-sid="${x.id}"]`;
+    }
+    case 'lie': return !r.caught && !r.lclaim && !r.lcoach && !r.lphase ? '.claims' : null;
+    case 'herring': return !r.hclue && !stepDone() ? '.hclues' : null;
+    case 'when': { const x = !r.wcard && (r.worder || Object.keys(c.when.cards)).find(k => !r.wplaced[k]); return x && `.wcard[data-sid="${x}"]`; }
+  }
+  return null;
+}
+function applyGlow() {
+  const sel = glowSel(), el = sel && $(sel);
+  if (el) el.classList.add('nglow');
+}
+// After every redraw of a step: at level 2 and up the goal is said once on entering (unless it is pinned), and
+// the next thing to read glows at level 3, or once a pause or a wrong try has switched it on.
+function helpAids() {
+  if (stepCase() && BRIEF[S.screen] && !S.run.lead) {
+    const r = S.run, L = lvl();
+    if (!S.c.warm && L >= 2 && !r.said.includes(S.screen) && !pinGoal() && canNudge()) { r.said.push(S.screen); sayGoal(); }
+    if (L === 3 || r.lit[S.screen]) applyGlow();
+  }
+  armIdle();
+}
 function armIdle() {
   clearTimeout(idleTimer);
   if (!stepCase() || !BRIEF[S.screen] || S.run.lead) return;
-  const r = S.run, plan = r.w2 ? HELP.idle.warm : HELP.idle[1], n = r.nudged[S.screen] || 0;
-  if (plan[n] == null) return;
+  const r = S.run, plan = HELP.idle[r.w2 ? 'warm' : lvl()], n = r.nudged[S.screen] || 0;
+  if (!plan[n]) return;
+  const [sec, kind] = plan[n];
   idleTimer = setTimeout(() => {
     if (S.run !== r) return;
     if (!canNudge()) { lastTap = Date.now(); armIdle(); return; }
     r.nudged[S.screen] = n + 1;
-    log('help_nudge', { step: S.screen, kind: n ? 'glow' : 'goal' });
-    if (n === 0) {
-      document.body.insertAdjacentHTML('beforeend', `<div class="pal-say">${UI.coin(helperEmoji())}<span>${esc(goalText())}</span></div>`);
-      setTimeout(() => { const b = $('.pal-say'); if (b) b.classList.add('out'); }, HELP.fade * 1000);
-    } else {
-      const next = S.screen === 'solve' ? S.c.sentences.find(x => !r.seen.includes(x.id) && !r.used.includes(x.id)) : own(S.screen).find(x => !r.found.includes(x.id));
-      const el = next && $(S.screen === 'solve' ? `.row[data-sid="${next.id}"]` : `.obj[data-sid="${next.id}"]`);
-      if (el) el.classList.add('nglow');
-    }
+    log('help_nudge', { step: S.screen, kind });
+    if (kind === 'goal') { if (!pinGoal()) sayGoal(); }
+    else if (kind === 'glow') { r.lit[S.screen] = true; applyGlow(); }
+    else { r.palPulse = true; const pal = $('.pal'); if (pal) pal.classList.add('pulse'); }
     armIdle();
-  }, Math.max(0, plan[n] * 1000 - (Date.now() - lastTap)));
+  }, Math.max(0, sec * 1000 - (Date.now() - lastTap)));
 }
 document.addEventListener('click', () => {
   lastTap = Date.now();
@@ -4045,8 +4155,9 @@ function noteHTML() {
     <span class="hi">${good ? '✓' : UI.coin(helperEmoji())}</span><span class="txt">${almost ? `<b class="verdict">${UI_AUDIO.almost}</b> ` : ''}${esc(r.note)}</span>
     ${UI.btn('V redu', { act: 'noteOk', kind: good ? '' : 'is-soft' })}</div>`;
 }
-// what to do now: the helper says it; a tap opens the step's instruction card again (in w1 the companion's bubble says it)
-const qbarB = (text) => S.run && S.run.lead ? '' : `<div class="qbar">${UI.helper(text, { act: 'brief', tone: 'bq' })}</div>`;
+// what to do now: the helper says it; a tap opens the step's instruction card again (in w1 the companion's bubble says it;
+// at help level 3 it is the step's short goal, see pinGoal)
+const qbarB = (text) => S.run && S.run.lead ? '' : `<div class="qbar">${UI.helper(pinGoal() ? goalText() : text, { act: 'brief', tone: 'bq' })}</div>`;
 // The season band on every step of a case: the step, how far along (one dot per step), the question.
 const PUZZLES = ['words', 'lock', 'order', 'cipher', 'torn'];
 const bandScreen = () => stepCase() && S.c.steps.includes(S.screen) && !(S.screen === 'call' && !S.run.answered);
@@ -4081,7 +4192,7 @@ function lieCatch() {
   r.lbroke = r.lrows;
   r.lrows = [];
   r.note = null;
-  log('lie_done', { wrong: r.lwrong, assisted: r.lassisted, liar, liarIsCulprit: liar === S.c.culprit });
+  log('lie_done', { wrong: tries('lwrong'), assisted: r.lassisted, liar, liarIsCulprit: liar === S.c.culprit });
   if (store.read(UGOVOR_KEY, false)) { lieStamp(); return; }
   r.lphase = 'shout';
   render();
@@ -4731,7 +4842,25 @@ const T = {
     const c = S.c, r = S.run;
     const left = c.suspects.filter(id => !r.crossed.includes(id));
     const t = r.assisted || r.highlight ? elimTarget() : null;
-    return `<div class="screen solve ${r.hint ? 'locked' : ''}">
+    const ss = c.sentences;
+    // one sentence at a time: the one in focus is the selected one; after it crossed someone off, the next one still free
+    if (r.walk && !r.sel) {
+      const at = Math.max(0, ss.findIndex(x => x.id === r.walkAt)), free = (x) => !r.used.includes(x.id);
+      r.sel = r.walkAt = (free(ss[at]) ? ss[at] : [...ss.slice(at + 1), ...ss.slice(0, at)].find(free) || ss[at]).id;
+      if (!r.seen.includes(r.sel)) r.seen.push(r.sel);
+    }
+    const row = (s) => `<div class="row ${r.sel === s.id ? 'selected' : ''} ${r.proofs.includes(s.id) ? 'proof' : ''} ${r.used.includes(s.id) ? 'used' : ''}
+        ${t && t.sid !== s.id ? 'dim' : ''} ${r.assisted && t && t.sid === s.id ? 'pulse' : ''}" data-act="${r.walk ? '' : 'pickClue'}" data-sid="${s.id}">${sayHTML(s)}${
+        c.lie && r.caught && s.id === c.lie.claim ? '<span class="ltag">UGOVOR!</span>' : c.lie && s.id === c.lie.truth ? '<span class="ltag truth">✨</span>'
+          : r.hdone.includes(s.id) ? '<span class="ltag herr">NAPAČNA SLED</span>' : r.wplaced[s.id] && wrongTime(s) ? '<span class="ltag ytag">🟨</span>' : ''}</div>`;
+    const at = ss.findIndex(x => x.id === r.sel);
+    const walk = r.walk ? `<div class="rows walk"><div class="walk-card">
+          ${at > 0 ? `<div class="walk-prev">${sayHTML(ss[at - 1])}</div>` : ''}${row(ss[at])}</div>
+        <div class="walk-dots">${ss.map((x, k) => `<button class="wdot ${x.id === r.sel ? 'on' : ''} ${r.used.includes(x.id) ? 'used' : ''} ${t && t.sid === x.id ? 'lit' : ''}" data-act="walkTo" data-sid="${x.id}" aria-label="Stavek ${k + 1}">${k + 1}</button>`).join('')}
+          <button class="ui-btn is-chip walk-all" data-act="walkAll">${UI_AUDIO.walkAll}</button></div></div>` : '';
+    // help level 2: after two wrong pairs the companion offers the same view
+    const offer = !r.walk && !r.walkAsked && !c.warm && lvl('solve') === 2 && r.wrong >= 2;
+    return `<div class="screen solve ${r.hint ? 'locked' : ''} ${r.walk ? 'walking' : ''}">
       <div class="caseq">❓ ${esc(c.question)}</div>
       ${left.length === 1 ? qbarB(UI_AUDIO.lastOne, 'ui_lastOne') : qbarB(UI_AUDIO.solve, 'ui_solve')}
       <div class="suspects mini">${c.suspects.map(id => {
@@ -4739,19 +4868,17 @@ const T = {
         return `<button class="suspect ${x ? 'crossed' : ''} ${r.assisted && t && t.who === id ? 'pulse' : ''}" data-act="cross" data-id="${id}">
           ${avatar(id)}<span>${CHARACTERS[id].name}</span>${x ? '<span class="xmark">✖</span>' : ''}</button>`;
       }).join('')}</div>
-      <div class="rows">${c.sentences.map(s => `<div class="row ${r.sel === s.id ? 'selected' : ''} ${r.proofs.includes(s.id) ? 'proof' : ''} ${r.used.includes(s.id) ? 'used' : ''}
-        ${t && t.sid !== s.id ? 'dim' : ''} ${r.assisted && t && t.sid === s.id ? 'pulse' : ''}" data-act="pickClue" data-sid="${s.id}">${sayHTML(s)}${
-        c.lie && r.caught && s.id === c.lie.claim ? '<span class="ltag">UGOVOR!</span>' : c.lie && s.id === c.lie.truth ? '<span class="ltag truth">✨</span>'
-          : r.hdone.includes(s.id) ? '<span class="ltag herr">NAPAČNA SLED</span>' : r.wplaced[s.id] && wrongTime(s) ? '<span class="ltag ytag">🟨</span>' : ''}</div>`).join('')}</div>
-      <div class="footer">${footBack()}<span class="grow"></span></div>
+      ${walk || `<div class="rows">${ss.map(row).join('')}</div>`}
+      <div class="footer">${footBack()}<span class="grow"></span>${offer ? `<button class="ui-btn is-chip walk-offer" data-act="walkYes">${UI_AUDIO.walkOffer}</button>` : ''}${
+        r.walk ? `<button class="btn big" data-act="walkNext">${UI_AUDIO.walkNext}</button>` : ''}</div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
 
   intro() {
-    const c = S.c, tut = S.tut && !S.tut.board;
+    const c = S.c;
     return `<div class="ui-screen"><div class="ui-top"></div>
       <div class="ui-body is-center">${UI.pill(c.no ? 'Primer ' + c.no + (c.place ? ' · ' + c.place : '') : '🔰 Vaja')}
-        <span class="ui-pal">${tut ? helperEmoji() : c.sticker}</span>
+        <span class="ui-pal">${c.sticker}</span>
         <div class="ui-quest">${UI.coin(c.sticker)}<span>${esc(c.question)}</span></div>
         <div class="ui-faces">${c.suspects.map(id => UI.face(id, { act: '' })).join('')}</div></div>
       <div class="ui-foot">${UI.btn('Beri zgodbo', { act: 'toStory' })}${backTarget() === 'stay' ? '' : UI.btn('← Nazaj', { act: 'back', kind: 'is-quiet' })}</div></div>`;
@@ -4980,12 +5107,31 @@ const ACTIONS = {
   tutorial() { startWarm(1, true); },
   warmSkip() { helpSet({ warm: 'skipped', g: 2, streak: 0 }); log('warm_skip'); leaveWarm(); },
   warmMore() { startWarm(2); },
+  // solve one sentence at a time: a dot shows that sentence; »Naslednji stavek« goes to the next one not read yet
+  // (then round the ones still free); »Vsi stavki« gives the list back; at level 2 the child may ask for this view
+  walkTo(el) {
+    const r = S.run;
+    if (r.hint) return;
+    r.sel = r.walkAt = el.dataset.sid;
+    if (!r.seen.includes(r.sel)) r.seen.push(r.sel);
+    log('evidence_select', { sentenceId: r.sel, role: sent(r.sel).role });
+    render();
+  },
+  walkNext() {
+    const r = S.run, ss = S.c.sentences, at = ss.findIndex(x => x.id === r.sel), round = [...ss.slice(at + 1), ...ss.slice(0, at)].filter(x => !r.used.includes(x.id));
+    const to = round.find(x => !r.seen.includes(x.id)) || round[0];
+    if (to && !r.hint) ACTIONS.walkTo({ dataset: { sid: to.id } });
+  },
+  walkAll() { Object.assign(S.run, { walk: false, walkAll: true, walkAsked: true, sel: null }); log('help_all'); render(); },
+  walkYes() { Object.assign(S.run, { walk: true, walkAsked: true, sel: null }); log('help_walk'); render(); },
   // The companion's coin: a free hint. In solve each tap gives the ladder's next rung, down to the answer;
-  // where nothing can go wrong (scene, questioning) it says the goal; in a puzzle or a reasoning step, its first hint.
+  // where nothing can go wrong (scene, questioning) it says the goal; in a puzzle or a reasoning step, its ladder's next rung.
   pal() {
     const r = S.run, c = S.c;
     if (!r || r.hint || r.note || briefOpen() || truthOpen() || (S.screen === 'lie' && (r.lphase || r.lcoach))) return;
     if (r.w2 && S.screen === 'solve') r.w2.coin = true;
+    if (LADDER[S.screen] && stepDone()) return;
+    r.palPulse = false;
     log('help_tap', { step: S.screen });
     if (S.screen === 'solve') {
       r.coin++;
@@ -4995,11 +5141,9 @@ const ACTIONS = {
       r.note = goalText();
       r.glow = true;
     } else {
-      const [, , how, part] = BRIEF[S.screen], src = c[part || S.screen];
       r.coin++;
-      if (!r.coined.includes(S.screen)) r.coined.push(S.screen);
-      r.hint = { key: 'h1', text: (src && src.h1) || UI_AUDIO[how], level: 1 };
-      log(part ? 'puzzle_hint' : S.screen + '_hint', { hint: 'h1', hintLevel: 1, via: 'coin' });
+      r.hint = coinStep(S.screen);
+      log(BRIEF[S.screen][3] ? 'puzzle_hint' : S.screen + '_hint', { hint: r.hint.key, hintLevel: r.hint.level, via: 'coin' });
     }
     render();
   },
@@ -5156,11 +5300,6 @@ const ACTIONS = {
   },
   reread() { log('back_to_story'); go('story'); },
   pick(el) {
-    if (S.tut && el.dataset.id !== S.c.culprit) {
-      S.tut.msg = 'Hmm, ni še prav. Kdo je pojedel korenček? Preberi še enkrat.';
-      coach();
-      return;
-    }
     S.run.suspect = el.dataset.id;
     S.run.picks = [];
     log('suspect_pick', { suspectId: el.dataset.id });
@@ -5188,16 +5327,6 @@ const ACTIONS = {
     const rightSuspect = r.suspect === c.culprit;
     const solved = isEvidence && (rightSuspect || r.assisted);
     const miss = ss.find(x => x.role !== 'evidence');
-    if (S.tut) {
-      // Practice: no hint ladder and no tick on the board, just a gentle nudge.
-      if (solved) { go('reveal'); return; }
-      r.picks = [];
-      refreshRows();
-      $('.footer').innerHTML = evFooter();
-      S.tut.msg = 'To ni ta stavek. Poišči, kje piše, kdo je pojedel korenček.';
-      coach();
-      return;
-    }
     log('evidence_confirm', {
       sentenceId: (miss || ss[0]).id, sentenceIds: r.picks, role: miss ? miss.role : 'evidence',
       suspectId: r.suspect, correct: solved, suspectCorrect: rightSuspect,
@@ -5311,15 +5440,14 @@ const ACTIONS = {
       r.open = true;
       r.note = null;
       sfx('lock');
-      log('puzzle_done', { wrong: r.kwrong });
+      log('puzzle_done', { wrong: tries('kwrong') });
       render();
       play('ui_lockOpen', UI_AUDIO.lockOpen);
       return;
     }
     r.kwrong++;
     sfx('nope');
-    const h = r.kwrong >= 4 ? { key: 'h2', text: k.h2, clip: c.id + '_kh2', level: 2 }
-      : r.kwrong === 2 ? { key: 'h1', text: k.h1, clip: c.id + '_kh1', level: 1 } : null;
+    const h = stepHint('lock');
     if (h) { r.hint = h; log('puzzle_hint', { hint: h.key, hintLevel: h.level }); }
     else r.note = UI_AUDIO.lockNo;
     render();
@@ -5353,7 +5481,7 @@ const ACTIONS = {
       r.ordered = true;
       r.note = null;
       sfx('tada');
-      log('puzzle_done', { wrong: r.owrong });
+      log('puzzle_done', { wrong: tries('owrong') });
       if (torn) { deliver(o.gives); render(); return; }
       render();
       return;
@@ -5362,10 +5490,7 @@ const ACTIONS = {
     r.good = right;
     r.slots = r.slots.map((k, i) => right.includes(i) ? k : null);
     sfx('nope');
-    const assist = torn ? 'tornAssist' : 'orderAssist';
-    const h = r.owrong === 4 ? { key: assist, text: UI_AUDIO[assist], clip: 'ui_' + assist, level: 3 }
-      : r.owrong === 3 ? { key: 'h2', text: o.h2, clip: p + 'h2', level: 2 }
-      : r.owrong === 2 ? { key: 'h1', text: o.h1, clip: p + 'h1', level: 1 } : null;
+    const h = stepHint(torn ? 'torn' : 'order');
     if (h) { r.hint = h; log('puzzle_hint', { hint: h.key, hintLevel: h.level }); }
     else r.note = torn ? UI_AUDIO.tornNo : UI_AUDIO.orderNo;
     render();
@@ -5384,7 +5509,7 @@ const ACTIONS = {
       r.words.push(word);
       if (r.words.length === w.find.length) {
         sfx('tada');
-        log('puzzle_done', { wrong: r.wwrong });
+        log('puzzle_done', { wrong: tries('wwrong') });
         if (w.geslo) deliver(w.geslo);
       } else sfx('pop');
       render();
@@ -5392,11 +5517,8 @@ const ACTIONS = {
     }
     r.wwrong++;
     sfx('nope');
-    let h = null;
-    if (r.wwrong >= 6) h = { key: 'wordAssist', text: UI_AUDIO.wordAssist, clip: 'ui_wordAssist', level: 3 };
-    else if (r.wwrong === 4) h = { key: 'wordLook', text: UI_AUDIO.wordLook, clip: 'ui_wordLook', level: 2 };
-    else if (r.wwrong === 2) h = { key: 'h1', text: w.h1, clip: S.c.id + '_wh', level: 1 };
-    if (h && r.wwrong <= 6) { r.hint = h; log('puzzle_hint', { hint: h.key, hintLevel: h.level }); }
+    const h = stepHint('words');
+    if (h) { r.hint = h; log('puzzle_hint', { hint: h.key, hintLevel: h.level }); }
     else r.note = UI_AUDIO.wordNo;
     render();
   },
@@ -5454,7 +5576,7 @@ const ACTIONS = {
     r.note = null;
     if (ok) {
       r.cgot.push(want.ch);
-      if (flat.every(x => !x.e || r.cgot.includes(x.ch))) { sfx('tada'); log('puzzle_done', { wrong: r.cwrong }); deliver(k.gives); } else sfx('pop');
+      if (flat.every(x => !x.e || r.cgot.includes(x.ch))) { sfx('tada'); log('puzzle_done', { wrong: tries('cwrong') }); deliver(k.gives); } else sfx('pop');
       render();
       return;
     }
@@ -5464,11 +5586,8 @@ const ACTIONS = {
     let h = null;
     if (want.e === k.missing) {
       r.cmiss++;
-      h = r.cmiss === 1 ? { key: 'h1', text: k.h1, clip: c.id + '_ch1', level: 1 } : r.cmiss === 2 ? { key: 'h2', text: k.h2, clip: c.id + '_ch2', level: 2 }
-        : r.cmiss === 3 ? { key: 'cipherAssist', text: UI_AUDIO.cipherAssist, clip: 'ui_cipherAssist', level: 3 } : null;
-    } else if (r.cwrong === 6) h = { key: 'cipherAssist', text: UI_AUDIO.cipherAssist, clip: 'ui_cipherAssist', level: 3 };
-    else if (r.cwrong === 4) h = { key: 'cipherLook', text: UI_AUDIO.cipherLook, clip: 'ui_cipherLook', level: 2 };
-    else if (r.cwrong === 2) h = { key: 'h1', text: k.h1, clip: c.id + '_ch1', level: 1 };
+      h = cipherMissHint(r.cmiss);
+    } else h = stepHint('cipher');
     if (h) { r.hint = h; log('puzzle_hint', { hint: h.key, hintLevel: h.level }); }
     else r.note = UI_AUDIO.cipherNo;
     render();
@@ -5521,18 +5640,8 @@ const ACTIONS = {
     r.lwrong++;
     r.lrows = r.lrows.filter(halfOf);   // a right half of a pair stays
     sfx('nope');
-    let h = null;
-    if (r.lassisted || r.lwrong >= 4) {
-      if (!r.lassisted) { r.lassisted = true; log('lie_assisted'); }
-      r.lclaim = L.claim;
-      h = { key: 'lieAssist', text: UI_AUDIO.lieAssist, clip: 'ui_lieAssist', level: 3 };
-    } else if (r.lwrong === 3) {
-      r.llook = true;
-      r.lclaim = L.claim;
-      h = { key: 'lieLook', text: UI_AUDIO.lieLook, clip: 'ui_lieLook', level: 2 };
-    } else if (r.lwrong === 2) {
-      h = L.h1 ? { key: 'h1', text: L.h1, clip: c.id + '_lh1', level: 1 } : { key: 'h1', text: UI_AUDIO.lieH1, clip: 'ui_lieH1', level: 1 };
-    } else r.note = UI_AUDIO.lieBoth;
+    const h = stepHint('lie');
+    if (!h) r.note = UI_AUDIO.lieBoth;
     if (h) { r.hint = h; log('lie_hint', { hint: h.key, hintLevel: h.level }); }
     render();
     const x = document.querySelector(`.liestep .row[data-sid="${s.id}"]`);
@@ -5592,7 +5701,7 @@ const ACTIONS = {
       r.hclue = null;
       r.hjust = clue;
       const all = wrong.every(x => r.hdone.includes(x));
-      log('herring_done', { clueId: clue, points: H.points[clue], wrong: r.hwrong, assisted: r.hassisted, all });
+      log('herring_done', { clueId: clue, points: H.points[clue], wrong: tries('hwrong'), assisted: r.hassisted, all });
       if (all) r.note = UI_AUDIO.herringDone;
       render();
       sfx('stamp');
@@ -5610,16 +5719,8 @@ const ACTIONS = {
     r.hwrong++;
     r.hrows = r.hrows.filter(halfOf);
     sfx('nope');
-    let h = null;
-    if (r.hassisted || r.hwrong >= 4) {
-      if (!r.hassisted) { r.hassisted = true; log('herring_assisted'); }
-      h = { key: 'herringAssist', text: UI_AUDIO.herringAssist, clip: 'ui_herringAssist', level: 3 };
-    } else if (r.hwrong === 3) {
-      r.hlook = true;
-      h = { key: 'herringLook', text: UI_AUDIO.herringLook, clip: 'ui_herringLook', level: 2 };
-    } else if (r.hwrong === 2) {
-      h = H.h1 ? { key: 'h1', text: H.h1, clip: c.id + '_hh1', level: 1 } : { key: 'h1', text: UI_AUDIO.herringH1, clip: 'ui_herringH1', level: 1 };
-    } else r.note = UI_AUDIO.herringNo;
+    const h = stepHint('herring');
+    if (!h) r.note = UI_AUDIO.herringNo;
     if (h) { r.hint = h; log('herring_hint', { hint: h.key, hintLevel: h.level }); }
     render();
     const x = document.querySelector(`.herringstep .row[data-sid="${s.id}"]`);
@@ -5659,7 +5760,7 @@ const ACTIONS = {
       r.wcard = null;
       r.wjust = sid;
       const all = r.worder.every(x => r.wplaced[x]);
-      if (all) { r.note = UI_AUDIO.whenDone; log('when_done', { wrong: r.wmiss, assisted: r.wassisted }); }
+      if (all) { r.note = UI_AUDIO.whenDone; log('when_done', { wrong: tries('wmiss'), assisted: r.wassisted }); }
       render();
       if (band === 'during') { sfx('pop'); play('ui_whenCounts', UI_AUDIO.whenCounts); }
       else { sfx('whistle'); play('ui_whenStamp', UI_AUDIO.whenStamp); }
@@ -5668,16 +5769,8 @@ const ACTIONS = {
     }
     r.wmiss++;
     sfx('nope');
-    let h = null;
-    if (r.wassisted || r.wmiss >= 4) {
-      if (!r.wassisted) { r.wassisted = true; log('when_assisted'); }
-      h = { key: 'whenAssist', text: UI_AUDIO.whenAssist, clip: 'ui_whenAssist', level: 3 };
-    } else if (r.wmiss === 3) {
-      r.wlook = true;
-      h = { key: 'whenLook', text: UI_AUDIO.whenLook, clip: 'ui_whenLook', level: 2 };
-    } else if (r.wmiss === 2) {
-      h = W.h1 ? { key: 'h1', text: W.h1, clip: c.id + '_th1', level: 1 } : { key: 'h1', text: UI_AUDIO.whenH1, clip: 'ui_whenH1', level: 1 };
-    } else r.note = UI_AUDIO.whenNo;
+    const h = stepHint('when');
+    if (!h) r.note = UI_AUDIO.whenNo;
     if (h) { r.hint = h; log('when_hint', { hint: h.key, hintLevel: h.level }); }
     render();
     const x = document.querySelector(`.whenstep .wcard[data-sid="${sid}"]`);
@@ -5782,7 +5875,7 @@ const ACTIONS = {
   },
   pickClue(el) {
     const r = S.run;
-    if (r.hint) return;
+    if (r.hint || r.walk) return;
     const s = sent(el.dataset.sid);
     r.sel = r.sel === s.id ? null : s.id;
     r.note = null;
@@ -5862,11 +5955,12 @@ const ACTIONS = {
       return;
     }
     r.wrong++;
+    r.lit.solve = true;
     sfx('nope');
     let h;
     // the ladder: the 2nd wrong pair gives the case's hint, the 3rd lights the next sentence, the 4th the answer
-    // (in w2 each comes one pair earlier); a rung already given by the coin is not given again
-    const by = r.assisted ? 3 : Math.min(3, r.wrong - 1 + (c.warm === 2 ? 1 : 0));
+    // (in w2 and at help level 3 each comes one pair earlier); a rung already given by the coin is not given again
+    const by = r.assisted ? 3 : Math.min(3, r.wrong - 1 + (c.warm === 2 || lvl('solve') === 3 ? 1 : 0));
     if (by >= 1) {
       h = solveRung(Math.max(by, Math.min(3, r.rung + 1)));
     } else if (L && id === liar && liar !== c.culprit && (s.id === L.claim || s.id === L.truth || L.breaks.flat().includes(s.id))) {
@@ -5901,7 +5995,6 @@ const ACTIONS = {
     go('accuse');
   },
   next() {
-    if (S.tut) { endTutorial(); return; }
     if (S.c && S.c.warm) { warmNext(); return; }
     const f = S.c && FILES.find(x => x.id === S.c.file);
     if (pinCase() && !S.run.pinOpen) {   // the new card first, on its own
@@ -6192,7 +6285,7 @@ function helpBlockHTML() {
       <tr><th>Detektiv</th><th>Pomoč zdaj</th><th title="raven pomoči ob začetku zadnjih primerov; zeleno = sam, rumeno = z namigi, rdeče = pokazana rešitev ali veliko napačnih">Zadnji primeri</th><th>Vaja</th><th>Pomoč določi</th><th></th></tr>
       ${rows}</table></div>
     <p class="muted">1 = malo, 2 = nekaj, 3 = veliko pomoči. Igra jo določa sama: po težkem primeru jo poveča, po dveh primerih brez pomoči zmanjša. Velja od naslednjega primera; otrok ravni ne vidi.
-      Za zdaj se raven samo beleži: pomočnikov namig in opomnik po premoru sta na vseh ravneh enaka.</p>
+      Pri 2 pomočnik ob vsakem koraku pove, kaj je treba narediti, in se prej oglasi po premoru. Pri 3 je navodilo na vrhu krajše, naslednja stvar za branje sveti, namigi pridejo en poskus prej, stavki pri »Kdo je bil?« pa so po eden.</p>
   </section>`;
 }
 

@@ -324,24 +324,7 @@ for (const c of CASES) {
 }
 
 // The two warm-up cases (docs/WARMUP_AND_HELP.md): tiny step cases outside FILES, so the season rules don't
-// apply. Call → scene → solve, 3 suspects, 4–6 sentences, no letter and no corkboard card, one hard word.
-const VOWEL = /[aeiou]|(^|[^aeiou])r([^aeiou]|$)/;   // a vowel, or a syllabic r (trn, prt)
-// hard: { word: 'syl-la-ble' }. The word as it stands in the text (lower case), at least 6 letters, split
-// into syllables that each have a vowel (or a syllabic r); lj and nj stay together; never a name.
-function checkHard(c, [lo, hi]) {
-  const hard = Object.entries(c.hard || {}), text = [...c.sentences.map(s => s.text), ...c.sentences.map(s => s.label || ''), ...(c.call || []), ...(c.film || []).map(f => f[1])].join(' ').toLowerCase();
-  if (!inRange(hard.length, [lo, hi])) fail(c.id, `hard: ${hard.length} words (${lo === hi ? lo : lo + '–' + hi})`);
-  for (const [word, split] of hard) {
-    if (split.replaceAll('-', '') !== word || word !== word.toLowerCase()) fail(c.id, `hard: ${split} must be ${word} with - between the syllables (lower case)`);
-    if (!new RegExp(`(?<!\\p{L})${word}(?!\\p{L})`, 'u').test(text)) fail(c.id, `hard: ${word} is not a word of this case`);
-    if ([...word].length < 6) fail(c.id, `hard: ${word} is shorter than 6 letters`);
-    const syl = split.split('-');
-    if (syl.some(y => !VOWEL.test(y))) fail(c.id, `hard: every syllable of ${split} needs a vowel`);
-    if (syl.some((y, i) => i && /^j/.test(y) && /[ln]$/.test(syl[i - 1]))) fail(c.id, `hard: ${split} splits lj or nj`);
-    if (named(word[0].toUpperCase() + word.slice(1)).length) fail(c.id, `hard: ${word} is a name (names are already bold)`);
-  }
-}
-for (const c of CASES) if (c.hard) checkHard(c, [0, 3]);
+// apply. Call → scene → solve, 3 suspects, 4–6 sentences, no letter and no corkboard card.
 if (WARMUPS.map(c => c.warm).join() !== '1,2') fail('warm', 'the warm-up cases are warm: 1 and warm: 2, once each');
 for (const c of WARMUPS) {
   const ss = c.sentences, R = LEVEL_RULES.A;
@@ -356,7 +339,6 @@ for (const c of WARMUPS) {
   for (const s of ss) { if (!ROLES.has(s.role)) fail(c.id, `${s.id} has unknown role ${s.role}`); if (words(s.text) > R.maxWords) fail(c.id, `${s.id} has ${words(s.text)} words (max ${R.maxWords}): ${s.text}`); }
   tooLong(c, 'call/h1/reveal/excuse', [c.question, c.h1, ...(c.call || []), ...(c.reveal || []), c.excuse]);
   checkSteps(c);
-  checkHard(c, [1, 1]);
   for (const id of c.suspects) if (!ss.some(s => NAME[id].test(s.text))) fail(c.id, `suspect ${id} never appears in the story`);
 }
 if (WARMUPS[0].culprit === WARMUPS[1].culprit || WARMUPS[0].suspects.indexOf(WARMUPS[0].culprit) === WARMUPS[1].suspects.indexOf(WARMUPS[1].culprit)) fail('warm', 'the two warm-up cases have different culprits, in different places');
