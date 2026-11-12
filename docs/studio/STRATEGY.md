@@ -3,8 +3,9 @@
 The editorial director's plan of record: who the game is for, what success means, and what comes next. Read before every season brief. Keep it under 80 lines. The producer approves every change of direction.
 
 ## The audience
-- Slovenian children learning to read, aged 7–8 now and growing to 10 with the game (the landing page says 6–10). Played on a parent's phone or iPad, often with the parent nearby.
-- The parent is the second audience: they choose the game, read along, and decide whether the child plays again.
+- Slovenian children learning to read. **The focus is 7–8: nail it for them.** 9–10 follows only if those children show interest; under 7 is out of scope for now (the landing page still says 6–10). Played on a parent's phone or iPad.
+- **A child of 7–8 must be able to play alone.** They differ a lot in how much help they need, so the text stays the same and the game's help changes per child (CURRICULUM.md, »Help that fades«; producer, 2026-11-12).
+- The parent is the second audience: they choose the game, may read along, and decide whether the child plays again.
 
 ## The goal
 **The most fun detective game in the world for children learning to read**: Agatha Christie for 7-year-olds. The child reads to win, and wants to read the next case.
@@ -34,6 +35,8 @@ The editorial director's plan of record: who the game is for, what success means
 ## Open questions for the next playtests
 - Is the weekly cadence right for the child, or does it outrun them (do they finish a season before the next opens)?
 - Is level A still right after four seasons, or is the child ready for 9–10 words a sentence?
+- Which children of 7–8 need a parent, and for what: the rules, a hard word, finding the sentence, or staying with it? This shapes the warm-up cases and the fading help.
+- Do 9–10-year-olds enjoy the seasons at level A, or are they bored?
 - Which feeling did the child talk about most: the phone call, the unmasking, the lock, the newspaper?
 
 ## Next seasons

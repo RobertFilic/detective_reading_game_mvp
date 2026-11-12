@@ -25,7 +25,9 @@ for (const [dev, w, h] of [['plus14', 428, 926], ['iphone14', 390, 844]]) {
     const shelf = await p.$$eval('.medal', els => els.map(e => e.dataset.file));
     const heroBtn = await p.evaluate(() => { const g = document.querySelector('.hero .go'); if (!g) return null; const r = g.getBoundingClientRect(); return { t: g.textContent, vis: r.bottom <= innerHeight }; });
     console.log(dev, st, cards.join(' '), '| shelf', shelf.join(' '), '|', heroBtn && heroBtn.t);
-    const expect = { fresh: ['bip*', 'galeb', 'muzej'], now: ['muzej*', 'galeb'], mid: ['galeb*', 'muzej'], done: ['muzej*'] }[st];
+    // every season out today, in FILES order: a detective with nothing open gets the newest as the big card
+    const ids = await p.evaluate(() => FILES.map(f => f.id)), newest = ids[ids.length - 1], rest = (...out) => ids.filter(id => id !== newest && !out.includes(id));
+    const expect = { fresh: [newest + '*', ...rest()], now: [newest + '*', ...rest('bip')], mid: ['galeb*', ...ids.filter(id => id !== 'bip' && id !== 'galeb')], done: [newest + '*', ...rest('bip', 'galeb')] }[st];
     ok(JSON.stringify(cards) === JSON.stringify(expect), `${dev} ${st}: card order ${cards}`);
     ok(shelf.length === { fresh: 0, now: 1, mid: 1, done: 2 }[st], `${dev} ${st}: shelf`);
     if (heroBtn) ok(heroBtn.vis, `${dev} ${st}: the hero button is on screen without scrolling`);

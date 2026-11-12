@@ -1160,6 +1160,18 @@ tr.clickable { cursor: pointer; }
 .row.selected .nm, .row.selected .who { color: #fff; }
 .row.dim { opacity: 1; background: transparent; border-style: dashed; box-shadow: none; color: var(--ink-2); }
 .btn.pulse { animation: ui-glow 2s ease-in-out infinite; }   /* everything found: the way on glows */
+/* the companion in the footer: a tap is a free hint. .pal-say: what it says after a pause; it blocks nothing */
+.pal { appearance: none; position: relative; width: var(--tap); height: var(--tap); flex: none; padding: 0; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper); font-size: 28px; line-height: 1; display: grid; place-items: center; cursor: pointer; margin-right: auto; }
+.pal i { position: absolute; right: -3px; top: -3px; width: 22px; height: 22px; border-radius: 50%; background: var(--glow); color: var(--ink); font: 700 13px var(--font); display: grid; place-items: center; }
+.pal.coach-target { z-index: 20; }
+.pal + .grow { display: none; }
+.pal-say { position: fixed; left: 0; right: 0; margin: 0 auto; width: min(520px, calc(100% - 24px)); bottom: calc(86px + env(safe-area-inset-bottom)); z-index: 6; pointer-events: none; display: flex; gap: 10px; align-items: center;
+  background: var(--paper); border: 2px solid var(--glow); border-radius: var(--r-m); padding: 8px 12px; font: 500 var(--t-body)/1.35 var(--font); color: var(--ink); box-shadow: var(--sh-float); animation: ui-in 300ms ease-out both; transition: opacity 600ms; }
+.pal-say.out { opacity: 0; }
+.pal-say .ui-coin { background: var(--bg); }
+.row.nglow, .obj.nglow { border-color: var(--glow); box-shadow: 0 0 0 3px rgba(248, 202, 101, .55); }
+.brief.offer .ui-btn + .ui-btn { margin-top: 10px; }
+#app.rail .wordsearch > .footer .pal { position: fixed; left: max(14px, env(safe-area-inset-left)); bottom: calc(10px + env(safe-area-inset-bottom)); }   /* a phone held sideways: the footer lies over the word list, so the coin sits on the rail */
 .row.pulse, .wcell.pulse, .tcard.pulse, .claim.pulse, .hclue.pulse, .suspect.pulse, .obj.pulse, .tool.pulse, .ctile.pulse, .strip.pulse { border-color: var(--glow); animation: ui-glow 2s ease-in-out infinite; }
 .row.used { text-decoration: line-through 2px; text-decoration-color: var(--ink-2); color: var(--ink-2); opacity: 1; box-shadow: none; }
 .row.broke { border-color: var(--glow); animation: ui-glow 2s ease-in-out 1; }
@@ -1484,10 +1496,11 @@ const LEVEL_RULES = {
 // animal = the picture on the card (an animal or a person); re = the name in any case form,
 // used by tools/cases.mjs to check that the evidence names the culprit.
 const CHARACTERS = {
-  // the practice case
+  // the practice case and the two warm-up cases
   bine: { name: 'Bine', animal: '👦🏻', color: '#d6e6ff', re: 'Bine(ta|tu|tom)?' },
   zala: { name: 'Zala', animal: '👧🏾', color: '#ffdcc6', re: 'Zal(a|o|e|i)' },
   jure: { name: 'Jure', animal: '🧒🏼', color: '#ead8c4', re: 'Jure(ta|tu|tom)?' },
+  mama: { name: 'Mama', animal: '👩🏻', color: '#fde7c8', re: 'Mam(a|o|e|i)' },
   // 👾 Skrivnost v zračniku (on the space station Zvezdica)
   maja: { name: 'Maja', animal: '👩🏼‍🚀', color: '#dbe4ff', re: 'Maj(a|o|e|i|in\\p{L}*)' },
   tim: { name: 'Tim', animal: '👨🏽‍🚀', color: '#e2f2e6', re: 'Tim(a|u|om|ov\\p{L}*)?' },
@@ -1655,6 +1668,38 @@ const UI_AUDIO = {
   whenDone: 'Zdaj veš, kaj šteje. Kdo je bil?',
   wrongTime: 'Napačen čas! Poglej uro še enkrat.',
   liarNotCulprit: 'Kdor ne pove resnice, ni nujno kriv.',
+  // The warm-up cases (docs/WARMUP_AND_HELP.md): in the first the companion leads every tap, in the second it
+  // only says that a hint is free. One set of lines for all four companions: imperative and dual, no gender.
+  leadCall1: 'Telefon zvoni! Tapni tukaj.',
+  leadCall2: 'Preberiva, kaj prosi.',
+  leadCall3: 'Greva na kraj dogodka!',
+  leadScene: 'Poglej stvari. Tapni vsako.',
+  leadObj: 'Tapni to stvar.',
+  leadRead: 'Preberi stavek.',
+  leadSceneDone: 'Vse imava! Tapni tukaj.',
+  leadGoal: 'Kdo ni bil? Prečrtajva tiste.',
+  leadRow: 'Preberi svetel stavek. Tapni ga.',
+  leadFace: 'O kom govori? Tapni obraz.',
+  leadLast: 'Ostal je eden. Kje je dokaz?',
+  leadProofFace: 'Kdo je to? Tapni obraz.',
+  leadOops: 'Skoraj!',
+  warm2Start: 'Zdaj ti. Jaz gledam.',
+  warm2Coin: 'Zagata? Tapni me. Namig je zastonj.',
+  warm2Done: 'Zdaj znaš! Gremo na pravi primer.',
+  warmMore: 'Še en z mano',
+  // what the companion says after a pause (the step's goal), and when its coin is tapped where nothing can go wrong
+  goalScene: 'Odpri vse stvari.',
+  goalAsk: 'Vprašaj vse. Vsak odgovori.',
+  goalSolve: 'Kdo ni bil? Prečrtaj ga.',
+  goalLast: 'Ostal je eden: dokaz!',
+  goalWords: 'Najdi besede s seznama.',
+  goalLock: 'Kje je šifra? Poišči jo.',
+  goalOrder: 'Kaj je bilo najprej?',
+  goalTorn: 'Sestavi stavek.',
+  goalCipher: 'Vsak znak je ena črka.',
+  goalLie: 'Kdo ne govori resnice?',
+  goalHerring: 'Je ta sled prava?',
+  goalWhen: 'Kdaj je bilo to?',
   coachLie1: 'Nekdo nekaj trdi. Ali je res? Tapni to.',
   coachLie2: 'Kateri stavek pove drugače? Tapni ga.',
   // ✉️ cipher, 📜 torn note, 🔤 the word search's secret message
@@ -2620,8 +2665,50 @@ const TUTORIAL = {
   reveal: ['Bine je pojedel korenček.', 'To piše v zgodbi!', 'Tako najdeš dokaz.'],
 };
 
+// The two warm-up cases every new detective plays before the first season (docs/WARMUP_AND_HELP.md):
+// tiny step cases with known faces. In w1 the companion leads every tap; in w2 the child plays alone.
+// They are not in FILES: they are never on the start screen, and don't count for ranks or medals.
+// hard: a word the child may tap to see it in syllables.
+const WARMUPS = [
+  {
+    id: 'w1', file: 'warm', no: 1, warm: 1, type: 'elim', level: 'A', sticker: '🥕', place: 'Kuhinja',
+    steps: ['call', 'scene', 'solve'],
+    client: 'mama', call: ['Moj korenček je izginil z mize!', 'Prosim, ugotovi, kdo ga je vzel.'],
+    question: 'Kdo je vzel korenček?',
+    suspects: ['jure', 'bine', 'zala'], culprit: 'bine',
+    sentences: [
+      ['s1', 'Od korenčka je ostal samo zeleni rep.', 'neutral', { obj: '🍽️', label: 'krožnik' }],
+      ['s2', 'Jure je ves čas spal na kavču.', 'clear', { obj: '🛋️', label: 'kavč', clears: 'jure' }],
+      ['s3', 'Zala je bila ves dan v šoli.', 'clear', { obj: '🎒', label: 'torba', clears: 'zala' }],
+      ['s4', 'Bine ima v žepu pol korenčka.', 'evidence', { obj: '🧥', label: 'jopica' }],
+    ],
+    hard: { 'korenčka': 'ko-ren-čka' },
+    h1: 'Kdo NI mogel biti? Poišči stavek o njem.',
+    reveal: ['Bine je imel v žepu pol korenčka.', 'Jure je spal. Zala je bila v šoli.', 'Tako detektiv najde krivca!'],
+    caught: 'Bineta', excuse: 'Korenček je bil tako hrustljav!',
+  },
+  {
+    id: 'w2', file: 'warm', no: 2, warm: 2, type: 'elim', level: 'A', sticker: '🎨', place: 'Vrt',
+    steps: ['call', 'scene', 'solve'],
+    client: 'mama', call: ['Vrtni palček je ves roza!', 'Prosim, ugotovi, kdo ga je pobarval.'],
+    question: 'Kdo je pobarval palčka?',
+    suspects: ['bine', 'jure', 'zala'], culprit: 'zala',
+    sentences: [
+      ['s1', 'Ob palčku leži moker čopič.', 'neutral', { obj: '🖌️', label: 'čopič' }],
+      ['s2', 'Zala je zjutraj zalivala rože.', 'distractor', { obj: '🪣', label: 'vedro' }],
+      ['s3', 'Zala si umiva roza prste.', 'evidence', { obj: '🚰', label: 'pipa' }],
+      ['s4', 'Bine je ves dan pri babici.', 'clear', { obj: '📝', label: 'listek', clears: 'bine' }],
+      ['s5', 'Dedek je z Juretom ves čas igral šah.', 'clear', { obj: '♟️', label: 'šah', clears: 'jure' }],
+    ],
+    hard: { 'zalivala': 'za-li-va-la' },
+    h1: 'Kdo NI mogel biti? Poišči stavek o njem.',
+    reveal: ['Zala si je umivala roza prste.', 'Roza je bil tudi palček.', 'Dokaz je bil pri pipi!'],
+    caught: 'Zalo', excuse: 'Roza palček je veliko lepši!',
+  },
+];
+
 function normalizeCases() {
-  for (const c of [...CASES, TUTORIAL]) {
+  for (const c of [...CASES, ...WARMUPS, TUTORIAL]) {
     c.rung = RUNG[c.type || 'fact'];
     c.sentences = c.sentences.map(([id, text, role = 'neutral', more = {}]) => ({ id, text, role, ...more }));
   }
@@ -2631,7 +2718,7 @@ normalizeCases();
 // Every audio clip the app can play: [clipId, text]. Recordings go in audio/<clipId>.m4a.
 function clipList() {
   const out = Object.entries(UI_AUDIO).map(([k, t]) => ['ui_' + k, t]);
-  for (const c of [TUTORIAL, ...CASES]) {
+  for (const c of [TUTORIAL, ...WARMUPS, ...CASES]) {
     out.push([c.id + '_q', c.question]);
     (c.call || []).forEach((t, i) => out.push([`${c.id}_c${i + 1}`, t]));
     (c.film || []).forEach((f, i) => out.push([`${c.id}_f${i + 1}`, f[1]]));
@@ -2973,7 +3060,7 @@ const pad = (n) => String(n).padStart(2, '0');
 const sent = (sid) => S.c.sentences.find(s => s.id === sid);
 // a sentence as shown in a list: an answer (ask step) shows who said it
 const sayHTML = (s) => s.who ? `<span><b class="who">${CHARACTERS[s.who].animal} ${CHARACTERS[s.who].name}:</b> ${names(s.text)}</span>` : names(s.text);
-const caseById = (id) => CASES.find(c => c.id === id);
+const caseById = (id) => [...CASES, ...WARMUPS].find(c => c.id === id);
 const fmtDur = (ms) => { const s = Math.round(ms / 1000); return `${Math.floor(s / 60)}:${pad(s % 60)}`; };
 const fmtDate = (ts) => { const d = new Date(ts); return `${d.getDate()}. ${d.getMonth() + 1}. ${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`; };
 const sum = (arr, k) => arr.reduce((a, m) => a + (m[k] || 0), 0);
@@ -3068,6 +3155,9 @@ function newRun() {
     briefed: [], briefAt: null, truthOk: false, excuseOk: false,
     // solve: the sentences that crossed someone off (struck through)
     used: [],
+    // help: the solve ladder's rung reached (1 h1, 2 the next sentence lit, 3 the answer), taps on the companion's
+    // coin, sentences tapped, pause nudges shown per screen; lead / w2: the warm-up cases' state
+    rung: 0, coin: 0, seen: [], nudged: {}, glow: false, lead: null, w2: null, offer: false,
   };
 }
 
@@ -3115,16 +3205,15 @@ const fileDone = (file) => !(FILES.find(f => f.id === file).soon > 0) && casesIn
 const ALL_KEYS = FILES.flatMap(f => casesIn(f.id).map(caseKey));
 
 // Start screen order, worked out from the saves so nothing moves unless the child did something:
-// one hero (the adventure played last that still has a case to solve; else the first adventure
-// for a new detective, the newest unstarted one for the others), then started, then unstarted,
+// one hero (the adventure played last that still has a case to solve; else the newest unstarted
+// one, also for a new detective: seasons follow the year), then started, then unstarted,
 // then ones waiting for new cases. Finished adventures go on the medal shelf.
 function fileOrder() {
   const started = (f) => casesIn(f.id).some(isSolved);
   const open = (f) => casesIn(f.id).some(c => !isSolved(c));
-  const keys = solvedKeys();
-  const last = [...keys].reverse().map(k => FILES.find(f => f.id === k.split(':')[0])).find(f => f && open(f));
+  const last = [...solvedKeys()].reverse().map(k => FILES.find(f => f.id === k.split(':')[0])).find(f => f && open(f));
   const fresh = FILES.filter(f => !started(f));
-  const hero = last || (keys.length ? fresh[fresh.length - 1] : fresh[0]);
+  const hero = last || fresh[fresh.length - 1];
   const rest = FILES.filter(f => f !== hero && !fileDone(f.id));
   const cards = [...(hero ? [[hero, true]] : []),
     ...[rest.filter(f => started(f) && open(f)), rest.filter(f => !started(f)), rest.filter(f => started(f) && !open(f))].flat().map(f => [f, false])];
@@ -3262,11 +3351,120 @@ function endTutorial() {
   toHome();
 }
 
-// What Babica says on each screen, and which element glows.
+// ---- Help that fades (docs/WARMUP_AND_HELP.md) ----
+// Per detective: g = how much help (1 little, 2 some, 3 a lot; an adult's choice in over), and how far the
+// warm-up is: new → w1 → w2 → done | skipped; legacy = played before the warm-up existed (no warm-up, level 1).
+// The warm-up sets g; the child never sees it. ?help=1|2|3 pins the level (tests).
+const HELP_KEY = 'dp_help_v1';
+const HELP_PIN = [1, 2, 3].find(n => String(n) === new URLSearchParams(location.search).get('help')) || null;
+// seconds without a tap before the companion speaks (the goal, then the next thing to read glows); fade: the goal's bubble
+const HELP = { idle: { 1: [60], warm: [12, 25] }, fade: 6 };
+function help() {
+  let h = store.read(HELP_KEY, null);
+  if (!h) {
+    h = { v: 1, g: 1, over: null, warm: store.read(TUT_KEY, false) || solvedKeys().length ? 'legacy' : 'new', streak: 0, skills: {}, hist: [] };
+    if (profile()) store.write(HELP_KEY, h);
+  }
+  return h;
+}
+const helpSet = (patch) => store.write(HELP_KEY, { ...help(), ...patch });
+const helpLevel = () => HELP_PIN || help().over || help().g;
+// How a case went, from the run's own counters: clean (alone), helped, or hard (shown the answer, or many wrong tries).
+function helpVerdict(r) {
+  const wrong = r.wrong + r.wwrong + r.kwrong + r.owrong + r.cwrong + r.lwrong + r.hwrong + r.wmiss;
+  if (r.assisted || r.lassisted || r.hassisted || r.wassisted || wrong >= 4) return 'hard';
+  return wrong <= 1 && r.rung === 0 && r.coin <= 1 ? 'clean' : 'helped';
+}
+
+// The two warm-up cases: w1 with the companion leading every tap, then w2 alone. replay: from »❓ Kako igram?«.
+function startWarm(n, replay = false) {
+  S.c = WARMUPS[n - 1];
+  S.file = null;
+  S.tut = null;
+  S.warmReplay = replay;
+  S.caseNo = S.started || 0;
+  S.run = newRun();
+  if (n === 1) { S.run.lead = { miss: 0, oops: false, read: null }; S.run.briefed = [...S.c.steps]; }   // the companion says each instruction itself
+  else S.run.w2 = {};
+  if (!replay) helpSet({ warm: 'w' + n });
+  log('warm_start', { n, replay });
+  go('call');
+}
+function leaveWarm() {
+  const first = !S.warmReplay;
+  S.c = null;
+  S.run = null;
+  S.warmReplay = false;
+  S.tut = first ? { board: true } : null;   // one last bubble on the file picker
+  toHome();
+}
+// The proof of a warm-up case: w1 opens w2; w2 sets how much help the first real cases give.
+function warmSolved() {
+  const c = S.c, r = S.run;
+  if (S.warmReplay) return;
+  if (c.warm === 1) { helpSet({ warm: 'w2' }); return; }
+  const v = helpVerdict(r), g = { clean: 1, helped: 2, hard: 3 }[v];
+  helpSet({ warm: 'done', g, streak: 0 });
+  log('help_level', { from: null, to: g, verdict: v, wrong: r.wrong, rung: r.rung, coin: r.coin });
+}
+// After w1's solved screen: a child who followed every step may go on alone; the others play w2.
+function warmNext() {
+  const c = S.c, r = S.run;
+  if (S.warmReplay || c.warm === 2) { leaveWarm(); return; }
+  if (!r.lead.miss && !r.offer) { r.offer = true; log('skip_offer'); render(); return; }
+  startWarm(2);
+}
+const offerOpen = () => S.screen === 'reveal' && !!(S.run && S.run.offer);
+function offerHTML() {
+  return `<div class="brief-wrap ui-sheet-wrap"><div class="brief offer ui-sheet">
+    <div class="ui-sheet-title">${UI.coin(helperEmoji())}${ga('Že znaš? Poskusi sam!', 'Že znaš? Poskusi sama!')}</div>
+    ${UI.btn(ga('Sam!', 'Sama!'), { act: 'warmSkip' })}${UI.btn(UI_AUDIO.warmMore, { act: 'warmMore', kind: 'is-sec' })}</div></div>`;
+}
+// one word of its own per companion, in the hello and the cheer
+const PAL_HI = { '🐶': 'Hov!', '🐱': 'Mijav!', '🦉': 'Uhu!', '🦊': 'Juhu!' };
+const palHi = () => PAL_HI[helperEmoji()] ? PAL_HI[helperEmoji()] + ' ' : '';
+
+// w1: what the companion says and rings on every screen. A tap elsewhere is never blocked and never counted
+// as wrong (lead_miss); the companion says the same step again.
+function leadStep() {
+  const r = S.run, c = S.c, L = r.lead;
+  const say = (text, sel, o = {}) => ({ text: (L.oops ? UI_AUDIO.leadOops + ' ' : '') + text, sel, ...o });
+  switch (S.screen) {
+    case 'call':
+      if (!r.answered) return say(palHi() + UI_AUDIO.leadCall1, '[data-act="answer"]');
+      if (!L.call) return say(UI_AUDIO.leadCall2, '.caller .bubble', { ok: 'call', point: false });
+      return say(UI_AUDIO.leadCall3, '[data-act="toScene"]');
+    case 'scene': {
+      if (!L.scene) return say(UI_AUDIO.leadScene, '.objs', { ok: 'scene', point: false });
+      if (L.read) return say(UI_AUDIO.leadRead, '.pocket .row', { ok: 'read', point: false });
+      const next = own('scene').find(s => !r.found.includes(s.id));
+      return next ? say(UI_AUDIO.leadObj, `.obj[data-sid="${next.id}"]`) : say(UI_AUDIO.leadSceneDone, '[data-act="toSolve"]');
+    }
+    case 'solve': {
+      if (!L.goal) return say(UI_AUDIO.leadGoal, '.suspects', { ok: 'goal', point: false });
+      const t = elimTarget(), last = t.who === c.culprit;
+      if (r.sel !== t.sid) return say(last ? UI_AUDIO.leadLast : UI_AUDIO.leadRow, `.row[data-sid="${t.sid}"]`);
+      return say(last ? UI_AUDIO.leadProofFace : UI_AUDIO.leadFace, `.suspect[data-id="${t.who}"]`);
+    }
+    case 'reveal': return { text: `${palHi()}Bravo, ${detTitle().toLowerCase()}!`, sel: '[data-act="next"]' };
+  }
+  return null;
+}
+// w2: the companion only watches. It says so once, and once that its coin gives a free hint.
+function w2Step() {
+  const r = S.run, w = r.w2;
+  if (S.screen === 'call' && r.answered && !w.hello) return { text: UI_AUDIO.warm2Start, sel: null, ok: 'hello' };
+  if (S.screen === 'solve' && !w.coin && !r.crossed.length) return { text: UI_AUDIO.warm2Coin, sel: '.pal', ok: 'coin' };
+  if (S.screen === 'reveal') return { text: UI_AUDIO.warm2Done, sel: '[data-act="next"]' };
+  return null;
+}
+
+// What the companion says on each screen, and which element glows.
 function coachStep() {
   const t = S.tut, r = S.run;
   // the first UGOVOR ever: the owl shows the two taps (a finger only when there is one claim to point at)
-  if (briefOpen() || truthOpen() || excuseOpen() || pinOpen() || (stepCase() && r.note)) return null;
+  if (briefOpen() || truthOpen() || excuseOpen() || pinOpen() || offerOpen() || (stepCase() && r.note)) return null;
+  if (r && (r.lead || r.w2) && S.c && S.c.warm) return r.hint ? null : r.lead ? leadStep() : w2Step();
   if (S.screen === 'lie' && r && r.lcoach && !r.caught && !r.hint) {
     const one = S.c.lie.claims.length === 1;
     return r.lcoach === 1 ? { text: UI_AUDIO.coachLie1, sel: one ? '.claim' : '.claims', point: one }
@@ -3313,7 +3511,7 @@ function coach() {
   const top = rect ? rect.top > innerHeight - rect.bottom : false;
   document.body.insertAdjacentHTML('beforeend', `<div class="coach ${top ? 'top' : 'bottom'}">
     ${UI.coin(helperEmoji())}<span class="say">${esc(step.text)}</span>
-    ${step.ok ? UI.btn('V redu', { attrs: 'data-coach="ok"' }) : ''}</div>`);
+    ${step.ok ? UI.btn('V redu', { attrs: `data-coach="ok" data-k="${step.ok === true ? '' : step.ok}"` }) : ''}</div>`);
 }
 
 // What the spotlight rings: the target, or for a list that scrolls (.rows) only the sentences on screen.
@@ -3347,7 +3545,13 @@ app.addEventListener('keydown', (e) => {
 });
 
 document.body.addEventListener('click', (e) => {
-  if (!e.target.closest('[data-coach="ok"]') || !S.tut) return;
+  const ok = e.target.closest('[data-coach="ok"]'), w = S.run && (S.run.lead || S.run.w2);
+  if (ok && w && ok.dataset.k) {   // a warm-up case: the step the companion just said is done
+    if (ok.dataset.k === 'read') w.read = null; else w[ok.dataset.k] = true;
+    coach();
+    return;
+  }
+  if (!ok || !S.tut) return;
   if (S.tut.msg) S.tut.msg = null;
   else if (S.screen === 'story') S.tut.read = true;
   else if (S.screen === 'files') S.tut = null;
@@ -3361,7 +3565,7 @@ document.body.addEventListener('click', (e) => {
 const DETECTIVES_KEY = 'dp_detectives_v1';
 const GUESS_KEY = 'dp_guess_v1';   // { fileId: the option the child guessed now, 'fileId:first', 'fileId:again' }
 const UGOVOR_KEY = 'dp_ugovor_v1'; // the detective has shouted UGOVOR once (the owl and the shout come only the first time)
-const KID_KEYS = [PROFILE_KEY, PLAYED_KEY, TUT_KEY, LETTER_KEY, PLAYER_KEY, GUESS_KEY, UGOVOR_KEY];
+const KID_KEYS = [PROFILE_KEY, PLAYED_KEY, TUT_KEY, LETTER_KEY, PLAYER_KEY, GUESS_KEY, UGOVOR_KEY, HELP_KEY];
 const raw = {
   get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
   set(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} },
@@ -3425,10 +3629,12 @@ function detectiveCards() {
   }).filter(Boolean);
 }
 
-// Home: a new child first makes the ID card, then plays the practice case, then picks a file.
+// Home: a new child first makes the ID card, then plays the two warm-up cases, then picks a file.
+// A warm-up case left half-way starts again on the next visit.
 function toHome() {
   if (!profile()) { S.mk = { step: 0, hello: true, av: null, g: null, sk: null, name: '' }; go('make'); return; }
-  if (!store.read(TUT_KEY, false) && !(S.tut && S.tut.board)) { startTutorial(); return; }
+  const warm = help().warm;
+  if (warm === 'new' || warm === 'w1' || warm === 'w2') { startWarm(warm === 'w2' ? 2 : 1); return; }
   S.file = null;
   go('files');
 }
@@ -3479,7 +3685,7 @@ function backTarget() {
     case 'intro':
       if (tut) return store.read(TUT_KEY, false) ? () => { S.tut = null; S.c = null; toHome(); } : () => { ACTIONS.editCard(); S.mk.step = 4; render(); };
       return S.orderMode === 'board' ? toBoard : 'stay';
-    case 'call': return S.orderMode === 'board' ? toBoard : 'stay';
+    case 'call': return S.c.warm ? (S.warmReplay ? leaveWarm : 'stay') : S.orderMode === 'board' ? toBoard : 'stay';
     case 'scene': case 'ask': case 'words': case 'lock': case 'order': case 'cipher': case 'torn': return S.run.hint ? 'stay' : () => go(stepNext(-1));
     case 'lie': return S.run.hint || S.run.lphase === 'shout' || S.run.lphase === 'stamp' ? 'stay' : () => go(stepNext(-1));
     case 'herring': case 'when': return S.run.hint ? 'stay' : () => go(stepNext(-1));
@@ -3487,7 +3693,7 @@ function backTarget() {
     case 'story': return () => go('intro');
     case 'accuse': return () => go('story');
     case 'evidence': return S.run.hint ? 'stay' : () => { S.run.picks = []; go('accuse'); };
-    case 'reveal': return tut ? endTutorial : S.orderMode === 'board' ? toBoard : 'stay';
+    case 'reveal': return tut ? endTutorial : S.c.warm ? 'stay' : S.orderMode === 'board' ? toBoard : 'stay';
     case 'book': return S.run && S.run.fromBoard ? toBoard : () => go('reveal');
     case 'soon': return () => go('more');
     case 'thanks': return KID_MODE ? ACTIONS.backToBoard : 'stay';
@@ -3538,6 +3744,7 @@ function render() {
   else if (truthOpen()) app.insertAdjacentHTML('beforeend', truthHTML());
   else if (excuseOpen()) app.insertAdjacentHTML('beforeend', excuseHTML());
   else if (pinOpen()) app.insertAdjacentHTML('beforeend', pinHTML());
+  else if (offerOpen()) app.insertAdjacentHTML('beforeend', offerHTML());
   else if (stepCase() && S.run.note && !S.run.hint) app.insertAdjacentHTML('beforeend', noteHTML());
   const chat = $('.chat');
   if (chat) chat.scrollTop = chat.scrollHeight;
@@ -3548,7 +3755,59 @@ function render() {
     watchScroll();
   }
   coach();
+  armIdle();
 }
+
+// ---- The companion in the footer: its coin is a free hint at any time, and after a pause it speaks by itself.
+// In w1 it leads anyway, so the coin waits until w2.
+const palBtn = () => S.run && S.run.lead ? '' : `<button class="pal" data-act="pal" aria-label="Namig">${helperEmoji()}<i>?</i></button>`;
+const footBack = () => `<button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>${palBtn()}`;
+const goalText = () => S.screen === 'solve' ? (S.c.suspects.length - S.run.crossed.length === 1 ? UI_AUDIO.goalLast : UI_AUDIO.goalSolve)
+  : UI_AUDIO['goal' + S.screen[0].toUpperCase() + S.screen.slice(1)];
+// The solve ladder's rung n (1 the case's hint, 2 the next sentence lit, 3 the answer with its reason), after
+// wrong pairs or from the coin.
+function solveRung(n) {
+  const r = S.run, c = S.c;
+  r.rung = Math.max(r.rung, n);
+  if (n >= 3) {
+    if (!r.assisted) { r.assisted = true; log('assisted'); }
+    const t = elimTarget(), name = CHARACTERS[t.who].name;
+    const why = name === '???' ? '' : t.who === c.culprit ? ` Ta stavek dokaže: ${name}.` : ` ${name} odpade.`;
+    return { key: 'assist', text: UI_AUDIO.elimAssist + why, clip: 'ui_elimAssist', level: 4 };
+  }
+  if (n === 2) { r.highlight = true; return { key: 'h2', text: UI_AUDIO.elimLook, clip: 'ui_elimLook', level: 2 }; }
+  return { key: 'h1', text: c.h1, clip: c.id + '_h1', level: 1 };
+}
+// Pause nudges: after a while without a tap the companion says the step's goal in a bubble that blocks nothing;
+// later (warm-up) the next thing to read glows. Once per screen each; any tap takes them away.
+let idleTimer = null, lastTap = Date.now();
+const canNudge = () => stepCase() && !!BRIEF[S.screen] && !S.run.lead && !S.run.hint && !S.run.note && !briefOpen() && !truthOpen() && !$('.coach') && !document.hidden;
+function armIdle() {
+  clearTimeout(idleTimer);
+  if (!stepCase() || !BRIEF[S.screen] || S.run.lead) return;
+  const r = S.run, plan = r.w2 ? HELP.idle.warm : HELP.idle[1], n = r.nudged[S.screen] || 0;
+  if (plan[n] == null) return;
+  idleTimer = setTimeout(() => {
+    if (S.run !== r) return;
+    if (!canNudge()) { lastTap = Date.now(); armIdle(); return; }
+    r.nudged[S.screen] = n + 1;
+    log('help_nudge', { step: S.screen, kind: n ? 'glow' : 'goal' });
+    if (n === 0) {
+      document.body.insertAdjacentHTML('beforeend', `<div class="pal-say">${UI.coin(helperEmoji())}<span>${esc(goalText())}</span></div>`);
+      setTimeout(() => { const b = $('.pal-say'); if (b) b.classList.add('out'); }, HELP.fade * 1000);
+    } else {
+      const next = S.screen === 'solve' ? S.c.sentences.find(x => !r.seen.includes(x.id) && !r.used.includes(x.id)) : own(S.screen).find(x => !r.found.includes(x.id));
+      const el = next && $(S.screen === 'solve' ? `.row[data-sid="${next.id}"]` : `.obj[data-sid="${next.id}"]`);
+      if (el) el.classList.add('nglow');
+    }
+    armIdle();
+  }, Math.max(0, plan[n] * 1000 - (Date.now() - lastTap)));
+}
+document.addEventListener('click', () => {
+  lastTap = Date.now();
+  document.querySelectorAll('.pal-say').forEach(el => el.remove());
+  if (S.run) armIdle();
+}, true);
 
 function rowsHTML(act) {
   return S.c.sentences.map(s => UI.row(names(s.text), { act, attrs: `data-sid="${s.id}"`, state: 'row' })).join('');
@@ -3698,15 +3957,15 @@ function noteHTML() {
     <span class="hi">${good ? '✓' : UI.coin(helperEmoji())}</span><span class="txt">${almost ? `<b class="verdict">${UI_AUDIO.almost}</b> ` : ''}${esc(r.note)}</span>
     ${UI.btn('V redu', { act: 'noteOk', kind: good ? '' : 'is-soft' })}</div>`;
 }
-// what to do now: the helper says it; a tap opens the step's instruction card again
-const qbarB = (text) => `<div class="qbar">${UI.helper(text, { act: 'brief', tone: 'bq' })}</div>`;
+// what to do now: the helper says it; a tap opens the step's instruction card again (in w1 the companion's bubble says it)
+const qbarB = (text) => S.run && S.run.lead ? '' : `<div class="qbar">${UI.helper(text, { act: 'brief', tone: 'bq' })}</div>`;
 // The season band on every step of a case: the step, how far along (one dot per step), the question.
 const PUZZLES = ['words', 'lock', 'order', 'cipher', 'torn'];
 const bandScreen = () => stepCase() && S.c.steps.includes(S.screen) && !(S.screen === 'call' && !S.run.answered);
 function stepBand() {
   const c = S.c, i = c.steps.indexOf(S.screen), f = FILES.find(x => x.id === c.file) || {};
   const name = S.screen === 'call' ? (c.film ? 'Kamera' : 'Klic') : BRIEF[S.screen] ? BRIEF[S.screen][1] : '';
-  return UI.band({ step: `${c.final ? '⭐ Veliki primer' : 'Primer ' + c.no} · ${name}`, back: '←', dots: c.steps.map((_, k) => k < i),
+  return UI.band({ step: `${c.final ? '⭐ Veliki primer' : c.warm ? '🔰 Vaja' : 'Primer ' + c.no} · ${name}`, back: '←', dots: c.steps.map((_, k) => k < i),
     at: c.steps.length > 1 ? i / (c.steps.length - 1) : 0, ball: f.icon || c.sticker, qAct: BRIEF[S.screen] ? 'brief' : '', q: c.question,
     cls: PUZZLES.includes(S.screen) ? 'is-short' : '' });
 }
@@ -4077,7 +4336,7 @@ const T = {
     const c = S.c, r = S.run, cl = CHARACTERS[c.client];
     if (!r.answered) {
       return `<div class="ui-screen call"><div class="ui-top"></div>
-        <div class="ui-body is-center">${UI.pill(`${c.final ? '⭐ Veliki primer' : 'Primer ' + c.no}${c.place ? ' · ' + c.place : ''}`)}
+        <div class="ui-body is-center">${UI.pill(`${c.final ? '⭐ Veliki primer' : c.warm ? '🔰 Vaja' : 'Primer ' + c.no}${c.place ? ' · ' + c.place : ''}`)}
           <div class="phone">📞</div><h1 class="ui-big">Zvoni!</h1>
           <div class="suspect">${avatar(c.client)}<span>${esc(cl.name)}</span></div></div>
         <div class="ui-foot">${UI.btn('Javi se', { act: 'answer' })}${backTarget() === 'stay' ? '' : UI.btn('← Nazaj', { act: 'back', kind: 'is-quiet' })}</div></div>`;
@@ -4107,7 +4366,7 @@ const T = {
           <button class="wbtn" data-act="wheel" data-i="${i}" data-d="-1" aria-label="dol" ${r.open ? 'disabled' : ''}>▼</button></div>`).join('')}</div>
       </div>
       ${r.open ? `<div class="toast good">🔓 ${UI_AUDIO.lockOpen}</div>` : ''}
-      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
+      <div class="footer">${footBack()}<span class="grow"></span>
         ${r.open ? `<button class="btn big" data-act="toScene">${stepLabel()}</button>` : '<button class="btn big" data-act="tryLock">Odpri 🔓</button>'}</div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
@@ -4133,7 +4392,7 @@ const T = {
         ${full ? '' : `<div class="tdeck">${r.deck.filter(k => !placed.has(k)).map(k => card(k, 'place', `data-k="${k}"`)).join('')}</div>`}
       </div>
       ${r.ordered ? `<div class="toast good" data-act="say" data-clip="${c.id}_od">✅ ${esc(o.done)}</div>` : ''}
-      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
+      <div class="footer">${footBack()}<span class="grow"></span>
         ${r.ordered ? `<button class="btn big" data-act="toScene">${stepLabel()}</button>` : `<button class="btn big" data-act="checkOrder" ${full ? '' : 'disabled'}>Preveri ✔</button>`}</div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
@@ -4167,7 +4426,7 @@ const T = {
           : `<div class="wlist">${w.find.map(([e, x]) => `<span class="wword ${r.words.includes(x) ? 'got' : ''}">${e} ${x}</span>`).join('')}</div>`)}
       </div>
       ${geslo ? `<div class="toast good">🔤 ${UI_AUDIO.geslo}</div>` : ''}
-      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
+      <div class="footer">${footBack()}
         <span class="grow"></span><button class="btn big" data-act="toScene" ${done ? '' : 'disabled'}>${stepLabel()}</button></div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
@@ -4197,7 +4456,7 @@ const T = {
       ${done ? `<div class="row cdone" data-act="listenClue" data-sid="${k.gives}">📃 ${sayHTML(sent(k.gives))}</div>`
         : `<div class="ctiles">${tiles.map(l => `<button class="ctile ${l === pulse ? 'pulse' : ''}" data-act="cipherTile" data-l="${l}" ${r.cgot.includes(l) ? 'disabled' : ''}>${l}</button>`).join('')}</div>`}
       ${done ? `<div class="toast good">✅ ${UI_AUDIO.cipherDone}</div>` : ''}
-      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
+      <div class="footer">${footBack()}<span class="grow"></span>
         <button class="btn big" data-act="toScene" ${done ? '' : 'disabled'}>${stepLabel()}</button></div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
@@ -4221,7 +4480,7 @@ const T = {
           k === null ? i + 1 : strip(k, 'unplace', `data-i="${i}"`)}</span>`).join('')}</div>
         ${full ? '' : `<div class="pdeck">${r.deck.filter(k => !placed.has(k)).map(k => strip(k, 'place', `data-k="${k}"`)).join('')}</div>`}`}
       ${r.ordered ? `<div class="toast good">✅ ${UI_AUDIO.tornDone}</div>` : ''}
-      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
+      <div class="footer">${footBack()}<span class="grow"></span>
         ${r.ordered ? `<button class="btn big" data-act="toScene">${stepLabel()}</button>` : `<button class="btn big" data-act="checkOrder" ${full ? '' : 'disabled'}>Preveri ✔</button>`}</div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
@@ -4256,7 +4515,7 @@ const T = {
         <div class="rows">${rows.map(s => `<div class="row ${r.lrows.includes(s.id) ? 'selected' : ''} ${look && !breakers.has(s.id) ? 'dim' : ''}
           ${r.lassisted && !r.caught && breakers.has(s.id) && !r.lrows.includes(s.id) ? 'pulse' : ''} ${stamped && r.lbroke.includes(s.id) ? 'broke' : ''}" data-act="lieRow" data-sid="${s.id}">${sayHTML(s)}</div>`).join('')}</div>
       </div>
-      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
+      <div class="footer">${footBack()}<span class="grow"></span>
         <button class="btn big" data-act="toScene" ${r.lphase === 'done' && r.truthOk ? '' : 'disabled'}>Vem, kdo je bil!</button></div>
     </div>${r.lphase === 'shout' ? `<div class="shout-wrap"><div class="shout">
       <div class="row" data-act="say" data-clip="ui_lieShout">${esc(UI_AUDIO.lieShout)}</div>
@@ -4290,7 +4549,7 @@ const T = {
         <div class="rows">${rows.map(s => `<div class="row ${r.hrows.includes(s.id) ? 'selected' : ''} ${look && !expl.has(s.id) ? 'dim' : ''}
           ${r.hassisted && !done && expl.has(s.id) && !Object.values(r.hby).flat().includes(s.id) ? 'pulse' : ''}" data-act="herRow" data-sid="${s.id}">${sayHTML(s)}</div>`).join('')}</div>
       </div>
-      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
+      <div class="footer">${footBack()}<span class="grow"></span>
         <button class="btn big" data-act="toScene" ${done ? '' : 'disabled'}>${stepLabel()}</button></div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
@@ -4318,7 +4577,7 @@ const T = {
           : `<div class="msg them"><span class="mav">${CHARACTERS[s.who].animal}</span><span class="mtxt" data-act="listenClue" data-sid="${s.id}">${names(unq(s.text))}</span></div>`}`).join('')}
       </div>
       ${open.length && !r.typing ? `<div class="qs">${open.map(s => `<button class="qbtn" data-act="askQ" data-sid="${s.id}">${esc(s.ask)}</button>`).join('')}</div>` : ''}
-      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
+      <div class="footer">${footBack()}
         <span class="pocket-count">👝 ${got} / ${all}</span>
         <span class="grow"></span><button class="btn big ${done && !r.note ? 'pulse' : ''}" data-act="toSolve" ${done ? '' : 'disabled'}>${done ? stepLabel() : leftLabel(all - got, ['vprašanje', 'vprašanji', 'vprašanja', 'vprašanj'], '💬')}</button></div>
     </div>`;
@@ -4349,7 +4608,7 @@ const T = {
         <div class="wbands">${band('before', '⏪')}${band('during', '⏰')}${band('after', '⏩')}</div>
         ${done ? '' : `<div class="wdeck">${open.map(card).join('')}</div>`}
       </div>
-      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span>
+      <div class="footer">${footBack()}<span class="grow"></span>
         <button class="btn big" data-act="toScene" ${done ? '' : 'disabled'}>${stepLabel()}</button></div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
@@ -4369,12 +4628,12 @@ const T = {
       </div>
       <div class="objs ${r.torch ? 'torch' : ''} ${r.pencil ? 'pencil' : ''}">${mine.map(s => {
         const got = r.found.includes(s.id);
-        return `<button class="obj ${got ? 'got' : ''} ${s.dark && !got ? 'dark' : ''} ${s.rub && !got ? 'rub' : ''} ${r.rubbing === s.id ? 'rubbing' : ''} ${!got && all - found.length <= 2 ? 'pulse' : ''}" data-act="openClue" data-sid="${s.id}">
+        return `<button class="obj ${got ? 'got' : ''} ${s.dark && !got ? 'dark' : ''} ${s.rub && !got ? 'rub' : ''} ${r.rubbing === s.id ? 'rubbing' : ''} ${!got && (all - found.length <= 2 || r.glow) ? 'pulse' : ''}" data-act="openClue" data-sid="${s.id}">
           <span class="oe">${s.dark && !got ? '🌑' : s.obj}</span><span class="ol">${esc(s.label)}</span>${got ? '<span class="ok">✔</span>' : ''}</button>`;
       }).join('')}</div>
       <div class="rows pocket">${found.slice().reverse().map((sid, i) =>
         `<div class="row ${i === 0 && r.fresh ? 'fresh' : ''} ${sent(sid).rub ? 'rubbed' : ''}" data-act="listenClue" data-sid="${sid}">${sayHTML(sent(sid))}</div>`).join('')}</div>
-      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button>
+      <div class="footer">${footBack()}
         <span class="grow"></span><button class="btn big ${done && !r.note ? 'pulse' : ''}" data-act="toSolve" ${done ? '' : 'disabled'}>${done ? stepLabel() : leftLabel(all - found.length, ['stvar', 'stvari', 'stvari', 'stvari'], '👆')}</button></div>
     </div>`;
   },
@@ -4396,7 +4655,7 @@ const T = {
         ${t && t.sid !== s.id ? 'dim' : ''} ${r.assisted && t && t.sid === s.id ? 'pulse' : ''}" data-act="pickClue" data-sid="${s.id}">${sayHTML(s)}${
         c.lie && r.caught && s.id === c.lie.claim ? '<span class="ltag">UGOVOR!</span>' : c.lie && s.id === c.lie.truth ? '<span class="ltag truth">✨</span>'
           : r.hdone.includes(s.id) ? '<span class="ltag herr">NAPAČNA SLED</span>' : r.wplaced[s.id] && wrongTime(s) ? '<span class="ltag ytag">🟨</span>' : ''}</div>`).join('')}</div>
-      <div class="footer"><button class="btn secondary" data-act="back" aria-label="Nazaj">←</button><span class="grow"></span></div>
+      <div class="footer">${footBack()}<span class="grow"></span></div>
     </div>${r.hint ? hintHTML(r.hint) : ''}`;
   },
 
@@ -4440,7 +4699,7 @@ const T = {
     const sub = me ? (c.caught ? `${detName()} je ${ga('ujel', 'ujela')} ${c.caught}!` : `Bravo, ${detName()}!`) : '';
     // the season's mystery guest shows its real face, and the child's guess is checked
     const real = CHARACTERS[c.culprit].real, who = { ...CHARACTERS[c.culprit], ...real };
-    return `<div class="screen center reveal ${c.final && f && f.answer ? 'final' : ''} ${r && r.pinOpen ? 'still' : ''}">
+    return `<div class="screen center reveal ${c.final && f && f.answer ? 'final' : ''} ${r && (r.pinOpen || r.offer) ? 'still' : ''}">
       <div class="paper">
         <div class="mast">${esc(f ? f.paper : 'DETEKTIVSKE NOVICE')}</div>
         <div class="qbar"><span class="stamp slam">${UI_AUDIO.solved}</span>${spk('ui_solved')}</div>
@@ -4542,7 +4801,8 @@ const ACTIONS = {
     // clears the detective who played last; the other detectives on this device stay
     if (!confirm('Nov otrok: počistim zadnjo izkaznico in njene kljukice? Drugi detektivi in zapisi v pregledu ostanejo.')) return;
     store.write(PLAYED_KEY, []);
-    store.write(TUT_KEY, false);   // a new child also gets the practice case
+    store.write(TUT_KEY, false);
+    store.write(HELP_KEY, null);   // a new child also gets the warm-up cases
     store.write(PROFILE_KEY, null); // and makes their own ID card
     store.write(GUESS_KEY, {});
     store.write(UGOVOR_KEY, false);
@@ -4628,7 +4888,31 @@ const ACTIONS = {
     S.mk = null;
     toHome();
   },
-  tutorial() { startTutorial(); },
+  tutorial() { startWarm(1, true); },
+  warmSkip() { helpSet({ warm: 'skipped', g: 2, streak: 0 }); log('warm_skip'); leaveWarm(); },
+  warmMore() { startWarm(2); },
+  // The companion's coin: a free hint. In solve each tap gives the ladder's next rung, down to the answer;
+  // where nothing can go wrong (scene, questioning) it says the goal; in a puzzle or a reasoning step, its first hint.
+  pal() {
+    const r = S.run, c = S.c;
+    if (!r || r.hint || r.note || briefOpen() || truthOpen() || (S.screen === 'lie' && (r.lphase || r.lcoach))) return;
+    if (r.w2 && S.screen === 'solve') r.w2.coin = true;
+    log('help_tap', { step: S.screen });
+    if (S.screen === 'solve') {
+      r.coin++;
+      r.hint = solveRung(Math.min(3, r.rung + 1));
+      log('hint_shown', { hint: r.hint.key, hintLevel: r.hint.level, via: 'coin' });
+    } else if (S.screen === 'scene' || S.screen === 'ask') {
+      r.note = goalText();
+      r.glow = true;
+    } else {
+      const [, , how, part] = BRIEF[S.screen], src = c[part || S.screen];
+      r.coin++;
+      r.hint = { key: 'h1', text: (src && src.h1) || UI_AUDIO[how], level: 1 };
+      log(part ? 'puzzle_hint' : S.screen + '_hint', { hint: 'h1', hintLevel: 1, via: 'coin' });
+    }
+    render();
+  },
   startSession() {
     const n = store.read(CHILD_KEY, 0) + 1;
     store.write(CHILD_KEY, n);
@@ -4853,7 +5137,7 @@ const ACTIONS = {
   },
   brief() {
     const r = S.run;
-    if (r.hint || r.note) return;
+    if (r.hint || r.note || r.lead) return;
     r.briefed = r.briefed.filter(x => x !== S.screen);
     log('brief_reopen', { step: S.screen });
     render();
@@ -5372,7 +5656,9 @@ const ACTIONS = {
     }
     r.found.push(s.id);
     r.fresh = true;
-    r.note = own('scene').every(x => r.found.includes(x.id)) ? doneMsg('sceneDone') : null;
+    r.glow = false;
+    r.note = !r.lead && own('scene').every(x => r.found.includes(x.id)) ? doneMsg('sceneDone') : null;
+    if (r.lead) Object.assign(r.lead, { scene: true, read: s.id, oops: false });
     r.heard.add(s.id);
     sfx('pop');
     log('clue_open', { sentenceId: s.id, role: s.role, n: r.found.length });
@@ -5394,6 +5680,8 @@ const ACTIONS = {
     const s = sent(el.dataset.sid);
     r.sel = r.sel === s.id ? null : s.id;
     r.note = null;
+    if (!r.seen.includes(s.id)) r.seen.push(s.id);
+    if (r.lead) Object.assign(r.lead, { goal: true, oops: false });
     log('evidence_select', { sentenceId: s.id, role: s.role });
     render();
   },
@@ -5402,6 +5690,7 @@ const ACTIONS = {
     const r = S.run, c = S.c, id = el.dataset.id;
     if (r.hint || r.crossed.includes(id)) return;
     if (!r.sel) {
+      if (r.lead) { r.lead.miss++; r.lead.oops = true; log('lead_miss', { suspectId: id }); render(); return; }
       r.note = UI_AUDIO.pickFirst;
       render();
       play('ui_pickFirst', UI_AUDIO.pickFirst);
@@ -5418,6 +5707,9 @@ const ACTIONS = {
     log('evidence_confirm', { sentenceId: s.id, sentenceIds: [s.id], role: s.role, suspectId: id, correct: proof || alibi, suspectCorrect: id === c.culprit,
       kind: half ? 'half' : proof ? 'proof' : 'cross', ...(liar && id === liar ? { liar: true } : {}), ...(wrongTime(s) ? { wrongTime: true } : {}), ...(pointed && id === pointed ? { obvious: true } : {}) });
     r.sel = null;
+    // w1: a pair that doesn't fit is not wrong; the companion shows the step again
+    if (r.lead && !alibi && !proof) { r.lead.miss++; r.lead.oops = true; log('lead_miss', { sentenceId: s.id, suspectId: id }); render(); return; }
+    if (r.lead) r.lead.oops = false;
     // gentle notes, not counted: a misleading clue (or what explains it) against its face, a lead against the
     // culprit, and in a case with a true 🧭 clue the proof before everyone else is crossed off
     const H = c.herring;
@@ -5447,7 +5739,7 @@ const ACTIONS = {
       r.crossed.push(id);
       r.used.push(s.id);
       r.highlight = null;
-      if (c.suspects.length - r.crossed.length === 1) r.note = UI_AUDIO.lastOne;
+      if (c.suspects.length - r.crossed.length === 1 && !r.lead) r.note = UI_AUDIO.lastOne;
       sfx('stamp');
       render();
       const x = document.querySelector(`.suspect[data-id="${id}"]`);
@@ -5457,7 +5749,7 @@ const ACTIONS = {
     if (proof) {
       r.crossed = c.suspects.filter(x => x !== c.culprit);
       log('case_done', { assisted: r.assisted, wrong: r.wrong });
-      markSolved(c);
+      if (c.warm) warmSolved(); else markSolved(c);
       sfx('tada');
       go('reveal');
       return;
@@ -5465,14 +5757,11 @@ const ACTIONS = {
     r.wrong++;
     sfx('nope');
     let h;
-    if (r.assisted || r.wrong >= 4) {
-      if (!r.assisted) { r.assisted = true; log('assisted'); }
-      h = { key: 'assist', text: UI_AUDIO.elimAssist, clip: 'ui_elimAssist', level: 4 };
-    } else if (r.wrong === 3) {
-      r.highlight = true;
-      h = { key: 'h2', text: UI_AUDIO.elimLook, clip: 'ui_elimLook', level: 2 };
-    } else if (r.wrong === 2) {
-      h = { key: 'h1', text: c.h1, clip: c.id + '_h1', level: 1 };
+    // the ladder: the 2nd wrong pair gives the case's hint, the 3rd lights the next sentence, the 4th the answer
+    // (in w2 each comes one pair earlier); a rung already given by the coin is not given again
+    const by = r.assisted ? 3 : Math.min(3, r.wrong - 1 + (c.warm === 2 ? 1 : 0));
+    if (by >= 1) {
+      h = solveRung(Math.max(by, Math.min(3, r.rung + 1)));
     } else if (L && id === liar && liar !== c.culprit && (s.id === L.claim || s.id === L.truth || L.breaks.flat().includes(s.id))) {
       h = { key: 'liarNotCulprit', text: UI_AUDIO.liarNotCulprit, clip: 'ui_liarNotCulprit', level: 0 };
     } else if (L && id === liar && (s.id === L.claim || L.breaks.flat().includes(s.id))) {
@@ -5506,6 +5795,7 @@ const ACTIONS = {
   },
   next() {
     if (S.tut) { endTutorial(); return; }
+    if (S.c && S.c.warm) { warmNext(); return; }
     const f = S.c && FILES.find(x => x.id === S.c.file);
     if (pinCase() && !S.run.pinOpen) {   // the new card first, on its own
       S.run.pinOpen = true;

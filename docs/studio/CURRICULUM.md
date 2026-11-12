@@ -1,6 +1,6 @@
 # The detective curriculum: how the game grows with the child
 
-The children are 7–8 now and will be 9–10 in two years. Each season teaches **one new detective skill** and raises **one or two reading knobs**, never more. The model is Agatha Christie: Christie never made her mysteries harder by hiding clues. She made them harder by hiding them **in plain sight**, behind an obvious suspect, inside a list, in something that *didn't* happen. That is the kind of hard we want.
+The game is made for children of 7–8 who can play **alone**; 9–10-year-olds follow if they show interest. Two things change as a child grows, and they move separately: the **help** the game gives goes down child by child (see »Help that fades«), and the **reading load** goes up season by season. Each season teaches **one new detective skill** and raises **one or two reading knobs**, never more. The model is Agatha Christie: Christie never made her mysteries harder by hiding clues. She made them harder by hiding them **in plain sight**, behind an obvious suspect, inside a list, in something that *didn't* happen. That is the kind of hard we want.
 
 ## The rule of growth
 
@@ -9,6 +9,44 @@ The children are 7–8 now and will be 9–10 in two years. Each season teaches 
 - **Reading load rises slowly**: at most one knob per season from the table below, two if the playtest says the last season was easy.
 - **Move up on evidence, not on the calendar.** Before a harder season, check [PLAYTEST.md](PLAYTEST.md) and the adult debrief: most cases solved with 0–1 hints, few assisted solves, the child reads on their own. If the child needed the last hint often, the next season stays at the same level and teaches its new skill more gently.
 - **Earlier seasons stay as the way in** for younger siblings and new players. A season says its level on its first line.
+- **New players start with the warm-up and go on to the latest season.** Seasons follow the year (snow in winter, summer holidays), so a new child plays what is current, not last winter's story. The companion's help carries them, and they pick the skills up as they play. This sets two rules for every season:
+  - **A season stands on its own.** Cases 1–2 teach its new skill and briefly re-teach any older skill it needs (UGOVOR, »Kdaj?«); it never assumes the child played an earlier season.
+  - **Reading load stays within reach of a new 7-year-old who has help.** It may rise slowly, but the help, not the calendar, is what bridges the gap between children.
+
+## Help that fades (direction approved 2026-11-12; the warm-up and the companion's free hint are built, the levels not yet: [WARMUP_AND_HELP.md](../WARMUP_AND_HELP.md))
+
+Children of 7–8 differ a lot: some read a case alone, some need a parent at every step. The seasons can't be written for both, so the **text stays the same and the help changes**. The game does the parent's job, so a child can play alone, and steps back as the child improves.
+
+**The helper is the companion the child picked** on the ID card (🐶 🐱 🦉 🦊), not a fixed owl: it coaches the warm-up and gives every hint afterwards, so the help comes from the child's own partner.
+
+**Two warm-up cases, the same for every new player** (they grow out of today's 🎓 practice case, where Babica the owl coaches now), followed by the latest season:
+
+| Case | The companion | What the child learns |
+|---|---|---|
+| 1 · together | leads every tap; the case can't be failed | read every sentence, cross off whoever has an alibi, find the proof |
+| 2 · you do, I watch | quiet unless the child is stuck | to do it alone, and that hints are free |
+
+- Tiny cases: 3 suspects, 4–5 sentences, level A words.
+- **No pass or fail.** Everyone goes on to the first season. The warm-up is a quiet measurement of how much help this child needs, never a lock.
+- A child who clears case 1 without a mistake may be offered to skip case 2.
+
+**After the warm-up the help fades per child, not for everyone at once.** What a parent does, the game does on screen, without audio:
+
+| A parent… | The game… |
+|---|---|
+| reminds the goal (»Koga lahko prečrtamo?«) | the companion repeats the question |
+| points at the right place | the sentence to read next glows |
+| helps with a hard word | a tap splits the word into syllables or shows a small picture |
+| reduces the load | one sentence at a time instead of the whole list |
+
+- **How much help** is set from what the game sees on the device (hints reached, wrong picks, assisted solves): a child who needed a lot gets help early, a child who needed none gets it only after a long pause or a wrong pick.
+- It moves case by case, down as the child improves, and up again if a new skill is hard. Only the adult sees it or overrides it; the child never sees a label.
+- **Nobody is ever stuck alone:** the last hint always leads to the answer, with the reason shown.
+- Help never costs anything and nothing is taken away (IMPROVEMENTS.md §9).
+
+**For the writers:** a season is still written once, at its level. Every case needs what the help uses: an `h1` that sends the child back to a sentence, and, for words a 7-year-old may not know, a syllable split or a picture (to be specified with the puzzle designer when this is built).
+
+**9–10-year-olds** get the same warm-up and the help drops to its lowest quickly. Their numbers in the debrief say whether level A bores them; only then do we write harder tellings (level B) or extra reading for them.
 
 ## Reading knobs (from easy to hard)
 

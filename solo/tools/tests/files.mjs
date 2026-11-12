@@ -31,16 +31,15 @@ await p.keyboard.press('Enter'); await wait(150);
 ok(await p.$eval('.ui-id-name', el => el.textContent) === 'Ana' && await p.$eval('.ui-id-photo .ui-coin', el => el.textContent) === '🐶', 'card: "Ana", sidekick, Enter works');
 await p.screenshot({ path: 'shots/f3-card.png' });
 await p.click('[data-act="mkDone"]'); await wait();
-ok(await st() === 'intro' && (await text()).includes('Vaja'), 'then the practice case');
+ok(await st() === 'call' && (await text()).includes('Vaja') && await p.evaluate(() => S.c.id === 'w1'), 'then the first warm-up case');
 ok(!(await p.evaluate(() => JSON.stringify(LOG))).includes('Ana'), 'the name is never written to the log');
 
-// ---- practice (quick), gendered praise
-await p.click('[data-act="toStory"]'); await p.click('[data-coach="ok"]'); await p.click('[data-act="know"]'); await wait(150);
-await p.click('[data-act="pick"][data-id="bine"]'); await wait(150);
-await p.click('[data-sid="s3"]'); await p.click('[data-act="confirm"]'); await wait(200);
-ok((await p.$eval('.coach .say', el => el.textContent)).includes('Bravo, detektivka!'), 'practice praise uses "detektivka"');
-ok((await text()).includes('Bravo, Detektivka Ana!'), 'reveal shows "Bravo, Detektivka Ana!"');
-await p.click('[data-act="next"]'); await wait();
+// ---- the warm-up case (quick: tap what the companion rings), gendered praise; the rest is in warm.mjs
+for (let i = 0; i < 60 && await st() !== 'reveal'; i++) { await p.click(await p.$('[data-coach="ok"]') ? '[data-coach="ok"]' : '.coach-target'); await wait(120); }
+ok((await text()).includes('Detektivka Ana je ujela Bineta!'), 'the solved screen says "Detektivka Ana je ujela Bineta!"');
+await wait(250);   // brief-auto closes the excuse card
+ok((await p.$eval('.coach .say', el => el.textContent)).includes('Bravo, detektivka!') && (await p.$eval('.coach .say', el => el.textContent)).startsWith('Hov!'), 'the dog\'s praise: "Hov! Bravo, detektivka!"');
+await p.click('[data-act="next"]'); await wait(200); await p.click('[data-act="warmSkip"]'); await wait();
 ok(await st() === 'files' && (await p.$$('.file-card:not(.teaser)')).length === await p.evaluate(() => FILES.length), 'file picker with every adventure out today');
 ok((await p.$eval('.coach .say', el => el.textContent)).includes('izberi pustolovščino'), 'coach: "Zdaj izberi pustolovščino…"');
 await p.screenshot({ path: 'shots/f4-files.png' });
@@ -76,6 +75,6 @@ const a = await b.newPage(); a.on('dialog', d => d.accept());
 await a.goto('http://localhost:8765/solo/'); await wait(500);
 await a.click('[data-act="age"][data-age="6-7"]'); await wait(100);
 await a.click('[data-act="resetBoard"]'); await wait(100);
-const left = await a.evaluate(() => [localStorage.getItem('dp_profile_v1'), localStorage.getItem('dp_played_v1'), localStorage.getItem('dp_tutorial_done')]);
-ok(left[0] === 'null' && left[1] === '[]' && left[2] === 'false', 'adult "Nov otrok" clears the ID card, ticks and practice');
+const left = await a.evaluate(() => [localStorage.getItem('dp_profile_v1'), localStorage.getItem('dp_played_v1'), localStorage.getItem('dp_tutorial_done'), localStorage.getItem('dp_help_v1')]);
+ok(left[0] === 'null' && left[1] === '[]' && left[2] === 'false' && left[3] === 'null', 'adult "Nov otrok" clears the ID card, ticks and the warm-up');
 await b.close();
