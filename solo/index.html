@@ -3397,6 +3397,22 @@ function newDetective() {
   d.list.push({ key: d.active, data: null });
   store.write(DETECTIVES_KEY, d);
 }
+// drop a detective for good; if it was the one playing, the first one left takes over
+// (or nobody, and the next child makes a new ID card)
+function removeDetective(key) {
+  const d = detectives();
+  d.list = d.list.filter(x => x.key !== key);
+  if (d.active === key) {
+    for (const k of KID_KEYS) raw.set(k, null);
+    d.active = null;
+    const to = d.list.find(x => x.data);
+    if (to) {
+      for (const k of KID_KEYS) raw.set(k, to.data[k] != null ? to.data[k] : null);
+      d.active = to.key;
+    }
+  }
+  store.write(DETECTIVES_KEY, d);
+}
 // the picker's cards: the active detective from the live keys, the others from their copies
 function detectiveCards() {
   const d = detectives();
@@ -3436,6 +3452,7 @@ function go(screen) {
   stopAudio();
   stopRing();
   if (screen !== 'board') S.pinNew = null;
+  if (screen !== 'who') S.whoEdit = false;
   S.screen = screen;
   render();
   if (screen === 'call' && !S.run.answered) {
@@ -3458,7 +3475,7 @@ function backTarget() {
       if (profile()) return () => { S.mk = null; toHome(); };
       return detectiveCards().length ? () => { S.mk = null; go('who'); } : null;
     case 'board': return () => { S.toast = null; toHome(); };
-    case 'who': return profile() ? toHome : 'stay';
+    case 'who': return S.whoEdit ? ACTIONS.whoEdit : profile() ? toHome : 'stay';
     case 'intro':
       if (tut) return store.read(TUT_KEY, false) ? () => { S.tut = null; S.c = null; toHome(); } : () => { ACTIONS.editCard(); S.mk.step = 4; render(); };
       return S.orderMode === 'board' ? toBoard : 'stay';
@@ -3987,15 +4004,17 @@ const T = {
       ${body}${foot ? `<div class="ui-foot">${foot}</div>` : ''}</div>`;
   },
 
-  // Kdo igra? One row per detective on this device, plus a new one.
+  // Kdo igra? One row per detective on this device, plus a new one. Removing is two steps away
+  // (the quiet button at the bottom, then a 🗑️ on the card) and asks a grown-up's sum, so a stray tap can't do it.
   who() {
-    const cards = detectiveCards();
+    const cards = detectiveCards(), edit = S.whoEdit && cards.length;
     return `<div class="ui-screen who"><header class="ui-band"><div class="ui-band-top">${profile() ? '<button class="ui-band-btn" data-act="back" aria-label="Nazaj">←</button>' : ''}
         <span class="ui-brand" style="flex:1">${esc(BRAND)}</span>${profile() ? '<span class="ui-band-gap"></span>' : ''}</div>
-      <h1 class="ui-band-title">${UI.coin('👥')}<span>Kdo igra?</span></h1></header>
-      <div class="ui-body">${cards.map(x => UI.item({ act: 'pickDetective', attrs: `data-key="${x.key}"`, state: 'who-card' + (x.live ? ' is-on' : ''), round: true, pic: x.p.av, sk: x.p.sk,
-          title: x.p.name || detTitle(x.p), tags: UI.pill(rankName(rankFor(x.n), x.p)), end: '<span class="ui-item-go">›</span>' })).join('')}
-        ${UI.item({ act: 'addDetective', state: 'is-add who-card add', round: true, pic: '+', title: 'Nov detektiv', sub: 'za drugega otroka' })}</div></div>`;
+      <h1 class="ui-band-title">${UI.coin(edit ? '🗑️' : '👥')}<span>${edit ? 'Koga odstranim?' : 'Kdo igra?'}</span></h1></header>
+      <div class="ui-body">${cards.map(x => UI.item({ act: edit ? 'askRemove' : 'pickDetective', attrs: `data-key="${x.key}"`, state: 'who-card' + (x.live && !edit ? ' is-on' : ''), round: true, pic: x.p.av, sk: x.p.sk,
+          title: x.p.name || detTitle(x.p), tags: UI.pill(rankName(rankFor(x.n), x.p)), end: `<span class="ui-item-go">${edit ? '🗑️' : '›'}</span>` })).join('')}
+        ${edit ? '' : UI.item({ act: 'addDetective', state: 'is-add who-card add', round: true, pic: '+', title: 'Nov detektiv', sub: 'za drugega otroka' })}</div>
+      ${cards.length ? `<div class="ui-foot">${UI.btn(edit ? 'Končano' : 'Odstrani detektiva', { act: 'whoEdit', kind: edit ? 'is-sec' : 'is-quiet' })}</div>` : ''}</div>`;
   },
 
   // Start: the badge on top, the next adventure as a big card, the others, the medals, what comes soon.
@@ -4565,6 +4584,11 @@ const ACTIONS = {
     playCase(Number(el.dataset.no));
   },
   toWho() { go('who'); },
+  whoEdit() { S.whoEdit = !S.whoEdit; render(); },
+  askRemove(el) {
+    const x = detectiveCards().find(c => c.key === el.dataset.key);
+    if (x) askSum('remove', `Odstranim izkaznico »${esc(x.p.name || detTitle(x.p))}«? Izbrišejo se tudi vsi rešeni primeri.`, 'Odstrani', { key: x.key });
+  },
   pickDetective(el) {
     switchDetective(el.dataset.key);
     S.tut = null;
@@ -5531,17 +5555,21 @@ gate.addEventListener('click', (e) => {
   if (under && under !== gate) under.click();
 });
 
-function openGate() {
+// a sum only a grown-up solves; `kind` says what a right answer does ('gate' or 'remove'), `text` goes above it
+function askSum(kind, text, ok, data = {}) {
   const a = 3 + Math.floor(Math.random() * 7), b = 3 + Math.floor(Math.random() * 7);
   modal.dataset.answer = String(a + b);
+  modal.dataset.kind = kind;
+  modal.dataset.key = data.key || '';
   modal.innerHTML = `<div class="modal-box">
-    <p>Za odrasle: koliko je ${a} + ${b}?</p>
+    ${text ? `<p>${text}</p>` : ''}<p>Za odrasle: koliko je ${a} + ${b}?</p>
     <input id="gateIn" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-    <div class="footer"><button class="btn secondary" data-m="cancel">Prekliči</button><button class="btn" data-m="ok">Odpri</button></div>
+    <div class="footer"><button class="btn secondary" data-m="cancel">Prekliči</button><button class="btn" data-m="ok">${ok}</button></div>
   </div>`;
   modal.hidden = false;
   $('#gateIn').focus();
 }
+const openGate = () => askSum('gate', '', 'Odpri');
 
 modal.addEventListener('click', (e) => {
   const m = e.target.closest('[data-m]');
@@ -5550,6 +5578,13 @@ modal.addEventListener('click', (e) => {
   const input = $('#gateIn');
   if (input.value.trim() !== modal.dataset.answer) { input.value = ''; return; }
   modal.hidden = true;
+  if (modal.dataset.kind === 'remove') {
+    removeDetective(modal.dataset.key);
+    log('detective_remove', { detectives: detectiveCards().length }); // never the name
+    S.tut = null;
+    if (!detectiveCards().length) { S.whoEdit = false; toHome(); } else render();
+    return;
+  }
   if (S.session && !S.ended && !ADULT.has(S.screen)) {
     S.resume = S.screen;
     log('adult_gate');
