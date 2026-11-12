@@ -2,11 +2,11 @@
 // iPad can open any of them offline after a single online visit.
 // Folders only, no index.html: Cloudflare Pages redirects …/index.html to …/, and a redirected
 // response cached here can't open a page offline.
-const CACHE = 'detektiv-start-v11';
-const PAGES = ['./', './home/', './solo/', './solo/vendor/qrcode.js', './solo/vendor/jsQR.js',
+const CACHE = 'detektiv-start-v12';
+const PAGES = ['./', './home/', './solo/', './zasebnost/', './solo/vendor/qrcode.js', './solo/vendor/jsQR.js',
   './manifest.webmanifest', './solo/fonts/lexend-sl.woff2', './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png'];
 // The first version cached the solo game here at the root; drop it so offline never shows the old page.
-const LEGACY = ['detektiv-v1', 'detektiv-start-v1', 'detektiv-start-v2', 'detektiv-start-v3', 'detektiv-start-v4', 'detektiv-start-v5', 'detektiv-start-v6', 'detektiv-start-v7', 'detektiv-start-v8', 'detektiv-start-v9', 'detektiv-start-v10'];
+const LEGACY = ['detektiv-v1', 'detektiv-start-v1', 'detektiv-start-v2', 'detektiv-start-v3', 'detektiv-start-v4', 'detektiv-start-v5', 'detektiv-start-v6', 'detektiv-start-v7', 'detektiv-start-v8', 'detektiv-start-v9', 'detektiv-start-v10', 'detektiv-start-v11'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(PAGES)));

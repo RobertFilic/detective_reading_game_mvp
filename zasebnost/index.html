@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1b4d36">
+<meta name="description" content="Bralni detektivi: zasebnost in pogoji uporabe. Brez računa, brez oglasov, brez piškotkov. Ime in napredek ostaneta na vaši napravi.">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<title>Zasebnost in pogoji · Bralni detektivi</title>
+<style>
+/* Privacy and terms for parents, in the landing page's tokens (index.html). No script, nothing sent. Text: docs/LEGAL.md */
+@font-face { font-family: Lexend; src: url('../solo/fonts/lexend-sl.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
+:root {
+  --season: #164b33; --season-mid: #3b825f; --season-soft: #def5e8;
+  --bg: #faf6ef; --paper: #fffdfa; --ink: #1b222e; --ink-2: #4f5661; --line: #dfdad1;
+  --font: Lexend, Verdana, system-ui, sans-serif;
+}
+@supports (color: oklch(0 0 0)) {
+  :root { --season: oklch(0.37 0.07 160); --season-mid: oklch(0.55 0.09 160); --season-soft: oklch(0.95 0.03 160); }
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.6 var(--font); -webkit-font-smoothing: antialiased; }
+a { color: var(--season); }
+h1, h2, h3, p, ul { margin: 0; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-right)) 0 max(20px, env(safe-area-inset-left)); }
+.coin { width: 38px; height: 38px; flex: none; border-radius: 50%; background: var(--season); display: grid; place-items: center; font-size: 19px; box-shadow: inset 0 0 0 3px var(--season), inset 0 0 0 5px #fff; }
+
+header.top { position: sticky; top: 0; z-index: 10; background: rgba(250, 246, 239, .92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top); }
+header.top .wrap { display: flex; align-items: center; gap: 14px; min-height: 60px; }
+.brand { display: flex; align-items: center; gap: 9px; margin-right: auto; text-decoration: none; color: var(--ink); font: 700 18px var(--font); white-space: nowrap; }
+.back { display: inline-flex; align-items: center; min-height: 44px; font: 500 15px var(--font); color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+
+main { padding: 32px 0 calc(56px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 28px; }
+.kicker { font: 600 13px var(--font); letter-spacing: .1em; text-transform: uppercase; color: var(--season-mid); }
+h1 { font: 700 clamp(30px, 6vw, 44px)/1.1 var(--font); letter-spacing: -.01em; margin-top: 8px; }
+.jump { margin-top: 10px; font-size: 15px; color: var(--ink-2); }
+.short { background: var(--season-soft); border-radius: 22px; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.short h2 { font: 600 20px/1.2 var(--font); }
+.short ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.short li { display: flex; gap: 10px; }
+.short li::before { content: '✓'; flex: none; width: 24px; height: 24px; margin-top: 2px; border-radius: 50%; background: var(--season); color: #fff; display: grid; place-items: center; font: 700 13px var(--font); }
+section.doc { display: flex; flex-direction: column; gap: 18px; scroll-margin-top: 76px; }
+section.doc + section.doc { border-top: 1.5px solid var(--line); padding-top: 28px; }
+section.doc > h2 { font: 700 clamp(24px, 4vw, 30px)/1.15 var(--font); }
+.item { display: flex; flex-direction: column; gap: 8px; }
+.item h3 { font: 600 18px/1.3 var(--font); }
+.item p, .item li { color: var(--ink-2); text-wrap: pretty; }
+.item b { color: var(--ink); font-weight: 600; }
+.item ul { padding-left: 22px; display: flex; flex-direction: column; gap: 4px; }
+.valid { font-size: 15px; color: var(--ink-2); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="../"><span class="coin">🔍</span>Bralni detektivi</a>
+  <a class="back" href="../">← Na začetek</a>
+</div></header>
+
+<main class="wrap">
+  <div>
+    <span class="kicker">Za starše in učitelje</span>
+    <h1>Zasebnost in pogoji</h1>
+    <p class="jump"><a href="#zasebnost">Zasebnost</a> · <a href="#pogoji">Pogoji uporabe</a></p>
+  </div>
+
+  <div class="short">
+    <h2>Na kratko</h2>
+    <ul>
+      <li>Brez računa, brez prijave, brez e-naslova.</li>
+      <li>Brez oglasov in brez nakupov.</li>
+      <li>Ime detektiva in napredek ostaneta na vaši napravi. Mi ju ne vidimo.</li>
+      <li>Brez piškotkov. Štejemo samo anonimne obiske strani.</li>
+      <li>Vse lahko kadar koli izbrišete sami.</li>
+    </ul>
+  </div>
+
+  <section class="doc" id="zasebnost">
+    <h2>Zasebnost</h2>
+    <div class="item">
+      <h3>1. Kdo smo</h3>
+      <p>Bralne detektive pripravlja Robert, kot zasebni projekt v Sloveniji.</p>
+    </div>
+    <div class="item">
+      <h3>2. Kaj ostane na vaši napravi</h3>
+      <p>Igra v brskalnik na vaši napravi shrani:</p>
+      <ul>
+        <li>ime ali vzdevek detektiva (največ 12 znakov) in izbrano podobo,</li>
+        <li>starostno skupino in raven branja, če ju nastavi odrasli,</li>
+        <li>rešene primere, pisma in čin,</li>
+        <li>dnevnik igranja za pregled za odrasle,</li>
+        <li>naključno oznako igralca, ki ne vsebuje imena.</li>
+      </ul>
+      <p>Ti podatki naprave ne zapustijo. Ne pošiljamo jih nikamor in jih ne vidimo. Otrok lahko namesto pravega imena vpiše vzdevek.</p>
+    </div>
+    <div class="item">
+      <h3>3. Kaj vidimo mi</h3>
+      <ul>
+        <li><b>Anonimno štetje obiskov.</b> Uporabljamo Cloudflare Web Analytics. Pove nam, katera stran je bila odprta, od kod je prišel obisk, s kakšno napravo in brskalnikom, iz katere države in kako hitro se je stran naložila. Ne uporablja piškotkov, ničesar ne shrani na napravo in obiskovalcev ne prepoznava. Vidimo samo seštevke.</li>
+        <li><b>Dostava strani.</b> Stran gostuje pri podjetju Cloudflare. Ob vsakem obisku ta za kratek čas obdela IP-naslov naprave, da lahko stran pošlje in jo zaščiti pred zlorabami.</li>
+      </ul>
+      <p>Podlaga za to je naš zakoniti interes, da stran deluje varno in da vemo, koliko ljudi jo uporablja (člen 6(1)(f) Splošne uredbe o varstvu podatkov).</p>
+    </div>
+    <div class="item">
+      <h3>4. Česa ne počnemo</h3>
+      <p>Ne zbiramo imen, e-naslovov ali fotografij. Ne prikazujemo oglasov. Ne sledimo otrokom in ne ustvarjamo profilov. Podatkov ne prodajamo in jih ne delimo. Ne pošiljamo obvestil. Ne uporabljamo lokacije in mikrofona.</p>
+    </div>
+    <div class="item">
+      <h3>5. Kamera</h3>
+      <p>Kamero igra uporabi samo, ko odrasli v pregledu za odrasle tapne »Skeniraj kodo«, da prenese napredek z druge naprave. Slika se obdela na napravi. Ne shrani se in se nikamor ne pošlje.</p>
+    </div>
+    <div class="item">
+      <h3>6. Kdo nam pomaga</h3>
+      <p>Cloudflare, Inc. (ZDA) za gostovanje in štetje obiskov, kot naš pogodbeni obdelovalec. Podatki se lahko obdelajo tudi v ZDA, na podlagi okvira EU–ZDA za varstvo podatkov in standardnih pogodbenih določil. Drugih zunanjih storitev ni.</p>
+    </div>
+    <div class="item">
+      <h3>7. Izbris in prenos</h3>
+      <ul>
+        <li><b>Izbris:</b> v nastavitvah brskalnika izbrišite podatke spletnega mesta bralnidetektivi.si. Če je igra na začetnem zaslonu, odstranite ikono. S tem je izbrisano vse.</li>
+        <li><b>Kopija in prenos:</b> v pregledu za odrasle lahko vse izvozite v datoteko ali s QR kodo prenesete na drugo napravo. Datoteka in koda ostaneta pri vas.</li>
+      </ul>
+    </div>
+    <div class="item">
+      <h3>8. Vaše pravice</h3>
+      <p>Imate pravico do dostopa, popravka, izbrisa, omejitve obdelave in ugovora. Ker podatkov o otrocih nimamo, vam najpogosteje ne bi imeli česa poslati. Pritožite se lahko tudi pri Informacijskem pooblaščencu, Dunajska cesta 22, 1000 Ljubljana, www.ip-rs.si.</p>
+    </div>
+    <div class="item">
+      <h3>9. Spremembe</h3>
+      <p>Če se bo kar koli od tega spremenilo, bomo to stran popravili, preden bo sprememba začela veljati, in spodaj zapisali nov datum.</p>
+    </div>
+  </section>
+
+  <section class="doc" id="pogoji">
+    <h2>Pogoji uporabe</h2>
+    <div class="item">
+      <h3>1. Kaj je to</h3>
+      <p>Bralni detektivi so bralna igra za otroke od 6 do 10 let. Deluje v brskalniku na telefonu, tablici in računalniku.</p>
+    </div>
+    <div class="item">
+      <h3>2. Kdo jo uporablja</h3>
+      <p>Otroci igrajo z vednostjo staršev ali skrbnikov. Te pogoje sprejme odrasli, ki otroku igro omogoči.</p>
+    </div>
+    <div class="item">
+      <h3>3. Cena</h3>
+      <p>Igra je brezplačna. V njej ni nakupov in ni oglasov. Če bomo kdaj ponudili plačljivo vsebino, bo jasno označena, namenjena odraslim in bo imela svoje pogoje.</p>
+    </div>
+    <div class="item">
+      <h3>4. Vsebina</h3>
+      <p>Zgodbe, besedila in podoba igre so naše avtorsko delo. Doma in v razredu jih uporabljajte prosto: igrajte, delite povezavo, berite skupaj. Brez našega dovoljenja jih ne kopirajte, ne objavljajte drugje in ne prodajajte.</p>
+    </div>
+    <div class="item">
+      <h3>5. Kako deluje</h3>
+      <p>Trudimo se, da igra deluje dobro, ne moremo pa obljubiti, da bo vedno na voljo in brez napak. Primere lahko dodajamo, spreminjamo ali umaknemo.</p>
+      <p>Napredek je shranjen samo na vaši napravi. Če izbrišete podatke brskalnika ali zamenjate napravo, se izgubi in ga ne moremo povrniti. Kopijo lahko naredite v pregledu za odrasle.</p>
+    </div>
+    <div class="item">
+      <h3>6. Odgovornost in pravo</h3>
+      <p>Odgovarjamo v mejah, ki jih določa zakon. Ti pogoji ne omejujejo pravic, ki jih imate kot potrošnik. Velja pravo Republike Slovenije.</p>
+    </div>
+    <div class="item">
+      <h3>7. Spremembe</h3>
+      <p>Če pogoje spremenimo, tu objavimo novo različico z datumom.</p>
+    </div>
+  </section>
+
+  <p class="valid">Velja od 12. 11. 2026.</p>
+</main>
+</body>
+</html>

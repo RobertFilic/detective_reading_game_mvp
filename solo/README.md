@@ -90,4 +90,4 @@ Cases are grouped in **adventures** (`FILES`, *pustolovščine*), 6 cases each a
 3. Adult access during or after play: hold the top-left corner for 3 seconds, then answer the sum.
 4. In "Pregled": per-child table (tap a row for the event timeline), age-group summary against the plan thresholds, **Izvozi JSON** after every session, "Nova seja" for the next child.
 
-Logs, names and game progress stay in this browser's storage on the device. The only thing sent is Cloudflare Web Analytics on every page: anonymous visit counts (no cookies, no names, no game data). Offline, it simply doesn't count.
+Logs, names and game progress stay in this browser's storage on the device. The only thing sent is Cloudflare Web Analytics on the start page, `home/` and the game (not on `zasebnost/`, the privacy policy and terms): anonymous visit counts (no cookies, no names, no game data). Offline, it simply doesn't count.

@@ -3922,7 +3922,7 @@ const T = {
     const ageBtn = (age, label) => `<button class="btn ${S.age === age ? '' : 'secondary'}" data-act="age" data-age="${age}">${label}</button>`;
     return `<div class="screen adult">
       <h1>${esc(BRAND)}</h1>
-      <p class="muted">Za starše in učitelje: priprava seje. Vse ostane na tej napravi.</p>
+      <p class="muted">Za starše in učitelje: priprava seje. Vse ostane na tej napravi. <a href="../zasebnost/">Zasebnost in pogoji</a></p>
       <section class="card">
         <h3>1. Otrok</h3>
         <div class="seg">${ageBtn('6-7', '6–7 let · raven A')}${ageBtn('8-9', '8–9 let · raven B')}</div>
@@ -4497,6 +4497,7 @@ const T = {
         <button class="btn secondary" data-act="qrScan">📷 Skeniraj kodo</button>
         <button class="btn danger" data-act="wipe">Izbriši vse</button>
       </div>
+      <p class="muted">Vse ostane na tej napravi. <a href="../zasebnost/">Zasebnost in pogoji</a></p>
       ${storeOk ? '' : '<p class="warn-text">Shranjevanje na napravo ne deluje – takoj izvozi JSON.</p>'}
       <h2>Povzetek po starosti</h2>
       ${['6-7', '8-9'].map(age => groupHTML(age, counted.filter(s => s.age === age))).join('')}

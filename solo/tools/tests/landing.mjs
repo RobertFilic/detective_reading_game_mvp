@@ -36,4 +36,27 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   ok(p.url().endsWith('/solo/?play') && await p.evaluate(() => typeof S === 'object'), '»Igraj zdaj« opens the game');
   await p.close();
 }
+
+// »Zasebnost in pogoji«: linked from the footer and from »Za starše«, both documents on one page, nothing sent
+for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land', 844, 390]]) {
+  const p = await b.newPage();
+  const errors = [], outside = []; p.on('pageerror', e => errors.push(e.message));
+  p.on('request', r => { if (!r.url().startsWith('http://localhost:8765/')) outside.push(r.url()); });
+  await p.setViewport({ width: w, height: h, hasTouch: true, isMobile: dev !== 'ipad', deviceScaleFactor: 2 });
+  await p.goto('http://localhost:8765/'); await wait();
+  ok(await p.$$eval('a[href="zasebnost/"]', els => els.length === 2 && els.every(e => e.getBoundingClientRect().height > 0)), `${dev}: the footer and »Za starše« link to »Zasebnost in pogoji«`);
+  ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${dev}: the landing page still has no sideways scroll`);
+  await Promise.all([p.waitForNavigation(), p.$eval('a.legal', e => e.click())]); await wait();
+  outside.length = 0; await p.reload(); await wait();   // the landing page's beacon reports on the way out
+  const text = await p.evaluate(() => document.body.innerText);
+  ok(p.url().endsWith('/zasebnost/') && (await p.$eval('h1', e => e.textContent)) === 'Zasebnost in pogoji', `${dev}: the link opens the page`);
+  ok(text.includes('Na kratko') && await p.$('#zasebnost') && await p.$('#pogoji') && text.includes('Informacijskem pooblaščencu') && text.includes('Velja od'), `${dev}: summary, privacy, terms, the authority, the date`);
+  ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${dev}: no sideways scroll`);
+  ok(await p.evaluate(async () => { await document.fonts.ready; return document.fonts.check('700 20px Lexend'); }), `${dev}: Lexend from solo/fonts`);
+  ok(!outside.length && !(await p.$('script')), `${dev}: no script and nothing sent ${outside.join('|')}`);
+  ok(await p.$eval('a.brand', e => e.getAttribute('href')) === '../', `${dev}: the brand leads back to the start page`);
+  if (process.env.SHOTS) await p.screenshot({ path: `shots/zasebnost-${dev}.png`, fullPage: true });
+  ok(!errors.length, `${dev}: no page errors ${errors.join('|')}`);
+  await p.close();
+}
 await b.close();

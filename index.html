@@ -143,6 +143,8 @@ h2 { font: 700 clamp(28px, 4vw, 44px)/1.12 var(--font); letter-spacing: -.01em; 
 .final .btn { position: relative; flex: 1 1 220px; max-width: 340px; }
 footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-size: 14px; color: var(--ink-2); display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .adults { background: none; border: 1.5px solid var(--line); border-radius: 14px; min-height: 48px; padding: 0 16px; font: 500 15px var(--font); color: var(--ink-2); text-decoration: none; display: inline-flex; align-items: center; cursor: pointer; }
+.legal { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-2); }
+.trust { margin-top: 8px; font-size: 15px; color: var(--ink-2); text-wrap: pretty; }
 .dock { position: sticky; bottom: 0; z-index: 10; padding: 10px 16px calc(12px + env(safe-area-inset-bottom)); background: linear-gradient(rgba(250, 246, 239, 0), var(--bg) 35%); }
 .dock .btn { min-height: 58px; border-radius: 18px; font-size: 18px; }
 
@@ -270,6 +272,7 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
     <h2>Branje je ključ do rešitve</h2>
     <p class="sub">Otrok bere, ker hoče izvedeti, kdo je bil.</p>
     <div class="together"><i>👪</i><span><b>Igrajte skupaj</b>Otrok bere, vi pomagate. Namigi, nikoli kazni.</span></div>
+    <p class="trust">🔒 Brez računa in brez oglasov. Ime in napredek ostaneta na vaši napravi. <a href="zasebnost/">Več o zasebnosti</a></p>
   </div>
   <div class="grid">
     <div class="card"><i>📖</i><span><b>Tekoče branje</b><p>Kratki stavki, velika pisava.</p></span></div>
@@ -287,6 +290,7 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
   <footer class="foot">
     <span>Bralni detektivi · Brez časovnih omejitev, točk in oglasov.</span>
     <a class="adults" href="solo/">Za odrasle: nastavitve in pregled</a>
+    <a class="legal" href="zasebnost/">Zasebnost in pogoji</a>
     <button class="reopen" id="reopen" hidden>📲 Namesti na začetni zaslon</button>
   </footer>
 </div></section>
