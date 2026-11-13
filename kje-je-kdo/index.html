@@ -154,6 +154,21 @@ main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-i
 .big { min-height: 58px; border: 0; border-radius: 18px; background: var(--season); color: #fff; font: 600 18px var(--font); padding: 0 20px; }
 .big.alt { background: var(--paper); color: var(--ink); border: 1.5px solid var(--line); }
 .win { align-items: center; text-align: center; }
+.intro-top { display: flex; align-items: center; justify-content: space-between; font: 600 15px var(--font); color: var(--ink-2); letter-spacing: .06em; margin-top: -8px; }
+.intro-card { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; min-height: 300px; }
+.intro-ico { width: 84px; height: 84px; border-radius: 50%; background: var(--season-soft); border: 3px solid var(--season); display: grid; place-items: center; font-size: 40px; box-shadow: 4px 5px 0 var(--line); }
+.intro-card .mini { margin-top: 4px; }
+.pair { display: flex; gap: 14px; }
+.pair > span { position: relative; width: 64px; height: 64px; border-radius: 14px; background: #f3ede2; border: 1.5px solid #e0d8ca; display: grid; place-items: center; font-size: 34px; }
+.pair b { position: absolute; right: -8px; bottom: -8px; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 15px; color: #fff; }
+.pair b.no { background: var(--stamp); } .pair b.yes { background: var(--season-mid); }
+.intro-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.intro-foot .dots { gap: 6px; order: -1; flex-basis: 100%; }
+.intro-foot .dots span { width: 8px; height: 8px; }
+.intro-btns { display: flex; gap: 8px; }
+.intro-btns .big { min-height: 52px; padding: 0 16px; font-size: 17px; }
+.skip, .how { min-height: 48px; border: 0; background: none; color: var(--ink-2); font: 500 16px var(--font); text-decoration: underline; text-underline-offset: 3px; padding: 0 4px; }
+.how { align-self: center; }
 .win .stamp { display: inline-flex; align-items: center; gap: 8px; color: var(--stamp); background: var(--stamp-paper); border: 3px solid var(--stamp); border-radius: 14px;
   box-shadow: inset 0 0 0 2px var(--stamp-paper), inset 0 0 0 3.5px var(--stamp); padding: 5px 14px 5px 5px; font: 700 22px var(--font); transform: rotate(-6deg);
   animation: stamp 420ms 120ms cubic-bezier(.3, 1.5, .5, 1) both; }
@@ -188,7 +203,7 @@ main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-i
 <header class="top"><div class="in">
   <a class="back" id="back" href="../" aria-label="Nazaj">←</a>
   <span class="ttl"><small>Bralni detektivi · uganka</small><b id="title">Skrivnostne sobe</b></span>
-  <button class="icon-btn" id="rulesBtn" aria-label="Pravila" hidden>?</button>
+  <button class="icon-btn" id="rulesBtn" aria-label="Kako se igra?" hidden>?</button>
 </div></header>
 
 <main>
@@ -557,7 +572,7 @@ const say = (html) => { $('say').innerHTML = html; };
 function showList() {
   L = null; mk = null;
   if (!me) return makeCard();
-  $('list').hidden = false; $('game').hidden = true; $('make').hidden = true; $('rulesBtn').hidden = true;
+  $('list').hidden = false; $('game').hidden = true; $('make').hidden = true; $('rulesBtn').hidden = false;
   $('title').textContent = 'Skrivnostne sobe';
   $('back').setAttribute('href', '../');
   $('mePic').innerHTML = mePic(me);
@@ -639,22 +654,60 @@ function start(id) {
   say('Tapni stavek, nato polje, kjer je bil ta človek.');
   draw();
   scrollTo(0, 0);
-  showRules();
+  if (introDone) showRules(); else showIntro(showRules);
+}
+
+// »Kako se igra?«: six short cards, once before the first puzzle (and any time from »?«). After that a
+// puzzle opens with its story alone, like a teaser, and the one line about where nobody can stand.
+const INTRO_KEY = 'dp_kjekdo_intro_v1';   // solo/ keeps it per detective (KID_KEYS)
+const grid = (n, cells) => `<span class="mini" style="grid-template-columns:repeat(${n},34px);grid-template-rows:repeat(${n},34px)" aria-hidden="true">${cells.map(([t, y]) => `<span class="${y || ''}">${t}</span>`).join('')}</span>`;
+const INTRO = [
+  { i: '🔍', t: (p) => `${p.g === 'f' ? 'Dobrodošla' : 'Dobrodošel'}, ${detName(p).replace(/^D/, 'd')}!`,
+    x: 'V vsaki uganki se zgodi nekaj skrivnostnega. Kdo je to naredil? Stavki ti povedo, kje je bil kdo. Pokažem ti, kako gre.' },
+  { i: '🧩', t: () => 'Kako rešiš primer',
+    x: 'Kdor je to naredil, je bil v tistem prostoru sam. Ugotovi, kje je bil vsak človek. Vsak stavek pove nekaj: »na kavču«, »ob drevesu«, »ni bil v kuhinji«.' },
+  { i: '↔️', t: () => 'V vsaki vrsti samo eden',
+    x: 'V vsaki vrsti in v vsakem stolpcu stoji samo en človek. Ko nekoga postaviš, se njegova vrsta in stolpec prečrtata sama.',
+    pic: grid(4, ['', ['✕'], '', '', ['✕'], ['👧', 'y'], ['✕'], ['✕'], '', ['✕'], '', '', '', ['✕'], '', ''].map(c => Array.isArray(c) ? c : [c])) },
+  { i: '🌳', t: () => 'Kaj pomeni »ob«',
+    x: '<b>Ob</b> pomeni levo, desno, zgoraj ali spodaj. Poševno ne velja.',
+    pic: grid(3, [['✕'], ['✓', 'y'], ['✕'], ['✓', 'y'], ['🌳'], ['✓', 'y'], ['✕'], ['✓', 'y'], ['✕']]) },
+  { i: '🚫', t: () => 'Kje ne more stati nihče',
+    x: 'Kjer je drevo, torta ali skala, ne more stati nihče. Na stol, kavč ali klop pa se lahko usedeš.',
+    pic: `<span class="pair" aria-hidden="true"><span>🌳<b class="no">✕</b></span><span>🪑<b class="yes">✓</b></span></span>` },
+  { i: '👆', t: () => 'Postavi vse na pravo mesto',
+    x: 'Tapni stavek, nato polje. ✏️ Z zapiski označiš, kje bi nekdo lahko bil. 💡 Pomoč ti pokaže naslednji korak. Ko so vsi na mestu, odgovori: kdo je to naredil?' },
+];
+let introDone = false;
+try { introDone = !!localStorage.getItem(INTRO_KEY); } catch (e) {}
+
+function showIntro(then, at = 0) {
+  const c = INTRO[at], last = at === INTRO.length - 1;
+  const end = () => {
+    introDone = true;
+    try { localStorage.setItem(INTRO_KEY, '1'); } catch (e) {}
+    closeSheet();
+    if (then) then();
+  };
+  openSheet(`<div class="intro-top"><span>${at + 1} / ${INTRO.length}</span><button class="icon-btn" id="introClose" aria-label="Zapri">✕</button></div>
+    <div class="intro-card"><span class="intro-ico">${c.i}</span><h3>${c.t(me)}</h3><p class="story">${c.x}</p>${c.pic || ''}</div>
+    <div class="intro-foot">${last ? '<span></span>' : '<button class="skip" id="introSkip">Preskoči</button>'}
+      <span class="dots" aria-hidden="true">${INTRO.map((_, i) => `<span class="${i === at ? 'on' : ''}"></span>`).join('')}</span>
+      <span class="intro-btns">${at ? '<button class="big alt" id="introBack">Nazaj</button>' : ''}<button class="big" id="introNext">${last ? 'Igrajva!' : 'Naprej'}</button></span></div>`);
+  $('introClose').onclick = end;
+  if (!last) $('introSkip').onclick = end;
+  if (at) $('introBack').onclick = () => showIntro(then, at - 1);
+  $('introNext').onclick = () => last ? end() : showIntro(then, at + 1);
 }
 
 function showRules() {
   const stops = [...new Set(Object.values(L.objects))].filter(o => OBJ[o].block).map(o => `${OBJ[o].e || ''} ${OBJ[o].name}`.trim());
-  const usesBeside = L.people.some(p => p.rule.beside || p.rule.notBeside);
-  const rules = [
-    ['↔️', 'V vsaki <b>vrsti</b> je samo en človek.'],
-    ['↕️', 'V vsakem <b>stolpcu</b> je samo en človek.'],
-    ['🚫', `Kjer ${OBJ[Object.values(L.objects).find(o => OBJ[o].block)].pl ? 'so' : 'je'} ${stops.join(', ').replace(/, ([^,]*)$/, ' ali $1')}, ne more stati nihče.`],
-  ];
-  const beside = usesBeside ? `<li><span class="mini" aria-hidden="true"><span>✕</span><span class="y">✓</span><span>✕</span><span class="y">✓</span><span>🌳</span><span class="y">✓</span><span>✕</span><span class="y">✓</span><span>✕</span></span><span><b>Ob</b> pomeni levo, desno, zgoraj ali spodaj. Poševno ne velja.</span></li>` : '';
+  const stop = `Kjer ${OBJ[Object.values(L.objects).find(o => OBJ[o].block)].pl ? 'so' : 'je'} ${stops.join(', ').replace(/, ([^,]*)$/, ' ali $1')}, ne more stati nihče.`;
   openSheet(`<h3>${L.icon} ${L.title}</h3><p class="story">${L.story}</p>
-    <ul class="rules">${rules.map(([i, t]) => `<li><i>${i}</i><span>${t}</span></li>`).join('')}${beside}</ul>
-    <button class="big" id="go">Začnimo!</button>`);
+    <ul class="rules"><li><i>🚫</i><span>${stop}</span></li></ul>
+    <button class="big" id="go">Začniva!</button><button class="how" id="how">Kako se igra?</button>`);
   $('go').onclick = closeSheet;
+  $('how').onclick = () => showIntro(showRules);
 }
 
 function draw() {
@@ -691,7 +744,7 @@ function pick(id) {
   S.sel = id; S.hint = null;
   const p = person(id);
   say(S.pos[id] ? `${p.name} že stoji na svojem mestu. Izberi drug stavek.`
-    : S.mode === 'note' ? `Kje bi lahko bil${p.she ? 'a' : ''} ${p.name}? Tapni ta polja.` : `Kje je bil${p.she ? 'a' : ''} ${p.name}? Tapni polje.`);
+    : S.mode === 'note' ? `Kje bi lahko bil${p.she ? 'a' : ''} ${p.name}? Tapni vsa polja, kjer bi lahko bil${p.she ? 'a' : ''}.` : `Kje je bil${p.she ? 'a' : ''} ${p.name}? Tapni polje.`);
   draw();
 }
 
@@ -913,13 +966,13 @@ function closeSheet() { $('sheet').hidden = true; }
 $('crossBtn').onclick = () => { setMode(S.mode === 'cross' ? 'place' : 'cross'); say(S.mode === 'cross' ? 'Tapni polje, kjer zagotovo ni bilo nikogar.' : 'Tapni stavek, nato polje.'); draw(); };
 $('noteBtn').onclick = () => {
   setMode(S.mode === 'note' ? 'place' : 'note');
-  const p = person(S.sel);
-  say(S.mode === 'note' ? `Zapiski: tapni polja, kjer bi lahko bil${p && p.she ? 'a' : ''} ${p && !S.pos[p.id] ? p.name : 'nekdo'}. Lahko jih je več. Še en tap zapisek zbriše.` : 'Tapni stavek, nato polje.');
+  const p = person(S.sel), free = p && !S.pos[p.id];
+  say(S.mode === 'note' ? `Zapiski: tapni polja, kjer bi lahko bil${free && p.she ? 'a' : ''} ${free ? p.name : 'nekdo'}. Lahko jih je več. Če polje tapneš še enkrat, zapisek izgine.` : 'Tapni stavek, nato polje.');
   draw();
 };
 $('undoBtn').onclick = undo;
 $('hintBtn').onclick = hint;
-$('rulesBtn').onclick = () => showRules();
+$('rulesBtn').onclick = () => showIntro(L ? showRules : null);
 $('back').onclick = (e) => {
   if (mk && mk.step > 1) { e.preventDefault(); mk.step--; drawMake(); }
   else if (L) { e.preventDefault(); showList(); }

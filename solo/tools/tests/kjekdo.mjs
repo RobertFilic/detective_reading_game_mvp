@@ -21,7 +21,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
 
   await p.goto('http://localhost:8765/'); await wait();
   ok(await p.$eval('#kjekdo', e => e.textContent.includes('Skrivnostne sobe') && e.getAttribute('href') === 'kje-je-kdo/'), `${dev}: the start page has the »Skrivnostne sobe« tile`);
-  await p.evaluate(() => { localStorage.removeItem('dp_kjekdo_v1'); localStorage.removeItem('dp_profile_v1'); });
+  await p.evaluate(() => { localStorage.removeItem('dp_kjekdo_v1'); localStorage.removeItem('dp_profile_v1'); localStorage.removeItem('dp_kjekdo_intro_v1'); });
   await Promise.all([p.waitForNavigation(), p.$eval('#kjekdo', e => e.click())]); await wait();
   const LV = await p.evaluate(() => LEVELS);
 
@@ -50,7 +50,24 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   // puzzle 1: the story and the rules, then taps
   const L1 = LV[0];
   await tap('.lvl[data-level="1"]');
-  ok(await p.$eval('#sheet', (e, story) => !e.hidden && e.textContent.includes(story) && e.textContent.includes('vrsti') && e.textContent.includes('stolpcu'), L1.story), `${dev}: puzzle 1 opens with the story and the rules`);
+  // the first time: »Kako se igra?« in 6 cards, then the story alone
+  const sheet = () => p.$eval('#sheet', e => e.hidden ? '' : e.textContent);
+  ok((await sheet()).includes('1 / 6') && (await sheet()).includes('Dobrodošla, detektivka Ana!'), `${dev}: the first puzzle starts with »Kako se igra?«, card 1 greets Ana`);
+  if (process.env.SHOTS) await p.screenshot({ path: `shots/kjekdo-${dev}-intro1.png` });
+  await tap('#introNext'); await tap('#introNext');
+  ok((await sheet()).includes('3 / 6') && (await sheet()).includes('stolpcu'), `${dev}: card 3 is one per row and column`);
+  if (process.env.SHOTS) await p.screenshot({ path: `shots/kjekdo-${dev}-intro3.png` });
+  await tap('#introBack');
+  ok((await sheet()).includes('2 / 6'), `${dev}: Nazaj goes one card back`);
+  for (let i = 0; i < 4; i++) await tap('#introNext');
+  ok((await sheet()).includes('6 / 6') && await p.$eval('#introNext', e => e.textContent) === 'Igrajva!' && !(await p.$('#introSkip')), `${dev}: the last card says »Igrajva!«`);
+  for (const n of [2, 6]) {
+    if (n === 2) { await tap('#introBack'); await tap('#introBack'); await tap('#introBack'); await tap('#introBack'); }
+    else for (let i = 0; i < 4; i++) await tap('#introNext');
+    ok(await p.$$eval('.sheet button', els => { const box = document.getElementById('sheetBody').getBoundingClientRect(); return els.every(e => { const r = e.getBoundingClientRect(); return r.height >= 48 && r.left >= box.left && r.right <= box.right; }); }) && await wide(), `${dev}: card ${n}: buttons ≥ 48 px, inside the card, no sideways scroll`);
+  }
+  await tap('#introNext');
+  ok((await sheet()).includes(L1.story) && !(await sheet()).includes('stolpcu') && (await sheet()).includes('Kako se igra?'), `${dev}: then the story alone, with »Kako se igra?«`);
   if (process.env.SHOTS) await p.screenshot({ path: `shots/kjekdo-${dev}-rules1.png` });
   await tap('#go');
   ok(await p.$eval('#helperPic', e => e.textContent) === '🦊', `${dev}: the helper beside the board is the one on the card`);
@@ -106,7 +123,14 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
 
   // puzzle 2: the help lights cells, the child taps
   const L2 = LV[1];
-  await tap('#next'); await tap('#go');
+  await tap('#next');
+  ok((await p.$eval('#sheet', e => e.textContent)).includes(L2.story) && !(await p.$eval('#sheet', e => e.textContent)).includes('/ 6'), `${dev}: puzzle 2 opens with its story, no intro again`);
+  await tap('#go');
+  await tap('#rulesBtn');
+  ok((await p.$eval('#sheet', e => e.textContent)).includes('1 / 6'), `${dev}: »?« opens »Kako se igra?«`);
+  await tap('#introSkip');
+  ok((await p.$eval('#sheet', e => e.textContent)).includes(L2.story), `${dev}: and back to the story`);
+  await tap('#go');
   for (let i = 0; i < 3; i++) await tap('#hintBtn');
   ok(await tokens() === 0 && await p.$$eval('.cell.can', els => els.length) === 1, `${dev}: three helps light one cell and place nobody`);
   for (let k = 0; k < L2.people.length; k++) {
@@ -130,7 +154,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   const p = await b.newPage();
   await p.setViewport({ width: 390, height: 844, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
   await p.goto('http://localhost:8765/kje-je-kdo/'); await wait();
-  await p.evaluate(() => localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })));
+  await p.evaluate(() => { localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })); localStorage.setItem('dp_kjekdo_intro_v1', '1'); });
   await p.goto('http://localhost:8765/kje-je-kdo/?uganka=6'); await wait();
   await p.$eval('#go', e => e.click());
   await p.$eval('.clue[data-p="zala"]', e => e.click()); await p.$eval('.cell[data-r="4"][data-c="2"]', e => e.click());
@@ -151,7 +175,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   const p = await b.newPage();
   await p.setViewport({ width: 390, height: 844, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
   await p.goto('http://localhost:8765/kje-je-kdo/'); await wait();
-  await p.evaluate(() => localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })));
+  await p.evaluate(() => { localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })); localStorage.setItem('dp_kjekdo_intro_v1', '1'); });
   await p.goto('http://localhost:8765/kje-je-kdo/?uganka=12'); await wait();
   await p.$eval('#go', e => e.click());
   await p.$eval('.clue[data-p="domen"]', e => e.click()); await p.$eval('.cell[data-r="3"][data-c="2"]', e => e.click());
@@ -186,7 +210,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   const p = await b.newPage();
   await p.setViewport({ width: 390, height: 844, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
   await p.goto('http://localhost:8765/kje-je-kdo/'); await wait();
-  await p.evaluate(() => localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })));
+  await p.evaluate(() => { localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })); localStorage.setItem('dp_kjekdo_intro_v1', '1'); });
   const LV = await p.evaluate(() => LEVELS);
   for (const L of LV) {
     await p.goto(`http://localhost:8765/kje-je-kdo/?uganka=${L.id}`); await wait(200);
@@ -207,7 +231,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   const errors = []; p.on('pageerror', e => errors.push(e.message));
   await p.setViewport({ width: 390, height: 844, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
   await p.goto('http://localhost:8765/kje-je-kdo/'); await wait();
-  await p.evaluate(() => localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })));
+  await p.evaluate(() => { localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })); localStorage.setItem('dp_kjekdo_intro_v1', '1'); });
   const LV = await p.evaluate(() => LEVELS);
   for (const L of LV) {
     await p.goto(`http://localhost:8765/kje-je-kdo/?uganka=${L.id}`); await wait();
