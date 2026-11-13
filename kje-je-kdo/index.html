@@ -106,11 +106,15 @@ main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-i
   box-shadow: 0 4px 10px rgba(0, 0, 0, .2); animation: pop 260ms cubic-bezier(.3, 1.6, .5, 1) both; pointer-events: none; }
 .cell .tok span { font-size: calc(var(--bs) / var(--n) * .34); line-height: 1; }
 .cell .tok b { font: 600 clamp(9px, calc(var(--bs) / var(--n) * .15), 13px)/1.2 var(--font); }
+/* pencil notes: small faces of the people who could be here (the child's own marks, any number per cell) */
+.cell .notes { position: absolute; inset: 3px 3px 18% 3px; display: flex; flex-wrap: wrap; align-content: flex-start; justify-content: center; gap: 1px; pointer-events: none; z-index: 1; }
+.cell .notes i { font-style: normal; font-size: calc(var(--bs) / var(--n) * .24); line-height: 1.05; background: rgba(255, 253, 250, .85); border-radius: 50%; padding: 1px; }
 .cell.can { outline: 4px solid var(--glow); outline-offset: -4px; animation: pulse 1.4s ease-in-out infinite; z-index: 3; }
 .cell.room-hl { outline: 4px solid var(--stamp); outline-offset: -4px; z-index: 3; }
 .cell.no { animation: shake 360ms; }
-.tools { width: var(--bs); display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-.tool { min-height: 52px; border: 1.5px solid var(--line); border-radius: 16px; background: var(--paper); font: 600 15px var(--font); display: flex; align-items: center; justify-content: center; gap: 6px; }
+.tools { width: var(--bs); display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.tool { min-height: 60px; border: 1.5px solid var(--line); border-radius: 16px; background: var(--paper); font: 600 14px/1.15 var(--font); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px 2px; }
+.tool i { font-style: normal; font-size: 20px; line-height: 1; }
 .tool.on { background: var(--ink); color: #fff; border-color: var(--ink); }
 .helper { align-self: stretch; display: flex; gap: 10px; align-items: flex-start; }
 .helper b { width: 42px; height: 42px; flex: none; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 22px; font-weight: 400; }
@@ -203,9 +207,10 @@ main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-i
     <div class="ask"><i>❓</i><span id="ask"></span></div>
     <div class="board" id="board"></div>
     <div class="tools">
-      <button class="tool" id="crossBtn" aria-pressed="false">✕ Prečrtaj</button>
-      <button class="tool" id="undoBtn">↩️ Nazaj</button>
-      <button class="tool" id="hintBtn">💡 Pomoč</button>
+      <button class="tool" id="noteBtn" aria-pressed="false"><i>✏️</i>Zapiski</button>
+      <button class="tool" id="crossBtn" aria-pressed="false"><i>✕</i>Prečrtaj</button>
+      <button class="tool" id="undoBtn"><i>↩️</i>Nazaj</button>
+      <button class="tool" id="hintBtn"><i>💡</i>Pomoč</button>
     </div>
     <div class="side">
       <div class="helper"><b id="helperPic">🦉</b><span id="say"></span></div>
@@ -525,7 +530,7 @@ const cleanName = (v) => v.replace(/[^\p{L}\p{N} '-]/gu, '').replace(/\s+/g, ' '
 const esc = (t) => String(t).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[ch]);
 const mePic = (p) => `${p.av}<i>${p.sk}</i>`;
 let mk = null;   // the card being made: {step, av, g, sk, name, then}
-let L = null, S = null;   // the level and its state: {pos: {id: [r,c]}, crosses: Set, sel, cross, history, hint}
+let L = null, S = null;   // the level and its state: {pos: {id: [r,c]}, crosses: Set, notes: {'r,c': [ids]}, sel, mode: place|cross|note, history, hint}
 
 const k = (r, c) => r + ',' + c;
 const objAt = (r, c) => L.objects[k(r, c)];
@@ -619,7 +624,7 @@ function drawMake() {
 function start(id) {
   if (!me) return makeCard(id);
   L = LEVELS.find(l => l.id === id); L.n = L.rooms.length;
-  S = { pos: {}, crosses: new Set(), sel: L.people[0].id, cross: false, history: [], hint: null };
+  S = { pos: {}, crosses: new Set(), notes: {}, sel: L.people[0].id, mode: 'place', history: [], hint: null };
   $('list').hidden = true; $('game').hidden = false; $('make').hidden = true; $('rulesBtn').hidden = false;
   $('helperPic').textContent = me.sk;
   $('title').textContent = L.title;
@@ -630,7 +635,7 @@ function start(id) {
   document.documentElement.style.setProperty('--n', L.n);
   $('board').style.gridTemplateColumns = `repeat(${L.n}, 1fr)`;
   $('board').style.gridTemplateRows = `repeat(${L.n}, 1fr)`;
-  setCross(false);
+  setMode('place');
   say('Tapni stavek, nato polje, kjer je bil ta človek.');
   draw();
   scrollTo(0, 0);
@@ -666,24 +671,27 @@ function draw() {
     if (p) inner += `<span class="tok"><span>${p.face}</span><b>${p.name}</b></span>`;
     else if (!blocked(r, c) && (S.crosses.has(k(r, c)))) inner += '<span class="x mine">✕</span>';
     else if (!blocked(r, c) && (inRow(r) || inCol(c))) inner += '<span class="x">✕</span>';
+    else if ((S.notes[k(r, c)] || []).length) inner += `<span class="notes">${S.notes[k(r, c)].map(id => `<i>${person(id).face}</i>`).join('')}</span>`;
     const lab = L.labels[room];
     if (lab[0] === r && lab[1] === c) inner += `<span class="lab">${L.names[room]}</span>`;
-    const what = p ? p.name : o ? OBJ[o].name : 'prazno';
+    const noted = (S.notes[k(r, c)] || []).map(id => person(id).name);
+    const what = p ? p.name : o ? OBJ[o].name : noted.length ? 'zapisek: ' + noted.join(', ') : 'prazno';
     html += `<button class="cell${p ? ' has' : ''}" data-r="${r}" data-c="${c}" style="${style}" aria-label="${L.names[room]}, vrsta ${r + 1}, stolpec ${c + 1}: ${what}">${inner}</button>`;
   }
   b.innerHTML = html;
   b.querySelectorAll('.cell').forEach(el => el.onclick = () => tap(+el.dataset.r, +el.dataset.c, el));
-  $('clues').innerHTML = L.people.map(p => `<button class="clue${S.sel === p.id && !S.cross ? ' sel' : ''}${S.pos[p.id] ? ' placed' : ''}" data-p="${p.id}"><span class="face">${p.face}</span><span class="txt"><small>${p.name}</small><span>${p.clue}</span></span><span class="ok">✓</span></button>`).join('');
+  $('clues').innerHTML = L.people.map(p => `<button class="clue${S.sel === p.id && S.mode !== 'cross' ? ' sel' : ''}${S.pos[p.id] ? ' placed' : ''}" data-p="${p.id}"><span class="face">${p.face}</span><span class="txt"><small>${p.name}</small><span>${p.clue}</span></span><span class="ok">✓</span></button>`).join('');
   $('clues').querySelectorAll('.clue').forEach(el => el.onclick = () => pick(el.dataset.p));
   $('undoBtn').disabled = !S.history.length;
 }
 
 function pick(id) {
   if (allPlaced()) return;
-  setCross(false);
+  if (S.mode === 'cross') setMode('place');
   S.sel = id; S.hint = null;
   const p = person(id);
-  say(S.pos[id] ? `${p.name} že stoji na svojem mestu. Izberi drug stavek.` : `Kje je bil${p.she ? 'a' : ''} ${p.name}? Tapni polje.`);
+  say(S.pos[id] ? `${p.name} že stoji na svojem mestu. Izberi drug stavek.`
+    : S.mode === 'note' ? `Kje bi lahko bil${p.she ? 'a' : ''} ${p.name}? Tapni ta polja.` : `Kje je bil${p.she ? 'a' : ''} ${p.name}? Tapni polje.`);
   draw();
 }
 
@@ -695,7 +703,8 @@ function nope(el, text) {
 function tap(r, c, el) {
   if (allPlaced()) return;
   const here = whoAt(r, c);
-  if (S.cross) {
+  if (S.mode === 'note') return note(r, c, el);
+  if (S.mode === 'cross') {
     if (here || blocked(r, c)) return nope(el, 'Tega polja ne moreš prečrtati.');
     const key = k(r, c);
     S.history.push({ cross: key });
@@ -718,9 +727,35 @@ function tap(r, c, el) {
   place(p);
 }
 
+// A pencil note: the selected person might be here. A second tap rubs it out. Notes never place anyone.
+function note(r, c, el) {
+  const here = whoAt(r, c), p = person(S.sel);
+  if (here) return nope(el, `Tu že stoji ${here.name}.`);
+  if (blocked(r, c)) return nope(el, `Tu ${OBJ[objAt(r, c)].pl ? 'so' : 'je'} ${OBJ[objAt(r, c)].name}. Tu ne more stati nihče.`);
+  if (!p || S.pos[p.id]) return nope(el, 'Najprej tapni stavek nekoga, ki še nima mesta.');
+  const row = inRow(r), col = inCol(c);
+  if (row) return nope(el, `V tej vrsti že stoji ${row.name}.`);
+  if (col) return nope(el, `V tem stolpcu že stoji ${col.name}.`);
+  const key = k(r, c);
+  S.history.push({ note: key, id: p.id });
+  toggleNote(key, p.id);
+  draw();
+}
+function toggleNote(key, id) {
+  const l = S.notes[key] || [];
+  S.notes[key] = l.includes(id) ? l.filter(x => x !== id) : L.people.map(q => q.id).filter(x => x === id || l.includes(x));
+}
+
 function place(p) {
   S.pos[p.id] = p.at.slice();
-  S.history.push({ placed: p.id });
+  // the person's own notes and every note in their row and column are no longer needed (undo brings them back)
+  const rubbed = [];
+  for (const [key, ids] of Object.entries(S.notes)) {
+    const [r, c] = key.split(',').map(Number);
+    for (const id of ids) if (id === p.id || r === p.at[0] || c === p.at[1]) rubbed.push([key, id]);
+  }
+  for (const [key, id] of rubbed) toggleNote(key, id);
+  S.history.push({ placed: p.id, rubbed });
   S.hint = null;
   const next = L.people.find(q => !S.pos[q.id]);
   if (next) { S.sel = next.id; say(`Bravo! ${p.name} je na svojem mestu.`); }
@@ -731,16 +766,16 @@ function place(p) {
 function undo() {
   const last = S.history.pop();
   if (!last) return;
-  if (last.placed) { delete S.pos[last.placed]; S.sel = last.placed; $('who').hidden = true; }
+  if (last.placed) { delete S.pos[last.placed]; S.sel = last.placed; $('who').hidden = true; for (const [key, id] of last.rubbed) toggleNote(key, id); }
+  if (last.note) toggleNote(last.note, last.id);
   if (last.cross) S.crosses.has(last.cross) ? S.crosses.delete(last.cross) : S.crosses.add(last.cross);
   say('Korak nazaj.');
   draw();
 }
 
-function setCross(on) {
-  S.cross = on;
-  $('crossBtn').classList.toggle('on', on);
-  $('crossBtn').setAttribute('aria-pressed', on);
+function setMode(m) {
+  S.mode = m;
+  for (const [id, on] of [['crossBtn', m === 'cross'], ['noteBtn', m === 'note']]) { $(id).classList.toggle('on', on); $(id).setAttribute('aria-pressed', on); }
 }
 
 // Help in three steps; the child always taps the cell. The person is the one a child can place next:
@@ -766,7 +801,7 @@ function nextPerson() {
 
 function hint() {
   if (allPlaced()) return;
-  setCross(false);
+  setMode('place');
   if (!S.hint || S.pos[S.hint.id]) S.hint = { ...nextPerson(), step: 0 };
   S.hint.step = Math.min(S.hint.step + 1, 3);
   const h = S.hint, p = person(h.id);
@@ -830,7 +865,13 @@ function answer(id, el) {
 function openSheet(html) { $('sheetBody').innerHTML = html; $('sheet').hidden = false; }
 function closeSheet() { $('sheet').hidden = true; }
 
-$('crossBtn').onclick = () => { setCross(!S.cross); say(S.cross ? 'Tapni polje, kjer zagotovo ni bilo nikogar.' : 'Tapni stavek, nato polje.'); draw(); };
+$('crossBtn').onclick = () => { setMode(S.mode === 'cross' ? 'place' : 'cross'); say(S.mode === 'cross' ? 'Tapni polje, kjer zagotovo ni bilo nikogar.' : 'Tapni stavek, nato polje.'); draw(); };
+$('noteBtn').onclick = () => {
+  setMode(S.mode === 'note' ? 'place' : 'note');
+  const p = person(S.sel);
+  say(S.mode === 'note' ? `Zapiski: tapni polja, kjer bi lahko bil${p && p.she ? 'a' : ''} ${p && !S.pos[p.id] ? p.name : 'nekdo'}. Lahko jih je več. Še en tap zapisek zbriše.` : 'Tapni stavek, nato polje.');
+  draw();
+};
 $('undoBtn').onclick = undo;
 $('hintBtn').onclick = hint;
 $('rulesBtn').onclick = () => showRules();

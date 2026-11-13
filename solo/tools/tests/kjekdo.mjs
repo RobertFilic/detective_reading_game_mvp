@@ -67,6 +67,28 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   ok(await p.$eval(cell(1, 1), e => !!e.querySelector('.x')), `${dev}: Ana's row is crossed out by itself`);
   await tap('#undoBtn');
   ok(await tokens() === 0, `${dev}: undo takes Ana back`);
+
+  // pencil notes: small faces where someone might be, several per cell, never a placement
+  const notes = () => p.$$eval('.cell', els => els.map(e => [...e.querySelectorAll('.notes i')].map(i => i.textContent).join('')).join('|'));
+  const faceOf = (id) => L1.people.find(q => q.id === id).face;
+  ok(await p.$$eval('.tool', els => els.length === 4 && els.every(e => e.getBoundingClientRect().height >= 48 && e.scrollWidth <= e.clientWidth + 1)), `${dev}: 4 tools, each ≥ 48 px, labels fit`);
+  await tap('#noteBtn');
+  ok(await p.$eval('#noteBtn', e => e.classList.contains('on')) && (await said()).includes('Zapiski'), `${dev}: the pencil is on and says what to do`);
+  await tap('.clue[data-p="ana"]'); await tap(cell(1, 3)); await tap(cell(0, 1));
+  await tap('.clue[data-p="bor"]'); await tap(cell(1, 3));
+  ok(await tokens() === 0 && await p.$eval(cell(1, 3), e => e.querySelectorAll('.notes i').length) === 2 && await p.$eval(cell(0, 1), e => e.querySelectorAll('.notes i').length) === 1, `${dev}: notes for Ana and Bor, two in one cell, nobody placed`);
+  await tap('.clue[data-p="ana"]'); await tap(cell(0, 1));
+  ok(await p.$eval(cell(0, 1), e => e.querySelectorAll('.notes i').length) === 0, `${dev}: a second tap rubs a note out`);
+  await tap(cell(1, 0));
+  ok((await said()).includes('torta') && await p.$eval(cell(1, 0), e => !e.querySelector('.notes')), `${dev}: no note on the cake`);
+  await tap('#undoBtn');
+  ok(await p.$eval(cell(0, 1), (e, f) => e.textContent.includes(f), faceOf('ana')), `${dev}: undo brings the rubbed note back`);
+  if (process.env.SHOTS) { await p.evaluate(() => scrollTo(0, 0)); await p.screenshot({ path: `shots/kjekdo-${dev}-notes.png` }); }
+  await tap('#noteBtn');
+  await tap('.clue[data-p="ana"]'); await tap(cell(1, 3));
+  ok(await tokens() === 1 && (await notes()).replace(/\|/g, '') === '', `${dev}: placing Ana clears her notes and the notes in her row and column`);
+  await tap('#undoBtn');
+  ok(await tokens() === 0 && await p.$eval(cell(1, 3), e => e.querySelectorAll('.notes i').length) === 2, `${dev}: undo puts Ana back in the list and her notes back on the board`);
   await tap('.clue[data-p="ana"]'); await tap(cell(1, 3));
   await tap('.clue[data-p="bor"]'); await tap(cell(1, 1));
   ok((await said()).includes('Ana') && await tokens() === 1, `${dev}: a second person in a row is explained, not placed`);
