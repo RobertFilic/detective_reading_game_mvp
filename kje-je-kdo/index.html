@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1b4d36">
+<meta name="description" content="Kje je kdo? Uganka Bralnih detektivov: preberi stavke, postavi ljudi v hišo in najdi, kdo je bil.">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<title>Kje je kdo? · Bralni detektivi</title>
+<style>
+/* »Kje je kdo?«: a Murdoku-style side game (docs/KJE_JE_KDO.md), in the start page's tokens. */
+@font-face { font-family: Lexend; src: url('../solo/fonts/lexend-sl.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
+:root {
+  --season: #164b33; --season-mid: #3b825f; --season-soft: #def5e8;
+  --bg: #faf6ef; --paper: #fffdfa; --ink: #1b222e; --ink-2: #4f5661; --line: #dfdad1;
+  --glow: #f8ca65; --stamp: #c83a35; --stamp-paper: #fefbf6; --wall: #3a3229;
+  --font: Lexend, Verdana, system-ui, sans-serif;
+  --bs: min(calc(100vw - 32px), 440px);   /* the board's side */
+}
+@supports (color: oklch(0 0 0)) {
+  :root { --season: oklch(0.37 0.07 160); --season-mid: oklch(0.55 0.09 160); --season-soft: oklch(0.95 0.03 160); }
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 400 17px/1.45 var(--font); -webkit-font-smoothing: antialiased; min-height: 100dvh; }
+h1, h2, h3, p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+[hidden] { display: none !important; }
+
+header.top { position: sticky; top: 0; z-index: 10; background: rgba(250, 246, 239, .94); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line); padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); }
+header.top .in { max-width: 960px; margin: 0 auto; display: flex; align-items: center; gap: 10px; min-height: 56px; }
+.back { min-width: 48px; min-height: 48px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--paper); display: grid; place-items: center; font-size: 20px; text-decoration: none; color: var(--ink); }
+.ttl { flex: 1; display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+.ttl small { font: 600 12px var(--font); letter-spacing: .08em; text-transform: uppercase; color: var(--season-mid); }
+.ttl b { font: 700 19px var(--font); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.icon-btn { min-width: 48px; min-height: 48px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--paper); font-size: 20px; }
+
+main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+
+/* the level list */
+.intro { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+.intro h1 { font: 700 clamp(30px, 7vw, 44px)/1.1 var(--font); letter-spacing: -.01em; }
+.intro p { color: var(--ink-2); }
+.levels { display: grid; gap: 12px; }
+.lvl { display: flex; align-items: center; gap: 14px; text-align: left; width: 100%; min-height: 88px; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: 22px; background: var(--paper);
+  box-shadow: 0 2px 0 var(--line), 0 10px 24px rgba(60, 50, 20, .05); }
+.lvl i { width: 56px; height: 56px; flex: none; border-radius: 16px; display: grid; place-items: center; font-size: 30px; font-style: normal; background: var(--season-soft); transform: rotate(-4deg); }
+.lvl span { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.lvl small { font: 600 13px var(--font); color: var(--season-mid); letter-spacing: .06em; text-transform: uppercase; }
+.lvl b { font: 600 19px/1.25 var(--font); }
+.lvl em { font-style: normal; font-size: 15px; color: var(--ink-2); }
+.lvl .done { flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--season); color: #fff; display: grid; place-items: center; font-size: 18px; }
+.home-link { display: inline-flex; align-items: center; min-height: 48px; margin-top: 18px; color: var(--season); font-weight: 500; }
+
+/* the case */
+.play { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.ask { align-self: stretch; background: var(--season); color: #fff; border-radius: 20px; padding: 12px 14px; display: flex; gap: 10px; align-items: center; font: 600 17px/1.3 var(--font); }
+.ask i { width: 34px; height: 34px; flex: none; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: 18px; font-style: normal; }
+.board { width: var(--bs); height: var(--bs); display: grid; border: 4px solid var(--wall); border-radius: 14px; overflow: hidden; background: var(--wall); flex: none; touch-action: manipulation; }
+.cell { position: relative; border: 0; border-right: 1px solid rgba(58, 50, 41, .16); border-bottom: 1px solid rgba(58, 50, 41, .16); display: grid; place-items: center; padding: 0; background: var(--room); min-width: 0; min-height: 0; }
+.cell > * { grid-area: 1 / 1; }
+.cell.has .obj { position: absolute; top: 2px; right: 3px; font-size: calc(var(--bs) / var(--n) * .26); z-index: 2; }
+.cell.has .obj svg { width: calc(var(--bs) / var(--n) * .3); }
+.cell.has .rug { width: 86%; height: 86%; }
+.cell .obj { font-size: calc(var(--bs) / var(--n) * .52); line-height: 1; pointer-events: none; }
+.cell .obj svg { width: calc(var(--bs) / var(--n) * .62); height: auto; display: block; }
+.cell .rug { width: 70%; height: 62%; border-radius: 6px; background: #b8433a; box-shadow: inset 0 0 0 3px #b8433a, inset 0 0 0 5px #f2c66d; pointer-events: none; }
+.cell .lab { position: absolute; left: 50%; bottom: 3px; transform: translateX(-50%); max-width: 94%; background: rgba(255, 253, 250, .92); border-radius: 6px; padding: 1px 4px;
+  font: 600 clamp(10px, 2.6vw, 13px)/1.15 var(--font); text-align: center; pointer-events: none; z-index: 2; }
+.cell .x { position: absolute; inset: 0; display: grid; place-items: center; font: 700 calc(var(--bs) / var(--n) * .42) var(--font); color: rgba(58, 50, 41, .28); pointer-events: none; }
+.cell .x.mine { color: #d23b33; }
+.cell .tok { position: relative; z-index: 1; width: 78%; height: 78%; border-radius: 50%; background: var(--paper); border: 3px solid var(--season); display: flex; flex-direction: column; align-items: center; justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .2); animation: pop 260ms cubic-bezier(.3, 1.6, .5, 1) both; pointer-events: none; }
+.cell .tok span { font-size: calc(var(--bs) / var(--n) * .34); line-height: 1; }
+.cell .tok b { font: 600 clamp(9px, calc(var(--bs) / var(--n) * .15), 13px)/1.2 var(--font); }
+.cell.can { outline: 4px solid var(--glow); outline-offset: -4px; animation: pulse 1.4s ease-in-out infinite; z-index: 3; }
+.cell.room-hl { outline: 4px solid var(--stamp); outline-offset: -4px; z-index: 3; }
+.cell.no { animation: shake 360ms; }
+.tools { width: var(--bs); display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.tool { min-height: 52px; border: 1.5px solid var(--line); border-radius: 16px; background: var(--paper); font: 600 15px var(--font); display: flex; align-items: center; justify-content: center; gap: 6px; }
+.tool.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+.helper { align-self: stretch; display: flex; gap: 10px; align-items: flex-start; }
+.helper b { width: 42px; height: 42px; flex: none; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 22px; font-weight: 400; }
+.helper span { flex: 1; background: var(--paper); border: 2px solid var(--glow); border-radius: 16px 16px 16px 4px; padding: 9px 12px; font-size: 16px; line-height: 1.4; min-height: 46px; }
+.side { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 520px; }
+.clues { display: flex; flex-direction: column; gap: 8px; }
+.clue { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; min-height: 60px; padding: 8px 12px; border: 2px solid var(--line); border-radius: 18px; background: var(--paper); }
+.clue .face { width: 44px; height: 44px; flex: none; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 26px; }
+.clue .txt { flex: 1; display: flex; flex-direction: column; gap: 1px; }
+.clue .txt small { font: 600 14px var(--font); color: var(--season-mid); }
+.clue .txt span { font-size: 18px; line-height: 1.35; }
+.clue .ok { width: 30px; height: 30px; flex: none; border-radius: 50%; display: grid; place-items: center; font-size: 15px; color: transparent; border: 2px dashed var(--line); }
+.clue.sel { border-color: var(--season); box-shadow: 0 0 0 2px var(--season); }
+.clue.placed { background: var(--bg); }
+.clue.placed .ok { background: var(--season); border: 0; color: #fff; }
+.clue.glow { animation: glow 1.2s ease-in-out 3; }
+.who { align-self: stretch; background: var(--paper); border: 3px solid var(--season); border-radius: 24px; padding: 16px; display: flex; flex-direction: column; gap: 12px;
+  box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4.5px var(--season), 0 12px 30px rgba(22, 75, 51, .18); animation: rise 300ms ease-out both; }
+.who h3 { font: 700 20px/1.3 var(--font); }
+.faces { display: flex; flex-wrap: wrap; gap: 10px; }
+.faces button { flex: 1 1 72px; min-height: 84px; border: 2px solid var(--line); border-radius: 18px; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font: 600 15px var(--font); }
+.faces button span { font-size: 32px; line-height: 1.1; }
+.faces button.no { animation: shake 360ms; border-color: var(--stamp); }
+
+/* sheets: rules and the reward */
+.sheet-wrap { position: fixed; inset: 0; z-index: 30; background: rgba(26, 30, 40, .45); display: flex; align-items: flex-end; justify-content: center; padding: 12px 12px calc(14px + env(safe-area-inset-bottom)); overflow-y: auto; }
+.sheet { width: min(520px, 100%); margin-top: auto; background: var(--paper); border: 3px solid var(--season); border-radius: 28px; padding: 22px 18px 18px; display: flex; flex-direction: column; gap: 12px;
+  box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4.5px var(--season), 0 -10px 50px rgba(40, 30, 10, .28); animation: rise 280ms ease-out both; }
+.sheet h3 { font: 700 23px/1.2 var(--font); }
+.sheet .story { font-size: 18px; line-height: 1.45; }
+.rules { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.rules li { display: flex; align-items: center; gap: 12px; background: var(--bg); border-radius: 14px; padding: 10px 12px; font-size: 17px; line-height: 1.35; }
+.rules li i { width: 40px; height: 40px; flex: none; border-radius: 12px; background: var(--paper); display: grid; place-items: center; font-size: 22px; font-style: normal; }
+.mini { display: grid; grid-template-columns: repeat(3, 36px); grid-template-rows: repeat(3, 36px); border: 2.5px solid var(--wall); border-radius: 8px; overflow: hidden; flex: none; }
+.mini span { display: grid; place-items: center; background: #f3ede2; border: 1px solid #e0d8ca; font-size: 15px; color: var(--ink-2); }
+.mini .y { background: var(--season-mid); color: #fff; }
+.big { min-height: 58px; border: 0; border-radius: 18px; background: var(--season); color: #fff; font: 600 18px var(--font); padding: 0 20px; }
+.big.alt { background: var(--paper); color: var(--ink); border: 1.5px solid var(--line); }
+.win { align-items: center; text-align: center; }
+.win .stamp { display: inline-flex; align-items: center; gap: 8px; color: var(--stamp); background: var(--stamp-paper); border: 3px solid var(--stamp); border-radius: 14px;
+  box-shadow: inset 0 0 0 2px var(--stamp-paper), inset 0 0 0 3.5px var(--stamp); padding: 5px 14px 5px 5px; font: 700 22px var(--font); transform: rotate(-6deg);
+  animation: stamp 420ms 120ms cubic-bezier(.3, 1.5, .5, 1) both; }
+.win .stamp i { width: 32px; height: 32px; border-radius: 50%; background: var(--stamp); color: #fff; display: grid; place-items: center; font-style: normal; font-size: 17px; }
+.win .who-face { font-size: 64px; line-height: 1; }
+.win .btns { display: flex; flex-direction: column; gap: 8px; align-self: stretch; }
+
+@keyframes pop { from { transform: scale(.3); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes pulse { 0%, 100% { outline-width: 3px; outline-offset: -3px; } 50% { outline-width: 7px; outline-offset: -7px; } }
+@keyframes shake { 0%, 100% { transform: none; } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+@keyframes glow { 0%, 100% { box-shadow: 0 0 0 3px var(--glow); } 50% { box-shadow: 0 0 0 6px var(--glow), 0 0 22px 6px rgba(248, 202, 101, .5); } }
+@keyframes rise { from { transform: translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes stamp { 0% { transform: scale(1.9) rotate(-12deg); opacity: 0; } 75% { transform: scale(.97) rotate(-6deg); opacity: 1; } 100% { transform: scale(1) rotate(-6deg); opacity: 1; } }
+
+/* side by side when the screen is wide or lying down */
+@media (min-width: 700px) and (orientation: landscape), (min-width: 900px) {
+  :root { --bs: min(calc(100dvh - 120px), 460px, calc(55vw - 40px)); }
+  .play { display: grid; grid-template-columns: auto 1fr; align-items: start; column-gap: 20px; }
+  .play > .board, .play > .tools { grid-column: 1; }
+  .play > .ask { grid-column: 1 / -1; }
+  .play > .side { grid-column: 2; grid-row: 2 / span 2; }
+}
+@media (min-width: 700px) { .levels { grid-template-columns: 1fr 1fr; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+<!-- Cloudflare Web Analytics: anonymous visit counts only (no cookies, no names, no game data) -->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "43f23b7bd5c7498597842d9997dcc64d"}'></script>
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="back" id="back" href="../" aria-label="Nazaj">←</a>
+  <span class="ttl"><small>Bralni detektivi · uganka</small><b id="title">Kje je kdo?</b></span>
+  <button class="icon-btn" id="rulesBtn" aria-label="Pravila" hidden>?</button>
+</div></header>
+
+<main>
+  <section id="list">
+    <div class="intro">
+      <h1>Kje je kdo?</h1>
+      <p>Preberi, kje je bil kdo. Postavi vse v hišo. Potem boš vedel, kdo je bil.</p>
+    </div>
+    <div class="levels" id="levels"></div>
+    <a class="home-link" href="../">← Na začetno stran</a>
+  </section>
+
+  <section id="game" class="play" hidden>
+    <div class="ask"><i>❓</i><span id="ask"></span></div>
+    <div class="board" id="board"></div>
+    <div class="tools">
+      <button class="tool" id="crossBtn" aria-pressed="false">✕ Prečrtaj</button>
+      <button class="tool" id="undoBtn">↩️ Nazaj</button>
+      <button class="tool" id="hintBtn">💡 Pomoč</button>
+    </div>
+    <div class="side">
+      <div class="helper"><b>🦉</b><span id="say"></span></div>
+      <div class="clues" id="clues"></div>
+      <div class="who" id="who" hidden><h3 id="whoQ"></h3><div class="faces" id="whoFaces"></div></div>
+    </div>
+  </section>
+</main>
+
+<div class="sheet-wrap" id="sheet" hidden><div class="sheet" id="sheetBody" role="dialog"></div></div>
+
+<script>
+// ---- The levels. Each person's `at` is the one solution and `rule` is their sentence as logic;
+// solo/tools/kjekdo.mjs proves that the rules give exactly `at` and that no sentence is spare.
+// Rules: {on: obj} | {room: r} | {notRoom: r} | {beside: obj} | {notBeside: obj} | {} (no clue).
+const OBJ = {
+  torta:     { e: '🎂', name: 'torta', block: true },
+  kavc:      { e: '🛋️', name: 'kavč' },
+  stol:      { e: '🪑', name: 'stol' },
+  postelja:  { e: '🛏️', name: 'postelja' },
+  klop:      { svg: '<svg viewBox="0 0 40 30" aria-hidden="true"><rect x="3" y="4" width="34" height="6" rx="2" fill="#a0673a"/><rect x="3" y="13" width="34" height="6" rx="2" fill="#b97a45"/><rect x="6" y="19" width="4" height="10" rx="1" fill="#6b4425"/><rect x="30" y="19" width="4" height="10" rx="1" fill="#6b4425"/></svg>', name: 'klop' },
+  preproga:  { rug: true, name: 'preproga' },
+  drevo:     { e: '🌳', name: 'drevo', block: true },
+  rastlina:  { e: '🪴', name: 'rastlina', block: true },
+  grm:       { e: '🌿', name: 'grm', block: true },
+  stedilnik: { e: '🍳', name: 'štedilnik', block: true },
+  skrinja:   { e: '🧰', name: 'skrinja', block: true },
+};
+const ROOM_COLORS = { K: '#f3dfbf', S: '#e6dcf3', D: '#efe2cf', P: '#dbe6f6', V: '#cfeccf' };
+
+// LEVELS-START
+const LEVELS = [
+  {
+    id: 1, icon: '🎂', title: 'Kdo je načel torto?', tag: 'Lahko · 4 × 4',
+    story: 'Mama je spekla torto in jo pustila v kuhinji. Ko se je vrnila, je manjkal kos! Doma so bili štirje.',
+    rooms: ['KKSS', 'KKSS', 'VVSS', 'VVVS'],
+    names: { K: 'Kuhinja', S: 'Soba', V: 'Vrt' },
+    labels: { K: [1, 1], S: [2, 3], V: [3, 2] },
+    objects: { '1,0': 'torta', '0,3': 'rastlina', '1,3': 'kavc', '2,2': 'stol', '3,0': 'drevo' },
+    people: [
+      { id: 'ana', name: 'Ana', she: true, face: '👧🏼', clue: 'Ana je sedela na kavču.', rule: { on: 'kavc' }, at: [1, 3] },
+      { id: 'bor', name: 'Bor', face: '👦🏽', clue: 'Bor je bil na vrtu.', rule: { room: 'V' }, at: [3, 1] },
+      { id: 'cvetka', name: 'Cvetka', she: true, face: '👵🏻', clue: 'Cvetka je sedela na stolu.', rule: { on: 'stol' }, at: [2, 2] },
+      { id: 'dan', name: 'Dan', face: '🧑🏻‍🦱', clue: 'Dan se ne spomni, kje je bil.', rule: {}, at: [0, 0] },
+    ],
+    order: ['ana', 'cvetka', 'bor', 'dan'],
+    room: 'K', ask: 'Kdo je bil sam v kuhinji s torto?', culprit: 'dan',
+    win: 'Dan je načel torto!', why: 'Bil je sam v kuhinji s torto.',
+  },
+  {
+    id: 2, icon: '👑', title: 'Kje je zlata kronica?', tag: 'Malo težje · 5 × 5',
+    story: 'Zlata kronica je bila v skrinji v spalnici. Zjutraj je skrinja prazna! Kdo je bil pri njej?',
+    rooms: ['KKKPP', 'KKDPP', 'DDDPP', 'VVDDP', 'VVVVV'],
+    names: { K: 'Kuhinja', D: 'Dnevna soba', P: 'Spalnica', V: 'Vrt' },
+    labels: { K: [1, 1], D: [3, 2], P: [2, 4], V: [4, 2] },
+    objects: { '0,0': 'stedilnik', '0,2': 'stol', '0,4': 'skrinja', '1,3': 'postelja', '2,0': 'kavc', '2,2': 'preproga', '3,0': 'drevo', '4,0': 'grm', '4,4': 'klop' },
+    people: [
+      { id: 'ana', name: 'Ana', she: true, face: '👧🏼', clue: 'Ana je stala ob drevesu.', rule: { beside: 'drevo' }, at: [3, 1] },
+      { id: 'bor', name: 'Bor', face: '👦🏽', clue: 'Bor je sedel na kavču.', rule: { on: 'kavc' }, at: [2, 0] },
+      { id: 'cvetka', name: 'Cvetka', she: true, face: '👵🏻', clue: 'Cvetka ni bila v spalnici.', rule: { notRoom: 'P' }, at: [0, 2] },
+      { id: 'dan', name: 'Dan', face: '🧑🏻‍🦱', clue: 'Dan je sedel na klopi.', rule: { on: 'klop' }, at: [4, 4] },
+      { id: 'eva', name: 'Eva', she: true, face: '👩🏾', clue: 'Eva ni stala ob skrinji.', rule: { notBeside: 'skrinja' }, at: [1, 3] },
+    ],
+    order: ['bor', 'dan', 'ana', 'cvetka', 'eva'],
+    room: 'P', ask: 'Kdo je bil sam v spalnici s skrinjo?', culprit: 'eva',
+    win: 'Eva je vzela zlato kronico!', why: 'Bila je sama v spalnici s skrinjo.',
+    besideRule: true,
+  },
+];
+// LEVELS-END
+
+// ---- State
+const $ = (id) => document.getElementById(id);
+const KEY = 'kjekdo_solved';
+let solved = [];
+try { solved = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) {}
+let L = null, S = null;   // the level and its state: {pos: {id: [r,c]}, crosses: Set, sel, cross, history, hint}
+
+const k = (r, c) => r + ',' + c;
+const objAt = (r, c) => L.objects[k(r, c)];
+const blocked = (r, c) => { const o = objAt(r, c); return !!(o && OBJ[o].block); };
+const roomAt = (r, c) => L.rooms[r][c];
+const near = (r, c) => [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]].filter(([a, b]) => a >= 0 && b >= 0 && a < L.n && b < L.n);
+const fits = (rule, r, c) => {
+  if (rule.on) return objAt(r, c) === rule.on;
+  if (rule.room) return roomAt(r, c) === rule.room;
+  if (rule.notRoom) return roomAt(r, c) !== rule.notRoom;
+  if (rule.beside) return near(r, c).some(([a, b]) => objAt(a, b) === rule.beside);
+  if (rule.notBeside) return !near(r, c).some(([a, b]) => objAt(a, b) === rule.notBeside);
+  return true;
+};
+const person = (id) => L.people.find(p => p.id === id);
+const whoAt = (r, c) => L.people.find(p => S.pos[p.id] && S.pos[p.id][0] === r && S.pos[p.id][1] === c);
+const inRow = (r) => L.people.find(p => S.pos[p.id] && S.pos[p.id][0] === r);
+const inCol = (c) => L.people.find(p => S.pos[p.id] && S.pos[p.id][1] === c);
+const allPlaced = () => L.people.every(p => S.pos[p.id]);
+const say = (html) => { $('say').innerHTML = html; };
+
+// ---- The level list
+function showList() {
+  L = null;
+  $('list').hidden = false; $('game').hidden = true; $('rulesBtn').hidden = true;
+  $('title').textContent = 'Kje je kdo?';
+  $('back').setAttribute('href', '../');
+  $('levels').innerHTML = LEVELS.map(l => `<button class="lvl" data-level="${l.id}"><i>${l.icon}</i><span><small>Uganka ${l.id} · ${l.tag}</small><b>${l.title}</b><em aria-hidden="true">${l.people.map(p => p.face).join(' ')}</em></span>${solved.includes(l.id) ? '<span class="done" aria-label="rešeno">✓</span>' : ''}</button>`).join('');
+  document.querySelectorAll('.lvl').forEach(b => b.onclick = () => start(+b.dataset.level));
+  scrollTo(0, 0);
+}
+
+// ---- A level
+function start(id) {
+  L = LEVELS.find(l => l.id === id); L.n = L.rooms.length;
+  S = { pos: {}, crosses: new Set(), sel: L.people[0].id, cross: false, history: [], hint: null };
+  $('list').hidden = true; $('game').hidden = false; $('rulesBtn').hidden = false;
+  $('title').textContent = L.title;
+  $('back').setAttribute('href', '#');
+  $('ask').textContent = L.ask;
+  $('who').hidden = true;
+  $('board').style.setProperty('--n', L.n);
+  document.documentElement.style.setProperty('--n', L.n);
+  $('board').style.gridTemplateColumns = `repeat(${L.n}, 1fr)`;
+  $('board').style.gridTemplateRows = `repeat(${L.n}, 1fr)`;
+  setCross(false);
+  say('Tapni stavek, nato polje, kjer je bil ta človek.');
+  draw();
+  scrollTo(0, 0);
+  showRules();
+}
+
+function showRules() {
+  const stops = [...new Set(Object.values(L.objects))].filter(o => OBJ[o].block).map(o => `${OBJ[o].e} ${OBJ[o].name}`);
+  const rules = [
+    ['↔️', 'V vsaki <b>vrsti</b> je samo en človek.'],
+    ['↕️', 'V vsakem <b>stolpcu</b> je samo en človek.'],
+    ['🚫', `Kjer je ${stops.join(', ').replace(/, ([^,]*)$/, ' ali $1')}, ne more stati nihče.`],
+  ];
+  const beside = L.besideRule ? `<li><span class="mini" aria-hidden="true"><span>✕</span><span class="y">✓</span><span>✕</span><span class="y">✓</span><span>🌳</span><span class="y">✓</span><span>✕</span><span class="y">✓</span><span>✕</span></span><span><b>Ob</b> pomeni levo, desno, gor ali dol. Poševno ne velja.</span></li>` : '';
+  openSheet(`<h3>${L.icon} ${L.title}</h3><p class="story">${L.story}</p>
+    <ul class="rules">${rules.map(([i, t]) => `<li><i>${i}</i><span>${t}</span></li>`).join('')}${beside}</ul>
+    <button class="big" id="go">Začnimo!</button>`);
+  $('go').onclick = closeSheet;
+}
+
+function draw() {
+  const n = L.n, b = $('board');
+  let html = '';
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+    const room = roomAt(r, c), o = objAt(r, c), p = whoAt(r, c);
+    // a wall between two rooms: each side draws half of it, so every cell keeps the same size
+    const wall = (a, bb) => a >= 0 && bb >= 0 && a < n && bb < n && roomAt(a, bb) !== room;
+    const walls = [[r - 1, c, '0 2px'], [r + 1, c, '0 -2px'], [r, c - 1, '2px 0'], [r, c + 1, '-2px 0']].filter(([a, bb]) => wall(a, bb)).map(([, , d]) => `inset ${d} 0 var(--wall)`);
+    const style = `--room:${ROOM_COLORS[room]};${walls.length ? `box-shadow:${walls.join(',')};` : ''}${c === n - 1 ? 'border-right:0;' : ''}${r === n - 1 ? 'border-bottom:0;' : ''}`;
+    let inner = '';
+    if (o) inner += OBJ[o].rug ? '<span class="rug"></span>' : `<span class="obj">${OBJ[o].svg || OBJ[o].e}</span>`;
+    if (p) inner += `<span class="tok"><span>${p.face}</span><b>${p.name}</b></span>`;
+    else if (!blocked(r, c) && (S.crosses.has(k(r, c)))) inner += '<span class="x mine">✕</span>';
+    else if (!blocked(r, c) && (inRow(r) || inCol(c))) inner += '<span class="x">✕</span>';
+    const lab = L.labels[room];
+    if (lab[0] === r && lab[1] === c) inner += `<span class="lab">${L.names[room]}</span>`;
+    const what = p ? p.name : o ? OBJ[o].name : 'prazno';
+    html += `<button class="cell${p ? ' has' : ''}" data-r="${r}" data-c="${c}" style="${style}" aria-label="${L.names[room]}, vrsta ${r + 1}, stolpec ${c + 1}: ${what}">${inner}</button>`;
+  }
+  b.innerHTML = html;
+  b.querySelectorAll('.cell').forEach(el => el.onclick = () => tap(+el.dataset.r, +el.dataset.c, el));
+  $('clues').innerHTML = L.people.map(p => `<button class="clue${S.sel === p.id && !S.cross ? ' sel' : ''}${S.pos[p.id] ? ' placed' : ''}" data-p="${p.id}"><span class="face">${p.face}</span><span class="txt"><small>${p.name}</small><span>${p.clue}</span></span><span class="ok">✓</span></button>`).join('');
+  $('clues').querySelectorAll('.clue').forEach(el => el.onclick = () => pick(el.dataset.p));
+  $('undoBtn').disabled = !S.history.length;
+}
+
+function pick(id) {
+  if (allPlaced()) return;
+  setCross(false);
+  S.sel = id; S.hint = null;
+  const p = person(id);
+  say(S.pos[id] ? `${p.name} že stoji na svojem mestu. Izberi drugega.` : `Kje je bil${p.she ? 'a' : ''} ${p.name}? Tapni polje.`);
+  draw();
+}
+
+function nope(el, text) {
+  el.classList.remove('no'); void el.offsetWidth; el.classList.add('no');
+  say(text);
+}
+
+function tap(r, c, el) {
+  if (allPlaced()) return;
+  const here = whoAt(r, c);
+  if (S.cross) {
+    if (here || blocked(r, c)) return nope(el, 'Tu ne moreš prečrtati.');
+    const key = k(r, c);
+    S.history.push({ cross: key });
+    S.crosses.has(key) ? S.crosses.delete(key) : S.crosses.add(key);
+    return draw();
+  }
+  if (here) return nope(el, `Tu že stoji ${here.name}.`);
+  if (blocked(r, c)) return nope(el, `Tu je ${OBJ[objAt(r, c)].name}. Tu ne more stati nihče.`);
+  const p = person(S.sel);
+  if (!p || S.pos[p.id]) return nope(el, 'Najprej tapni stavek nekoga, ki še nima mesta.');
+  const row = inRow(r), col = inCol(c);
+  if (row) return nope(el, `V tej vrsti že stoji ${row.name}. V vsaki vrsti je samo en človek.`);
+  if (col) return nope(el, `V tem stolpcu že stoji ${col.name}. V vsakem stolpcu je samo en človek.`);
+  if (p.at[0] !== r || p.at[1] !== c) {
+    nope(el, fits(p.rule, r, c) ? `Morda, a to še ni gotovo. Preberi še druge stavke.` : `Preberi še enkrat: »${p.clue}«`);
+    const row = document.querySelector(`.clue[data-p="${p.id}"]`);
+    row.classList.remove('glow'); void row.offsetWidth; row.classList.add('glow');
+    return;
+  }
+  place(p);
+}
+
+function place(p) {
+  S.pos[p.id] = p.at.slice();
+  S.history.push({ placed: p.id });
+  S.hint = null;
+  const next = L.people.find(q => !S.pos[q.id]);
+  if (next) { S.sel = next.id; say(`Bravo! ${p.name} je na svojem mestu.`); }
+  draw();
+  if (!next) ask();
+}
+
+function undo() {
+  const last = S.history.pop();
+  if (!last) return;
+  if (last.placed) { delete S.pos[last.placed]; S.sel = last.placed; $('who').hidden = true; }
+  if (last.cross) S.crosses.has(last.cross) ? S.crosses.delete(last.cross) : S.crosses.add(last.cross);
+  say('Korak nazaj.');
+  draw();
+}
+
+function setCross(on) {
+  S.cross = on;
+  $('crossBtn').classList.toggle('on', on);
+  $('crossBtn').setAttribute('aria-pressed', on);
+}
+
+// Help in three steps: which sentence to read, where it could be, then the answer.
+function hint() {
+  if (allPlaced()) return;
+  setCross(false);
+  const id = L.order.find(i => !S.pos[i]);
+  const p = person(id);
+  if (!S.hint || S.hint.id !== id) S.hint = { id, step: 0 };
+  S.hint.step++;
+  S.sel = id;
+  draw();
+  const row = document.querySelector(`.clue[data-p="${id}"]`);
+  if (S.hint.step === 1) {
+    row.classList.add('glow');
+    say(`Preberi ta stavek: »${p.clue}«`);
+  } else if (S.hint.step === 2) {
+    const can = [];
+    for (let r = 0; r < L.n; r++) for (let c = 0; c < L.n; c++) if (!blocked(r, c) && !inRow(r) && !inCol(c) && fits(p.rule, r, c)) can.push([r, c]);
+    can.forEach(([r, c]) => document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`).classList.add('can'));
+    say(can.length === 1 ? `Svetlo polje je edino, ki ustreza. Tapni ga!` : `${p.name} je lahko samo na svetlih poljih.`);
+  } else {
+    place(p);
+    if (!allPlaced()) say(`${p.name} je tukaj. Poglej, zakaj, in nadaljuj.`);
+  }
+}
+
+// ---- The question and the reward
+function ask() {
+  say('Vsi so na svojih mestih! Zdaj odgovori na vprašanje.');
+  $('whoQ').textContent = L.ask;
+  $('whoFaces').innerHTML = L.people.map(p => `<button data-p="${p.id}"><span>${p.face}</span>${p.name}</button>`).join('');
+  $('whoFaces').querySelectorAll('button').forEach(el => el.onclick = () => answer(el.dataset.p, el));
+  $('who').hidden = false;
+  $('who').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function answer(id, el) {
+  if (id !== L.culprit) {
+    el.classList.remove('no'); void el.offsetWidth; el.classList.add('no');
+    document.querySelectorAll('.cell').forEach(c => c.classList.toggle('room-hl', roomAt(+c.dataset.r, +c.dataset.c) === L.room));
+    say(`Ne še. Poglej rdeči prostor (${L.names[L.room].toLowerCase()}). Kdo stoji v njem?`);
+    return;
+  }
+  if (!solved.includes(L.id)) solved.push(L.id);
+  try { localStorage.setItem(KEY, JSON.stringify(solved)); } catch (e) {}
+  const p = person(id), next = LEVELS.find(l => l.id === L.id + 1);
+  openSheet(`<div class="win sheet-inner" style="display:flex;flex-direction:column;gap:12px;align-items:center">
+    <span class="stamp"><i>✓</i>Primer rešen!</span>
+    <span class="who-face">${p.face}</span>
+    <h3>${L.win}</h3><p class="story">${L.why}</p>
+    <div class="btns">${next ? `<button class="big" id="next">Naslednja uganka ${next.icon}</button>` : ''}<button class="big ${next ? 'alt' : ''}" id="toList">Vse uganke</button><a class="big alt" href="../" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Na začetno stran</a></div></div>`);
+  if (next) $('next').onclick = () => { closeSheet(); start(next.id); };
+  $('toList').onclick = () => { closeSheet(); showList(); };
+}
+
+function openSheet(html) { $('sheetBody').innerHTML = html; $('sheet').hidden = false; }
+function closeSheet() { $('sheet').hidden = true; }
+
+$('crossBtn').onclick = () => { setCross(!S.cross); say(S.cross ? 'Tapni polje, kjer nekoga zagotovo ni bilo.' : 'Tapni stavek, nato polje.'); draw(); };
+$('undoBtn').onclick = undo;
+$('hintBtn').onclick = hint;
+$('rulesBtn').onclick = () => showRules();
+$('back').onclick = (e) => { if (L) { e.preventDefault(); showList(); } };
+
+const q = new URLSearchParams(location.search).get('uganka');
+if (q && LEVELS.some(l => l.id === +q)) start(+q); else showList();
+
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(() => {});
+}
+</script>
+</body>
+</html>

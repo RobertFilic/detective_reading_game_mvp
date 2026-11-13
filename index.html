@@ -145,6 +145,14 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
 .adults { background: none; border: 1.5px solid var(--line); border-radius: 14px; min-height: 48px; padding: 0 16px; font: 500 15px var(--font); color: var(--ink-2); text-decoration: none; display: inline-flex; align-items: center; cursor: pointer; }
 .legal { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-2); }
 .trust { margin-top: 8px; font-size: 15px; color: var(--ink-2); text-wrap: pretty; }
+.puzzle { display: flex; align-items: center; gap: 14px; margin: 16px 0 0; padding: 14px 16px; min-height: 84px; background: var(--paper); border: 1.5px solid var(--line); border-radius: 22px;
+  text-decoration: none; color: var(--ink); box-shadow: 0 2px 0 var(--line), 0 10px 24px rgba(60, 50, 20, .05); }
+.puzzle i { width: 52px; height: 52px; flex: none; border-radius: 16px; background: #fdeaa9; display: grid; place-items: center; font-size: 28px; font-style: normal; transform: rotate(-4deg); }
+.puzzle span { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.puzzle small { font: 600 13px var(--font); letter-spacing: .08em; text-transform: uppercase; color: var(--season-mid); }
+.puzzle b { font: 600 19px/1.25 var(--font); }
+.puzzle em { font-style: normal; font-size: 15px; color: var(--ink-2); }
+.puzzle .go { flex: none; font-size: 22px; color: var(--season); }
 .dock { position: sticky; bottom: 0; z-index: 10; padding: 10px 16px calc(12px + env(safe-area-inset-bottom)); background: linear-gradient(rgba(250, 246, 239, 0), var(--bg) 35%); }
 .dock .btn { min-height: 58px; border-radius: 18px; font-size: 18px; }
 
@@ -233,6 +241,7 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
     <button class="pill" id="installBtn">Namesti</button>
     <button class="x" id="installClose" aria-label="Zapri">✕</button>
   </div>
+  <a class="puzzle" href="kje-je-kdo/" id="kjekdo"><i>🏠</i><span><small>Nova uganka</small><b>Kje je kdo?</b><em>Preberi, kje je bil kdo, in najdi, kdo je bil.</em></span><span class="go">→</span></a>
 </div>
 
 <section class="part" id="kako"><div class="wrap">
