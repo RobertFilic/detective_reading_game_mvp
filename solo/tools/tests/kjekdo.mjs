@@ -139,7 +139,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   await p.$eval('#hintBtn', e => e.click());
   ok((await said()).includes('V tem stolpcu mora stati nekdo') && await lit() === '1,4 3,4', `help 1 lights column 5 and says someone must stand in it (${await lit()})`);
   await p.$eval('#hintBtn', e => e.click());
-  ok((await said()).includes('Samo Maj lahko stoji v tem stolpcu') && await p.$eval('.clue[data-p="maj"]', e => e.classList.contains('glow')), 'help 2 says only Maj fits there, his sentence glows');
+  ok((await said()).includes('Jan, Ula in Sara tukaj ne morejo stati. Samo Maj lahko') && await p.$eval('.clue[data-p="maj"]', e => e.classList.contains('glow')), 'help 2 says only Maj fits there, his sentence glows');
   await p.$eval('#hintBtn', e => e.click());
   ok(await lit() === '3,4' && await p.$$eval('.cell .tok', els => els.length) === 1, 'help 3 lights Maj\'s cell and places nobody');
   await p.close();
@@ -158,19 +158,27 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   const step = async () => { await p.$eval('#hintBtn', e => e.click()); return [await p.$eval('#say', e => e.textContent), await p.$$eval('.cell.can', els => els.map(e => e.dataset.r + ',' + e.dataset.c).join(' '))]; };
   const want = [
     ['V tej vrsti mora stati nekdo', '0,0 0,4 0,5'],
-    ['Samo Mojca lahko stoji v tej vrsti', '0,0 0,5'],
+    ['Lara, Jure, Ivo in Pika tukaj ne morejo stati. Samo Mojca lahko', '0,0 0,5'],
     ['V tej vrsti mora stati nekdo', '4,1 4,3 4,4 4,5'],
-    ['Samo Ivo lahko stoji v tej vrsti', '4,3 4,4 4,5'],
+    ['Lara, Jure in Pika tukaj ne morejo stati. Samo Ivo lahko', '4,3 4,4 4,5'],
     ['V tem stolpcu mora stati nekdo', '1,3 2,3 4,3 5,3'],
-    ['Samo Ivo lahko stoji v tem stolpcu', '1,3 2,3 4,3 5,3'],
+    ['Samo Ivo lahko', '1,3 2,3 4,3 5,3'],
     ['Tukaj je bil Ivo', '4,3'],
   ];
   for (const [i, [text, cells]] of want.entries()) {
     const [said, lit] = await step();
     ok(said.includes(text) && lit === cells, `puzzle 12, help ${i + 1}: »${text}…« on ${cells} (got »${said}« on ${lit})`);
+    if (i === 1) ok(await p.$$eval('.cell', els => els.filter(e => e.querySelector('.notes')).map(e => e.dataset.r + ',' + e.dataset.c).join(' ')) === '0,0 0,5', 'puzzle 12: the help writes Mojca\'s two possibilities as pencil notes');
   }
-  ok(await p.$$eval('.cell .tok', els => els.length) === 1, 'puzzle 12: the help placed nobody');
-  await p.close();
+  await p.$eval('.cell.can', e => e.click());
+  const heard = [];
+  for (let i = 0; i < 30 && await p.$$eval('.cell .tok', els => els.length) < 6; i++) {
+    await p.$eval('#hintBtn', e => e.click());
+    const said = await p.$eval('#say', e => e.textContent); heard.push(said);
+    if (said.includes('Tapni svetlo polje')) await p.$eval('.cell.can', e => e.click());
+  }
+  ok(heard.some(t => t.startsWith('Mojca ima samo še en zapisek')), 'puzzle 12: at the end Mojca has one note left, and the help says so');
+    await p.close();
 }
 
 // every puzzle with the help alone: press until it lights one cell and says »Tukaj«, tap that cell, again
@@ -186,7 +194,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
     let presses = 0;
     while (presses < 60 && await p.$$eval('.cell .tok', els => els.length) < L.people.length) {
       await p.$eval('#hintBtn', e => e.click()); presses++;
-      if ((await p.$eval('#say', e => e.textContent)).startsWith('Tukaj')) await p.$eval('.cell.can', e => e.click());
+      if ((await p.$eval('#say', e => e.textContent)).includes('Tapni svetlo polje')) await p.$eval('.cell.can', e => e.click());
     }
     ok(await p.$$eval('.cell .tok', els => els.length) === L.people.length, `puzzle ${L.id}: the help alone leads to everyone's place (${presses} presses)`);
   }

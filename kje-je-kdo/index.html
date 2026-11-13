@@ -768,6 +768,7 @@ function undo() {
   if (!last) return;
   if (last.placed) { delete S.pos[last.placed]; S.sel = last.placed; $('who').hidden = true; for (const [key, id] of last.rubbed) toggleNote(key, id); }
   if (last.note) toggleNote(last.note, last.id);
+  if (last.notes) for (const [key, id] of last.notes) toggleNote(key, id);
   if (last.cross) S.crosses.has(last.cross) ? S.crosses.delete(last.cross) : S.crosses.add(last.cross);
   say('Korak nazaj.');
   draw();
@@ -814,30 +815,51 @@ function nextStep() {
   return { id: left[0].id };
 }
 
+// »Lara, Jure in Ivo« + »ne more / ne moreta / ne morejo«
+function nobodyElse(ids) {
+  const names = ids.map(id => person(id).name);
+  const list = names.length > 1 ? names.slice(0, -1).join(', ') + ' in ' + names[names.length - 1] : names[0];
+  return `${list} tukaj ne ${names.length === 1 ? 'more' : names.length === 2 ? 'moreta' : 'morejo'} stati.`;
+}
+
+// the help writes a person's pencil notes on exactly these cells (one undo takes them all back)
+function writeNotes(id, cells) {
+  const want = new Set(cells.map(([r, c]) => k(r, c))), toggles = [];
+  for (const [key, ids] of Object.entries(S.notes)) if (ids.includes(id) && !want.has(key)) toggles.push([key, id]);
+  for (const key of want) if (!(S.notes[key] || []).includes(id)) toggles.push([key, id]);
+  for (const [key, x] of toggles) toggleNote(key, x);
+  if (toggles.length) S.history.push({ notes: toggles });
+}
+
 function hint() {
   if (allPlaced()) return;
   setMode('place');
   if (S.hint && S.hint.narrow && S.hint.step >= 2) { S.shown.add(`${S.hint.id}:${S.hint.axis}:${S.hint.x}`); S.hint = null; }
   if (!S.hint || S.pos[S.hint.id]) S.hint = { ...nextStep(), step: 0 };
   S.hint.step = Math.min(S.hint.step + 1, 3);
-  const h = S.hint, p = person(h.id);
+  const h = S.hint, p = person(h.id), she = p.she ? 'a' : '';
+  const mine = Object.entries(S.notes).filter(([, ids]) => ids.includes(p.id)).map(([key]) => key.split(',').map(Number));
+  // a person whose notes are down to one free cell: that's the one
+  if (h.step === 1 && h.cells && mine.length === 1 && mine[0][0] === h.cells[0][0] && mine[0][1] === h.cells[0][1]) h.step = 3;
   S.sel = p.id;
+  if (h.narrow && h.step === 2) writeNotes(p.id, h.narrow);
   draw();
   const row = document.querySelector(`.clue[data-p="${p.id}"]`);
   const light = (cells) => cells.forEach(([r, c]) => document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`).classList.add('can'));
   const line = h.axis === 1 ? 'tem stolpcu' : 'tej vrsti';
   const lineCells = () => { const out = []; for (let i = 0; i < L.n; i++) { const [r, c] = h.axis === 1 ? [i, h.x] : [h.x, i]; if (!blocked(r, c) && !inRow(r) && !inCol(c)) out.push([r, c]); } return out; };
+  const others = L.people.filter(q => q.id !== p.id && !S.pos[q.id]).map(q => q.id);
   if (h.axis !== undefined && h.step === 1) {
     light(lineCells());
     say(`V ${line} mora stati nekdo. Preberi stavke. Kdo lahko stoji tukaj?`);
   } else if (h.narrow) {
     row.classList.add('glow');
     light(h.narrow);
-    say(`Samo ${p.name} lahko stoji v ${line}: »${p.clue}« Torej je na enem od svetlih polj. Zapiši si to s svinčnikom ✏️ in tapni Pomoč še enkrat.`);
+    say(`${others.length ? nobodyElse(others) + ' ' : ''}Samo ${p.name} lahko: »${p.clue}« Še ne vemo, na katerem polju je bil${she}. Možnosti so zapisane s svinčnikom ✏️. Tapni Pomoč še enkrat.`);
   } else if (h.axis !== undefined && h.step === 2) {
     row.classList.add('glow');
     light(lineCells());
-    say(`Samo ${p.name} lahko stoji v ${line}: »${p.clue}« Za druge tu ni prostora.`);
+    say(`${others.length ? nobodyElse(others) + ' ' : ''}Samo ${p.name} lahko: »${p.clue}«`);
   } else if (h.step === 1) {
     row.classList.add('glow');
     say(`Preberi ta stavek: »${p.clue}«`);
@@ -845,9 +867,12 @@ function hint() {
     const can = h.cells || cellsFor(p);
     light(can);
     say(can.length === 1 ? 'Samo eno polje ustreza. Tapni ga!' : `${p.name} je lahko na svetlih poljih. Preberi še druge stavke.`);
+  } else if (mine.length === 1) {
+    light([p.at]);
+    say(`${p.name} ima samo še en zapisek. Tam je bil${she}! Tapni svetlo polje.`);
   } else {
     light([p.at]);
-    say(`Tukaj je bil${p.she ? 'a' : ''} ${p.name}. Tapni svetlo polje.`);
+    say(`Tukaj je bil${she} ${p.name}. Tapni svetlo polje.`);
   }
 }
 
