@@ -1,4 +1,4 @@
-// The checker for »Kje je kdo?« (kje-je-kdo/index.html): for every puzzle it tries every placement
+// The checker for »Skrivnostne sobe« (kje-je-kdo/index.html): for every puzzle it tries every placement
 // (one person per row and column, never on a blocking object) and proves that
 //   1. the sentences give exactly one placement, and it is the one written in `at`;
 //   2. no sentence is spare: without any one of them there is more than one placement;

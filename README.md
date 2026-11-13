@@ -6,7 +6,7 @@ A Slovenian detective reading game for children aged 6–9, built as a validatio
 |---|---|
 | [`index.html`](index.html) | Start page. |
 | [`solo/`](solo/) | **Igraj sam:** one child finds the sentence that proves who did it. See [solo/README.md](solo/README.md). |
-| [`kje-je-kdo/`](kje-je-kdo/) | **Kje je kdo?:** a side puzzle (Murdoku for kids). Read where each person was, place everyone in the house (one per row and column), and find who was alone with the missing thing. 2 puzzles, linked from a tile on the start page. Plan: [docs/KJE_JE_KDO.md](docs/KJE_JE_KDO.md). Checker: `node solo/tools/kjekdo.mjs`. |
+| [`kje-je-kdo/`](kje-je-kdo/) | **Skrivnostne sobe** (first called »Kje je kdo?«): a side puzzle (Murdoku for kids). Read where each person was, place everyone in the house (one per row and column), and find who was alone with the missing thing. 2 puzzles, linked from a tile on the start page. Plan: [docs/KJE_JE_KDO.md](docs/KJE_JE_KDO.md). Checker: `node solo/tools/kjekdo.mjs`. |
 | [`zasebnost/`](zasebnost/) | **Zasebnost in pogoji:** privacy policy and terms of use for parents, on one page. Linked from the start page and the adult screens. Background and open points: [docs/LEGAL.md](docs/LEGAL.md). |
 | [`docs/PLAN.md`](docs/PLAN.md) | Plan for the solo game. |
 | [`docs/studio/`](docs/studio/README.md) | **The studio:** six Claude Code agents (`.claude/agents/`: showrunner, case writer, puzzle designer, fair-play tester, Slovenian editor, UX reviewer) that make new seasons, with the story bible, the difficulty curriculum, the ledger of what's been used, playtest notes, and each agent's lessons. |

@@ -6,13 +6,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#1b4d36">
-<meta name="description" content="Kje je kdo? Uganka Bralnih detektivov: preberi stavke, postavi ljudi na pravo mesto in najdi, kdo je bil.">
+<meta name="description" content="Skrivnostne sobe: uganka Bralnih detektivov. preberi stavke, postavi ljudi na pravo mesto in najdi, kdo je bil.">
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="apple-touch-icon" href="../icons/icon-180.png">
 <link rel="icon" type="image/png" href="../icons/icon-192.png">
-<title>Kje je kdo? · Bralni detektivi</title>
+<title>Skrivnostne sobe · Bralni detektivi</title>
 <style>
-/* »Kje je kdo?«: a Murdoku-style side game (docs/KJE_JE_KDO.md), in the start page's tokens. */
+/* »Skrivnostne sobe« (kje-je-kdo/): a Murdoku-style side game (docs/KJE_JE_KDO.md), in the start page's tokens. */
 @font-face { font-family: Lexend; src: url('../solo/fonts/lexend-sl.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
 :root {
   --season: #164b33; --season-mid: #3b825f; --season-soft: #def5e8;
@@ -58,7 +58,31 @@ main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-i
 .lvl b { font: 600 19px/1.25 var(--font); }
 .lvl em { font-style: normal; font-size: 15px; color: var(--ink-2); }
 .lvl .done { flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--season); color: #fff; display: grid; place-items: center; font-size: 18px; }
+.me { display: flex; align-items: center; gap: 12px; }
+.me p { flex: 1; }
+.me-pic { position: relative; width: 60px; height: 60px; flex: none; border-radius: 50%; background: var(--season-soft); display: grid; place-items: center; font-size: 34px; }
+.me-pic i { position: absolute; right: -6px; bottom: -4px; width: 30px; height: 30px; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 17px; font-style: normal; }
 .home-link { display: inline-flex; align-items: center; min-height: 48px; margin-top: 18px; color: var(--season); font-weight: 500; }
+
+/* the detective's ID card, the same one as in the main game */
+.make { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; text-align: center; }
+.make h1 { font: 700 clamp(26px, 6vw, 36px)/1.15 var(--font); }
+.make .lead { color: var(--ink-2); }
+.dots { display: flex; justify-content: center; gap: 8px; }
+.dots span { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+.dots span.on { background: var(--season); }
+.picks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.picks.two { grid-template-columns: repeat(2, 1fr); }
+.picks button { min-height: 96px; border: 2px solid var(--line); border-radius: 22px; background: var(--paper); font-size: 52px; line-height: 1; box-shadow: 0 2px 0 var(--line); }
+.picks button.on { border-color: var(--season); box-shadow: 0 0 0 3px var(--season); }
+.make input { min-height: 60px; border: 2px solid var(--line); border-radius: 18px; background: var(--paper); padding: 0 16px; font: 600 24px var(--font); text-align: center; color: var(--ink); width: 100%; }
+.make input:focus { outline: none; border-color: var(--season); }
+.make .btns { display: flex; flex-direction: column; gap: 8px; }
+.idcard { align-self: center; display: flex; align-items: center; gap: 16px; text-align: left; background: var(--paper); border: 3px solid var(--season); border-radius: 22px; padding: 18px 22px;
+  box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4.5px var(--season), 0 12px 30px rgba(22, 75, 51, .18); transform: rotate(-2deg); animation: rise 300ms ease-out both; }
+.idcard .me-pic { width: 84px; height: 84px; font-size: 50px; }
+.idcard small { display: block; font: 600 13px var(--font); letter-spacing: .08em; text-transform: uppercase; color: var(--season-mid); }
+.idcard b { font: 700 26px var(--font); }
 
 /* the case */
 .play { display: flex; flex-direction: column; gap: 12px; align-items: center; }
@@ -131,6 +155,7 @@ main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-i
   animation: stamp 420ms 120ms cubic-bezier(.3, 1.5, .5, 1) both; }
 .win .stamp i { width: 32px; height: 32px; border-radius: 50%; background: var(--stamp); color: #fff; display: grid; place-items: center; font-style: normal; font-size: 17px; }
 .win .heart { background: #fbe6a4; border-radius: 16px; padding: 12px 14px; font-size: 17px; line-height: 1.45; text-align: left; transform: rotate(-1deg); }
+.win .bravo { font: 600 18px var(--font); color: var(--season); }
 .win .who-face { font-size: 64px; line-height: 1; }
 .win .btns { display: flex; flex-direction: column; gap: 8px; align-self: stretch; }
 
@@ -158,19 +183,21 @@ main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-i
 <body>
 <header class="top"><div class="in">
   <a class="back" id="back" href="../" aria-label="Nazaj">←</a>
-  <span class="ttl"><small>Bralni detektivi · uganka</small><b id="title">Kje je kdo?</b></span>
+  <span class="ttl"><small>Bralni detektivi · uganka</small><b id="title">Skrivnostne sobe</b></span>
   <button class="icon-btn" id="rulesBtn" aria-label="Pravila" hidden>?</button>
 </div></header>
 
 <main>
   <section id="list">
     <div class="intro">
-      <h1>Kje je kdo?</h1>
-      <p>Preberi, kje je bil kdo. Postavi vse na pravo mesto. Tako najdeš, kdo je bil.</p>
+      <h1>Skrivnostne sobe</h1>
+      <div class="me"><span class="me-pic" id="mePic"></span><p><b id="meName"></b>, preberi, kje je bil kdo. Postavi vse na pravo mesto. Tako najdeš, kdo je bil.</p></div>
     </div>
     <div id="levels"></div>
     <a class="home-link" href="../">← Na začetno stran</a>
   </section>
+
+  <section id="make" class="make" hidden></section>
 
   <section id="game" class="play" hidden>
     <div class="ask"><i>❓</i><span id="ask"></span></div>
@@ -181,7 +208,7 @@ main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-i
       <button class="tool" id="hintBtn">💡 Pomoč</button>
     </div>
     <div class="side">
-      <div class="helper"><b>🦉</b><span id="say"></span></div>
+      <div class="helper"><b id="helperPic">🦉</b><span id="say"></span></div>
       <div class="clues" id="clues"></div>
       <div class="who" id="who" hidden><h3 id="whoQ"></h3><div class="faces" id="whoFaces"></div></div>
     </div>
@@ -200,6 +227,7 @@ const SVG = {
   tabla: '<svg viewBox="0 0 40 32" aria-hidden="true"><rect x="2" y="2" width="36" height="25" rx="3" fill="#2f5d46" stroke="#8a5a32" stroke-width="3"/><path d="M20 22c-6-4-9-7-9-10a4 4 0 0 1 9-2 4 4 0 0 1 9 2c0 3-3 6-9 10z" fill="#ff8fb1"/><rect x="14" y="27" width="12" height="3" fill="#8a5a32"/></svg>',
   stozec: '<svg viewBox="0 0 30 32" aria-hidden="true"><path d="M15 2 26 27H4z" fill="#f28c28"/><path d="M10 15h10l2 5H8z" fill="#fff"/><rect x="2" y="26" width="26" height="4" rx="1.5" fill="#e0701a"/></svg>',
   steklenica: '<svg viewBox="0 0 20 36" aria-hidden="true"><rect x="6" y="1" width="8" height="5" rx="1.5" fill="#2d6cdf"/><rect x="3" y="6" width="14" height="28" rx="5" fill="#9fd0ff" stroke="#2d6cdf" stroke-width="2"/><rect x="3" y="15" width="14" height="6" fill="#2d6cdf" opacity=".5"/></svg>',
+  skrinja: '<svg viewBox="0 0 40 34" aria-hidden="true"><path d="M3 15v-3C3 6 9 3 20 3s17 3 17 9v3z" fill="#b5652b"/><rect x="3" y="15" width="34" height="17" rx="2" fill="#8f4a1e"/><rect x="9" y="5" width="4" height="27" fill="#e3a83a"/><rect x="27" y="5" width="4" height="27" fill="#e3a83a"/><rect x="3" y="13" width="34" height="4" fill="#e3a83a"/><rect x="16" y="12" width="8" height="10" rx="1.5" fill="#f6d36b" stroke="#a8741b" stroke-width="1.2"/><circle cx="20" cy="16" r="1.5" fill="#5a3a10"/><rect x="19.3" y="16" width="1.4" height="3.5" fill="#5a3a10"/></svg>',
   blazina: '<svg viewBox="0 0 40 26" aria-hidden="true"><rect x="2" y="4" width="36" height="18" rx="5" fill="#4f86d9"/><rect x="2" y="4" width="36" height="18" rx="5" fill="none" stroke="#2f5fae" stroke-width="2.5" stroke-dasharray="4 3"/></svg>',
 };
 const OBJ = {
@@ -208,7 +236,7 @@ const OBJ = {
   harmonika:  { e: '🪗', name: 'harmonika', block: true, gone: true },
   kljuc:      { e: '🔑', name: 'ključ', block: true, gone: true },
   medvedek:   { e: '🧸', name: 'medvedek', block: true, gone: true },
-  skrinja:    { e: '🧰', name: 'skrinja', block: true },
+  skrinja:    { svg: SVG.skrinja, name: 'skrinja', block: true },
   tabla:      { svg: SVG.tabla, name: 'tabla', block: true },
   torba:      { e: '🎒', name: 'Linina torba', block: true },
   gol:        { e: '🥅', name: 'gol', block: true },
@@ -476,9 +504,27 @@ const LEVELS = [
 
 // ---- State
 const $ = (id) => document.getElementById(id);
-const KEY = 'kjekdo_solved';
+const KEY = 'dp_kjekdo_v1';   // solved puzzles; solo/ keeps one copy per detective (KID_KEYS) and exports it
 let solved = [];
-try { solved = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) {}
+try { solved = JSON.parse(localStorage.getItem(KEY) || localStorage.getItem('kjekdo_solved') || '[]'); } catch (e) {}
+
+// ---- The detective: the main game's ID card (solo/, same site, same key), so a child is one detective
+// everywhere. Without a card, the puzzles start with the same steps: detective → helper → name → card.
+const PROFILE_KEY = 'dp_profile_v1';
+const AVATARS = [
+  { e: '🕵🏻‍♂️', g: 'm' }, { e: '🕵🏽‍♂️', g: 'm' }, { e: '🕵🏿‍♂️', g: 'm' },
+  { e: '🕵🏻‍♀️', g: 'f' }, { e: '🕵🏽‍♀️', g: 'f' }, { e: '🕵🏿‍♀️', g: 'f' },
+];
+const SIDEKICKS = ['🐶', '🐱', '🦉', '🦊'];
+let me = null;
+try { me = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); } catch (e) {}
+const detTitle = (p) => (p && p.g === 'f' ? 'Detektivka' : 'Detektiv');
+const detName = (p) => detTitle(p) + (p && p.name ? ' ' + p.name : '');
+const cleanName = (v) => v.replace(/[^\p{L}\p{N} '-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 12)
+  .replace(/^\p{L}/u, ch => ch.toUpperCase());
+const esc = (t) => String(t).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[ch]);
+const mePic = (p) => `${p.av}<i>${p.sk}</i>`;
+let mk = null;   // the card being made: {step, av, g, sk, name, then}
 let L = null, S = null;   // the level and its state: {pos: {id: [r,c]}, crosses: Set, sel, cross, history, hint}
 
 const k = (r, c) => r + ',' + c;
@@ -504,10 +550,13 @@ const say = (html) => { $('say').innerHTML = html; };
 
 // ---- The level list
 function showList() {
-  L = null;
-  $('list').hidden = false; $('game').hidden = true; $('rulesBtn').hidden = true;
-  $('title').textContent = 'Kje je kdo?';
+  L = null; mk = null;
+  if (!me) return makeCard();
+  $('list').hidden = false; $('game').hidden = true; $('make').hidden = true; $('rulesBtn').hidden = true;
+  $('title').textContent = 'Skrivnostne sobe';
   $('back').setAttribute('href', '../');
+  $('mePic').innerHTML = mePic(me);
+  $('meName').textContent = detName(me);
   // each puzzle opens when the one before it is solved
   const open = (l) => l.id === LEVELS[0].id || solved.includes(LEVELS[LEVELS.indexOf(l) - 1].id);
   const card = (l) => {
@@ -522,11 +571,57 @@ function showList() {
   scrollTo(0, 0);
 }
 
+// ---- A new detective's ID card (the main game's steps, in short)
+function makeCard(then) {
+  mk = { step: 1, av: null, g: null, sk: null, name: '', then: then || null };
+  drawMake();
+}
+
+function drawMake() {
+  $('list').hidden = true; $('game').hidden = true; $('make').hidden = false; $('rulesBtn').hidden = true;
+  $('title').textContent = 'Detektivska izkaznica';
+  $('back').setAttribute('href', mk.step > 1 ? '#' : '../');
+  const dots = `<div class="dots" aria-hidden="true">${[1, 2, 3, 4].map(i => `<span class="${i === mk.step ? 'on' : ''}"></span>`).join('')}</div>`;
+  let html = '';
+  if (mk.step === 1) {
+    html = `<h1>Izberi svojega detektiva</h1><p class="lead">Pred prvo uganko si naredi detektivsko izkaznico.</p>
+      <div class="picks">${AVATARS.map((a, i) => `<button data-av="${i}" aria-label="${a.g === 'f' ? 'detektivka' : 'detektiv'}">${a.e}</button>`).join('')}</div>`;
+  } else if (mk.step === 2) {
+    html = `<h1>Izberi pomočnika</h1><p class="lead">Pomočnik ti bo pomagal pri ugankah.</p>
+      <div class="picks two">${SIDEKICKS.map(e => `<button data-sk="${e}">${e}</button>`).join('')}</div>`;
+  } else if (mk.step === 3) {
+    html = `<h1>Kako ti je ime?</h1><span class="me-pic" style="align-self:center">${mePic(mk)}</span>
+      <input id="mkName" type="text" maxlength="12" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Ime" value="${esc(mk.name)}">
+      <div class="btns"><button class="big" id="mkNext">Naprej</button><button class="big alt" id="mkSkip">Preskoči</button></div>`;
+  } else {
+    html = `<h1>To si ti!</h1><div class="idcard"><span class="me-pic">${mePic(mk)}</span><span><small>Bralni detektivi</small><b>${esc(detName(mk))}</b></span></div>
+      <div class="helper"><b>${mk.sk}</b><span>${mk.g === 'f' ? 'Postala si detektivka!' : 'Postal si detektiv!'}</span></div>
+      <div class="btns"><button class="big" id="mkDone">Začni 🔍</button></div>`;
+  }
+  $('make').innerHTML = dots + html;
+  $('make').querySelectorAll('[data-av]').forEach(b => b.onclick = () => { const a = AVATARS[+b.dataset.av]; Object.assign(mk, { av: a.e, g: a.g, step: 2 }); drawMake(); });
+  $('make').querySelectorAll('[data-sk]').forEach(b => b.onclick = () => { Object.assign(mk, { sk: b.dataset.sk, step: 3 }); drawMake(); });
+  if (mk.step === 3) {
+    $('mkNext').onclick = () => { mk.name = cleanName($('mkName').value || ''); mk.step = 4; drawMake(); };
+    $('mkSkip').onclick = () => { mk.name = ''; mk.step = 4; drawMake(); };
+  }
+  if (mk.step === 4) $('mkDone').onclick = () => {
+    me = { av: mk.av, g: mk.g, sk: mk.sk, name: mk.name, id: String(1000 + Math.floor(Math.random() * 9000)) };
+    try { localStorage.setItem(PROFILE_KEY, JSON.stringify(me)); } catch (e) {}
+    const then = mk.then;
+    mk = null;
+    if (then) start(then); else showList();
+  };
+  scrollTo(0, 0);
+}
+
 // ---- A level
 function start(id) {
+  if (!me) return makeCard(id);
   L = LEVELS.find(l => l.id === id); L.n = L.rooms.length;
   S = { pos: {}, crosses: new Set(), sel: L.people[0].id, cross: false, history: [], hint: null };
-  $('list').hidden = true; $('game').hidden = false; $('rulesBtn').hidden = false;
+  $('list').hidden = true; $('game').hidden = false; $('make').hidden = true; $('rulesBtn').hidden = false;
+  $('helperPic').textContent = me.sk;
   $('title').textContent = L.title;
   $('back').setAttribute('href', '#');
   $('ask').textContent = L.ask;
@@ -648,41 +743,51 @@ function setCross(on) {
   $('crossBtn').setAttribute('aria-pressed', on);
 }
 
-// Help in three steps: which sentence to read, where it could be, then the one cell (the child taps it).
-// The person is the one a child can place next: their sentence leaves one cell, or they are the only one
-// who can still go in some row or column.
+// Help in three steps; the child always taps the cell. The person is the one a child can place next:
+// - their sentence leaves one cell: (1) read this sentence, (2) the cells it allows, (3) the one cell;
+// - or a row or column has room for only them: (1) this row/column needs someone, (2) only they can go
+//   there, (3) the cell. The second kind says why, so the help never looks like a guess.
+const cellsFor = (p) => {
+  const out = [];
+  for (let r = 0; r < L.n; r++) for (let c = 0; c < L.n; c++) if (!blocked(r, c) && !inRow(r) && !inCol(c) && fits(p.rule, r, c)) out.push([r, c]);
+  return out;
+};
 function nextPerson() {
   const left = L.people.filter(p => !S.pos[p.id]);
-  const cand = {};
-  for (const p of left) {
-    cand[p.id] = [];
-    for (let r = 0; r < L.n; r++) for (let c = 0; c < L.n; c++) if (!blocked(r, c) && !inRow(r) && !inCol(c) && fits(p.rule, r, c)) cand[p.id].push([r, c]);
-  }
-  const one = left.find(p => cand[p.id].length === 1);
-  if (one) return one;
+  const one = left.find(p => cellsFor(p).length === 1);
+  if (one) return { id: one.id };
   for (const axis of [0, 1]) for (let x = 0; x < L.n; x++) {
-    const who = left.filter(p => cand[p.id].some(q => q[axis] === x));
-    if (who.length === 1 && who[0].at[axis] === x) return who[0];
+    if (axis ? inCol(x) : inRow(x)) continue;
+    const who = left.filter(p => cellsFor(p).some(q => q[axis] === x));
+    if (who.length === 1 && who[0].at[axis] === x) return { id: who[0].id, axis, x };
   }
-  return left[0];
+  return { id: left[0].id };
 }
 
 function hint() {
   if (allPlaced()) return;
   setCross(false);
-  const p = (S.hint && !S.pos[S.hint.id]) ? person(S.hint.id) : nextPerson();
-  if (!S.hint || S.hint.id !== p.id) S.hint = { id: p.id, step: 0 };
+  if (!S.hint || S.pos[S.hint.id]) S.hint = { ...nextPerson(), step: 0 };
   S.hint.step = Math.min(S.hint.step + 1, 3);
+  const h = S.hint, p = person(h.id);
   S.sel = p.id;
   draw();
   const row = document.querySelector(`.clue[data-p="${p.id}"]`);
   const light = (cells) => cells.forEach(([r, c]) => document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`).classList.add('can'));
-  if (S.hint.step === 1) {
+  const line = h.axis === 1 ? 'tem stolpcu' : 'tej vrsti';
+  const lineCells = () => { const out = []; for (let i = 0; i < L.n; i++) { const [r, c] = h.axis === 1 ? [i, h.x] : [h.x, i]; if (!blocked(r, c)) out.push([r, c]); } return out; };
+  if (h.axis !== undefined && h.step === 1) {
+    light(lineCells());
+    say(`V ${line} mora stati nekdo. Preberi stavke. Kdo lahko stoji tukaj?`);
+  } else if (h.axis !== undefined && h.step === 2) {
+    row.classList.add('glow');
+    light(lineCells());
+    say(`Samo ${p.name} lahko stoji v ${line}: »${p.clue}« Za druge tu ni prostora.`);
+  } else if (h.step === 1) {
     row.classList.add('glow');
     say(`Preberi ta stavek: »${p.clue}«`);
-  } else if (S.hint.step === 2) {
-    const can = [];
-    for (let r = 0; r < L.n; r++) for (let c = 0; c < L.n; c++) if (!blocked(r, c) && !inRow(r) && !inCol(c) && fits(p.rule, r, c)) can.push([r, c]);
+  } else if (h.step === 2) {
+    const can = cellsFor(p);
     light(can);
     say(can.length === 1 ? 'Samo eno polje ustreza. Tapni ga!' : `${p.name} je lahko na svetlih poljih. Preberi še druge stavke.`);
   } else {
@@ -709,10 +814,11 @@ function answer(id, el) {
     return;
   }
   if (!solved.includes(L.id)) solved.push(L.id);
-  try { localStorage.setItem(KEY, JSON.stringify(solved)); } catch (e) {}
+  try { localStorage.setItem(KEY, JSON.stringify(solved)); localStorage.removeItem('kjekdo_solved'); } catch (e) {}
   const p = person(id), next = LEVELS.find(l => l.id === L.id + 1);
   openSheet(`<div class="win sheet-inner" style="display:flex;flex-direction:column;gap:12px;align-items:center">
     <span class="stamp"><i>✓</i>Primer rešen!</span>
+    <p class="bravo">${me.sk} Bravo, ${esc(detName(me).replace(/^D/, 'd'))}!</p>
     <span class="who-face">${p.face}</span>
     <h3>${L.win}</h3><p class="story">${L.why}</p>
     <p class="heart"><b>Zakaj?</b> ${L.heart}</p>
@@ -728,7 +834,10 @@ $('crossBtn').onclick = () => { setCross(!S.cross); say(S.cross ? 'Tapni polje, 
 $('undoBtn').onclick = undo;
 $('hintBtn').onclick = hint;
 $('rulesBtn').onclick = () => showRules();
-$('back').onclick = (e) => { if (L) { e.preventDefault(); showList(); } };
+$('back').onclick = (e) => {
+  if (mk && mk.step > 1) { e.preventDefault(); mk.step--; drawMake(); }
+  else if (L) { e.preventDefault(); showList(); }
+};
 
 const q = new URLSearchParams(location.search).get('uganka');
 if (q && LEVELS.some(l => l.id === +q)) start(+q); else showList();

@@ -1,4 +1,4 @@
-# Side game proposal: "Kje je kdo?" (a Murdoku-style puzzle for kids)
+# »Skrivnostne sobe« (first »Kje je kdo?«): a Murdoku-style side puzzle for kids
 
 ## Context
 The producer added 22 screenshots to `Detective2/images/` of an English mobile app ("Crime Files", 6 seasons × 160 cases, Easy → Extreme, a paywall for post-mistake clues). They asked:
@@ -92,7 +92,7 @@ All Slovenian is a draft for the **slovenian-editor** and a native speaker (e.g.
 - A playtest with 1–2 children: time to solve level 1, where they get stuck, and whether they read the sentences or guess.
 
 ## Producer's decisions (2026-11-13)
-1. The name is **"Kje je kdo?"**.
+1. The name was **"Kje je kdo?"**; on 2026-11-13 the producer renamed it **»Skrivnostne sobe«**. The address stays `kje-je-kdo/`.
 2. Characters are **new neutral names** (Ana, Bor, Cvetka, Dan, Eva), not the season characters.
 3. If the test goes well, the studio's **puzzle-designer** owns a series of about 10 levels, growing from 4×4 to 6×6.
 4. **Built and live on 2026-11-13** as `kje-je-kdo/index.html`, with a tile on the start page. The checker is `node solo/tools/kjekdo.mjs`, and the browser test is `node solo/tools/tests/run.mjs kjekdo`.
@@ -147,3 +147,8 @@ The checker also refuses a puzzle in which the culprit's own sentence points at 
 - The **slovenian-editor** made about 30 fixes: sentences of ≤ 8 words, names instead of pronouns, »Tu so očala«, »dati koš«, »ključ ni na mestu«, and a list intro that speaks to girls and boys alike.
 - **Still open for a native speaker:** »z menoj / z mano«, »ubranil vse strele«, »Kronica je spala v skrinji«, and the agreement in »Kjer so 👓 očala, 🪴 rastlina …«.
 - **Flagged and kept (the producer may change them):** names that are also words (Dan, Maj, Bor, Pika, Vid), and »čitalnica«, »jasa«, »stožec«, »sramežljiva«.
+
+## Producer's feedback, 2026-11-13 (second round)
+- **One detective everywhere.** The puzzles read the main game's ID card (`dp_profile_v1`). A child without one makes it first (detective → helper → name, optional → »To si ti!«), saved the same way, so solo/ knows them too. The helper on the card sits beside the board, and the win says »Bravo, detektivka Ana!«. Solved puzzles live in `dp_kjekdo_v1` (was `kjekdo_solved`, copied over once), which solo/ keeps per detective (KID_KEYS) and exports.
+- **The chest (skrinja)** was the 🧰 toolbox emoji and didn't read as a chest. It is now a drawing of a wooden chest with a gold lock.
+- **The help says why.** When the next step comes from a row or column (»only Maj can stand in column 5«), the help no longer jumps to the sentence: (1) it lights the row or column and says someone must stand there, (2) only this person fits, with their sentence, (3) the cell. Before, puzzle 6 looked like a guess: Maj's sentence alone leaves 3 cells.
