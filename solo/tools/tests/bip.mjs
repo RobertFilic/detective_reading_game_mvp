@@ -50,17 +50,13 @@ for (const [name, w, h] of devices) {
   ok((await text()).includes('pretemno') && (await p.$$('.pocket .row')).length === 6, `${name}: dark corner needs the torch`);
   await check('scene-dark');
   await p.click('[data-act="torch"]'); await wait();
-  await p.evaluate(() => { window.NO_READ_WAIT = false; });
   await p.click('.obj[data-sid="s6"]'); await wait();
   ok((await p.$$('.pocket .row')).length === 7 && !(await p.$eval('[data-act="toSolve"]', el => el.disabled)), `${name}: torch reveals the footprint, all 7 found`);
-  ok(!(await p.$('[data-act="noteOk"]')) && !(await p.$('[data-act="toSolve"].pulse')), `${name}: the last clue first gets time to be read: no message, no glow yet`);
-  await p.waitForSelector('[data-act="noteOk"]', { timeout: 7000 });   // about 0.4 s a word
-  await p.evaluate(() => { window.NO_READ_WAIT = true; });
-  ok((await text()).includes('Vse je preiskano. Kdo je bil?') && !(await text()).includes('tapni »Vem'), `${name}: a case already solved: the short »Vse je preiskano. Kdo je bil?«`);
-  ok(await p.evaluate(() => { const k = localStorage.getItem('dp_played_v1'); localStorage.setItem('dp_played_v1', '[]'); const m = doneMsg('sceneDone'); localStorage.setItem('dp_played_v1', k); return m; }) === 'Vse je preiskano! Preberi namige. Ko veš, kdo je bil, tapni »Vem, kdo je bil!«.', `${name}: nothing solved yet: the message says which button`);
-  ok(!(await p.$('[data-act="toSolve"].pulse')), `${name}: »Vem« calm while the message is open`);
-  await p.evaluate(() => document.querySelector('[data-act="noteOk"]').click()); await wait();
-  ok(await p.$('[data-act="toSolve"].pulse'), `${name}: message closed → »Vem, kdo je bil!« glows`);
+  ok(!(await p.$('.note')) && !(await p.$('[data-act="noteOk"]')), `${name}: the last clue: no message card at all`);
+  ok((await p.$eval('.pocket-count', e => e.textContent)).includes('✓ Vse najdeno'), `${name}: the counter turns into »✓ Vse najdeno«`);
+  ok(await p.$('[data-act="toSolve"].pulse'), `${name}: »Vem, kdo je bil!« glows at once`);
+  ok((await p.$eval('.qbar', e => e.textContent)).includes('Vse je preiskano. Kdo je bil?') && !(await text()).includes('tapni »Vem'), `${name}: a case already solved: the short line on top`);
+  ok(await p.evaluate(() => { const k = localStorage.getItem('dp_played_v1'); localStorage.setItem('dp_played_v1', '[]'); const m = doneMsg('sceneDone'); localStorage.setItem('dp_played_v1', k); return m; }) === 'Vse je preiskano! Preberi namige. Ko veš, kdo je bil, tapni »Vem, kdo je bil!«.', `${name}: nothing solved yet: the line says which button`);
   await check('scene');
   await p.click('[data-act="toSolve"]'); await wait();
   ok(await st() === 'solve', `${name}: solve screen`);

@@ -11,3 +11,5 @@ Read before every task. Add up to 3 lessons after every task: the rule, then —
 - When a card is picked, a tap on an already placed card in a band must count as a tap on that band, or the full band can't take new cards. — ⏰ Kdaj?, 2026-11.
 - A button that names the next step (»Kam kaže sled? 🧭«) reads to a child like a riddle to answer; the forward button is always »Naprej 👉« and the next step's card explains. A waiting button says what's left (»Še 1 stvar 👆«). — the producer, Duh v muzeju m1, 2026-11-08.
 - Several headless Chromes closing at once sometimes never confirm; `tools/tests/setup.mjs` limits close to 15 s. Run tests through `run.mjs`, not by hand in parallel. — 2026-11-08.
+- When a card moves from "after a delay" to "never", grep tests for the counter text too (`👝 5 / 5`, `noteOk`): galeb-mech read the counter as its "all found" check. — all-found chip, 2026-11-13.
+- A new first-run card changes every test that starts from a new profile: add the tap to the shared `open()` helper, not to each test. — warm intro card, 2026-11-13.

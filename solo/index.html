@@ -1369,6 +1369,9 @@ tr.clickable { cursor: pointer; }
 .tool { height: var(--tap); padding: 0 16px; border-radius: var(--r-m); border: 1.5px solid var(--line); background: var(--paper); font: 500 var(--t-small) var(--font); }
 .tool.on { background: var(--season); border-color: var(--season); color: #fff; box-shadow: var(--sh-lift); }
 .pocket-count { font: 500 var(--t-small) var(--font); color: var(--ink-2); }
+/* everything found: the counter turns into a green chip, no card in the way */
+.pocket-count.is-done { background: var(--green-soft); color: var(--green); font-weight: 700; padding: 6px 12px; border-radius: 999px; border: 1.5px solid var(--green); animation: chipPop .35s ease-out; }
+@keyframes chipPop { from { transform: scale(.6); opacity: 0; } 70% { transform: scale(1.08); } to { transform: scale(1); opacity: 1; } }
 
 /* 🗣️ questioning: a messaging app */
 .chat-head { font: 500 var(--t-small) var(--font); color: var(--ink-2); }
@@ -1705,6 +1708,9 @@ const UI_AUDIO = {
   warm2Coin: 'Ne gre? Tapni me. Namig je zastonj.',
   warm2Done: 'Zdaj znaš! Greva na pravi primer.',
   warmMore: 'Še ena vaja skupaj',
+  warmIntro: 'Juhu! Najprej vaja. Skupaj rešiva en primer, da vidiš, kako gre.',
+  warmGo: 'Začniva!',
+  warmSkipIntro: 'Že znam, preskoči',
   // what the companion says after a pause (the step's goal), and when its coin is tapped where nothing can go wrong
   goalScene: 'Tapni vsako stvar.',
   goalAsk: 'Vprašaj vse. Vsak nekaj pove.',
@@ -3335,7 +3341,7 @@ const detName = (p = profile()) => detTitle(p) + (p && p.name ? ' ' + p.name : '
 // Slovenian plural after a number: 1 rešen primer, 2 rešena primera, 3–4 rešeni primeri, 5+ rešenih primerov.
 const solvedLabel = (n) => n % 100 === 1 ? `${n} rešen primer` : n % 100 === 2 ? `${n} rešena primera`
   : (n % 100 === 3 || n % 100 === 4) ? `${n} rešeni primeri` : `${n} rešenih primerov`;
-const cleanName = (v) => v.replace(/[^\p{L} '-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 12)
+const cleanName = (v) => v.replace(/[^\p{L}\p{N} '-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 12)
   .replace(/^\p{L}/u, ch => ch.toUpperCase());
 
 const idCard = (p, o) => UI.id(p, o);
@@ -3518,6 +3524,8 @@ function startWarm(n, replay = false) {
   S.run = newRun();
   if (n === 1) { S.run.lead = { miss: 0, oops: false, read: null }; S.run.briefed = [...S.c.steps]; }   // the companion says each instruction itself
   else S.run.w2 = {};
+  // a brand-new detective first meets the intro card; the state stays 'new' until »Začniva!«
+  if (n === 1 && !replay && help().warm === 'new') { S.run.intro = true; log('warm_intro'); go('call'); return; }
   if (!replay) helpSet({ warm: 'w' + n });
   log('warm_start', { n, replay });
   go('call');
@@ -3546,6 +3554,12 @@ function warmNext() {
   if (S.warmReplay || c.warm === 2) { leaveWarm(); return; }
   if (!r.lead.miss && !r.offer) { r.offer = true; log('skip_offer'); render(); return; }
   startWarm(2);
+}
+const introOpen = () => S.screen === 'call' && !!(S.run && S.run.intro);
+function introHTML() {
+  return `<div class="brief-wrap ui-sheet-wrap"><div class="brief offer ui-sheet">
+    <div class="ui-sheet-title">${UI.coin(helperEmoji())}${esc(UI_AUDIO.warmIntro)}</div>
+    ${UI.btn(UI_AUDIO.warmGo, { act: 'warmGo' })}${UI.btn(UI_AUDIO.warmSkipIntro, { act: 'warmSkip', kind: 'is-quiet' })}</div></div>`;
 }
 const offerOpen = () => S.screen === 'reveal' && !!(S.run && S.run.offer);
 function offerHTML() {
@@ -3596,7 +3610,7 @@ function w2Step() {
 function coachStep() {
   const t = S.tut, r = S.run;
   // the first UGOVOR ever: the owl shows the two taps (a finger only when there is one claim to point at)
-  if (briefOpen() || truthOpen() || excuseOpen() || pinOpen() || offerOpen() || (stepCase() && r.note)) return null;
+  if (briefOpen() || truthOpen() || excuseOpen() || pinOpen() || offerOpen() || introOpen() || (stepCase() && r.note)) return null;
   if (r && (r.lead || r.w2) && S.c && S.c.warm) return r.hint ? null : r.lead ? leadStep() : w2Step();
   if (S.screen === 'lie' && r && r.lcoach && !r.caught && !r.hint) {
     const one = S.c.lie.claims.length === 1;
@@ -3889,6 +3903,7 @@ function render() {
   else if (excuseOpen()) app.insertAdjacentHTML('beforeend', excuseHTML());
   else if (pinOpen()) app.insertAdjacentHTML('beforeend', pinHTML());
   else if (offerOpen()) app.insertAdjacentHTML('beforeend', offerHTML());
+  else if (introOpen()) app.insertAdjacentHTML('beforeend', introHTML());
   else if (stepCase() && S.run.note && !S.run.hint) app.insertAdjacentHTML('beforeend', noteHTML());
   const chat = $('.chat');
   if (chat) chat.scrollTop = chat.scrollHeight;
@@ -4078,17 +4093,6 @@ const stepNext = (d = 1) => S.c.steps[S.c.steps.indexOf(S.screen) + d];
 // »Vse je preiskano. Kdo je bil?« only when solve comes next; before another step it says »Naprej!«
 const doneKey = (k) => stepNext() === 'solve' ? k : k + 'On';
 // until the first case is solved, the message says which button comes next
-// the last sentence first gets time to be read (about 0.4 s a word), then the "all done" message
-const readMs = (s) => window.NO_READ_WAIT ? 0 : Math.min(6000, Math.max(2500, 1200 + 400 * s.text.split(/\s+/).length));
-function doneLater(r, screen, k, s) {
-  r.donePending = true;
-  setTimeout(() => {
-    r.donePending = false;
-    if (S.run !== r || S.screen !== screen) return;
-    if (!r.note) r.note = doneMsg(k);
-    render();
-  }, readMs(s));
-}
 const doneMsg = (k) => stepNext() === 'solve' && !solvedKeys().length ? UI_AUDIO[k + 'First'] : UI_AUDIO[doneKey(k)];
 // The button that goes on is always »Naprej 👉« (the next step's own card says what to do there), and
 // »Vem, kdo je bil!« before solve. A step's name on the button read like a riddle (»Napačna sled? 🤔«).
@@ -4151,7 +4155,7 @@ function noteHTML() {
   const r = S.run, hmm = S.c.lie ? (S.c.lie.hmm || []).findIndex(m => m[2] === r.note) : -1;
   const key = Object.keys(UI_AUDIO).find(k => UI_AUDIO[k] === r.note);
   const almost = hmm >= 0 || r.note === UI_AUDIO.lieHalf;
-  const good = [UI_AUDIO.lastOne, UI_AUDIO.sceneDone, UI_AUDIO.askDone, UI_AUDIO.sceneDoneOn, UI_AUDIO.askDoneOn, UI_AUDIO.sceneDoneFirst, UI_AUDIO.askDoneFirst, UI_AUDIO.herringDone, UI_AUDIO.whenDone].includes(r.note);
+  const good = [UI_AUDIO.lastOne, UI_AUDIO.herringDone, UI_AUDIO.whenDone].includes(r.note);
   return `<div class="note-back" data-act="noteNudge"></div><div class="hint note ${almost ? 'almost' : good ? 'good' : 'tip'}" id="note">
     <span class="hi">${good ? '✓' : UI.coin(helperEmoji())}</span><span class="txt">${almost ? `<b class="verdict">${UI_AUDIO.almost}</b> ` : ''}${esc(r.note)}</span>
     ${UI.btn('V redu', { act: 'noteOk', kind: good ? '' : 'is-soft' })}</div>`;
@@ -4778,8 +4782,8 @@ const T = {
       </div>
       ${open.length && !r.typing ? `<div class="qs">${open.map(s => `<button class="qbtn" data-act="askQ" data-sid="${s.id}">${esc(s.ask)}</button>`).join('')}</div>` : ''}
       <div class="footer">${footBack()}
-        <span class="pocket-count">👝 ${got} / ${all}</span>
-        <span class="grow"></span><button class="btn big ${done && !r.note && !r.donePending ? 'pulse' : ''}" data-act="toSolve" ${done ? '' : 'disabled'}>${done ? stepLabel() : leftLabel(all - got, ['vprašanje', 'vprašanji', 'vprašanja', 'vprašanj'], '💬')}</button></div>
+        ${done ? '<span class="pocket-count is-done">✓ Vsi so odgovorili</span>' : `<span class="pocket-count">👝 ${got} / ${all}</span>`}
+        <span class="grow"></span><button class="btn big ${done && !r.note ? 'pulse' : ''}" data-act="toSolve" ${done ? '' : 'disabled'}>${done ? stepLabel() : leftLabel(all - got, ['vprašanje', 'vprašanji', 'vprašanja', 'vprašanj'], '💬')}</button></div>
     </div>`;
   },
 
@@ -4824,7 +4828,7 @@ const T = {
       <div class="toolbar-kid">
         ${c.warm ? '' : `<button class="tool ${r.torch ? 'on' : r.darkMiss && mine.some(s => s.dark && !r.found.includes(s.id)) ? 'pulse' : ''}" data-act="torch">🔦 Svetilka</button>`}
         ${mine.some(s => s.rub) ? `<button class="tool ${r.pencil ? 'on' : r.rubMiss >= 2 ? 'pulse' : ''}" data-act="pencil">🖍️ Svinčnik</button>` : ''}
-        <span class="pocket-count">👝 ${found.length} / ${all}</span>
+        ${done ? '<span class="pocket-count is-done">✓ Vse najdeno</span>' : `<span class="pocket-count">👝 ${found.length} / ${all}</span>`}
       </div>
       <div class="objs ${r.torch ? 'torch' : ''} ${r.pencil ? 'pencil' : ''}">${mine.map(s => {
         const got = r.found.includes(s.id);
@@ -4834,7 +4838,7 @@ const T = {
       <div class="rows pocket">${found.slice().reverse().map((sid, i) =>
         `<div class="row ${i === 0 && r.fresh ? 'fresh' : ''} ${sent(sid).rub ? 'rubbed' : ''}" data-act="listenClue" data-sid="${sid}">${sayHTML(sent(sid))}</div>`).join('')}</div>
       <div class="footer">${footBack()}
-        <span class="grow"></span><button class="btn big ${done && !r.note && !r.donePending && !r.lead ? 'pulse' : ''}" data-act="toSolve" ${done ? '' : 'disabled'}>${done ? stepLabel() : leftLabel(all - found.length, ['stvar', 'stvari', 'stvari', 'stvari'], '👆')}</button></div>
+        <span class="grow"></span><button class="btn big ${done && !r.note && !r.lead ? 'pulse' : ''}" data-act="toSolve" ${done ? '' : 'disabled'}>${done ? stepLabel() : leftLabel(all - found.length, ['stvar', 'stvari', 'stvari', 'stvari'], '👆')}</button></div>
     </div>`;
   },
 
@@ -5108,6 +5112,7 @@ const ACTIONS = {
   tutorial() { startWarm(1, true); },
   warmSkip() { helpSet({ warm: 'skipped', g: 2, streak: 0 }); log('warm_skip'); leaveWarm(); },
   warmMore() { startWarm(2); },
+  warmGo() { S.run.intro = false; helpSet({ warm: 'w1' }); log('warm_start', { n: 1, replay: false }); render(); },
   // solve one sentence at a time: a dot shows that sentence; »Naslednji stavek« goes to the next one not read yet
   // (then round the ones still free); »Vsi stavki« gives the list back; at level 2 the child may ask for this view
   walkTo(el) {
@@ -5797,7 +5802,6 @@ const ACTIONS = {
     setTimeout(() => {
       if (S.screen !== 'ask' || r.typing !== s.id) return;
       r.typing = null;
-      if (own('ask').every(x => r.found.includes(x.id))) doneLater(r, 'ask', 'askDone', s);
       sfx('pop');
       render();
     }, 900);
@@ -5857,7 +5861,6 @@ const ACTIONS = {
     r.fresh = true;
     r.glow = false;
     r.note = null;
-    if (!r.lead && own('scene').every(x => r.found.includes(x.id))) doneLater(r, 'scene', 'sceneDone', s);
     if (r.lead) Object.assign(r.lead, { scene: true, read: s.id, oops: false });
     r.heard.add(s.id);
     sfx('pop');

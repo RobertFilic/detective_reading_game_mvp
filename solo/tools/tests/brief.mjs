@@ -33,9 +33,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['plus14', 428, 926], ['land
   ok((await card() || {}).text?.includes('Na kraju dogodka'), `${name}: the instruction on top opens it again`);
   await click('[data-act="briefOk"]');
   for (const sid of await p.$$eval('.obj', els => els.map(e => e.dataset.sid))) await click(`.obj[data-sid="${sid}"]`, 60);
-  const done = await p.evaluate(() => { const n = document.querySelector('#note.good'); return n && n.innerText; });
-  ok(done && done.includes('Vse je preiskano'), `${name}: »Vse je preiskano« comes as a card`);
-  await click('[data-act="noteOk"]');
+  ok(!(await p.$('#note')) && (await p.$eval('.pocket-count', e => e.textContent)).includes('Vse najdeno'), `${name}: everything found: a green chip, no card`);
   await click('[data-act="toSolve"]');
   c = await card();
   ok(c && c.text.includes('Je vse res?') && c.text.includes('Je to res?'), `${name}: UGOVOR opens with its card`);

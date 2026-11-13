@@ -15,6 +15,7 @@ async function open(dev, w, h, storage) {
   await p.goto('http://localhost:8765/solo/?play');
   await p.evaluate((st) => { localStorage.clear(); for (const [k, v] of Object.entries(st)) localStorage.setItem(k, v); }, storage);
   await p.reload(); await wait(400);
+  if (storage === newKid) { await p.click('[data-act="warmGo"]'); await wait(300); }   // the intro card (warm-intro.mjs tests it)
   p.st = () => p.evaluate(() => S.screen);
   p.say = () => p.$eval('.coach .say', e => e.textContent).catch(() => '');
   p.help = () => p.evaluate(() => JSON.parse(localStorage.getItem('dp_help_v1')));

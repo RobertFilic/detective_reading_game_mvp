@@ -35,6 +35,7 @@ ok(await st() === 'call' && (await text()).includes('Vaja') && await p.evaluate(
 ok(!(await p.evaluate(() => JSON.stringify(LOG))).includes('Ana'), 'the name is never written to the log');
 
 // ---- the warm-up case (quick: tap what the companion rings), gendered praise; the rest is in warm.mjs
+await p.click('[data-act="warmGo"]'); await wait(200);   // the intro card first
 for (let i = 0; i < 60 && await st() !== 'reveal'; i++) { await p.click(await p.$('[data-coach="ok"]') ? '[data-coach="ok"]' : '.coach-target'); await wait(120); }
 ok((await text()).includes('Detektivka Ana je ujela Bineta!'), 'the solved screen says "Detektivka Ana je ujela Bineta!"');
 await wait(250);   // brief-auto closes the excuse card
