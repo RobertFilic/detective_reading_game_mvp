@@ -105,3 +105,45 @@ All Slovenian is a draft for the **slovenian-editor** and a native speaker (e.g.
   - A Slovenian editor and native speaker pass on all text.
   - The 🧰 for the chest and the 🍳 for the stove are placeholders until we draw icons.
   - A playtest with children.
+
+## 12 puzzles (2026-11-13)
+The producer asked for more: easy, medium and a bit harder, all for 7–8-year-olds, each with a story "for the heart". They also asked for sports.
+- **The child places everyone.** The game never places a person. 💡 Pomoč works in 3 steps: the sentence glows, the cells that fit light up, then the one right cell lights up. The child still taps it. The row and column crosses that appear after a placement stay as a visual aid.
+- **3 groups of 4.** Each puzzle opens when the one before it is solved (`?uganka=N` opens any puzzle directly, for adults and tests).
+
+| # | Group | Board | Puzzle | Culprit and the reason why |
+|---|---|---|---|---|
+| 1 | 🟢 | 4×4 | 🎂 Kdo je načel torto? | Dan took a piece to a lonely neighbour on her birthday |
+| 2 | 🟢 | 4×4 | 👓 Kje so babičina očala? | Jaka wanted grandma to stay one more day |
+| 3 | 🟢 | 4×4 | 💗 Kdo je narisal srček? | Lan, for a sad classmate |
+| 4 | 🟢 | 4×4 | ⚽ Kdo je zabil gol? | Nik's first goal; the team passed to him |
+| 5 | 🟡 | 5×5 | 👑 Kje je zlata kronica? | Eva lent it to her little sister after a bad dream |
+| 6 | 🟡 | 5×5 | ✉️ Kdo je napisal pismo? | Shy Ula, to the new girl |
+| 7 | 🟡 | 5×5 | 🏀 Kdo je dal zadnji koš? | Ajda, who always missed, closed her eyes and scored |
+| 8 | 🟡 | 5×5 | 🪗 Kje je dedkova harmonika? | Tina practised in secret for grandpa's birthday |
+| 9 | 🟠 | 5×5 | 🔑 Kdo je vzel ključ od knjižnice? | Vid, a thank-you party for the librarian |
+| 10 | 🟠 | 5×5 | 🧸 Kje je Zalin medvedek? | Matic washed the muddy teddy |
+| 11 | 🟠 | 5×5 | ⛄ Kdo je naredil snežaka? | Grandma, for a sick child at the window |
+| 12 | 🟠 | 6×6 | 🌼 Kdo je obesil venček? | Lara, for the goalkeeper's birthday |
+
+**What makes a puzzle easy or hard.** `node solo/tools/kjekdo.mjs` proves every puzzle and prints the child's path through it:
+- **🟢 Lahko:** only "on X" and "in a room" sentences, plus one person with no place. Every step is "this person has one free cell left".
+- **🟡 Srednje:** adds *ob* and *ni*. At most 1 step of "only this person can still go in this row or column".
+- **🟠 Malo težje:** two or more *ni* sentences and 2–4 such row/column steps. The finale is 6×6.
+
+The checker also refuses a puzzle in which the culprit's own sentence points at the missing thing.
+
+**How a new puzzle is made:**
+1. Draw a map: rooms plus objects, and the missing thing's place in one room.
+2. A design script searches for a placement and one sentence per person that pass every check. It lives in the session scratchpad; it should become `solo/tools/kjekdo-design.mjs` if we make more.
+3. A writer (us or the puzzle-designer) writes the story and the reason why.
+4. The **slovenian-editor** and the **book-editor** read the texts.
+5. `kjekdo.mjs` and the browser test `node solo/tools/tests/run.mjs kjekdo` (all 12 puzzles on a phone, 1–2 on iPad and landscape) must pass before a push.
+
+**Sports.** A pitch or a court is already a grid with zones (pred golom, sredina, rob igrišča, tribuna, pod košem; never a room name with »ob«, which is a clue word), and its objects work as blockers or seats (gol, koš, stožec, žoga, klop). Puzzles 4, 7 and 12 use this. A running joke: someone always sits on the ball.
+
+**Reviews (2026-11-13).**
+- The **book-editor** scored heart 4–5, fun 2–4, pull 3–5. Fun is the weakest; puzzle 7 got a funnier reason.
+- The **slovenian-editor** made about 30 fixes: sentences of ≤ 8 words, names instead of pronouns, »Tu so očala«, »dati koš«, »ključ ni na mestu«, and a list intro that speaks to girls and boys alike.
+- **Still open for a native speaker:** »z menoj / z mano«, »ubranil vse strele«, »Kronica je spala v skrinji«, and the agreement in »Kjer so 👓 očala, 🪴 rastlina …«.
+- **Flagged and kept (the producer may change them):** names that are also words (Dan, Maj, Bor, Pika, Vid), and »čitalnica«, »jasa«, »stožec«, »sramežljiva«.

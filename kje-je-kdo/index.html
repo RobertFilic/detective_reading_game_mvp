@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#1b4d36">
-<meta name="description" content="Kje je kdo? Uganka Bralnih detektivov: preberi stavke, postavi ljudi v hišo in najdi, kdo je bil.">
+<meta name="description" content="Kje je kdo? Uganka Bralnih detektivov: preberi stavke, postavi ljudi na pravo mesto in najdi, kdo je bil.">
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="apple-touch-icon" href="../icons/icon-180.png">
 <link rel="icon" type="image/png" href="../icons/icon-192.png">
@@ -47,6 +47,9 @@ main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-i
 .intro h1 { font: 700 clamp(30px, 7vw, 44px)/1.1 var(--font); letter-spacing: -.01em; }
 .intro p { color: var(--ink-2); }
 .levels { display: grid; gap: 12px; }
+.group { font: 700 20px var(--font); margin: 22px 0 10px; }
+.lvl.locked { opacity: .55; }
+.lvl.no { animation: shake 360ms; }
 .lvl { display: flex; align-items: center; gap: 14px; text-align: left; width: 100%; min-height: 88px; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: 22px; background: var(--paper);
   box-shadow: 0 2px 0 var(--line), 0 10px 24px rgba(60, 50, 20, .05); }
 .lvl i { width: 56px; height: 56px; flex: none; border-radius: 16px; display: grid; place-items: center; font-size: 30px; font-style: normal; background: var(--season-soft); transform: rotate(-4deg); }
@@ -69,6 +72,7 @@ main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-i
 .cell.has .rug { width: 86%; height: 86%; }
 .cell .obj { font-size: calc(var(--bs) / var(--n) * .52); line-height: 1; pointer-events: none; }
 .cell .obj svg { width: calc(var(--bs) / var(--n) * .62); height: auto; display: block; }
+.cell .obj.gone { opacity: .35; filter: grayscale(1); outline: 2px dashed rgba(58, 50, 41, .45); outline-offset: 3px; border-radius: 8px; }
 .cell .rug { width: 70%; height: 62%; border-radius: 6px; background: #b8433a; box-shadow: inset 0 0 0 3px #b8433a, inset 0 0 0 5px #f2c66d; pointer-events: none; }
 .cell .lab { position: absolute; left: 50%; bottom: 3px; transform: translateX(-50%); max-width: 94%; background: rgba(255, 253, 250, .92); border-radius: 6px; padding: 1px 4px;
   font: 600 clamp(10px, 2.6vw, 13px)/1.15 var(--font); text-align: center; pointer-events: none; z-index: 2; }
@@ -126,6 +130,7 @@ main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-i
   box-shadow: inset 0 0 0 2px var(--stamp-paper), inset 0 0 0 3.5px var(--stamp); padding: 5px 14px 5px 5px; font: 700 22px var(--font); transform: rotate(-6deg);
   animation: stamp 420ms 120ms cubic-bezier(.3, 1.5, .5, 1) both; }
 .win .stamp i { width: 32px; height: 32px; border-radius: 50%; background: var(--stamp); color: #fff; display: grid; place-items: center; font-style: normal; font-size: 17px; }
+.win .heart { background: #fbe6a4; border-radius: 16px; padding: 12px 14px; font-size: 17px; line-height: 1.45; text-align: left; transform: rotate(-1deg); }
 .win .who-face { font-size: 64px; line-height: 1; }
 .win .btns { display: flex; flex-direction: column; gap: 8px; align-self: stretch; }
 
@@ -161,9 +166,9 @@ main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-i
   <section id="list">
     <div class="intro">
       <h1>Kje je kdo?</h1>
-      <p>Preberi, kje je bil kdo. Postavi vse v hišo. Potem boš vedel, kdo je bil.</p>
+      <p>Preberi, kje je bil kdo. Postavi vse na pravo mesto. Tako najdeš, kdo je bil.</p>
     </div>
-    <div class="levels" id="levels"></div>
+    <div id="levels"></div>
     <a class="home-link" href="../">← Na začetno stran</a>
   </section>
 
@@ -188,27 +193,72 @@ main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-i
 <script>
 // ---- The levels. Each person's `at` is the one solution and `rule` is their sentence as logic;
 // solo/tools/kjekdo.mjs proves that the rules give exactly `at` and that no sentence is spare.
-// Rules: {on: obj} | {room: r} | {notRoom: r} | {beside: obj} | {notBeside: obj} | {} (no clue).
-const OBJ = {
-  torta:     { e: '🎂', name: 'torta', block: true },
-  kavc:      { e: '🛋️', name: 'kavč' },
-  stol:      { e: '🪑', name: 'stol' },
-  postelja:  { e: '🛏️', name: 'postelja' },
-  klop:      { svg: '<svg viewBox="0 0 40 30" aria-hidden="true"><rect x="3" y="4" width="34" height="6" rx="2" fill="#a0673a"/><rect x="3" y="13" width="34" height="6" rx="2" fill="#b97a45"/><rect x="6" y="19" width="4" height="10" rx="1" fill="#6b4425"/><rect x="30" y="19" width="4" height="10" rx="1" fill="#6b4425"/></svg>', name: 'klop' },
-  preproga:  { rug: true, name: 'preproga' },
-  drevo:     { e: '🌳', name: 'drevo', block: true },
-  rastlina:  { e: '🪴', name: 'rastlina', block: true },
-  grm:       { e: '🌿', name: 'grm', block: true },
-  stedilnik: { e: '🍳', name: 'štedilnik', block: true },
-  skrinja:   { e: '🧰', name: 'skrinja', block: true },
+// Rules: {on: obj} | {notOn: obj} | {room: r} | {notRoom: r} | {beside: obj} | {notBeside: obj} | {} (no clue).
+// Objects: e = emoji or svg = a drawing; block = nobody can stand there; gone = the missing thing's place (drawn faded).
+const SVG = {
+  klop: '<svg viewBox="0 0 40 30" aria-hidden="true"><rect x="3" y="4" width="34" height="6" rx="2" fill="#a0673a"/><rect x="3" y="13" width="34" height="6" rx="2" fill="#b97a45"/><rect x="6" y="19" width="4" height="10" rx="1" fill="#6b4425"/><rect x="30" y="19" width="4" height="10" rx="1" fill="#6b4425"/></svg>',
+  tabla: '<svg viewBox="0 0 40 32" aria-hidden="true"><rect x="2" y="2" width="36" height="25" rx="3" fill="#2f5d46" stroke="#8a5a32" stroke-width="3"/><path d="M20 22c-6-4-9-7-9-10a4 4 0 0 1 9-2 4 4 0 0 1 9 2c0 3-3 6-9 10z" fill="#ff8fb1"/><rect x="14" y="27" width="12" height="3" fill="#8a5a32"/></svg>',
+  stozec: '<svg viewBox="0 0 30 32" aria-hidden="true"><path d="M15 2 26 27H4z" fill="#f28c28"/><path d="M10 15h10l2 5H8z" fill="#fff"/><rect x="2" y="26" width="26" height="4" rx="1.5" fill="#e0701a"/></svg>',
+  steklenica: '<svg viewBox="0 0 20 36" aria-hidden="true"><rect x="6" y="1" width="8" height="5" rx="1.5" fill="#2d6cdf"/><rect x="3" y="6" width="14" height="28" rx="5" fill="#9fd0ff" stroke="#2d6cdf" stroke-width="2"/><rect x="3" y="15" width="14" height="6" fill="#2d6cdf" opacity=".5"/></svg>',
+  blazina: '<svg viewBox="0 0 40 26" aria-hidden="true"><rect x="2" y="4" width="36" height="18" rx="5" fill="#4f86d9"/><rect x="2" y="4" width="36" height="18" rx="5" fill="none" stroke="#2f5fae" stroke-width="2.5" stroke-dasharray="4 3"/></svg>',
 };
-const ROOM_COLORS = { K: '#f3dfbf', S: '#e6dcf3', D: '#efe2cf', P: '#dbe6f6', V: '#cfeccf' };
+const OBJ = {
+  torta:      { e: '🎂', name: 'torta', block: true },
+  ocala:      { e: '👓', name: 'očala', pl: true, block: true, gone: true },
+  harmonika:  { e: '🪗', name: 'harmonika', block: true, gone: true },
+  kljuc:      { e: '🔑', name: 'ključ', block: true, gone: true },
+  medvedek:   { e: '🧸', name: 'medvedek', block: true, gone: true },
+  skrinja:    { e: '🧰', name: 'skrinja', block: true },
+  tabla:      { svg: SVG.tabla, name: 'tabla', block: true },
+  torba:      { e: '🎒', name: 'Linina torba', block: true },
+  gol:        { e: '🥅', name: 'gol', block: true },
+  kos:        { e: '🏀', name: 'koš', block: true },
+  snezak:     { e: '⛄', name: 'snežak', block: true },
+  kavc:       { e: '🛋️', name: 'kavč' },
+  stol:       { e: '🪑', name: 'stol' },
+  postelja:   { e: '🛏️', name: 'postelja' },
+  klop:       { svg: SVG.klop, name: 'klop' },
+  preproga:   { rug: true, name: 'preproga' },
+  zoga:       { e: '⚽', name: 'žoga' },
+  blazina:    { svg: SVG.blazina, name: 'blazina' },
+  tobogan:    { e: '🛝', name: 'tobogan' },
+  sani:       { e: '🛷', name: 'sani' },
+  hlod:       { e: '🪵', name: 'hlod' },
+  coln:       { e: '🛶', name: 'čoln' },
+  drevo:      { e: '🌳', name: 'drevo', block: true },
+  smreka:     { e: '🌲', name: 'smreka', block: true },
+  rastlina:   { e: '🪴', name: 'rastlina', block: true },
+  grm:        { e: '🌿', name: 'grm', block: true },
+  skala:      { e: '🪨', name: 'skala', block: true },
+  stedilnik:  { e: '🍳', name: 'štedilnik', block: true },
+  klavir:     { e: '🎹', name: 'klavir', block: true },
+  knjige:     { e: '📚', name: 'knjižna polica', block: true },
+  obesalnik:  { e: '🧥', name: 'obešalnik', block: true },
+  okno:       { e: '🪟', name: 'okno', block: true },
+  zaboj:      { e: '📦', name: 'zaboj', block: true },
+  nahrbtnik:  { e: '🎒', name: 'nahrbtnik', block: true },
+  ogenj:      { e: '🔥', name: 'ogenj', block: true },
+  stozec:     { svg: SVG.stozec, name: 'stožec', block: true },
+  steklenica: { svg: SVG.steklenica, name: 'steklenica', block: true },
+  kosara:     { e: '🧺', name: 'košara z žogami', block: true },
+  zastavica:  { e: '🚩', name: 'zastavica', block: true },
+  kamera:     { e: '🎥', name: 'kamera', block: true },
+};
+const ROOM_COLORS = {
+  'Kuhinja': '#f3dfbf', 'Soba': '#e6dcf3', 'Dnevna soba': '#efe2cf', 'Spalnica': '#dbe6f6', 'Vrt': '#cfeccf', 'Podstrešje': '#ead9c6',
+  'Razred': '#fbe9c9', 'Hodnik': '#e9e4dc', 'Knjižnica': '#e8dcf2', 'Garderoba': '#e6dcf3', 'Igrišče': '#d8eecf',
+  'Čitalnica': '#dbe6f6', 'Pravljična soba': '#f6dfe6', 'Šotor': '#f3e3c3', 'Gozd': '#c9e4c2', 'Jasa': '#ddf0c8', 'Jezero': '#cfe3f3',
+  'Pred golom': '#bfe6c3', 'Sredina': '#d6efd2', 'Rob igrišča': '#e8e2d6', 'Tribuna': '#e6dcf3', 'Kotiček': '#cde9c6',
+  'Pod košem': '#f2c99a', 'Hiša': '#f1e1cc', 'Dvorišče': '#e3e8ef', 'Hrib': '#f4f8fc',
+};
+const GROUPS = [['lahko', '🟢 Lahko'], ['srednje', '🟡 Srednje'], ['tezje', '🟠 Malo težje']];
 
 // LEVELS-START
 const LEVELS = [
+  // ---- 🟢 Lahko
   {
-    id: 1, icon: '🎂', title: 'Kdo je načel torto?', tag: 'Lahko · 4 × 4',
-    story: 'Mama je spekla torto in jo pustila v kuhinji. Ko se je vrnila, je manjkal kos! Doma so bili štirje.',
+    id: 1, group: 'lahko', icon: '🎂', title: 'Kdo je načel torto?',
+    story: 'Mama je spekla čokoladno torto. Pustila jo je v kuhinji. Ko se je vrnila, je manjkal kos! Doma so bili štirje.',
     rooms: ['KKSS', 'KKSS', 'VVSS', 'VVVS'],
     names: { K: 'Kuhinja', S: 'Soba', V: 'Vrt' },
     labels: { K: [1, 1], S: [2, 3], V: [3, 2] },
@@ -219,13 +269,65 @@ const LEVELS = [
       { id: 'cvetka', name: 'Cvetka', she: true, face: '👵🏻', clue: 'Cvetka je sedela na stolu.', rule: { on: 'stol' }, at: [2, 2] },
       { id: 'dan', name: 'Dan', face: '🧑🏻‍🦱', clue: 'Dan se ne spomni, kje je bil.', rule: {}, at: [0, 0] },
     ],
-    order: ['ana', 'cvetka', 'bor', 'dan'],
     room: 'K', ask: 'Kdo je bil sam v kuhinji s torto?', culprit: 'dan',
     win: 'Dan je načel torto!', why: 'Bil je sam v kuhinji s torto.',
+    heart: 'Kos torte je nesel sosedi Mici. Bila je čisto sama. Imela je rojstni dan. Mama je objela Dana.',
   },
   {
-    id: 2, icon: '👑', title: 'Kje je zlata kronica?', tag: 'Malo težje · 5 × 5',
-    story: 'Zlata kronica je bila v skrinji v spalnici. Zjutraj je skrinja prazna! Kdo je bil pri njej?',
+    id: 2, group: 'lahko', icon: '👓', title: 'Kje so babičina očala?',
+    story: 'Babica je bila na obisku. Danes gre domov. Toda očal ni več na omarici! Brez očal babica ne more voziti.',
+    rooms: ['PPDD', 'PDDD', 'KKDD', 'KKKD'],
+    names: { P: 'Spalnica', D: 'Dnevna soba', K: 'Kuhinja' },
+    labels: { P: [1, 0], D: [0, 2], K: [2, 1] },
+    objects: { '0,0': 'ocala', '0,1': 'postelja', '0,3': 'rastlina', '1,3': 'kavc', '2,0': 'stedilnik', '2,3': 'klavir', '3,1': 'stol', '3,3': 'preproga' },
+    people: [
+      { id: 'jaka', name: 'Jaka', face: '👦🏼', clue: 'Jaka je ležal na postelji.', rule: { on: 'postelja' }, at: [0, 1] },
+      { id: 'nina', name: 'Nina', she: true, face: '👧🏾', clue: 'Nina je sedela na kavču.', rule: { on: 'kavc' }, at: [1, 3] },
+      { id: 'mama', name: 'Mama', she: true, face: '👩🏼', clue: 'Mama je bila v dnevni sobi.', rule: { room: 'D' }, at: [2, 2] },
+      { id: 'ati', name: 'Ati', face: '👨🏻', clue: 'Ati je ves čas žvižgal.', rule: {}, at: [3, 0] },
+    ],
+    room: 'P', ask: 'Kdo je bil sam v spalnici z očali?', culprit: 'jaka',
+    win: 'Jaka je skril očala!', why: 'Bil je sam v spalnici.',
+    heart: 'Jaka je želel, da babica še ostane. Babica se je zasmejala in objela Jaka. Ostala je do nedelje. Ati je od veselja žvižgal še glasneje.',
+  },
+  {
+    id: 3, group: 'lahko', icon: '💗', title: 'Kdo je narisal srček?',
+    story: 'Hana je bila včeraj žalostna. Zjutraj je na tabli velik srček. Pod njim piše: HANA, NISI SAMA!',
+    rooms: ['RRHH', 'RRHH', 'BBBH', 'BBBH'],
+    names: { R: 'Razred', H: 'Hodnik', B: 'Knjižnica' },
+    labels: { R: [1, 0], H: [2, 3], B: [2, 1] },
+    objects: { '0,0': 'tabla', '0,3': 'obesalnik', '1,2': 'stol', '2,0': 'preproga', '3,0': 'knjige', '3,3': 'klop' },
+    people: [
+      { id: 'lan', name: 'Lan', face: '👦🏻', clue: 'Lan je bil zelo tiho.', rule: {}, at: [0, 1] },
+      { id: 'zoja', name: 'Zoja', she: true, face: '👧🏼', clue: 'Zoja je sedela na stolu.', rule: { on: 'stol' }, at: [1, 2] },
+      { id: 'maks', name: 'Maks', face: '👦🏾', clue: 'Maks je bral na preprogi.', rule: { on: 'preproga' }, at: [2, 0] },
+      { id: 'pia', name: 'Pia', she: true, face: '👧🏻', clue: 'Pia je sedela na klopi.', rule: { on: 'klop' }, at: [3, 3] },
+    ],
+    room: 'R', ask: 'Kdo je bil sam v razredu s tablo?', culprit: 'lan',
+    win: 'Lan je narisal srček!', why: 'Bil je sam v razredu.',
+    heart: 'Hana se je nasmejala. Pri malici je Lan dobil pol njenega jabolka. Od takrat se vsak dan igrata.',
+  },
+  {
+    id: 4, group: 'lahko', icon: '⚽', title: 'Kdo je zabil gol?',
+    story: 'Nogometna tekma! Trener si je ravno zavezoval čevelj. Slišal je samo: GOOOL! Kdo ga je zabil?',
+    rooms: ['GGSS', 'GGSS', 'SSSK', 'SSKK'],
+    names: { G: 'Pred golom', S: 'Sredina', K: 'Rob igrišča' },
+    labels: { G: [1, 0], S: [2, 2], K: [2, 3] },
+    objects: { '0,0': 'gol', '1,2': 'zoga', '2,1': 'stozec', '3,2': 'steklenica', '3,3': 'klop' },
+    people: [
+      { id: 'nik', name: 'Nik', face: '🧒🏽', clue: 'Nik je tekel na vso moč.', rule: {}, at: [0, 1] },
+      { id: 'tea', name: 'Tea', she: true, face: '👧🏼', clue: 'Tea je sedela na žogi.', rule: { on: 'zoga' }, at: [1, 2] },
+      { id: 'rok', name: 'Rok', face: '👦🏻', clue: 'Rok je bil na sredini.', rule: { room: 'S' }, at: [2, 0] },
+      { id: 'mila', name: 'Mila', she: true, face: '👧🏾', clue: 'Mila je sedela na klopi.', rule: { on: 'klop' }, at: [3, 3] },
+    ],
+    room: 'G', ask: 'Kdo je bil sam pred golom?', culprit: 'nik',
+    win: 'Nik je zabil gol!', why: 'Bil je sam pred golom.',
+    heart: 'Nik še nikoli ni zabil gola. Ekipa mu je zato podajala žogo. Tea je celo vstala z žoge! Po tekmi so ga nesli na ramenih.',
+  },
+  // ---- 🟡 Srednje
+  {
+    id: 5, group: 'srednje', icon: '👑', title: 'Kje je zlata kronica?',
+    story: 'Zlata kronica je spala v skrinji v spalnici. Zjutraj je skrinja prazna! Kdo jo je vzel?',
     rooms: ['KKKPP', 'KKDPP', 'DDDPP', 'VVDDP', 'VVVVV'],
     names: { K: 'Kuhinja', D: 'Dnevna soba', P: 'Spalnica', V: 'Vrt' },
     labels: { K: [1, 1], D: [3, 2], P: [2, 4], V: [4, 2] },
@@ -237,10 +339,137 @@ const LEVELS = [
       { id: 'dan', name: 'Dan', face: '🧑🏻‍🦱', clue: 'Dan je sedel na klopi.', rule: { on: 'klop' }, at: [4, 4] },
       { id: 'eva', name: 'Eva', she: true, face: '👩🏾', clue: 'Eva ni stala ob skrinji.', rule: { notBeside: 'skrinja' }, at: [1, 3] },
     ],
-    order: ['bor', 'dan', 'ana', 'cvetka', 'eva'],
     room: 'P', ask: 'Kdo je bil sam v spalnici s skrinjo?', culprit: 'eva',
     win: 'Eva je vzela zlato kronico!', why: 'Bila je sama v spalnici s skrinjo.',
-    besideRule: true,
+    heart: 'Evina mala sestrica je ponoči imela hude sanje. Eva ji je posodila kronico. S kronico je bila sestrica pogumna kraljica.',
+  },
+  {
+    id: 6, group: 'srednje', icon: '✉️', title: 'Kdo je napisal pismo?',
+    story: 'Lina je nova v razredu. Nikogar še ne pozna. V torbi najde pismo. Piše: »Bi se jutri igrala z menoj?«',
+    rooms: ['RRRGG', 'RRRGG', 'RRHHH', 'IIHHH', 'IIIIH'],
+    names: { R: 'Razred', G: 'Garderoba', H: 'Hodnik', I: 'Igrišče' },
+    labels: { R: [1, 0], G: [1, 4], H: [3, 2], I: [4, 0] },
+    objects: { '0,0': 'tabla', '0,4': 'torba', '1,1': 'stol', '1,3': 'klop', '2,4': 'rastlina', '3,0': 'drevo', '4,2': 'tobogan', '4,4': 'obesalnik' },
+    people: [
+      { id: 'jan', name: 'Jan', face: '👦🏼', clue: 'Jan je stal ob stolu.', rule: { beside: 'stol' }, at: [0, 1] },
+      { id: 'ula', name: 'Ula', she: true, face: '👧🏽', clue: 'Ula ni bila ob rastlini.', rule: { notBeside: 'rastlina' }, at: [1, 3] },
+      { id: 'sara', name: 'Sara', she: true, face: '👧🏻', clue: 'Sara je bila ob drevesu.', rule: { beside: 'drevo' }, at: [2, 0] },
+      { id: 'maj', name: 'Maj', face: '👦🏾', clue: 'Maj je bil na hodniku.', rule: { room: 'H' }, at: [3, 4] },
+      { id: 'zala', name: 'Zala', she: true, face: '👧🏼', clue: 'Zala je sedela na toboganu.', rule: { on: 'tobogan' }, at: [4, 2] },
+    ],
+    room: 'G', ask: 'Kdo je bil sam v garderobi s torbo?', culprit: 'ula',
+    win: 'Ula je napisala pismo!', why: 'Bila je sama v garderobi.',
+    heart: 'Ula je sramežljiva. Na glas si ni upala vprašati. Zato je napisala pismo. Naslednji dan sta se z Lino igrali ves odmor.',
+  },
+  {
+    id: 7, group: 'srednje', icon: '🏀', title: 'Kdo je dal zadnji koš?',
+    story: 'Košarka! Še ena sekunda. Žoga leti … in pade v koš! Zmagali smo! Toda kdo jo je vrgel?',
+    rooms: ['KKKTT', 'KKSTT', 'SSSTT', 'SSSBB', 'BBBBB'],
+    names: { K: 'Pod košem', S: 'Sredina', T: 'Tribuna', B: 'Rob igrišča' },
+    labels: { K: [1, 1], S: [3, 1], T: [1, 4], B: [4, 2] },
+    objects: { '0,1': 'kos', '0,3': 'stol', '1,2': 'blazina', '2,0': 'stozec', '2,4': 'stol', '3,4': 'klop', '4,0': 'steklenica', '4,3': 'kosara' },
+    people: [
+      { id: 'ajda', name: 'Ajda', she: true, face: '👧🏽', clue: 'Ajda ni bila na sredini.', rule: { notRoom: 'S' }, at: [0, 0] },
+      { id: 'vid', name: 'Vid', face: '👦🏻', clue: 'Vid je sedel na blazini.', rule: { on: 'blazina' }, at: [1, 2] },
+      { id: 'ema', name: 'Ema', she: true, face: '👩🏼', clue: 'Ema je sedela na stolu.', rule: { on: 'stol' }, at: [2, 4] },
+      { id: 'gal', name: 'Gal', face: '👦🏾', clue: 'Gal je stal ob klopi.', rule: { beside: 'klop' }, at: [3, 3] },
+      { id: 'iza', name: 'Iza', she: true, face: '👧🏼', clue: 'Iza je bila na robu igrišča.', rule: { room: 'B' }, at: [4, 1] },
+    ],
+    room: 'K', ask: 'Kdo je bil sam pod košem?', culprit: 'ajda',
+    win: 'Ajda je dala zadnji koš!', why: 'Bila je sama pod košem.',
+    heart: 'Ajda je vedno metala mimo koša. Danes je zaprla oči in zadela! Vsi so ji ploskali.',
+  },
+  {
+    id: 8, group: 'srednje', icon: '🪗', title: 'Kje je dedkova harmonika?',
+    story: 'Dedek ima rojstni dan. Rad bi zaigral na harmoniko. Toda na podstrešju je ni! Kdo jo je vzel?',
+    rooms: ['PPPDD', 'PPDDD', 'KKDDV', 'KKKVV', 'KVVVV'],
+    names: { P: 'Podstrešje', D: 'Dnevna soba', K: 'Kuhinja', V: 'Vrt' },
+    labels: { P: [1, 0], D: [2, 2], K: [3, 2], V: [4, 3] },
+    objects: { '0,0': 'harmonika', '0,4': 'klavir', '1,1': 'zaboj', '1,3': 'kavc', '2,0': 'stedilnik', '2,3': 'preproga', '3,1': 'stol', '3,4': 'drevo', '4,4': 'klop' },
+    people: [
+      { id: 'tina', name: 'Tina', she: true, face: '👧🏻', clue: 'Tina ni bila ob zaboju.', rule: { notBeside: 'zaboj' }, at: [0, 2] },
+      { id: 'gasper', name: 'Gašper', face: '👦🏼', clue: 'Gašper je stal ob klavirju.', rule: { beside: 'klavir' }, at: [1, 4] },
+      { id: 'mama', name: 'Mama', she: true, face: '👩🏽', clue: 'Mama je sedela na preprogi.', rule: { on: 'preproga' }, at: [2, 3] },
+      { id: 'ati', name: 'Ati', face: '👨🏼', clue: 'Ati ni bil na podstrešju.', rule: { notRoom: 'P' }, at: [3, 0] },
+      { id: 'vera', name: 'Vera', she: true, face: '👵🏽', clue: 'Teta Vera je bila na vrtu.', rule: { room: 'V' }, at: [4, 1] },
+    ],
+    room: 'P', ask: 'Kdo je bil sam na podstrešju s harmoniko?', culprit: 'tina',
+    win: 'Tina je vzela harmoniko!', why: 'Bila je sama na podstrešju.',
+    heart: 'Tina se je na skrivaj učila igrati. Pri torti je zaigrala: »Vse najboljše, dedek!« Dedek si je brisal solze sreče.',
+  },
+  // ---- 🟠 Malo težje
+  {
+    id: 9, group: 'tezje', icon: '🔑', title: 'Kdo je vzel ključ od knjižnice?',
+    story: 'Knjižničarka Marta ima danes zadnji dan. Zjutraj ključa ni na mestu! Kdo ga je vzel?',
+    rooms: ['BBBCC', 'BBCCC', 'HHHHC', 'PPPHH', 'PPPHH'],
+    names: { B: 'Knjižnica', C: 'Čitalnica', H: 'Hodnik', P: 'Pravljična soba' },
+    labels: { B: [1, 0], C: [0, 3], H: [2, 2], P: [4, 1] },
+    objects: { '0,0': 'knjige', '0,2': 'knjige', '0,4': 'okno', '1,1': 'stol', '1,3': 'stol', '2,0': 'kljuc', '3,0': 'preproga', '3,4': 'rastlina', '4,2': 'kavc', '4,4': 'klop' },
+    people: [
+      { id: 'kaja', name: 'Kaja', she: true, face: '👧🏼', clue: 'Kaja ni bila v čitalnici.', rule: { notRoom: 'C' }, at: [0, 1] },
+      { id: 'oskar', name: 'Oskar', face: '👦🏻', clue: 'Oskar je stal ob knjižni polici.', rule: { beside: 'knjige' }, at: [1, 2] },
+      { id: 'lea', name: 'Lea', she: true, face: '👧🏾', clue: 'Lea ni bila ob stolu.', rule: { notBeside: 'stol' }, at: [2, 4] },
+      { id: 'brina', name: 'Brina', she: true, face: '👧🏻', clue: 'Brina je sedela na preprogi.', rule: { on: 'preproga' }, at: [3, 0] },
+      { id: 'vid', name: 'Vid', face: '👦🏽', clue: 'Vid je stal ob klopi.', rule: { beside: 'klop' }, at: [4, 3] },
+    ],
+    room: 'H', ask: 'Kdo je bil sam na hodniku s ključem?', culprit: 'vid',
+    win: 'Vid je vzel ključ!', why: 'Bil je sam na hodniku s ključem.',
+    heart: 'Vid je prišel zelo zgodaj. Odklenil je knjižnico in obesil balone. Ko je Marta prišla, so vsi zaklicali: »Hvala, Marta!«',
+  },
+  {
+    id: 10, group: 'tezje', icon: '🧸', title: 'Kje je Zalin medvedek?',
+    story: 'Tabor ob jezeru! Mala Zala brez medvedka ne zaspi. Zvečer medvedka ni v šotoru!',
+    rooms: ['SSGGG', 'SSOGG', 'OOOOG', 'JJOOG', 'JJJJG'],
+    names: { S: 'Šotor', G: 'Gozd', O: 'Jasa', J: 'Jezero' },
+    labels: { S: [1, 0], G: [0, 4], O: [2, 0], J: [4, 2] },
+    objects: { '0,0': 'medvedek', '0,1': 'nahrbtnik', '0,3': 'smreka', '1,4': 'smreka', '2,1': 'hlod', '2,2': 'ogenj', '3,3': 'hlod', '4,0': 'coln', '4,3': 'skala' },
+    people: [
+      { id: 'klara', name: 'Klara', she: true, face: '👧🏼', clue: 'Klara je bila ob nahrbtniku.', rule: { beside: 'nahrbtnik' }, at: [0, 2] },
+      { id: 'matic', name: 'Matic', face: '👦🏻', clue: 'Matic ni bil v gozdu.', rule: { notRoom: 'G' }, at: [1, 1] },
+      { id: 'tilen', name: 'Tilen', face: '👦🏾', clue: 'Tilen je bil na jasi.', rule: { room: 'O' }, at: [2, 3] },
+      { id: 'ema', name: 'Ema', she: true, face: '👧🏽', clue: 'Ema ni bila ob smreki.', rule: { notBeside: 'smreka' }, at: [3, 4] },
+      { id: 'petra', name: 'Petra', she: true, face: '👩🏼', clue: 'Učiteljica Petra je sedela v čolnu.', rule: { on: 'coln' }, at: [4, 0] },
+    ],
+    room: 'S', ask: 'Kdo je bil sam v šotoru?', culprit: 'matic',
+    win: 'Matic je vzel medvedka!', why: 'Bil je sam v šotoru.',
+    heart: 'Medvedek je padel v blato. Matic ga je na skrivaj opral v jezeru. Posušil ga je ob ognju. Zvečer je bil medvedek spet pri Zali.',
+  },
+  {
+    id: 11, group: 'tezje', icon: '⛄', title: 'Kdo je naredil snežaka?',
+    story: 'Mala Julija je bolna. Ves teden gleda skozi okno. Zjutraj pa ji z vrta maha snežak!',
+    rooms: ['HHHDD', 'HHDDD', 'VVDDT', 'VVVTT', 'VVTTT'],
+    names: { H: 'Hiša', D: 'Dvorišče', V: 'Vrt', T: 'Hrib' },
+    labels: { H: [1, 0], D: [0, 4], V: [4, 1], T: [4, 3] },
+    objects: { '0,0': 'stedilnik', '0,2': 'stol', '1,1': 'kavc', '1,3': 'sani', '2,0': 'klop', '2,4': 'smreka', '3,1': 'snezak', '3,3': 'skala', '4,4': 'smreka' },
+    people: [
+      { id: 'miha', name: 'Miha', face: '👦🏼', clue: 'Miha je bil v hiši.', rule: { room: 'H' }, at: [0, 1] },
+      { id: 'iza', name: 'Iza', she: true, face: '👧🏻', clue: 'Iza je sedela na saneh.', rule: { on: 'sani' }, at: [1, 3] },
+      { id: 'tine', name: 'Tine', face: '👦🏾', clue: 'Tine ni bil na vrtu.', rule: { notRoom: 'V' }, at: [2, 2] },
+      { id: 'urh', name: 'Urh', face: '🧑🏻', clue: 'Urh je bil na hribu.', rule: { room: 'T' }, at: [3, 4] },
+      { id: 'babica', name: 'Babica', she: true, face: '👵🏼', clue: 'Babica ni bila na klopi.', rule: { notOn: 'klop' }, at: [4, 0] },
+    ],
+    room: 'V', ask: 'Kdo je bil sam na vrtu s snežakom?', culprit: 'babica',
+    win: 'Babica je naredila snežaka!', why: 'Bila je sama na vrtu.',
+    heart: 'Snežaku je dala svoj rdeči šal. Dobil je še korenček za nos. Julija se je prvič ta teden nasmejala. Naslednji dan je že šla ven.',
+  },
+  {
+    id: 12, group: 'tezje', icon: '🌼', title: 'Kdo je obesil venček?',
+    story: 'Velika tekma! Vratar Žiga ima rojstni dan. Pred tekmo na golu visi venček iz marjetic. Kdo ga je obesil?',
+    rooms: ['GGGTTT', 'GGSTTT', 'SSSSTT', 'SSSSKK', 'NSSKKK', 'NNSKKK'],
+    names: { G: 'Pred golom', T: 'Tribuna', S: 'Sredina', K: 'Rob igrišča', N: 'Kotiček' },
+    labels: { G: [1, 0], T: [1, 3], S: [3, 1], K: [5, 4], N: [5, 1] },
+    objects: { '0,1': 'gol', '0,3': 'kamera', '1,4': 'stol', '2,1': 'stozec', '2,5': 'steklenica', '3,2': 'zoga', '3,5': 'nahrbtnik', '4,0': 'zastavica', '4,4': 'klop', '5,5': 'kosara' },
+    people: [
+      { id: 'mojca', name: 'Mojca', she: true, face: '👩🏻', clue: 'Mojca ni bila ob stolu.', rule: { notBeside: 'stol' }, at: [0, 5] },
+      { id: 'lara', name: 'Lara', she: true, face: '👧🏼', clue: 'Lara je stala ob stožcu.', rule: { beside: 'stozec' }, at: [1, 1] },
+      { id: 'jure', name: 'Jure', face: '👦🏻', clue: 'Jure je bil ob steklenici.', rule: { beside: 'steklenica' }, at: [2, 4] },
+      { id: 'domen', name: 'Domen', face: '👦🏾', clue: 'Domen je sedel na žogi.', rule: { on: 'zoga' }, at: [3, 2] },
+      { id: 'ivo', name: 'Ivo', face: '👨🏽', clue: 'Trener Ivo je bil na robu igrišča.', rule: { room: 'K' }, at: [4, 3] },
+      { id: 'pika', name: 'Pika', she: true, face: '👧🏽', clue: 'Pika je bila v kotičku.', rule: { room: 'N' }, at: [5, 0] },
+    ],
+    room: 'G', ask: 'Kdo je bil sam pred golom?', culprit: 'lara',
+    win: 'Lara je obesila venček!', why: 'Bila je sama pred golom.',
+    heart: 'Lara je venček spletla sama, cvet za cvetom. Žiga ga je videl in se nasmejal do ušes. Domen je vstal z žoge in ploskal. Tisti dan je Žiga ubranil vse strele.',
   },
 ];
 // LEVELS-END
@@ -259,6 +488,7 @@ const roomAt = (r, c) => L.rooms[r][c];
 const near = (r, c) => [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]].filter(([a, b]) => a >= 0 && b >= 0 && a < L.n && b < L.n);
 const fits = (rule, r, c) => {
   if (rule.on) return objAt(r, c) === rule.on;
+  if (rule.notOn) return objAt(r, c) !== rule.notOn;
   if (rule.room) return roomAt(r, c) === rule.room;
   if (rule.notRoom) return roomAt(r, c) !== rule.notRoom;
   if (rule.beside) return near(r, c).some(([a, b]) => objAt(a, b) === rule.beside);
@@ -278,8 +508,17 @@ function showList() {
   $('list').hidden = false; $('game').hidden = true; $('rulesBtn').hidden = true;
   $('title').textContent = 'Kje je kdo?';
   $('back').setAttribute('href', '../');
-  $('levels').innerHTML = LEVELS.map(l => `<button class="lvl" data-level="${l.id}"><i>${l.icon}</i><span><small>Uganka ${l.id} · ${l.tag}</small><b>${l.title}</b><em aria-hidden="true">${l.people.map(p => p.face).join(' ')}</em></span>${solved.includes(l.id) ? '<span class="done" aria-label="rešeno">✓</span>' : ''}</button>`).join('');
-  document.querySelectorAll('.lvl').forEach(b => b.onclick = () => start(+b.dataset.level));
+  // each puzzle opens when the one before it is solved
+  const open = (l) => l.id === LEVELS[0].id || solved.includes(LEVELS[LEVELS.indexOf(l) - 1].id);
+  const card = (l) => {
+    const n = l.rooms.length, lock = !open(l);
+    return `<button class="lvl${lock ? ' locked' : ''}" data-level="${l.id}"${lock ? ' aria-disabled="true"' : ''}><i>${lock ? '🔒' : l.icon}</i><span><small>Uganka ${l.id} · ${n}\u00a0×\u00a0${n}</small><b>${l.title}</b><em aria-hidden="true">${l.people.map(p => p.face).join(' ')}</em></span>${solved.includes(l.id) ? '<span class="done" aria-label="rešeno">✓</span>' : ''}</button>`;
+  };
+  $('levels').innerHTML = GROUPS.map(([g, label]) => `<h2 class="group">${label}</h2><div class="levels">${LEVELS.filter(l => l.group === g).map(card).join('')}</div>`).join('');
+  document.querySelectorAll('.lvl').forEach(b => b.onclick = () => {
+    if (b.classList.contains('locked')) { b.classList.remove('no'); void b.offsetWidth; b.classList.add('no'); return; }
+    start(+b.dataset.level);
+  });
   scrollTo(0, 0);
 }
 
@@ -304,13 +543,14 @@ function start(id) {
 }
 
 function showRules() {
-  const stops = [...new Set(Object.values(L.objects))].filter(o => OBJ[o].block).map(o => `${OBJ[o].e} ${OBJ[o].name}`);
+  const stops = [...new Set(Object.values(L.objects))].filter(o => OBJ[o].block).map(o => `${OBJ[o].e || ''} ${OBJ[o].name}`.trim());
+  const usesBeside = L.people.some(p => p.rule.beside || p.rule.notBeside);
   const rules = [
     ['↔️', 'V vsaki <b>vrsti</b> je samo en človek.'],
     ['↕️', 'V vsakem <b>stolpcu</b> je samo en človek.'],
-    ['🚫', `Kjer je ${stops.join(', ').replace(/, ([^,]*)$/, ' ali $1')}, ne more stati nihče.`],
+    ['🚫', `Kjer ${OBJ[Object.values(L.objects).find(o => OBJ[o].block)].pl ? 'so' : 'je'} ${stops.join(', ').replace(/, ([^,]*)$/, ' ali $1')}, ne more stati nihče.`],
   ];
-  const beside = L.besideRule ? `<li><span class="mini" aria-hidden="true"><span>✕</span><span class="y">✓</span><span>✕</span><span class="y">✓</span><span>🌳</span><span class="y">✓</span><span>✕</span><span class="y">✓</span><span>✕</span></span><span><b>Ob</b> pomeni levo, desno, gor ali dol. Poševno ne velja.</span></li>` : '';
+  const beside = usesBeside ? `<li><span class="mini" aria-hidden="true"><span>✕</span><span class="y">✓</span><span>✕</span><span class="y">✓</span><span>🌳</span><span class="y">✓</span><span>✕</span><span class="y">✓</span><span>✕</span></span><span><b>Ob</b> pomeni levo, desno, zgoraj ali spodaj. Poševno ne velja.</span></li>` : '';
   openSheet(`<h3>${L.icon} ${L.title}</h3><p class="story">${L.story}</p>
     <ul class="rules">${rules.map(([i, t]) => `<li><i>${i}</i><span>${t}</span></li>`).join('')}${beside}</ul>
     <button class="big" id="go">Začnimo!</button>`);
@@ -325,9 +565,9 @@ function draw() {
     // a wall between two rooms: each side draws half of it, so every cell keeps the same size
     const wall = (a, bb) => a >= 0 && bb >= 0 && a < n && bb < n && roomAt(a, bb) !== room;
     const walls = [[r - 1, c, '0 2px'], [r + 1, c, '0 -2px'], [r, c - 1, '2px 0'], [r, c + 1, '-2px 0']].filter(([a, bb]) => wall(a, bb)).map(([, , d]) => `inset ${d} 0 var(--wall)`);
-    const style = `--room:${ROOM_COLORS[room]};${walls.length ? `box-shadow:${walls.join(',')};` : ''}${c === n - 1 ? 'border-right:0;' : ''}${r === n - 1 ? 'border-bottom:0;' : ''}`;
+    const style = `--room:${ROOM_COLORS[L.names[room]] || '#eee9e0'};${walls.length ? `box-shadow:${walls.join(',')};` : ''}${c === n - 1 ? 'border-right:0;' : ''}${r === n - 1 ? 'border-bottom:0;' : ''}`;
     let inner = '';
-    if (o) inner += OBJ[o].rug ? '<span class="rug"></span>' : `<span class="obj">${OBJ[o].svg || OBJ[o].e}</span>`;
+    if (o) inner += OBJ[o].rug ? '<span class="rug"></span>' : `<span class="obj${OBJ[o].gone ? ' gone' : ''}">${OBJ[o].svg || OBJ[o].e}</span>`;
     if (p) inner += `<span class="tok"><span>${p.face}</span><b>${p.name}</b></span>`;
     else if (!blocked(r, c) && (S.crosses.has(k(r, c)))) inner += '<span class="x mine">✕</span>';
     else if (!blocked(r, c) && (inRow(r) || inCol(c))) inner += '<span class="x">✕</span>';
@@ -348,7 +588,7 @@ function pick(id) {
   setCross(false);
   S.sel = id; S.hint = null;
   const p = person(id);
-  say(S.pos[id] ? `${p.name} že stoji na svojem mestu. Izberi drugega.` : `Kje je bil${p.she ? 'a' : ''} ${p.name}? Tapni polje.`);
+  say(S.pos[id] ? `${p.name} že stoji na svojem mestu. Izberi drug stavek.` : `Kje je bil${p.she ? 'a' : ''} ${p.name}? Tapni polje.`);
   draw();
 }
 
@@ -361,14 +601,14 @@ function tap(r, c, el) {
   if (allPlaced()) return;
   const here = whoAt(r, c);
   if (S.cross) {
-    if (here || blocked(r, c)) return nope(el, 'Tu ne moreš prečrtati.');
+    if (here || blocked(r, c)) return nope(el, 'Tega polja ne moreš prečrtati.');
     const key = k(r, c);
     S.history.push({ cross: key });
     S.crosses.has(key) ? S.crosses.delete(key) : S.crosses.add(key);
     return draw();
   }
   if (here) return nope(el, `Tu že stoji ${here.name}.`);
-  if (blocked(r, c)) return nope(el, `Tu je ${OBJ[objAt(r, c)].name}. Tu ne more stati nihče.`);
+  if (blocked(r, c)) return nope(el, `Tu ${OBJ[objAt(r, c)].pl ? 'so' : 'je'} ${OBJ[objAt(r, c)].name}. Tu ne more stati nihče.`);
   const p = person(S.sel);
   if (!p || S.pos[p.id]) return nope(el, 'Najprej tapni stavek nekoga, ki še nima mesta.');
   const row = inRow(r), col = inCol(c);
@@ -408,28 +648,46 @@ function setCross(on) {
   $('crossBtn').setAttribute('aria-pressed', on);
 }
 
-// Help in three steps: which sentence to read, where it could be, then the answer.
+// Help in three steps: which sentence to read, where it could be, then the one cell (the child taps it).
+// The person is the one a child can place next: their sentence leaves one cell, or they are the only one
+// who can still go in some row or column.
+function nextPerson() {
+  const left = L.people.filter(p => !S.pos[p.id]);
+  const cand = {};
+  for (const p of left) {
+    cand[p.id] = [];
+    for (let r = 0; r < L.n; r++) for (let c = 0; c < L.n; c++) if (!blocked(r, c) && !inRow(r) && !inCol(c) && fits(p.rule, r, c)) cand[p.id].push([r, c]);
+  }
+  const one = left.find(p => cand[p.id].length === 1);
+  if (one) return one;
+  for (const axis of [0, 1]) for (let x = 0; x < L.n; x++) {
+    const who = left.filter(p => cand[p.id].some(q => q[axis] === x));
+    if (who.length === 1 && who[0].at[axis] === x) return who[0];
+  }
+  return left[0];
+}
+
 function hint() {
   if (allPlaced()) return;
   setCross(false);
-  const id = L.order.find(i => !S.pos[i]);
-  const p = person(id);
-  if (!S.hint || S.hint.id !== id) S.hint = { id, step: 0 };
-  S.hint.step++;
-  S.sel = id;
+  const p = (S.hint && !S.pos[S.hint.id]) ? person(S.hint.id) : nextPerson();
+  if (!S.hint || S.hint.id !== p.id) S.hint = { id: p.id, step: 0 };
+  S.hint.step = Math.min(S.hint.step + 1, 3);
+  S.sel = p.id;
   draw();
-  const row = document.querySelector(`.clue[data-p="${id}"]`);
+  const row = document.querySelector(`.clue[data-p="${p.id}"]`);
+  const light = (cells) => cells.forEach(([r, c]) => document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`).classList.add('can'));
   if (S.hint.step === 1) {
     row.classList.add('glow');
     say(`Preberi ta stavek: »${p.clue}«`);
   } else if (S.hint.step === 2) {
     const can = [];
     for (let r = 0; r < L.n; r++) for (let c = 0; c < L.n; c++) if (!blocked(r, c) && !inRow(r) && !inCol(c) && fits(p.rule, r, c)) can.push([r, c]);
-    can.forEach(([r, c]) => document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`).classList.add('can'));
-    say(can.length === 1 ? `Svetlo polje je edino, ki ustreza. Tapni ga!` : `${p.name} je lahko samo na svetlih poljih.`);
+    light(can);
+    say(can.length === 1 ? 'Samo eno polje ustreza. Tapni ga!' : `${p.name} je lahko na svetlih poljih. Preberi še druge stavke.`);
   } else {
-    place(p);
-    if (!allPlaced()) say(`${p.name} je tukaj. Poglej, zakaj, in nadaljuj.`);
+    light([p.at]);
+    say(`Tukaj je bil${p.she ? 'a' : ''} ${p.name}. Tapni svetlo polje.`);
   }
 }
 
@@ -447,7 +705,7 @@ function answer(id, el) {
   if (id !== L.culprit) {
     el.classList.remove('no'); void el.offsetWidth; el.classList.add('no');
     document.querySelectorAll('.cell').forEach(c => c.classList.toggle('room-hl', roomAt(+c.dataset.r, +c.dataset.c) === L.room));
-    say(`Ne še. Poglej rdeči prostor (${L.names[L.room].toLowerCase()}). Kdo stoji v njem?`);
+    say(`Ni še prav. Poglej rdeči prostor (${L.names[L.room].toLowerCase()}). Kdo stoji v njem?`);
     return;
   }
   if (!solved.includes(L.id)) solved.push(L.id);
@@ -457,6 +715,7 @@ function answer(id, el) {
     <span class="stamp"><i>✓</i>Primer rešen!</span>
     <span class="who-face">${p.face}</span>
     <h3>${L.win}</h3><p class="story">${L.why}</p>
+    <p class="heart"><b>Zakaj?</b> ${L.heart}</p>
     <div class="btns">${next ? `<button class="big" id="next">Naslednja uganka ${next.icon}</button>` : ''}<button class="big ${next ? 'alt' : ''}" id="toList">Vse uganke</button><a class="big alt" href="../" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Na začetno stran</a></div></div>`);
   if (next) $('next').onclick = () => { closeSheet(); start(next.id); };
   $('toList').onclick = () => { closeSheet(); showList(); };
@@ -465,7 +724,7 @@ function answer(id, el) {
 function openSheet(html) { $('sheetBody').innerHTML = html; $('sheet').hidden = false; }
 function closeSheet() { $('sheet').hidden = true; }
 
-$('crossBtn').onclick = () => { setCross(!S.cross); say(S.cross ? 'Tapni polje, kjer nekoga zagotovo ni bilo.' : 'Tapni stavek, nato polje.'); draw(); };
+$('crossBtn').onclick = () => { setCross(!S.cross); say(S.cross ? 'Tapni polje, kjer zagotovo ni bilo nikogar.' : 'Tapni stavek, nato polje.'); draw(); };
 $('undoBtn').onclick = undo;
 $('hintBtn').onclick = hint;
 $('rulesBtn').onclick = () => showRules();
