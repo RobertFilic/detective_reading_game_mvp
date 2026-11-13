@@ -3551,7 +3551,7 @@ const offerOpen = () => S.screen === 'reveal' && !!(S.run && S.run.offer);
 function offerHTML() {
   return `<div class="brief-wrap ui-sheet-wrap"><div class="brief offer ui-sheet">
     <div class="ui-sheet-title">${UI.coin(helperEmoji())}${ga('Že znaš? Poskusi sam!', 'Že znaš? Poskusi sama!')}</div>
-    ${UI.btn(ga('Sam!', 'Sama!'), { act: 'warmSkip' })}${UI.btn(UI_AUDIO.warmMore, { act: 'warmMore', kind: 'is-sec' })}</div></div>`;
+    ${UI.btn(UI_AUDIO.warmMore, { act: 'warmMore' })}${UI.btn(ga('Sam!', 'Sama!'), { act: 'warmSkip', kind: 'is-sec' })}</div></div>`;
 }
 // one word of its own per companion, in the hello and the cheer
 const PAL_HI = { '🐶': 'Hov!', '🐱': 'Mijav!', '🦉': 'Uhu!', '🦊': 'Juhu!' };
@@ -3674,6 +3674,7 @@ function placeSpot() {
 }
 addEventListener('scroll', placeSpot, { capture: true, passive: true });
 addEventListener('resize', placeSpot);
+addEventListener('animationend', placeSpot, true);
 
 app.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && e.target.id === 'mkName') ACTIONS.mkName();

@@ -13,7 +13,7 @@ const state = (o = {}) => JSON.stringify({ v: 2, g: 1, over: null, warm: 'done',
 async function open(level, w = 390, h = 844, help = state()) {
   const p = await b.newPage();
   p.errors = []; p.on('pageerror', e => p.errors.push(e.message));
-  await p.evaluateOnNewDocument(() => { window.NO_READ_WAIT = true; });
+  await p.evaluateOnNewDocument(() => { window.NO_READ_WAIT = true; if (window.speechSynthesis) speechSynthesis.getVoices = () => []; });   // a late voice list re-renders mid-tap
   await p.setViewport({ width: w, height: h, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
   await p.goto(`http://localhost:8765/solo/?play${level ? '&help=' + level : ''}`);
   await p.evaluate((k, hs) => { localStorage.clear(); localStorage.setItem('dp_save_version', '4'); localStorage.setItem('dp_profile_v1', JSON.stringify(k));
