@@ -43,7 +43,8 @@ header.top { position: sticky; top: 0; z-index: 10; background: rgba(250, 246, 2
 header.top .wrap { display: flex; align-items: center; gap: 14px; min-height: 60px; }
 .brand { display: flex; align-items: center; gap: 9px; margin-right: auto; text-decoration: none; color: var(--ink); font: 700 18px var(--font); white-space: nowrap; }
 nav.links { display: none; gap: 22px; font: 500 15px var(--font); }
-nav.links a { color: var(--ink-2); text-decoration: none; }
+nav.links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+@media (max-width: 1099px) { nav.links a:nth-child(n+3) { display: none; } }
 header.top .btn { min-height: 44px; padding: 0 20px; border-radius: 14px; font-size: 15px; display: none; }
 
 /* hero */
@@ -56,6 +57,27 @@ header.top .btn { min-height: 44px; padding: 0 20px; border-radius: 14px; font-s
 .lead { max-width: 540px; font-size: clamp(17px, 2vw, 21px); color: rgba(255, 255, 255, .9); text-wrap: pretty; }
 .hero-btns { display: flex; flex-direction: column; gap: 10px; padding-top: 4px; }
 .hero-note { font-size: 15px; color: rgba(255, 255, 255, .78); }
+/* the new side game: in the hero, so nobody misses it */
+.newgame { position: relative; display: flex; flex-direction: column; gap: 12px; max-width: 540px; margin-top: 10px; padding: 18px 16px 14px; background: var(--paper); color: var(--ink); text-decoration: none;
+  border: 3px solid var(--glow); border-radius: 24px; box-shadow: 0 14px 34px rgba(0, 0, 0, .25); }
+.ng-badge { position: absolute; top: -14px; left: 16px; background: var(--stamp); color: #fff; font: 700 15px var(--font); letter-spacing: .06em; text-transform: uppercase; padding: 4px 12px; border-radius: 10px; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0, 0, 0, .2); animation: nudge 2.4s ease-in-out infinite; }
+.ng-row { display: flex; align-items: center; gap: 14px; }
+.ng-board { display: grid; grid-template-columns: repeat(3, 30px); grid-template-rows: repeat(3, 30px); flex: none; border: 3px solid #3a3229; border-radius: 8px; background: #f6e7cf; }
+.ng-board span { display: grid; place-items: center; font-size: 17px; line-height: 1; border-right: 1px solid rgba(58, 50, 41, .22); border-bottom: 1px solid rgba(58, 50, 41, .22); }
+.ng-board span:nth-child(3n) { border-right: 0; }
+.ng-board span:nth-child(n+7) { border-bottom: 0; }
+.ng-board .ng-x { color: rgba(58, 50, 41, .35); font: 700 14px var(--font); }
+.ng-board .y { background: #fdeaa9; }
+.ng-txt { display: flex; flex-direction: column; gap: 2px; }
+.ng-txt small { font: 600 13px var(--font); letter-spacing: .08em; text-transform: uppercase; color: var(--season-mid); }
+.ng-txt b { font: 700 23px/1.15 var(--font); }
+.ng-txt em { font-style: normal; font-size: 15px; line-height: 1.4; color: var(--ink-2); }
+.ng-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.ng-meta { font: 500 14px var(--font); color: var(--ink-2); }
+.ng-go { min-height: 48px; display: inline-flex; align-items: center; padding: 0 20px; border-radius: 14px; background: var(--season); color: #fff; font: 600 17px var(--font); }
+nav.links a.new { color: var(--ink); font-weight: 600; }
+nav.links a.new b { background: var(--stamp); color: #fff; font: 700 11px var(--font); letter-spacing: .06em; text-transform: uppercase; padding: 2px 6px; border-radius: 6px; margin-left: 4px; vertical-align: 2px; }
+@keyframes nudge { 0%, 88%, 100% { transform: rotate(-4deg); } 92% { transform: rotate(3deg) scale(1.08); } 96% { transform: rotate(-6deg) scale(1.04); } }
 
 /* the phone: a case on screen, the stamp on top */
 .phone { flex: none; position: relative; width: 280px; height: 578px; }
@@ -145,14 +167,6 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
 .adults { background: none; border: 1.5px solid var(--line); border-radius: 14px; min-height: 48px; padding: 0 16px; font: 500 15px var(--font); color: var(--ink-2); text-decoration: none; display: inline-flex; align-items: center; cursor: pointer; }
 .legal { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-2); }
 .trust { margin-top: 8px; font-size: 15px; color: var(--ink-2); text-wrap: pretty; }
-.puzzle { display: flex; align-items: center; gap: 14px; margin: 16px 0 0; padding: 14px 16px; min-height: 84px; background: var(--paper); border: 1.5px solid var(--line); border-radius: 22px;
-  text-decoration: none; color: var(--ink); box-shadow: 0 2px 0 var(--line), 0 10px 24px rgba(60, 50, 20, .05); }
-.puzzle i { width: 52px; height: 52px; flex: none; border-radius: 16px; background: #fdeaa9; display: grid; place-items: center; font-size: 28px; font-style: normal; transform: rotate(-4deg); }
-.puzzle span { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-.puzzle small { font: 600 13px var(--font); letter-spacing: .08em; text-transform: uppercase; color: var(--season-mid); }
-.puzzle b { font: 600 19px/1.25 var(--font); }
-.puzzle em { font-style: normal; font-size: 15px; color: var(--ink-2); }
-.puzzle .go { flex: none; font-size: 22px; color: var(--season); }
 .dock { position: sticky; bottom: 0; z-index: 10; padding: 10px 16px calc(12px + env(safe-area-inset-bottom)); background: linear-gradient(rgba(250, 246, 239, 0), var(--bg) 35%); }
 .dock .btn { min-height: 58px; border-radius: 18px; font-size: 18px; }
 
@@ -201,7 +215,7 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
 <body>
 <header class="top"><div class="wrap">
   <a class="brand" href="#top"><span class="coin">🔍</span>Bralni detektivi</a>
-  <nav class="links"><a href="#kako">Kako deluje</a><a href="#vsak-teden">Vsak teden</a><a href="#zakaj">Zakaj branje</a></nav>
+  <nav class="links"><a href="kje-je-kdo/" class="new">Skrivnostne sobe <b>novo</b></a><a href="#kako">Kako deluje</a><a href="#vsak-teden">Vsak teden</a><a href="#zakaj">Zakaj branje</a></nav>
   <a class="btn main" href="solo/?play">Igraj zdaj</a>
 </div></header>
 
@@ -214,6 +228,14 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
       <a class="btn gold" href="solo/?play" id="play">▶ Igraj zdaj</a>
       <a class="btn line" href="#kako">Kako deluje ↓</a>
     </div>
+    <a class="newgame" href="kje-je-kdo/" id="kjekdo">
+      <span class="ng-badge">Novo!</span>
+      <span class="ng-row">
+        <span class="ng-board" aria-hidden="true"><span>👧</span><span class="ng-x">✕</span><span class="ng-x">✕</span><span class="ng-x">✕</span><span>🌳</span><span class="y">🪑</span><span class="ng-x">✕</span><span>👦</span><span class="ng-x">✕</span></span>
+        <span class="ng-txt"><small>Nova igra</small><b>Skrivnostne sobe</b><em>Preberi, kje je bil kdo. Postavi vse na pravo mesto in najdi, kdo je bil.</em></span>
+      </span>
+      <span class="ng-foot"><span class="ng-meta">12 ugank · od lahkih do malo težjih</span><span class="ng-go">Poskusi →</span></span>
+    </a>
     <p class="hero-note">Za telefon in tablico. Tudi brez povezave. Vsak teden nova pustolovščina.</p>
   </div>
   <div class="phone" aria-hidden="true">
@@ -241,7 +263,6 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
     <button class="pill" id="installBtn">Namesti</button>
     <button class="x" id="installClose" aria-label="Zapri">✕</button>
   </div>
-  <a class="puzzle" href="kje-je-kdo/" id="kjekdo"><i>🚪</i><span><small>Nova uganka</small><b>Skrivnostne sobe</b><em>Preberi, kje je bil kdo, in najdi, kdo je bil.</em></span><span class="go">→</span></a>
 </div>
 
 <section class="part" id="kako"><div class="wrap">

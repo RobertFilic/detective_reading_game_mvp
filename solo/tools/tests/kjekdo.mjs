@@ -21,6 +21,9 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
 
   await p.goto('http://localhost:8765/'); await wait();
   ok(await p.$eval('#kjekdo', e => e.textContent.includes('Skrivnostne sobe') && e.getAttribute('href') === 'kje-je-kdo/'), `${dev}: the start page has the »Skrivnostne sobe« tile`);
+  ok(await p.$eval('#kjekdo', e => !!e.closest('.hero') && e.textContent.includes('Novo!') && !!(e.compareDocumentPosition(document.getElementById('install')) & Node.DOCUMENT_POSITION_FOLLOWING)), `${dev}: it sits in the hero with »Novo!«, before »Namesti aplikacijo«`);
+  ok(await p.$eval('#kjekdo', e => { const r = e.getBoundingClientRect(); return r.top < innerHeight * 1.25 && r.right <= innerWidth && r.height >= 48; }) && await wide(), `${dev}: it is near the top of the page, fits the width`);
+  if (process.env.SHOTS) await p.screenshot({ path: `shots/kjekdo-${dev}-landing.png` });
   await p.evaluate(() => { localStorage.removeItem('dp_kjekdo_v1'); localStorage.removeItem('dp_profile_v1'); localStorage.removeItem('dp_kjekdo_intro_v1'); });
   await Promise.all([p.waitForNavigation(), p.$eval('#kjekdo', e => e.click())]); await wait();
   const LV = await p.evaluate(() => LEVELS);
