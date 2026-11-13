@@ -624,7 +624,7 @@ function drawMake() {
 function start(id) {
   if (!me) return makeCard(id);
   L = LEVELS.find(l => l.id === id); L.n = L.rooms.length;
-  S = { pos: {}, crosses: new Set(), notes: {}, sel: L.people[0].id, mode: 'place', history: [], hint: null };
+  S = { pos: {}, crosses: new Set(), notes: {}, sel: L.people[0].id, mode: 'place', history: [], hint: null, shown: new Set() };
   $('list').hidden = true; $('game').hidden = false; $('make').hidden = true; $('rulesBtn').hidden = false;
   $('helperPic').textContent = me.sk;
   $('title').textContent = L.title;
@@ -778,23 +778,38 @@ function setMode(m) {
   for (const [id, on] of [['crossBtn', m === 'cross'], ['noteBtn', m === 'note']]) { $(id).classList.toggle('on', on); $(id).setAttribute('aria-pressed', on); }
 }
 
-// Help in three steps; the child always taps the cell. The person is the one a child can place next:
-// - their sentence leaves one cell: (1) read this sentence, (2) the cells it allows, (3) the one cell;
-// - or a row or column has room for only them: (1) this row/column needs someone, (2) only they can go
-//   there, (3) the cell. The second kind says why, so the help never looks like a guess.
+// Help, one honest step at a time; the child always taps the cell. It reasons like a child (as
+// solo/tools/kjekdo.mjs does) from the people already placed, and shows the first step not yet shown:
+// - a sentence leaves one cell: (1) read this sentence, (2) the cells it allows, (3) the one cell;
+// - a row or column has room for only one person, and so one cell: (1) this line needs someone,
+//   (2) only they fit, (3) the cell;
+// - a row or column has room for only one person, but they have several cells in it: (1) this line needs
+//   someone, (2) only they fit, so they are on one of these cells (a pencil note). The next press goes on
+//   from there. The help never shows a cell before the reason for it.
 const cellsFor = (p) => {
   const out = [];
   for (let r = 0; r < L.n; r++) for (let c = 0; c < L.n; c++) if (!blocked(r, c) && !inRow(r) && !inCol(c) && fits(p.rule, r, c)) out.push([r, c]);
   return out;
 };
-function nextPerson() {
-  const left = L.people.filter(p => !S.pos[p.id]);
-  const one = left.find(p => cellsFor(p).length === 1);
-  if (one) return { id: one.id };
-  for (const axis of [0, 1]) for (let x = 0; x < L.n; x++) {
-    if (axis ? inCol(x) : inRow(x)) continue;
-    const who = left.filter(p => cellsFor(p).some(q => q[axis] === x));
-    if (who.length === 1 && who[0].at[axis] === x) return { id: who[0].id, axis, x };
+function nextStep() {
+  const left = L.people.filter(p => !S.pos[p.id]), cand = {};
+  for (const p of left) cand[p.id] = cellsFor(p);
+  for (let guard = 0; guard < 50; guard++) {
+    const one = left.find(p => cand[p.id].length === 1);
+    if (one) return { id: one.id, cells: cand[one.id] };
+    let moved = false;
+    lines: for (const axis of [0, 1]) for (let x = 0; x < L.n; x++) {
+      if (axis ? inCol(x) : inRow(x)) continue;
+      const who = left.filter(p => cand[p.id].some(q => q[axis] === x));
+      if (who.length !== 1) continue;
+      const p = who[0], there = cand[p.id].filter(q => q[axis] === x);
+      if (there.length === cand[p.id].length) continue;   // nothing new
+      if (there.length === 1) return { id: p.id, axis, x };
+      if (!S.shown.has(`${p.id}:${axis}:${x}`)) return { id: p.id, axis, x, narrow: there };
+      cand[p.id] = there; moved = true;
+      break lines;
+    }
+    if (!moved) break;
   }
   return { id: left[0].id };
 }
@@ -802,7 +817,8 @@ function nextPerson() {
 function hint() {
   if (allPlaced()) return;
   setMode('place');
-  if (!S.hint || S.pos[S.hint.id]) S.hint = { ...nextPerson(), step: 0 };
+  if (S.hint && S.hint.narrow && S.hint.step >= 2) { S.shown.add(`${S.hint.id}:${S.hint.axis}:${S.hint.x}`); S.hint = null; }
+  if (!S.hint || S.pos[S.hint.id]) S.hint = { ...nextStep(), step: 0 };
   S.hint.step = Math.min(S.hint.step + 1, 3);
   const h = S.hint, p = person(h.id);
   S.sel = p.id;
@@ -810,10 +826,14 @@ function hint() {
   const row = document.querySelector(`.clue[data-p="${p.id}"]`);
   const light = (cells) => cells.forEach(([r, c]) => document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`).classList.add('can'));
   const line = h.axis === 1 ? 'tem stolpcu' : 'tej vrsti';
-  const lineCells = () => { const out = []; for (let i = 0; i < L.n; i++) { const [r, c] = h.axis === 1 ? [i, h.x] : [h.x, i]; if (!blocked(r, c)) out.push([r, c]); } return out; };
+  const lineCells = () => { const out = []; for (let i = 0; i < L.n; i++) { const [r, c] = h.axis === 1 ? [i, h.x] : [h.x, i]; if (!blocked(r, c) && !inRow(r) && !inCol(c)) out.push([r, c]); } return out; };
   if (h.axis !== undefined && h.step === 1) {
     light(lineCells());
     say(`V ${line} mora stati nekdo. Preberi stavke. Kdo lahko stoji tukaj?`);
+  } else if (h.narrow) {
+    row.classList.add('glow');
+    light(h.narrow);
+    say(`Samo ${p.name} lahko stoji v ${line}: »${p.clue}« Torej je na enem od svetlih polj. Zapiši si to s svinčnikom ✏️ in tapni Pomoč še enkrat.`);
   } else if (h.axis !== undefined && h.step === 2) {
     row.classList.add('glow');
     light(lineCells());
@@ -822,7 +842,7 @@ function hint() {
     row.classList.add('glow');
     say(`Preberi ta stavek: »${p.clue}«`);
   } else if (h.step === 2) {
-    const can = cellsFor(p);
+    const can = h.cells || cellsFor(p);
     light(can);
     say(can.length === 1 ? 'Samo eno polje ustreza. Tapni ga!' : `${p.name} je lahko na svetlih poljih. Preberi še druge stavke.`);
   } else {

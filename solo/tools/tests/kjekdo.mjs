@@ -145,6 +145,54 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   await p.close();
 }
 
+// a row that narrows a person to several cells is told as such, never as »here« (puzzle 12 after Domen:
+// only Mojca fits the top row, but on one of two cells; then Ivo: the 5th row, then the 4th column)
+{
+  const p = await b.newPage();
+  await p.setViewport({ width: 390, height: 844, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
+  await p.goto('http://localhost:8765/kje-je-kdo/'); await wait();
+  await p.evaluate(() => localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })));
+  await p.goto('http://localhost:8765/kje-je-kdo/?uganka=12'); await wait();
+  await p.$eval('#go', e => e.click());
+  await p.$eval('.clue[data-p="domen"]', e => e.click()); await p.$eval('.cell[data-r="3"][data-c="2"]', e => e.click());
+  const step = async () => { await p.$eval('#hintBtn', e => e.click()); return [await p.$eval('#say', e => e.textContent), await p.$$eval('.cell.can', els => els.map(e => e.dataset.r + ',' + e.dataset.c).join(' '))]; };
+  const want = [
+    ['V tej vrsti mora stati nekdo', '0,0 0,4 0,5'],
+    ['Samo Mojca lahko stoji v tej vrsti', '0,0 0,5'],
+    ['V tej vrsti mora stati nekdo', '4,1 4,3 4,4 4,5'],
+    ['Samo Ivo lahko stoji v tej vrsti', '4,3 4,4 4,5'],
+    ['V tem stolpcu mora stati nekdo', '1,3 2,3 4,3 5,3'],
+    ['Samo Ivo lahko stoji v tem stolpcu', '1,3 2,3 4,3 5,3'],
+    ['Tukaj je bil Ivo', '4,3'],
+  ];
+  for (const [i, [text, cells]] of want.entries()) {
+    const [said, lit] = await step();
+    ok(said.includes(text) && lit === cells, `puzzle 12, help ${i + 1}: »${text}…« on ${cells} (got »${said}« on ${lit})`);
+  }
+  ok(await p.$$eval('.cell .tok', els => els.length) === 1, 'puzzle 12: the help placed nobody');
+  await p.close();
+}
+
+// every puzzle with the help alone: press until it lights one cell and says »Tukaj«, tap that cell, again
+{
+  const p = await b.newPage();
+  await p.setViewport({ width: 390, height: 844, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
+  await p.goto('http://localhost:8765/kje-je-kdo/'); await wait();
+  await p.evaluate(() => localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })));
+  const LV = await p.evaluate(() => LEVELS);
+  for (const L of LV) {
+    await p.goto(`http://localhost:8765/kje-je-kdo/?uganka=${L.id}`); await wait(200);
+    await p.$eval('#go', e => e.click());
+    let presses = 0;
+    while (presses < 60 && await p.$$eval('.cell .tok', els => els.length) < L.people.length) {
+      await p.$eval('#hintBtn', e => e.click()); presses++;
+      if ((await p.$eval('#say', e => e.textContent)).startsWith('Tukaj')) await p.$eval('.cell.can', e => e.click());
+    }
+    ok(await p.$$eval('.cell .tok', els => els.length) === L.people.length, `puzzle ${L.id}: the help alone leads to everyone's place (${presses} presses)`);
+  }
+  await p.close();
+}
+
 // every puzzle on the phone: each person by their sentence and their cell, then the culprit
 {
   const p = await b.newPage();
