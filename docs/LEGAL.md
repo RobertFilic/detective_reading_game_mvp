@@ -10,7 +10,7 @@ This is a careful draft, not legal advice. Before it goes live, the Slovenian ed
 |---|---|
 | No accounts, no login, no e-mail, no payments, no ads, no social plugins, no notifications | whole app |
 | Detective's name (max 12 characters), avatar, age band / reading level, solved cases, letters, a play log, and a random player id are saved in the browser's `localStorage` on the device and never sent | `solo/index.html` (`dp_*` keys) |
-| Two things are sent: the Cloudflare Web Analytics beacon (cookieless, anonymous visit counts), and since 2026-11-14 anonymous game events from »Skrivnostne sobe« (no name, no card, no IP, no device ID; a random sitting number held in memory only; stored in D1 in the EU, deleted after a year; [EVENTS.md](EVENTS.md)) | `index.html`, `home/index.html`, `solo/index.html`, `kje-je-kdo/index.html`, `worker/index.js` |
+| Two things are sent: the Cloudflare Web Analytics beacon (cookieless, anonymous visit counts), and since 2026-11-14 anonymous game events from »Skrivnostne sobe« and the main game (no name, no card, no IP, no device ID; a random sitting number held in memory only; stored in D1 in the EU, deleted after a year; [EVENTS.md](EVENTS.md)) | `index.html`, `home/index.html`, `solo/index.html` (`beacon()`), `kje-je-kdo/index.html`, `worker/index.js` |
 | The site is served by Cloudflare (a Worker with static assets), so Cloudflare briefly handles the visitor's IP address to deliver the page | hosting |
 | The camera is used only when an adult taps »Skeniraj kodo« in the adult review; the picture is read on the device | `qrScan()` in `solo/index.html` |
 | Fonts and QR libraries are bundled; no Google Fonts or other third-party requests | `solo/fonts/`, `solo/vendor/` |

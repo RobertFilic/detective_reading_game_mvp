@@ -3015,7 +3015,75 @@ function log(type, extra = {}) {
     case: S.c ? S.c.id : null, pos: S.c ? S.caseNo + 1 : null, screen: S.screen, type, ...extra,
   });
   store.write(LOG_KEY, LOG);
+  beacon(type, extra);
 }
+
+// ---------------------------------------------------------------------------
+// Anonymous events: where children get stuck (docs/EVENTS.md). A few moments of the play log above go to
+// /api/e, without the player id, the session, the child's number, the name or the age: only the case, the
+// step and what happened. SID is a random number in memory for this page load. A failed send changes nothing.
+// ---------------------------------------------------------------------------
+const SID = (Math.random().toString(36).slice(2) + '00000000').slice(0, 10);
+const CASE_SCREENS = new Set(['call', 'intro', 'story', 'accuse', 'evidence', 'scene', 'ask', 'words', 'lock', 'order', 'cipher', 'torn', 'lie', 'herring', 'when', 'solve']);
+let EV = null;   // the case being played: {id, step (last case screen), t0, idle (ms with no action on a case screen), hints, stuck: Set of steps, done}
+function sendEvent(ev, data = {}) {
+  const id = EV ? EV.id : S.c && S.c.id;
+  const e = { game: 'solo', sid: SID, ev, data: { ...(id ? { case: id } : {}), ...data } };
+  if (EV) e.sec = Math.round((Date.now() - EV.t0) / 1000);
+  try { navigator.sendBeacon('/api/e', JSON.stringify(e)); } catch (err) {}
+}
+// play-log type → [event, data]; anything not listed here stays on the device only
+function beacon(type, x) {
+  const step = S.screen, wrong = (kind) => sendEvent('wrong', { step, kind });
+  if (EV) EV.idle = 0;   // any logged tap is an action
+  switch (type) {
+    case 'case_pick': case 'warm_start': {
+      const warm = type === 'warm_start';
+      leftCase();   // a case left for the board or the list, then another one picked
+      EV = { id: S.c.id, step: null, t0: Date.now(), idle: 0, hints: 0, stuck: new Set(), done: false };
+      return sendEvent('start', warm ? { warm: x.n, replay: !!x.replay }
+        : { file: x.file, first: !x.solvedBefore, suggested: !!x.suggested, lvl: S.level || 'B', help: S.run ? S.run.help : null });
+    }
+    case 'warm_intro': return sendEvent('warm', { how: 'intro' });
+    case 'warm_skip': return sendEvent('warm', { how: 'skip' });
+    case 'skip_offer': return sendEvent('warm', { how: 'offer' });
+    case 'detective_new': return sendEvent('card', { how: 'new' });
+    case 'profile_saved': return sendEvent('card', { how: 'saved' });
+    case 'file_open': return sendEvent('file', { file: x.file });
+    case 'screen_enter':
+      if (!EV || EV.done || !S.c || S.c.id !== EV.id || !CASE_SCREENS.has(step) || EV.step === step) return;
+      EV.step = step;
+      return sendEvent('step', { step });
+    case 'nav_back': return S.c && CASE_SCREENS.has(step) ? sendEvent('back', { step, how: x.how }) : undefined;
+    case 'accuse_early': return sendEvent('skim', { step });
+    case 'evidence_confirm': return x.correct ? undefined : sendEvent('wrong', { step, kind: x.role || 'none', sc: !!x.suspectCorrect });
+    case 'lead_miss': return wrong('lead');
+    case 'puzzle_lock': case 'puzzle_word': case 'puzzle_cipher': return x.correct ? undefined : wrong(type.slice(7));
+    case 'lie_try': case 'herring_try': case 'when_try': return x.correct ? undefined : wrong(x.kind || 'no');
+    case 'hint_shown': case 'puzzle_hint': case 'lie_hint': case 'herring_hint': case 'when_hint':
+      if (EV) EV.hints++;
+      return sendEvent('hint', { step, hint: x.hint, level: x.hintLevel, ...(x.via ? { via: x.via } : {}) });
+    case 'help_tap': return sendEvent('hint', { step, hint: 'coin' });
+    case 'help_walk': case 'help_all': return sendEvent('hint', { step, hint: type === 'help_walk' ? 'walk' : 'all' });
+    case 'assisted': if (EV) EV.hints++; return sendEvent('hint', { step, hint: 'assisted', level: 3 });
+    case 'case_done':
+      if (!EV || EV.done) return;
+      EV.done = true;
+      return sendEvent('solved', { first: !(S.c && !S.c.warm && isSolved(S.c)), wrong: x.wrong || 0, hints: EV.hints, assisted: !!x.assisted });
+    case 'help_level': return sendEvent('verdict', { verdict: x.verdict, from: x.from, to: x.to });
+    case 'session_end': if (x.abandoned) leftCase(); return;
+  }
+}
+function leftCase() {
+  if (EV && !EV.done && EV.step) { sendEvent('left', { step: EV.step, hints: EV.hints }); EV.done = true; }
+}
+addEventListener('pagehide', leftCase);
+// 90 s on a case screen with no action (only while the page is in view and no hint card is open): once per step
+setInterval(() => {
+  if (!EV || EV.done || !S.c || S.c.id !== EV.id || !CASE_SCREENS.has(S.screen) || document.hidden || (S.run && S.run.hint)) return;
+  EV.idle += 5000;
+  if (EV.idle >= 90000 && !EV.stuck.has(S.screen)) { EV.stuck.add(S.screen); sendEvent('stuck', { step: S.screen, hints: EV.hints }); }
+}, 5000);
 
 // ---------------------------------------------------------------------------
 // Audio: embedded clip → audio/<id>.m4a → Slovenian speechSynthesis voice

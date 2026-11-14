@@ -2,10 +2,12 @@
 // events (docs/EVENTS.md) and writes them to D1. It keeps only the fields listed below; it never reads
 // or stores the IP address, the user agent or anything else about the visitor.
 
-const GAMES = new Set(['sobe']);
-const EVENTS = new Set(['intro', 'start', 'wrong', 'hint', 'stuck', 'solved', 'left']);
+const GAMES = new Set(['sobe', 'solo']);
+const EVENTS = new Set(['intro', 'start', 'wrong', 'hint', 'stuck', 'solved', 'left',
+  'step', 'skim', 'back', 'verdict', 'warm', 'card', 'file']);   // the last line: the main game (solo/)
 // allowed keys inside `data`, each a small number, a boolean or a short word
-const DATA = new Set(['card', 'how', 'first', 'who', 'kind', 'step', 'hints', 'wrongs', 'undos', 'notes', 'done', 'new', 'tries']);
+const DATA = new Set(['card', 'how', 'first', 'who', 'kind', 'step', 'hints', 'wrongs', 'undos', 'notes', 'done', 'new', 'tries',
+  'case', 'file', 'warm', 'replay', 'suggested', 'lvl', 'help', 'hint', 'level', 'via', 'sc', 'wrong', 'assisted', 'verdict', 'from', 'to']);
 const KEEP_DAYS = 365;
 
 const int = (v, lo, hi) => (Number.isInteger(v) && v >= lo && v <= hi ? v : null);
@@ -19,7 +21,7 @@ function clean(e) {
     for (const [key, v] of Object.entries(e.data)) {
       if (!DATA.has(key)) continue;
       if (typeof v === 'boolean' || int(v, 0, 9999) !== null) data[key] = v;
-      else if (typeof v === 'string' && /^[a-z0-9_-]{1,16}$/i.test(v)) data[key] = v;
+      else if (typeof v === 'string' && /^[a-z0-9_-]{1,24}$/i.test(v)) data[key] = v;
     }
   }
   return {

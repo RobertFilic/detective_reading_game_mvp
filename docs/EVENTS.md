@@ -1,6 +1,6 @@
 # Game events: where players get stuck
 
-Since 2026-11-14, »Skrivnostne sobe« (`kje-je-kdo/`) sends a few anonymous events. They show where children get stuck, which help steps they need, and how many puzzles get solved. Page views stay in Cloudflare Web Analytics: `/` is the start page, `/solo/` the main game, `/kje-je-kdo/` Skrivnostne sobe, and `/home/` launches from the Home Screen icon.
+Since 2026-11-14, »Skrivnostne sobe« (`kje-je-kdo/`) and the main game (`solo/`) send a few anonymous events. They show where children get stuck, which help steps they need, and how many puzzles get solved. Page views stay in Cloudflare Web Analytics: `/` is the start page, `/solo/` the main game, `/kje-je-kdo/` Skrivnostne sobe, and `/home/` launches from the Home Screen icon.
 
 ## Privacy rules
 
@@ -17,7 +17,7 @@ Since 2026-11-14, »Skrivnostne sobe« (`kje-je-kdo/`) sends a few anonymous eve
 - **Setup:** [wrangler.jsonc](../wrangler.jsonc) holds the settings Workers Builds used to generate on every build, plus the Worker and the D1 binding. The git build still runs `npx wrangler deploy`.
 - **Table:** [worker/migrations/0001_events.sql](../worker/migrations/0001_events.sql).
 
-Each row has: `day` (UTC date only), `sid`, `game` (`sobe`), `ev`, `puzzle`, `placed` (people on the board at that moment), `sec` (seconds since the puzzle opened), and `data` (JSON).
+Each row has: `day` (UTC date only), `sid`, `game` (`sobe` or `solo`), `ev`, `puzzle`, `placed` (people on the board at that moment), `sec` (seconds since the puzzle opened), and `data` (JSON).
 
 | `ev` | When | `data` |
 |---|---|---|
@@ -29,7 +29,42 @@ Each row has: `day` (UTC date only), `sid`, `game` (`sobe`), `ev`, `puzzle`, `pl
 | `solved` | The right culprit is chosen | `hints`, `wrongs`, `undos`, `notes` (pencil used), `first` (the first solve on this device), `done` (how many puzzles this device has solved now) |
 | `left` | Back to the list, another puzzle, or the page closed before the puzzle was solved | `hints`, `wrongs`, `undos`, `notes` |
 
+## The main game (`solo/`, `game = 'solo'`)
+
+The main game already keeps a play log on the device for the adult review (`log()` in [solo/index.html](../solo/index.html)). `beacon()` forwards only the moments listed below. It drops the player id, the session, the child's number, the name and the age band. Each event's `data` carries `case` (e.g. `b2`, `p6`; the warm-ups are `w1` and `w2`), and `sec` counts from when the case started. `puzzle` and `placed` stay empty.
+
+| `ev` | When | `data` |
+|---|---|---|
+| `file` | A season's board opens | `file` |
+| `start` | A case or a warm-up starts | `file`, `first` (false = a replay), `suggested` (the game's pick), `lvl` (reading level A/B), `help` (help level 1–3); a warm-up has `warm` (1 or 2) and `replay` |
+| `step` | A new screen of the case: `call`, `intro`, `story`, `scene`, `ask`, `words`, `lock`, `order`, `cipher`, `torn`, `lie`, `herring`, `when`, `solve`, `accuse`, `evidence` | `step`. Consecutive steps of one `sid` give the time per step |
+| `wrong` | A wrong try | `step`, `kind`: for a proof it's the sentence's role (`distractor` = the decoy, `clear` = an alibi used wrongly, `partial` = the culprit's own claim, `neutral`), plus `sc` (the suspect was right). Otherwise `lead` (the warm-up), `lock`, `word`, `cipher`, or the lie / red herring / time kind |
+| `hint` | A hint is shown | `step`, `hint` (the hint key, e.g. `h1`, `cipherLook`, `selfClaim`, `coin`, `walk`, `all`, `assisted`), `level` (0 = a gentle note … 3 = shown the answer), `via` (`coin`) |
+| `skim` | Accused before scrolling the story to the end | `step` |
+| `back` | Went one step back | `step`, `how` |
+| `stuck` | 90 s on a case screen with no action at all (only while the page is in view and no hint is open). Once per step | `step`, `hints` |
+| `solved` | The case is solved | `first`, `wrong`, `hints`, `assisted` |
+| `verdict` | The game's own judgment after a first solve (it sets the help level from it) | `verdict` (`clean` / `helped` / `hard`), `from`, `to` (help level) |
+| `left` | A case left unsolved: another case picked, or the page closed | `step` (the last screen reached), `hints` |
+| `warm` | The warm-up | `how`: `intro`, `skip`, `offer` (the child followed every step of w1 and may go on alone) |
+| `card` | A new detective's ID card | `how`: `new`, `saved`; never the name or the picture |
+
+```sql
+-- main game: per case and step, where they stop
+SELECT json_extract(data, '$.case') AS c, json_extract(data, '$.step') AS step,
+  SUM(ev = 'step') AS reached, SUM(ev = 'stuck') AS stuck, SUM(ev = 'left') AS left_, SUM(ev = 'wrong') AS wrong, SUM(ev = 'hint') AS hints
+FROM events WHERE game = 'solo' AND json_extract(data, '$.step') IS NOT NULL GROUP BY c, step ORDER BY c;
+
+-- main game: the game's verdict per case
+SELECT json_extract(data, '$.case') AS c, json_extract(data, '$.verdict') AS v, COUNT(*) AS n
+FROM events WHERE game = 'solo' AND ev = 'verdict' GROUP BY c, v ORDER BY c;
+```
+
+**The reading page shows all of this:** `node tools/read.mjs` from `solo/` → »📊 Analitika« ([solo/tools/stats.mjs](../solo/tools/stats.mjs)). It also shows page views from Cloudflare Web Analytics.
+
 ## Reading the numbers
+
+The queries below are for Skrivnostne sobe; add `WHERE game = 'sobe'` when both games have data.
 
 **In the dashboard:** Workers & Pages → D1 → `bralni-dogodki` → Console. **From the terminal:** `cf d1 query 429c1e8e-1b81-4afa-b038-196b57b2e941 --sql "…"`.
 
