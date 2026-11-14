@@ -2,12 +2,14 @@
 //   node tools/read.mjs              every season, opens shots/read.html in the browser
 //   node tools/read.mjs sneg pokal   only these files (ids from FILES)
 //   node tools/read.mjs --no-open    just write the page
+//   node tools/read.mjs --no-stats   without »📊 Analitika« (page views and puzzle events, tools/stats.mjs)
 // Reads the case data straight from index.html, so it always shows what is in the game now,
 // unreleased seasons included. Lines over 8 words are marked (level A).
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { execFile } from 'node:child_process';
 import { ROOT, loadData } from './lib.mjs';
+import { statsSection, STATS_CSS } from './stats.mjs';
 
 const args = process.argv.slice(2);
 const only = args.filter(a => !a.startsWith('--'));
@@ -77,6 +79,7 @@ function renderFile(f) {
 
 const files = [...FILES, ...COMING.filter(f => f.id && !FILES.some(x => x.id === f.id))]
   .filter(f => !only.length || only.includes(f.id));
+const stats = args.includes('--no-stats') ? '' : statsSection();
 const total = files.reduce((n, f) => n + CASES.filter(c => c.file === f.id).length, 0);
 const html = `<!doctype html><html lang="sl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bralni detektivi · besedila</title><style>
@@ -104,11 +107,13 @@ table{border-collapse:collapse;width:100%} td,th{padding:4px 6px;vertical-align:
 .empty{color:var(--mut);font-style:italic} ol{margin:0;padding-left:1.4em}
 body.hide .spoiler,body.hide .role,body.hide .r-evidence td,body.hide .r-distractor td,body.hide .r-clear td{background:none!important}
 body.hide .spoiler,body.hide .role{visibility:hidden}
+${stats ? STATS_CSS : ''}
 @media (max-width:600px){.sent .src{width:auto}.sent tr{display:grid;grid-template-columns:2.5em 1fr}.sent td{border:0}.sent tr{border-bottom:1px solid var(--line)}.kv th{width:35%}}
 </style></head><body>
-<div class="top"><b>📚 Besedila</b>${files.map(f => `<a href="#f-${f.id}">${f.icon || ''} ${esc(f.title)}</a>`).join('')}
+<div class="top"><b>📚 Besedila</b>${stats ? '<a href="#analitika">📊 Analitika</a>' : ''}${files.map(f => `<a href="#f-${f.id}">${f.icon || ''} ${esc(f.title)}</a>`).join('')}
 <label><input type="checkbox" onchange="document.body.classList.toggle('hide',this.checked)"> brez rešitev</label></div>
 <main><p class="meta">${total} primerov · iz solo/index.html, ${new Date().toLocaleString('sl-SI')}. Zelena = dokaz, rumena = vaba, modra = alibi. Rdeča oznaka = več kot 8 besed.</p>
+${stats}
 ${files.map(renderFile).join('')}</main></body></html>`;
 
 const out = join(ROOT, 'shots');
