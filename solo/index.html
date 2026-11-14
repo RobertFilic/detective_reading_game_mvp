@@ -1831,7 +1831,7 @@ const CASES = [
   {
     id: 'b2', file: 'bip', no: 2, type: 'elim', level: 'A', sticker: '💡', place: 'Strojnica',
     steps: ['call', 'ask', 'solve'],
-    client: 'maja', call: ['Ob polnoči so ugasnile vse luči!', 'Nekdo je izvlekel velik vtikač.'],
+    client: 'maja', call: ['Pomagaj! Ob polnoči so ugasnile vse luči!', 'Nekdo je izvlekel velik vtikač. Kdo je bil?'],
     question: 'Kdo je izvlekel velik vtikač?',
     suspects: ['tim', 'ela', 'robi', 'kiki'], culprit: 'robi',
     sentences: [
@@ -1852,7 +1852,7 @@ const CASES = [
   {
     id: 'b3', file: 'bip', no: 3, type: 'elim', level: 'A', sticker: '🧀', place: 'Kuhinja',
     steps: ['call', 'scene', 'solve'],
-    client: 'maja', call: ['Moj sir je izginil!', 'Kamera je zvečer nekaj posnela.'],
+    client: 'maja', call: ['Moj sir je izginil!', 'Kamera je zvečer nekaj posnela. Poglej posnetek!'],
     // the security camera: we see something small take the cheese, then the picture goes
     film: [
       ['🧀 🥄', 'Na mizi sta sir in bleščeča žlička.'],
@@ -1880,7 +1880,7 @@ const CASES = [
   {
     id: 'b4', file: 'bip', no: 4, type: 'elim', level: 'A', sticker: '📡', place: 'Streha',
     steps: ['call', 'words', 'scene', 'solve'],
-    client: 'vesna', call: ['Nekdo je ob desetih zvil anteno!', 'Robi ti je natisnil, kje iskati.'],
+    client: 'vesna', call: ['Joj! Nekdo je ob desetih zvil anteno!', 'Robi ti je natisnil, kje iskati.', 'A tiskalnik je pomešal črke!'],
     // 🔤 iskanka: capitals, Č/Š/Ž one cell, only → and ↓, each word exactly once; [emoji, WORD]
     words: {
       note: 'Robijev tiskalnik je pomešal črke. Poišči štiri besede.',
@@ -1908,7 +1908,7 @@ const CASES = [
   {
     id: 'b5', file: 'bip', no: 5, type: 'elim', level: 'A', sticker: '📦', place: 'Skladišče',
     steps: ['call', 'lock', 'scene', 'solve'],
-    client: 'maja', call: ['V skladišču je ponoči nekaj zropotalo!', 'Vrata imajo ključavnico s šifro.'],
+    client: 'maja', call: ['V skladišču je ponoči nekaj zropotalo!', 'Vrata imajo ključavnico s šifro.', 'Pomagaj mi jih odpreti!'],
     // 🔐 code lock: the code comes from case 4 (the note in the bin); h2 gives it away for fair play
     lock: {
       note: 'Ključavnica ima tri kolesca. Se spomniš šifre?',
@@ -1937,7 +1937,7 @@ const CASES = [
   {
     id: 'b6', file: 'bip', no: 6, final: true, type: 'elim', level: 'A', sticker: '👾', place: 'Zračnik',
     steps: ['call', 'order', 'scene', 'solve'],
-    client: 'vesna', call: ['Iz zračnika sveti modra luč!', 'Robi je tam ponoči snemal.'],
+    client: 'vesna', call: ['Pridi hitro! Iz zračnika sveti modra luč!', 'Robi je tam ponoči snemal. Kaj je videl?'],
     // 🕐 timeline: cards in the right order; the time words and what must come first tell it
     order: {
       note: 'Robijeve slike so se pomešale. Kaj je bilo najprej?',
@@ -1972,7 +1972,7 @@ const CASES = [
   {
     id: 'g1', file: 'galeb', no: 1, type: 'elim', level: 'A', sticker: '🐍', place: 'Plaža',
     steps: ['call', 'scene', 'lie', 'solve'],
-    client: 'rozi', call: ['Cin-cin! Dopoldne je nekdo zvezal brisače v kačo!', 'Popoldne bo tekma peščenih gradov.'],
+    client: 'rozi', call: ['Cin-cin! Dopoldne je nekdo zvezal brisače v kačo!', 'Popoldne je tekma peščenih gradov.', 'Vsi bodo rabili brisače! Kdo je bil?'],
     question: 'Kdo je zvezal vse brisače?',
     suspects: ['hana', 'gusti', 'luka', 'bepi'], culprit: 'luka',
     sentences: [
@@ -1997,7 +1997,7 @@ const CASES = [
   {
     id: 'g2', file: 'galeb', no: 2, type: 'elim', level: 'A', sticker: '🪣', place: 'Hodnik',
     steps: ['call', 'ask', 'cipher', 'lie', 'solve'],
-    client: 'rozi', call: ['Cin-cin! Pred vsemi vrati je pesek!', 'Ob polnoči je bil hodnik še čist.'],
+    client: 'rozi', call: ['Cin-cin! Pred vsemi vrati je pesek!', 'Ob polnoči sem pometla. Hodnik je bil čist.', 'Kdo je nanosil pesek?'],
     question: 'Kdo je ponoči posul pesek pred vsa vrata?',
     suspects: ['bepi', 'hana', 'gusti', 'luka'], culprit: 'hana',
     sentences: [
@@ -2061,7 +2061,7 @@ const CASES = [
   {
     id: 'g4', file: 'galeb', no: 4, type: 'elim', level: 'A', sticker: '🧢', place: 'Pomol',
     steps: ['call', 'torn', 'ask', 'lie', 'solve'],
-    client: 'bepi', call: ['Moja kapitanska kapa je izginila!', 'Zjutraj je visela na moji barki.'],
+    client: 'bepi', call: ['Ahoj! Moja kapitanska kapa je izginila!', 'Zjutraj je še visela na moji barki.', 'Brez kape nisem pravi kapitan!'],
     question: 'Kdo je vzel Bepijevo kapitansko kapo?',
     suspects: ['luka', 'gusti', 'vera', 'hana'], culprit: 'gusti',
     // 📜 the first torn note: Rozi's note, the breaker for Hana's lie two steps later
@@ -2100,7 +2100,7 @@ const CASES = [
   {
     id: 'g5', file: 'galeb', no: 5, type: 'elim', level: 'A', sticker: '🏰', place: 'Plaža',
     steps: ['call', 'scene', 'words', 'lie', 'solve'],
-    client: 'luka', call: ['Moj veliki grad je podrt!', 'Včeraj je bil še največji na plaži.'],
+    client: 'luka', call: ['Moj veliki grad je podrt!', 'Včeraj je bil še največji na plaži.', 'Kdo mi ga je podrl?'],
     question: 'Kaj je ponoči podrlo Lukov grad?',
     suspects: ['hana', 'bepi', 'morje', 'gusti'], culprit: 'morje',
     sentences: [
@@ -2138,7 +2138,7 @@ const CASES = [
   {
     id: 'g6', file: 'galeb', no: 6, final: true, type: 'elim', level: 'A', sticker: '🦔', place: 'Recepcija',
     steps: ['call', 'cipher', 'ask', 'lie', 'solve'],
-    client: 'rozi', call: ['Cin-cin! Zadnji listek z ježkom!', 'Ugotovi, kdo piše knjige o Ježku!'],
+    client: 'rozi', call: ['Cin-cin! Našla sem zadnji listek z ježkom!', 'Zdaj lahko ugotoviš, kdo piše knjige o Ježku!'],
     question: 'Kdo piše knjige o Ježku?',
     suspects: ['hana', 'bepi', 'luka', 'vera'], culprit: 'vera',
     sentences: [
@@ -2179,7 +2179,7 @@ const CASES = [
     id: 'm1', file: 'muzej', no: 1, type: 'elim', level: 'A', sticker: '💎', place: 'Kristali',
     steps: ['call', 'scene', 'herring', 'solve'],
     // the countdown line feeds case 4's lock (5-4-3-2); the pose feeds the final's timeline
-    client: 'breda', call: ['Še pet dni do rojstnega dne!', 'Rex se je ponoči priklonil!', 'Zvečer je nekdo ugasnil luč pri kristalih.'],
+    client: 'breda', call: ['Še pet dni do rojstnega dne muzeja!', 'Pa se dogajajo čudne reči. Rex se je ponoči priklonil!', 'Zvečer je nekdo ugasnil luč pri kristalih. Kdo je bil?'],
     question: 'Kdo je zvečer ugasnil luč pri kristalih?',
     suspects: ['rado', 'zoja', 'lan', 'fosil'], culprit: 'lan',
     sentences: [
@@ -2206,7 +2206,7 @@ const CASES = [
     id: 'm2', file: 'muzej', no: 2, type: 'elim', level: 'A', sticker: '🐾', place: 'Oder',
     steps: ['call', 'ask', 'torn', 'herring', 'solve'],
     // the countdown line feeds case 4's lock (5-4-3-2); the pose feeds the final's timeline
-    client: 'breda', call: ['Še štirje dnevi do rojstnega dne!', 'Rex danes stoji na eni nogi!', 'Zvečer je nekdo hodil po sveži barvi!'],
+    client: 'breda', call: ['Še štirje dnevi do rojstnega dne!', 'Spet čudne reči! Rex stoji na eni nogi.', 'Zvečer je nekdo hodil po sveži barvi. Kdo je bil?'],
     question: 'Kdo je zvečer hodil po sveži barvi?',
     suspects: ['zoja', 'lan', 'fosil', 'rado'], culprit: 'zoja',
     // 👁️ Mila and Ivo answer, but are not suspects in this case
@@ -2253,7 +2253,7 @@ const CASES = [
     id: 'm3', file: 'muzej', no: 3, type: 'elim', level: 'A', sticker: '🦣', place: 'Mamutova dvorana',
     steps: ['call', 'ask', 'scene', 'lie', 'solve'],
     // the countdown and the pose are read again later (case 4's lock code 5-4-3-2; the final's timeline)
-    client: 'breda', call: ['Še trije dnevi do rojstnega dne!', 'Rex je ponoči dvignil rep!', 'Sinoči ob sedmih je izginil mamutov zob!'],
+    client: 'breda', call: ['Še trije dnevi do rojstnega dne!', 'Rex je ponoči dvignil rep. In to ni vse!', 'Sinoči ob sedmih je izginil mamutov zob! Kdo ga je vzel?'],
     question: 'Kdo je ob sedmih vzel mamutov zob?',
     suspects: ['lan', 'rado', 'zoja', 'ivo'], culprit: 'ivo',
     witnesses: ['mila'],
@@ -2294,7 +2294,7 @@ const CASES = [
   {
     id: 'm4', file: 'muzej', no: 4, type: 'elim', level: 'A', sticker: '🦋', place: 'Soba z metulji',
     steps: ['call', 'lock', 'scene', 'herring', 'solve'],
-    client: 'breda', call: ['Še dva dneva! Rex je obrnil glavo nazaj!', 'Ob šestih so metulji dobili napačne napise.', 'Sobo sem zaklenila. Šifro že poznaš!'],
+    client: 'breda', call: ['Še dva dneva! Rex je obrnil glavo nazaj!', 'In metulji so ob šestih dobili napačne napise!', 'Sobo sem zaklenila. Šifro že poznaš. Pridi!'],
     // 🔐 4 wheels: Breda's countdown in the calls of m1–m4 (pet, štiri, tri, dva); h2 gives it away
     lock: {
       note: 'Šifra je Bredino odštevanje: od ponedeljka do danes.',
@@ -2329,7 +2329,7 @@ const CASES = [
   {
     id: 'm5', file: 'muzej', no: 5, type: 'elim', level: 'A', sticker: '👤', place: 'Dinozavri',
     steps: ['call', 'scene', 'words', 'lie', 'solve'],
-    client: 'breda', call: ['Še en dan do rojstnega dne!', 'Rex je ponoči dvignil obe ročici!', 'Ob osmih je po steni hodil dinozaver!'],
+    client: 'breda', call: ['Jutri je rojstni dan muzeja!', 'Rex pa je ponoči dvignil obe ročici!', 'Ob osmih je po steni hodil dinozaver! Ali pa samo senca?'],
     question: 'Čigava senca je ob osmih hodila po steni?',
     suspects: ['lan', 'rado', 'zoja', 'mila'], culprit: 'zoja',
     // no 🧭 step this time: the bait points at Rambo (points), and his alibi at eight is the only way past it
@@ -2452,7 +2452,7 @@ const CASES = [
     id: 'p2', file: 'pokal', no: 2, type: 'elim', level: 'A', sticker: '🐐', place: 'Mali gol',
     steps: ['call', 'ask', 'when', 'solve'],
     // no score here (the lock code's first score comes in p3's call); the film ends after the match, so the call is after it too
-    client: 'lan', call: ['Hej! Gooool … ampak čigav?', 'Med tekmo je nekdo zabil v mali gol.', 'Kamera za telovadnico je vse posnela!'],
+    client: 'lan', call: ['Hej! Gooool … ampak čigav?', 'Med tekmo je nekdo zabil v mali gol.', 'Kamera za telovadnico je vse posnela. Poglej!'],
     // 📹 the camera on the small pitch: pred / med / po tekmi; two blurred visitors, only the »med« one counts
     film: [
       ['🥅', 'Pred tekmo: mali gol je prazen.'],
@@ -2496,7 +2496,7 @@ const CASES = [
     id: 'p3', file: 'pokal', no: 3, type: 'elim', level: 'A', sticker: '🎗️', place: 'Klop Cityja',
     steps: ['call', 'ask', 'torn', 'herring', 'solve'],
     // the score is half of the final's lock code (3-1-2-0): no other digits in this case
-    client: 'lan', call: ['Gooool! Zmagali smo 3 : 1!', 'Luka je pustil trak na klopi.', 'Med odmorom je trak izginil!'],
+    client: 'lan', call: ['Gooool! Zmagali smo 3 : 1!', 'Luka je pustil kapetanski trak na klopi.', 'Med odmorom je izginil! Pomagaj ga najti!'],
     question: 'Kdo je med odmorom vzel kapetanski trak?',
     suspects: ['zoja', 'tone', 'hana', 'pia'], culprit: 'hana',
     // 👁️ Lan (the client), Luka (the armband is his) and Neža answer, but are not suspects
@@ -2543,7 +2543,7 @@ const CASES = [
     id: 'p4', file: 'pokal', no: 4, type: 'elim', level: 'A', sticker: '🌼', place: 'Veliko igrišče',
     steps: ['call', 'words', 'scene', 'when', 'solve'],
     // the call carries the second half of the final's lock code (2 : 0), and the case's two time phrases meet in ⏰
-    client: 'lan', call: ['City je zmagal 2 : 0!', 'Medtem ko smo jedli, je gol zacvetel!', 'Ves gol je v venčkih! 🌼'],
+    client: 'lan', call: ['City je zmagal 2 : 0!', 'Potem smo šli jest. Ko smo se vrnili, je gol cvetel!', 'Ves je v venčkih! Kdo je bil? 🌼'],
     // 🔤 iskanka with riddles: the words are the four places to search (scene labels gol, klop, trava, okno)
     words: {
       note: 'Hana ti je skrila kraje v iskanko. Reši uganke!',
@@ -2636,7 +2636,7 @@ const CASES = [
     id: 'p6', file: 'pokal', no: 6, final: true, type: 'elim', level: 'A', sticker: '🏆', place: 'Zlati pokal',
     steps: ['call', 'ask', 'lock', 'scene', 'when', 'solve'],
     // the window has two edges: after the 8:00 photo (call, question) and until nine (question, Zoja's empty cabinet)
-    client: 'lan', call: ['Ob petih je finale. Pokala še ni!', 'Pokal je izginil po slikanju ob osmih.', 'Klet je zaklenjena. Šifro je izbrala Neža.'],
+    client: 'lan', call: ['Ob petih je finale, pokala pa ni!', 'Izginil je po slikanju ob osmih.', 'Klet je zaklenjena. Šifro je izbrala Neža. Pomagaj!'],
     question: 'Kdo je po slikanju do devetih vzel pokal?',
     suspects: ['luka', 'zoja', 'tone', 'neza'], culprit: 'tone',
     witnesses: ['hana', 'pia', 'lan'],
