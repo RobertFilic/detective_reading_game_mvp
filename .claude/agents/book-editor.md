@@ -21,7 +21,7 @@ Answer each with yes or no and the line that shows it. **Every »no« is a 🟠 
 5. **A pull forward.** Does the case end with something that makes the child want the next one (the letter's P. S., the card, the thought)?
 6. **The world.** Is there one concrete, picturable detail that makes this place feel real (a smell, a sound, an object)?
 7. **The season.** Does the case add to the big mystery, and do the running jokes and traits from earlier cases come back?
-8. **The call.** Read aloud, does the call sound like one person phoning the detective (each line follows from the last, a reason for every fact, a request at the end), not a list of facts?
+8. **The call and the reveal.** Read aloud, does the call sound like one person phoning the detective (each line follows from the last, a reason for every fact, a request at the end), and does the reveal explain in order (proof → what happened → why → the others), not a list of facts?
 
 For a whole season also check the shape: does the mood vary across the six cases, and does the final feel like a finale?
 
