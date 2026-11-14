@@ -1,0 +1,9 @@
+.git
+.wrangler
+.cloudflare
+wrangler.jsonc
+worker
+node_modules
+Detective2
+shots
+.durations.json

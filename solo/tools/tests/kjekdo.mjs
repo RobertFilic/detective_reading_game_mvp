@@ -12,6 +12,8 @@ const wait = (ms = 350) => new Promise(r => setTimeout(r, ms));
 for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land', 844, 390]]) {
   const p = await b.newPage();
   const errors = []; p.on('pageerror', e => errors.push(e.message));
+  // the anonymous events the page sends (docs/EVENTS.md); the test server just drops them
+  const evs = []; p.on('request', r => { if (r.url().endsWith('/api/e')) { try { evs.push(JSON.parse(r.postData())); } catch (e) {} } });
   await p.setViewport({ width: w, height: h, hasTouch: true, isMobile: dev !== 'ipad', deviceScaleFactor: 2 });
   const tap = async (sel) => { await p.$eval(sel, e => e.scrollIntoView({ block: 'center' })); await p.tap(sel); await wait(); };
   const cell = (r, c) => `.cell[data-r="${r}"][data-c="${c}"]`;
@@ -148,7 +150,50 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   ok(await p.$$eval('.lvl .done', els => els.length) === 2 && await p.$$eval('.lvl.locked', els => els.length) === 9, `${dev}: 2 ✓ on the list, puzzle 3 is open now`);
   ok(await wide(), `${dev}: no sideways scroll`);
   if (process.env.SHOTS) await p.screenshot({ path: `shots/kjekdo-${dev}.png`, fullPage: true });
+
+  // the events: anonymous, one random sitting number, nothing from the ID card
+  await wait(300);
+  const ev = (name, puzzle) => evs.filter(e => e.ev === name && (puzzle === undefined || e.puzzle === puzzle));
+  ok(evs.length > 0 && evs.every(e => e.game === 'sobe' && /^[a-z0-9]{10}$/.test(e.sid) && e.sid === evs[0].sid), `${dev}: events carry one random sitting number (${evs.length} events)`);
+  ok(!JSON.stringify(evs).includes('Ana') && !JSON.stringify(evs).includes('🦊') && evs.every(e => !('id' in e) && !('name' in e)), `${dev}: no name, helper or card number in any event`);
+  ok(ev('intro').length === 2 && ev('intro')[0].data.first === true && ev('intro')[0].data.how === 'next' && ev('intro')[0].data.card === 6 && ev('intro')[1].data.first === false && ev('intro')[1].data.how === 'skip', `${dev}: intro: read to card 6 the first time, skipped from »?«`);
+  ok(ev('start', 1).length === 1 && ev('start', 1)[0].data.first === true && ev('start', 2).length === 1, `${dev}: start of puzzles 1 and 2`);
+  ok(ev('wrong', 1).some(e => e.data.kind === 'block') && ev('wrong', 1).some(e => e.data.kind === 'row' && e.data.who === 'bor') && ev('wrong', 1).some(e => e.data.kind === 'answer' && e.data.who === 'ana'), `${dev}: wrong taps say what kind (cake, row, wrong answer)`);
+  const s1 = ev('solved', 1)[0], s2 = ev('solved', 2)[0];
+  ok(s1 && s1.data.first === true && s1.data.done === 1 && s1.data.hints === 0 && s1.data.notes === true && s1.placed === 4 && s1.data.wrongs >= 3, `${dev}: puzzle 1 solved: first time, 1 done, no help, used notes`);
+  ok(s2 && s2.data.done === 2 && s2.data.hints === 3 + 3 * L2.people.length && ev('hint', 2)[0].data.step === 1 && ev('hint', 2)[0].placed === 0, `${dev}: puzzle 2 solved with ${s2 && s2.data.hints} helps, each help counted with its step`);
+  ok(!ev('left').length && !ev('stuck').length, `${dev}: no »left« or »stuck« for solved puzzles`);
   ok(!errors.length, `${dev}: no page errors ${errors.join('|')}`);
+  await p.close();
+}
+
+// »stuck« after 90 s on the board without placing anyone, once per step; »left« when going back unsolved
+{
+  const p = await b.newPage();
+  const evs = []; p.on('request', r => { if (r.url().endsWith('/api/e')) { try { evs.push(JSON.parse(r.postData())); } catch (e) {} } });
+  await p.goto('http://localhost:8765/kje-je-kdo/');
+  await p.evaluate(() => { localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })); localStorage.setItem('dp_kjekdo_intro_v1', '1'); localStorage.setItem('dp_kjekdo_v1', '[1,2,3]'); });
+  await p.reload(); await wait();
+  await p.evaluate(() => start(3)); await wait();
+  await p.evaluate(() => { T.idle = 80000; }); await wait(6000);
+  ok(!evs.some(e => e.ev === 'stuck'), 'no »stuck« while the story sheet is open');
+  await p.evaluate(() => closeSheet());
+  await wait(6000);
+  ok(!evs.some(e => e.ev === 'stuck'), 'no »stuck« before 90 s on the board');
+  await p.evaluate(() => { T.idle = 89000; }); await wait(6000);
+  const st = evs.filter(e => e.ev === 'stuck');
+  ok(st.length === 1 && st[0].puzzle === 3 && st[0].placed === 0 && st[0].data.hints === 0, '»stuck« after 90 s: puzzle 3, nobody placed yet');
+  await p.evaluate(() => { T.idle = 200000; }); await wait(6000);
+  ok(evs.filter(e => e.ev === 'stuck').length === 1, 'only one »stuck« for the same step');
+  ok(evs.find(e => e.ev === 'start' && e.puzzle === 3).data.first === false, 'a replay of a solved puzzle starts with first: false');
+  await p.evaluate(() => showList()); await wait();
+  const left = evs.filter(e => e.ev === 'left');
+  ok(left.length === 1 && left[0].puzzle === 3, '»left« when going back to the list unsolved');
+  await p.evaluate(() => start(3)); await wait();
+  // (puppeteer can't see a beacon sent during navigation, so the page's own »pagehide« is fired here;
+  // a real navigation against the Worker was checked by hand and stored the »left«)
+  await p.evaluate(() => dispatchEvent(new PageTransitionEvent('pagehide'))); await wait(300);
+  ok(evs.filter(e => e.ev === 'left').length === 2, '»left« when the page is left on an unsolved puzzle');
   await p.close();
 }
 

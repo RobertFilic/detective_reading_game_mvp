@@ -10,15 +10,15 @@ This is a careful draft, not legal advice. Before it goes live, the Slovenian ed
 |---|---|
 | No accounts, no login, no e-mail, no payments, no ads, no social plugins, no notifications | whole app |
 | Detective's name (max 12 characters), avatar, age band / reading level, solved cases, letters, a play log, and a random player id are saved in the browser's `localStorage` on the device and never sent | `solo/index.html` (`dp_*` keys) |
-| The only thing sent anywhere is the Cloudflare Web Analytics beacon: cookieless, anonymous visit counts | `index.html`, `home/index.html`, `solo/index.html` |
-| The site is served by Cloudflare Pages, so Cloudflare briefly handles the visitor's IP address to deliver the page | hosting |
+| Two things are sent: the Cloudflare Web Analytics beacon (cookieless, anonymous visit counts), and since 2026-11-14 anonymous game events from »Skrivnostne sobe« (no name, no card, no IP, no device ID; a random sitting number held in memory only; stored in D1 in the EU, deleted after a year; [EVENTS.md](EVENTS.md)) | `index.html`, `home/index.html`, `solo/index.html`, `kje-je-kdo/index.html`, `worker/index.js` |
+| The site is served by Cloudflare (a Worker with static assets), so Cloudflare briefly handles the visitor's IP address to deliver the page | hosting |
 | The camera is used only when an adult taps »Skeniraj kodo« in the adult review; the picture is read on the device | `qrScan()` in `solo/index.html` |
 | Fonts and QR libraries are bundled; no Google Fonts or other third-party requests | `solo/fonts/`, `solo/vendor/` |
 | An adult can export everything to a file (Izvozi JSON) or move it by QR code; both stay in the adult's hands | adult review |
 
 What follows from it:
 
-- **No cookie banner and no consent box.** Game progress in `localStorage` is strictly necessary for the game the visitor asked for, and the analytics store nothing on the device (ZEKom-2, Article 225). There is nothing to consent to, so asking would only add noise.
+- **No cookie banner and no consent box.** Game progress in `localStorage` is strictly necessary for the game the visitor asked for, and neither the analytics nor the game events store anything on the device (ZEKom-2, Article 225). There is nothing to consent to, so asking would only add noise.
 - **No parental-consent flow.** We never receive a child's data, so the 15-year consent age in ZVOP-2 does not come into play. The policy says so in plain words instead.
 - **The readers are parents and teachers**, not the children. Plain Slovenian, short sentences, formal »vi«, no legalese. A parent should get the whole picture from five lines at the top.
 
@@ -72,6 +72,7 @@ No pop-up, no banner, no checkbox at first launch.
 > Ti podatki naprave ne zapustijo. Ne pošiljamo jih nikamor in jih ne vidimo. Otrok lahko namesto pravega imena vpiše vzdevek.
 >
 > **3. Kaj vidimo mi**
+> (2026-11-14: the live page also has »Anonimni dogodki v ugankah«, see `zasebnost/index.html` and [EVENTS.md](EVENTS.md).)
 > - **Anonimno štetje obiskov.** Uporabljamo Cloudflare Web Analytics. Pove nam, katera stran je bila odprta, od kod je prišel obisk, s kakšno napravo in brskalnikom, iz katere države in kako hitro se je stran naložila. Ne uporablja piškotkov, ničesar ne shrani na napravo in obiskovalcev ne prepoznava. Vidimo samo seštevke.
 > - **Dostava strani.** Stran gostuje pri podjetju Cloudflare. Ob vsakem obisku ta za kratek čas obdela IP-naslov naprave, da lahko stran pošlje in jo zaščiti pred zlorabami.
 > - **E-pošta.** Če nam pišete, vaš naslov in sporočilo uporabimo samo za odgovor. Izbrišemo ju najpozneje po enem letu.

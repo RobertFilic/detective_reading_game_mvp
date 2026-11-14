@@ -1,0 +1,26 @@
+// The same settings Workers Builds generated for this repo on every build (static files from the repo
+// root), plus a small Worker for /api/* that stores the anonymous game events (worker/index.js,
+// docs/EVENTS.md). The git build still runs `npx wrangler deploy`.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "detective-reading-game-mvp",
+  "compatibility_date": "2026-11-13",
+  "main": "worker/index.js",
+  "assets": {
+    "directory": ".",
+    // pages and files come straight from the assets; only /api/* reaches the Worker
+    "run_worker_first": ["/api/*"]
+  },
+  // no request logs: they would hold the visitor's IP address
+  "observability": {
+    "enabled": false
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "bralni-dogodki",
+      "database_id": "429c1e8e-1b81-4afa-b038-196b57b2e941",
+      "migrations_dir": "worker/migrations"
+    }
+  ]
+}

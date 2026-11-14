@@ -28,3 +28,6 @@ shots/
 
 # test timings from solo/tools/tests/run.mjs
 .durations.json
+
+# local wrangler dev state
+.wrangler/

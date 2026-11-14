@@ -196,7 +196,7 @@ main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-i
 @media (min-width: 700px) { .levels { grid-template-columns: 1fr 1fr; } }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
 </style>
-<!-- Cloudflare Web Analytics: anonymous visit counts only (no cookies, no names, no game data) -->
+<!-- Cloudflare Web Analytics: anonymous visit counts (no cookies, no names). Anonymous game events go to /api/e (docs/EVENTS.md). -->
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "43f23b7bd5c7498597842d9997dcc64d"}'></script>
 </head>
 <body>
@@ -568,8 +568,35 @@ const inCol = (c) => L.people.find(p => S.pos[p.id] && S.pos[p.id][1] === c);
 const allPlaced = () => L.people.every(p => S.pos[p.id]);
 const say = (html) => { $('say').innerHTML = html; };
 
+// ---- Anonymous events: where children get stuck (docs/EVENTS.md). No name, no detective card, nothing
+// stored on the device: SID is a random number in memory for this sitting only. A failed send changes nothing.
+const SID = (Math.random().toString(36).slice(2) + '00000000').slice(0, 10);
+let T = null;   // this puzzle: {t0, idle (ms on the board since the last placement), hints, wrongs, undos, notes, stuck: Set, done}
+const placedN = () => (S ? Object.keys(S.pos).length : 0);
+function track(ev, data) {
+  const e = { game: 'sobe', sid: SID, ev };
+  if (L && T) Object.assign(e, { puzzle: L.id, placed: placedN(), sec: Math.round((Date.now() - T.t0) / 1000) });
+  if (data) e.data = data;
+  try { navigator.sendBeacon('/api/e', JSON.stringify(e)); } catch (err) {}
+}
+const tally = () => ({ hints: T.hints, wrongs: T.wrongs, undos: T.undos, notes: T.notes });
+// leaving a puzzle before it's solved (back to the list, another puzzle, or closing the page)
+function leave() {
+  if (L && T && !T.done) { track('left', tally()); T.done = true; }
+}
+addEventListener('pagehide', leave);
+// 90 s on the board without placing anyone (only time with the board in view counts, not the story
+// sheet or another app): one »stuck« per number of people placed
+const TICK = 5000, STUCK_MS = 90000;
+setInterval(() => {
+  if (!L || !T || T.done || document.hidden || !$('sheet').hidden) return;
+  T.idle += TICK;
+  if (T.idle >= STUCK_MS && !T.stuck.has(placedN())) { T.stuck.add(placedN()); track('stuck', tally()); }
+}, TICK);
+
 // ---- The level list
 function showList() {
+  leave();
   L = null; mk = null;
   if (!me) return makeCard();
   $('list').hidden = false; $('game').hidden = true; $('make').hidden = true; $('rulesBtn').hidden = false;
@@ -638,7 +665,10 @@ function drawMake() {
 // ---- A level
 function start(id) {
   if (!me) return makeCard(id);
+  leave();
   L = LEVELS.find(l => l.id === id); L.n = L.rooms.length;
+  T = { t0: Date.now(), idle: 0, hints: 0, wrongs: 0, undos: 0, notes: false, stuck: new Set(), done: false };
+  track('start', { first: !solved.includes(id) });
   S = { pos: {}, crosses: new Set(), notes: {}, sel: L.people[0].id, mode: 'place', history: [], hint: null, shown: new Set() };
   $('list').hidden = true; $('game').hidden = false; $('make').hidden = true; $('rulesBtn').hidden = false;
   $('helperPic').textContent = me.sk;
@@ -654,7 +684,7 @@ function start(id) {
   say('Tapni stavek, nato polje, kjer je bil ta človek.');
   draw();
   scrollTo(0, 0);
-  if (introDone) showRules(); else showIntro(showRules);
+  if (introDone) showRules(); else showIntro(showRules, 0, true);
 }
 
 // »Kako se igra?«: six short cards, once before the first puzzle (and any time from »?«). After that a
@@ -681,9 +711,11 @@ const INTRO = [
 let introDone = false;
 try { introDone = !!localStorage.getItem(INTRO_KEY); } catch (e) {}
 
-function showIntro(then, at = 0) {
+function showIntro(then, at = 0, auto = false) {
   const c = INTRO[at], last = at === INTRO.length - 1;
-  const end = () => {
+  // how: next (read to the end) | skip | close; first: it opened by itself before the first puzzle
+  const end = (how) => {
+    track('intro', { card: at + 1, how, first: auto });
     introDone = true;
     try { localStorage.setItem(INTRO_KEY, '1'); } catch (e) {}
     closeSheet();
@@ -694,10 +726,10 @@ function showIntro(then, at = 0) {
     <div class="intro-foot">${last ? '<span></span>' : '<button class="skip" id="introSkip">Preskoči</button>'}
       <span class="dots" aria-hidden="true">${INTRO.map((_, i) => `<span class="${i === at ? 'on' : ''}"></span>`).join('')}</span>
       <span class="intro-btns">${at ? '<button class="big alt" id="introBack">Nazaj</button>' : ''}<button class="big" id="introNext">${last ? 'Igrajva!' : 'Naprej'}</button></span></div>`);
-  $('introClose').onclick = end;
-  if (!last) $('introSkip').onclick = end;
-  if (at) $('introBack').onclick = () => showIntro(then, at - 1);
-  $('introNext').onclick = () => last ? end() : showIntro(then, at + 1);
+  $('introClose').onclick = () => end('close');
+  if (!last) $('introSkip').onclick = () => end('skip');
+  if (at) $('introBack').onclick = () => showIntro(then, at - 1, auto);
+  $('introNext').onclick = () => last ? end('next') : showIntro(then, at + 1, auto);
 }
 
 function showRules() {
@@ -748,6 +780,13 @@ function pick(id) {
   draw();
 }
 
+// a wrong tap on the board: kind is block | taken | row | col | maybe (fits the sentence, not yet sure) | clue
+function wrong(kind, who) {
+  if (!T) return;
+  T.wrongs++;
+  track('wrong', who ? { kind, who } : { kind });
+}
+
 function nope(el, text) {
   el.classList.remove('no'); void el.offsetWidth; el.classList.add('no');
   say(text);
@@ -764,14 +803,15 @@ function tap(r, c, el) {
     S.crosses.has(key) ? S.crosses.delete(key) : S.crosses.add(key);
     return draw();
   }
-  if (here) return nope(el, `Tu že stoji ${here.name}.`);
-  if (blocked(r, c)) return nope(el, `Tu ${OBJ[objAt(r, c)].pl ? 'so' : 'je'} ${OBJ[objAt(r, c)].name}. Tu ne more stati nihče.`);
-  const p = person(S.sel);
+  const p = person(S.sel), pid = p && !S.pos[p.id] ? p.id : null;
+  if (here) { wrong('taken', pid); return nope(el, `Tu že stoji ${here.name}.`); }
+  if (blocked(r, c)) { wrong('block', pid); return nope(el, `Tu ${OBJ[objAt(r, c)].pl ? 'so' : 'je'} ${OBJ[objAt(r, c)].name}. Tu ne more stati nihče.`); }
   if (!p || S.pos[p.id]) return nope(el, 'Najprej tapni stavek nekoga, ki še nima mesta.');
   const row = inRow(r), col = inCol(c);
-  if (row) return nope(el, `V tej vrsti že stoji ${row.name}. V vsaki vrsti je samo en človek.`);
-  if (col) return nope(el, `V tem stolpcu že stoji ${col.name}. V vsakem stolpcu je samo en človek.`);
+  if (row) { wrong('row', pid); return nope(el, `V tej vrsti že stoji ${row.name}. V vsaki vrsti je samo en človek.`); }
+  if (col) { wrong('col', pid); return nope(el, `V tem stolpcu že stoji ${col.name}. V vsakem stolpcu je samo en človek.`); }
   if (p.at[0] !== r || p.at[1] !== c) {
+    wrong(fits(p.rule, r, c) ? 'maybe' : 'clue', p.id);
     nope(el, fits(p.rule, r, c) ? `Morda, a to še ni gotovo. Preberi še druge stavke.` : `Preberi še enkrat: »${p.clue}«`);
     const row = document.querySelector(`.clue[data-p="${p.id}"]`);
     row.classList.remove('glow'); void row.offsetWidth; row.classList.add('glow');
@@ -792,6 +832,7 @@ function note(r, c, el) {
   const key = k(r, c);
   S.history.push({ note: key, id: p.id });
   toggleNote(key, p.id);
+  if (T) T.notes = true;
   draw();
 }
 function toggleNote(key, id) {
@@ -810,6 +851,7 @@ function place(p) {
   for (const [key, id] of rubbed) toggleNote(key, id);
   S.history.push({ placed: p.id, rubbed });
   S.hint = null;
+  if (T) T.idle = 0;
   const next = L.people.find(q => !S.pos[q.id]);
   if (next) { S.sel = next.id; say(`Bravo! ${p.name} je na svojem mestu.`); }
   draw();
@@ -819,6 +861,7 @@ function place(p) {
 function undo() {
   const last = S.history.pop();
   if (!last) return;
+  if (T) T.undos++;
   if (last.placed) { delete S.pos[last.placed]; S.sel = last.placed; $('who').hidden = true; for (const [key, id] of last.rubbed) toggleNote(key, id); }
   if (last.note) toggleNote(last.note, last.id);
   if (last.notes) for (const [key, id] of last.notes) toggleNote(key, id);
@@ -891,6 +934,8 @@ function hint() {
   if (!S.hint || S.pos[S.hint.id]) S.hint = { ...nextStep(), step: 0 };
   S.hint.step = Math.min(S.hint.step + 1, 3);
   const h = S.hint, p = person(h.id), she = p.she ? 'a' : '';
+  // kind: cell (a sentence leaves few cells) | line (a row or column needs someone) | notes (they write the possibilities)
+  if (T) { T.hints++; track('hint', { who: p.id, kind: h.narrow ? 'notes' : h.axis !== undefined ? 'line' : 'cell', step: h.step }); }
   const mine = Object.entries(S.notes).filter(([, ids]) => ids.includes(p.id)).map(([key]) => key.split(',').map(Number));
   // a person whose notes are down to one free cell: that's the one
   if (h.step === 1 && h.cells && mine.length === 1 && mine[0][0] === h.cells[0][0] && mine[0][1] === h.cells[0][1]) h.step = 3;
@@ -941,12 +986,15 @@ function ask() {
 
 function answer(id, el) {
   if (id !== L.culprit) {
+    wrong('answer', id);
     el.classList.remove('no'); void el.offsetWidth; el.classList.add('no');
     document.querySelectorAll('.cell').forEach(c => c.classList.toggle('room-hl', roomAt(+c.dataset.r, +c.dataset.c) === L.room));
     say(`Ni še prav. Poglej rdeči prostor (${L.names[L.room].toLowerCase()}). Kdo stoji v njem?`);
     return;
   }
-  if (!solved.includes(L.id)) solved.push(L.id);
+  const firstTime = !solved.includes(L.id);
+  if (firstTime) solved.push(L.id);
+  if (T && !T.done) { track('solved', { ...tally(), first: firstTime, done: solved.length }); T.done = true; }
   try { localStorage.setItem(KEY, JSON.stringify(solved)); localStorage.removeItem('kjekdo_solved'); } catch (e) {}
   const p = person(id), next = LEVELS.find(l => l.id === L.id + 1);
   openSheet(`<div class="win sheet-inner" style="display:flex;flex-direction:column;gap:12px;align-items:center">

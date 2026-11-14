@@ -160,3 +160,7 @@ The checker also refuses a puzzle in which the culprit's own sentence points at 
 - **Puzzle 12 stays as it is** (producer, 2026-11-13): the hardest, last puzzle.
 - **On the start page in the hero** (producer: new, not to be missed, more important than »Namesti aplikacijo«): a card with a red »Novo!« badge, a small solved 3×3 board, »Nova igra · Skrivnostne sobe«, »12 ugank · od lahkih do malo težjih« and »Poskusi →«, right under »Igraj zdaj«, above the install banner. In the top bar (wide screens) a »Skrivnostne sobe NOVO« link; below 1100 px the bar shows only it and »Kako deluje«. The old tile under the hero is gone.
 - **Analytics**: Cloudflare Web Analytics already counts each page by its path: `/` = start page, `/solo/` = the main game, `/kje-je-kdo/` = this game, `/home/` = launches from the Home Screen icon. In the dashboard, filter or group by Path. Single puzzles inside the page are not counted separately.
+
+## Anonymous events (2026-11-14)
+
+The producer wants to see where players get stuck. The game sends anonymous events: intro, start, wrong, hint, stuck (90 s without placing anyone, the producer's choice), solved and left. There is no name, no card and no device ID, only a random number per sitting held in memory. The privacy page was updated first. Events, privacy rules and ready-made SQL are in [EVENTS.md](EVENTS.md). Page views stay in Web Analytics, filtered by path.
