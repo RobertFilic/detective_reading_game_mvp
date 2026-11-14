@@ -593,11 +593,11 @@ mark.tw { background: #ffe27a; border-radius: 4px; padding: 0 2px; color: inheri
   .pincard { width: 104px; min-height: 64px; font-size: 13px; }
 }
 
-/* Small phones (iPhone SE): the solved screen's explanation scrolls, "Naprej" stays on screen. */
+/* Short screens (phones, an iPad sideways with Safari's bars): the whole solved screen scrolls as one page, "Naprej" stays at the bottom. */
 @media (max-height: 740px) {
-  .reveal { overflow: hidden; gap: 8px; }
+  .reveal { overflow-y: auto; -webkit-overflow-scrolling: touch; gap: 8px; }
   .reveal > :first-child, .reveal > :last-child { margin-top: 0; margin-bottom: 0; }
-  .reveal .reveal-rows { flex: 1 1 auto; min-height: 0; padding-bottom: 4px; }
+  .reveal .reveal-rows { flex: none; overflow: visible; padding-bottom: 4px; }
   .reveal .paper, .reveal .rankup, .reveal .excuse, .reveal .pinned, .reveal .guess { flex: none; }
   .rankup { padding: 4px 12px; font-size: 17px; }
   .orderstep .caseq, .wordsearch .caseq { display: none; }
@@ -637,11 +637,11 @@ mark.tw { background: #ffe27a; border-radius: 4px; padding: 0 2px; color: inheri
   .hint { font-size: 20px; padding: 10px 14px; }
   .folder { min-height: 120px; }
   /* Solved screen: the explanation scrolls, "Naprej" stays on screen. */
-  .reveal { overflow: hidden; gap: 6px; padding-top: calc(14px + var(--safe-top)); }
+  .reveal { overflow-y: auto; -webkit-overflow-scrolling: touch; gap: 6px; padding-top: calc(14px + var(--safe-top)); }
   .reveal .stamp { font-size: 24px; border-width: 4px; padding: 2px 14px; }
   .reveal > :first-child, .reveal > :last-child { margin-top: 0; margin-bottom: 0; }
   .reveal .sticker, .reveal .suspect { display: none; }
-  .reveal .reveal-rows { flex: 1 1 auto; min-height: 0; padding-bottom: 4px; }
+  .reveal .reveal-rows { flex: none; overflow: visible; padding-bottom: 4px; }
   .reveal .row { min-height: 0; padding: 6px 12px; font-size: 19px; }
   .reveal .excuse, .reveal .paper .pic { display: none; }
   .phone { font-size: 48px; }
