@@ -9,6 +9,13 @@
 //      name that thing;
 //   5. 4 or more puzzles per group, dates (if any) rise, every sentence of the clues and the story has at most 8 words;
 //      labels sit in their room on no one's spot, 4 puzzles per group, ids 1, 2, 3 … in order.
+//   6. (measured, not enforced yet) how much thinking a puzzle takes. The producer's playtest
+//      (docs/KJE_JE_KDO.md, 2026-11-15) found the deduction, not the kind of sentence, makes a room hard:
+//      eliminating cells and seeing who is the only one left for a row or column. »open« = the cells the
+//      sentences leave open at the start, summed over the people who have a sentence but can't be placed
+//      straight from it (a person without a sentence is the leftover, no work). It ranked the playtested
+//      rooms as the child felt them: 13 (9) < 7 (25) < 9 (32) < 10 (36) < 11 (40) < 8 (41).
+//      A table at the end lists every puzzle.
 //   node tools/kjekdo.mjs        prints ✔/✘ per check and each puzzle's steps, exits 1 on a failure
 import fs from 'node:fs';
 import path from 'node:path';
@@ -20,6 +27,7 @@ const grab = (a, b) => html.slice(html.indexOf(a), html.indexOf(b, html.indexOf(
 const { OBJ, LEVELS, GROUPS } = new Function(grab('const SVG', '// LEVELS-END') + 'return { OBJ, LEVELS, GROUPS };')();
 const ok = (c, m) => { console.log((c ? '✔ ' : '✘ ') + m); if (!c) process.exitCode = 1; };
 
+const TABLE = [];
 function perms(a) { return a.length <= 1 ? [a] : a.flatMap((x, i) => perms([...a.slice(0, i), ...a.slice(i + 1)]).map(p => [x, ...p])); }
 
 ok(LEVELS.every((l, i) => l.id === i + 1), `ids run 1 to ${LEVELS.length}`);
@@ -51,6 +59,8 @@ for (const L of LEVELS) {
 
   // a child's way through
   let cand = P.map(p => { const l = []; for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (free(r, c) && fits(p.rule, r, c)) l.push([r, c]); return l; });
+  const direct = cand.filter(l => l.length === 1).length;
+  const open = cand.reduce((a, l, i) => a + (Object.keys(P[i].rule).length && l.length > 1 ? l.length : 0), 0);
   const placed = P.map(() => null), steps = [];
   let hidden = 0;
   for (let guard = 0; guard < 100 && !placed.every(Boolean); guard++) {
@@ -67,6 +77,7 @@ for (const L of LEVELS) {
     if (!moved) break;
   }
   const limit = { lahko: 0, srednje: 1, tezje: 4 }[L.group];
+  TABLE.push({ id: L.id, group: L.group, n, direct, open, rc: hidden, title: L.title });
   ok(placed.every(Boolean) && hidden <= limit, `${tag}: a child gets there without guessing, ${hidden} row/column step${hidden === 1 ? '' : 's'} (≤ ${limit}): ${steps.join(', ')}`);
 
   const inRoom = P.filter(p => L.rooms[p.at[0]][p.at[1]] === L.room);
@@ -79,3 +90,7 @@ for (const L of LEVELS) {
   if (L.date) ok(!long.length, `${tag}: every sentence has at most 8 words${long.length ? ' (too long: ' + long.join(' | ') + ')' : ''}`);
   ok(L.story && L.heart && L.win && L.why && L.ask, `${tag}: story, question, answer and the reason why`);
 }
+
+// how much thinking each puzzle takes (see 6. at the top); the playtest notes are in docs/KJE_JE_KDO.md
+console.log('\nuganka  skupina   velikost  takoj  odprta polja  vrsta/stolpec');
+for (const t of TABLE) console.log(`${String(t.id).padStart(6)}  ${t.group.padEnd(8)}  ${t.n}×${t.n}       ${String(t.direct).padStart(5)}  ${String(t.open).padStart(12)}  ${String(t.rc).padStart(13)}   ${t.title}`);
