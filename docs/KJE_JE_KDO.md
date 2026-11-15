@@ -185,3 +185,21 @@ One new room a day from Sunday 2026-11-15 (producer moved the start to today; th
 From 2026-11-15 every new room is at least 5×5; 4×4 only for rooms 1–4 (producer). Rooms 13, 15, 19 and 21 were redrawn 5×5 with one extra person each (the easiest 5×5: only »on object« sentences plus one free person, 0 row/column steps).
 
 **Review edits (2026-11-15):** names shared with the main game or repeated were changed (Tim→Nejc, Luka→Svit, Tara in 17→Maša, Ela→Teja, Pia→Neja); rooms a child may not know were renamed (Drvarnica→Lopa, Zaodrje→Garderoba, the circus Vagon→Prikolica); 14 shows Vita giving the bell back; 16, 19 and 20 were lightened (no sad grandpa, no sick child, Stane is not left forgotten); »pri ribniku«, not »na ribniku«.
+
+## Playtest, 2026-11-15 (one 7-year-old, producer's notes)
+
+| Puzzle | Group | Row/col steps | »ni« / »ni ob« clues | How it felt |
+|---|---|---|---|---|
+| 13 Kdo je vzel zadnji kruh? | lahko 5×5 | 0 | 0 / 0 | easy: solved without trouble, little thinking |
+| 7 Kdo je dal zadnji koš? | srednje | 1 | 1 / 0 | easy, like 13 |
+| 8 Kje je dedkova harmonika? | srednje | 1 | 1 / 1 | **harder**: had to think, needed a little help |
+| 9 Kdo je vzel ključ od knjižnice? | težje | 2 | 1 / 1 | hard, but easier than 8 |
+| 10 Kje je Zalin medvedek? | težje | 3 | 1 / 1 | quite hard, like 9 |
+| 11 Kdo je naredil snežaka? | težje | 2 | 2 / 0 (+ »ni na klopi«, two »v/na« room clues) | **hard: had to think and eliminate — »Odlična!«** (the producer's favourite so far) |
+
+What it tells us (one child, so a direction, not a rule yet):
+- Row/column steps alone don't predict difficulty: 7 and 8 both have 1 step, but 8 felt harder than 9 and 10.
+- The child felt the work in puzzles with a **»ni ob«** clue (8, 9, 10) and in 11, which has two negative clues (»ni v«, »ni na«) and two room-only clues: the child had to eliminate. Puzzles with only »na« / »v« / one »ni v« (13, 7) were easy. So what makes a child think is **elimination**: two or more negative clues (»ni ob«, »ni v«, »ni na«) and room clues that leave several cells. 11 is the model of a great room.
+- For a 7-year-old who has played a few rooms, 🟢 lahko (all »na X«, 0 steps) is too easy.
+
+Producer's direction: use this when creating the next rooms — fewer all-»na« rooms, daily rooms mostly need real thinking (a »ni ob« / »ni v« clue that matters), keep 💡 help for the hard ones. Text fix: puzzle 7 »Toda kdo jo je vrgel?« → »Toda kdo je zadel koš?«.
