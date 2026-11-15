@@ -7,7 +7,8 @@
 //      need only the first kind of step, the others at most a few of the second;
 //   4. the culprit is the only person in the room with the missing thing, and their own sentence doesn't
 //      name that thing;
-//   5. labels sit in their room on no one's spot, 4 puzzles per group, ids 1, 2, 3 … in order.
+//   5. 4 or more puzzles per group, dates (if any) rise, every sentence of the clues and the story has at most 8 words;
+//      labels sit in their room on no one's spot, 4 puzzles per group, ids 1, 2, 3 … in order.
 //   node tools/kjekdo.mjs        prints ✔/✘ per check and each puzzle's steps, exits 1 on a failure
 import fs from 'node:fs';
 import path from 'node:path';
@@ -22,7 +23,10 @@ const ok = (c, m) => { console.log((c ? '✔ ' : '✘ ') + m); if (!c) process.e
 function perms(a) { return a.length <= 1 ? [a] : a.flatMap((x, i) => perms([...a.slice(0, i), ...a.slice(i + 1)]).map(p => [x, ...p])); }
 
 ok(LEVELS.every((l, i) => l.id === i + 1), `ids run 1 to ${LEVELS.length}`);
-for (const [g, label] of GROUPS) ok(LEVELS.filter(l => l.group === g).length === 4, `${label}: 4 puzzles`);
+for (const [g, label] of GROUPS) ok(LEVELS.filter(l => l.group === g).length >= 4, `${label}: ${LEVELS.filter(l => l.group === g).length} puzzles (at least 4)`);
+const dates = LEVELS.filter(l => l.date).map(l => l.date);
+ok(new Set(dates).size === dates.length && dates.every(d => /^\d{4}-\d\d-\d\d$/.test(d)), 'every date is YYYY-MM-DD and used once');
+ok(dates.every((d, i) => !i || d > dates[i - 1]), 'dates rise with the ids');
 
 for (const L of LEVELS) {
   const n = L.rooms.length, tag = `uganka ${L.id}`;
@@ -71,5 +75,7 @@ for (const L of LEVELS) {
   const cr = P.find(p => p.id === L.culprit).rule;
   ok(spot.length >= 1 && !spot.includes(cr.beside || cr.on) && cr.room !== L.room, `${tag}: the missing thing's spot is in ${L.names[L.room]}, and the culprit's sentence doesn't point at it`);
   ok(Object.entries(L.labels).every(([room, [r, c]]) => L.rooms[r][c] === room && !P.some(p => p.at[0] === r && p.at[1] === c)) && Object.keys(L.labels).length === Object.keys(L.names).length, `${tag}: every room has a label in it, on no one's spot`);
+  const long = [L.story, L.heart, L.ask, L.win, L.why, ...P.map(p => p.clue)].join(' ').split(/(?<=[.!?]«?)\s+/).filter(t => t.replace(/[»«]/g, '').split(/\s+/).length > 8);
+  if (L.date) ok(!long.length, `${tag}: every sentence has at most 8 words${long.length ? ' (too long: ' + long.join(' | ') + ')' : ''}`);
   ok(L.story && L.heart && L.win && L.why && L.ask, `${tag}: story, question, answer and the reason why`);
 }

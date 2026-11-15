@@ -2,7 +2,7 @@
 // a child without a detective ID card makes one first (the main game's card, so solo/ knows them too),
 // only puzzle 1 is open at first, puzzle 1 is played by taps (wrong taps get a gentle sentence, undo,
 // crosses), puzzle 2 with the help button, which lights cells but never places anyone; the question, the
-// reward with its »Zakaj?«, and the ✓ that stays on the list. Then all 12 puzzles on the phone.
+// reward with its »Zakaj?«, and the ✓ that stays on the list. Then all puzzles on the phone. One room a day by date: see the end.
 // No sideways scroll, targets ≥ 48 px. Texts come from the page's own LEVELS, so wording can change.
 import puppeteer from 'puppeteer-core';
 const b = await puppeteer.launch({ executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true });
@@ -46,10 +46,10 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   const card = await p.evaluate(() => JSON.parse(localStorage.getItem('dp_profile_v1')));
   ok(card && card.av === '🕵🏽‍♀️' && card.g === 'f' && card.sk === '🦊' && card.name === 'Ana' && /^\d{4}$/.test(card.id), `${dev}: the card is saved the way the main game saves it`);
   ok(await p.$eval('#list', (e) => !e.hidden && e.querySelector('.me').textContent.includes('Detektivka Ana') && e.querySelector('.me-pic').textContent.includes('🦊')), `${dev}: the list greets Detektivka Ana and her fox`);
-  ok(p.url().endsWith('/kje-je-kdo/') && await p.$$eval('.lvl', els => els.length) === 12 && await p.$$eval('h2.group', els => els.length) === 3, `${dev}: the tile opens the list: 12 puzzles in 3 groups`);
-  ok(await p.$$eval('.lvl.locked', els => els.length) === 11, `${dev}: only puzzle 1 is open at first`);
-  await tap('.lvl[data-level="3"]');
-  ok(!(await p.$eval('#list', e => e.hidden)), `${dev}: a locked puzzle doesn't open`);
+  const nOut = await p.evaluate(() => LEVELS.filter(isOut).length);
+  ok(p.url().endsWith('/kje-je-kdo/') && await p.$$eval('.levels .lvl', els => els.length) === nOut && await p.$$eval('h2.group', els => els.length) === 3, `${dev}: the tile opens the list: ${nOut} puzzles that are out, in 3 groups`);
+  ok(await p.$$eval('.lvl.locked', els => els.length) === 0 && await p.$eval('.lvl.main', e => e.textContent.includes('Začni tukaj') && e.dataset.level === '1'), `${dev}: nothing is locked; the big card says »Začni tukaj« on puzzle 1`);
+  ok(await p.$eval('.lvl.main', e => e.getBoundingClientRect().height > document.querySelector('.levels .lvl').getBoundingClientRect().height), `${dev}: the big card is bigger than the others`);
   ok(await wide(), `${dev}: the list has no sideways scroll`);
 
   // puzzle 1: the story and the rules, then taps
@@ -147,7 +147,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   ok(await p.$eval('#sheet', (e, l) => e.textContent.includes(l.win), L2), `${dev}: puzzle 2 is solved`);
   if (process.env.SHOTS) await p.screenshot({ path: `shots/kjekdo-${dev}-win.png` });
   await tap('#toList');
-  ok(await p.$$eval('.lvl .done', els => els.length) === 2 && await p.$$eval('.lvl.locked', els => els.length) === 9, `${dev}: 2 ✓ on the list, puzzle 3 is open now`);
+  ok(await p.$$eval('.levels .lvl .done', els => els.length) === 2 && await p.$eval('.lvl.main', e => e.dataset.level === '3'), `${dev}: 2 ✓ on the list, the big card now starts puzzle 3`);
   ok(await wide(), `${dev}: no sideways scroll`);
   if (process.env.SHOTS) await p.screenshot({ path: `shots/kjekdo-${dev}.png`, fullPage: true });
 
@@ -224,7 +224,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   await p.setViewport({ width: 390, height: 844, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
   await p.goto('http://localhost:8765/kje-je-kdo/'); await wait();
   await p.evaluate(() => { localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })); localStorage.setItem('dp_kjekdo_intro_v1', '1'); });
-  await p.goto('http://localhost:8765/kje-je-kdo/?uganka=12'); await wait();
+  await p.goto('http://localhost:8765/kje-je-kdo/?date=2999-01-01&uganka=12'); await wait();
   await p.$eval('#go', e => e.click());
   await p.$eval('.clue[data-p="domen"]', e => e.click()); await p.$eval('.cell[data-r="3"][data-c="2"]', e => e.click());
   const step = async () => { await p.$eval('#hintBtn', e => e.click()); return [await p.$eval('#say', e => e.textContent), await p.$$eval('.cell.can', els => els.map(e => e.dataset.r + ',' + e.dataset.c).join(' '))]; };
@@ -261,7 +261,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   await p.evaluate(() => { localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })); localStorage.setItem('dp_kjekdo_intro_v1', '1'); });
   const LV = await p.evaluate(() => LEVELS);
   for (const L of LV) {
-    await p.goto(`http://localhost:8765/kje-je-kdo/?uganka=${L.id}`); await wait(200);
+    await p.goto(`http://localhost:8765/kje-je-kdo/?date=2999-01-01&uganka=${L.id}`); await wait(200);
     await p.$eval('#go', e => e.click());
     let presses = 0;
     while (presses < 60 && await p.$$eval('.cell .tok', els => els.length) < L.people.length) {
@@ -282,7 +282,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   await p.evaluate(() => { localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })); localStorage.setItem('dp_kjekdo_intro_v1', '1'); });
   const LV = await p.evaluate(() => LEVELS);
   for (const L of LV) {
-    await p.goto(`http://localhost:8765/kje-je-kdo/?uganka=${L.id}`); await wait();
+    await p.goto(`http://localhost:8765/kje-je-kdo/?date=2999-01-01&uganka=${L.id}`); await wait();
     await p.$eval('#go', e => e.click()); await wait(200);
     const n = L.rooms.length;
     const small = await p.$$eval('.cell', els => els.filter(e => e.getBoundingClientRect().width < 48).length);
@@ -298,6 +298,72 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
     ok(placed === n && win && !small && wide, `puzzle ${L.id} »${L.title}«: ${n} placed, the culprit found, the reason shown, cells ≥ 48 px, no sideways scroll`);
   }
   ok(!errors.length, `all puzzles: no page errors ${errors.join('|')}`);
+  await p.close();
+}
+// one new room a day by date: future rooms are hidden (only a teaser), rooms already out stay open
+{
+  const p = await b.newPage();
+  const errors = []; p.on('pageerror', e => errors.push(e.message));
+  await p.setViewport({ width: 390, height: 844, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
+  await p.evaluateOnNewDocument(() => { window.NO_READ_WAIT = true; try { speechSynthesis.getVoices = () => []; } catch (e) {} });
+  const SH = '/private/tmp/claude-501/-Users-robertfilic-workspace-detective-reading-game-mvp/fd6e5446-2f89-42bd-904e-6017f1e32405/scratchpad/sobe-dev/';
+  const open = async (date, solved, shot, vp) => {
+    await p.setViewport({ ...(vp || { width: 390, height: 844 }), hasTouch: true, isMobile: !vp, deviceScaleFactor: 2 });
+    await p.goto('http://localhost:8765/kje-je-kdo/' + (date ? `?date=${date}` : '')); 
+    await p.evaluate((s) => {
+      localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })); localStorage.setItem('dp_kjekdo_intro_v1', '1'); localStorage.setItem('dp_kjekdo_v1', JSON.stringify(s));
+      // test-only dated rooms (not in LEVELS on disk): 11 out on 2030-01-10, 12 on 2030-01-11, 10 on 2030-01-13
+      LEVELS.find(l => l.id === 10).date = '2030-01-13'; LEVELS.find(l => l.id === 11).date = '2030-01-10'; LEVELS.find(l => l.id === 12).date = '2030-01-11';
+    }, solved);
+    await p.evaluate(() => { solved = JSON.parse(localStorage.getItem('dp_kjekdo_v1')); showList(); });
+    await wait(200);
+    if (shot) await p.screenshot({ path: SH + shot, fullPage: true });
+  };
+  const txt = (sel) => p.$eval(sel, e => e.textContent).catch(() => '');
+  const ids = () => p.$$eval('.levels .lvl', els => els.map(e => +e.dataset.level));
+  const main = () => p.$eval('.lvl.main', e => ({ id: +e.dataset.level, t: e.textContent })).catch(() => null);
+
+  await open('2030-01-09', [], 'list-new-390.png');
+  ok(!(await ids()).some(i => [10, 11, 12].includes(i)) && (await txt('.teaser')).includes('Jutri: nova soba'), 'dates: before the 10th the dated rooms are hidden, teaser »Jutri: nova soba«');
+  ok((await main()).id === 1 && (await main()).t.includes('Začni tukaj'), 'dates: a new player gets »Začni tukaj« on puzzle 1');
+  await open('2030-01-08', [1, 2, 3, 4], null);
+  ok((await txt('.teaser')).includes('Čez 2 dni: nova soba 🔒'), 'dates: the teaser counts calendar days to the next room');
+  await open('2030-01-10', [1, 2, 3, 4, 5, 6, 7, 8, 9], 'list-today-390.png');
+  ok((await ids()).includes(11) && !(await ids()).includes(12) && (await main()).id === 11 && (await main()).t.includes('Današnja soba'), 'dates: on the 10th room 11 is listed and is »Današnja soba«');
+  ok((await txt('.teaser')).includes('Jutri: nova soba'), 'dates: and the next one is announced for tomorrow');
+  ok(await p.$$eval('.lvl', els => els.every(e => !e.classList.contains('locked') && e.getBoundingClientRect().height >= 56)), 'dates: every room that is out is a tappable card');
+  await open('2030-01-10', [1, 2, 3, 4, 5, 6, 7, 8, 9, 11], null);
+  ok((await main()).id === 11 && (await main()).t.includes('✓') && !(await main()).t.includes('Jutri pride'), 'dates: today\'s room solved: ✓ (the teaser alone says what comes)');
+  await open('2030-01-11', [1, 2, 3, 4, 5, 6, 7, 8, 9], null);
+  ok((await main()).id === 12 && (await main()).t.includes('Današnja soba') && (await ids()).includes(11), 'dates: the 11th: the newest room is today\'s, the 10th\'s stays open');
+  await open('2030-01-12', [1, 2, 3, 4, 5, 6, 7, 8, 9, 12], null);
+  ok((await main()).id === 12 && (await main()).t.includes('Nova soba'), 'dates: a day after its date it is »Nova soba«');
+  await open('2030-01-14', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], null);
+  ok((await main()).id === 10 && (await main()).t.includes('✓') && !(await main()).t.includes('Jutri pride'), 'dates: solved and nothing due tomorrow: ✓ and no »Jutri pride«');
+  await open('2030-01-20', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], null);
+  ok(!(await txt('.teaser')) , 'dates: no teaser when no future room exists');
+
+  // next after a win: the next unsolved room that is out, skipping solved and unreleased ones
+  await open('2030-01-09', [1, 2, 3, 4, 5, 6, 7, 8, 9], null);
+  ok(await p.evaluate(() => { const n = nextUnsolved(8); return !n || (n.id < 9 || n.id > 12); }), 'next: after room 9 it does not pick a room that is not out yet');
+  await open('2030-01-10', [1, 2, 4, 5], null);
+  ok(await p.evaluate(() => nextUnsolved(0).id === 3 && nextUnsolved(2).id === 6 && nextUnsolved(LEVELS.findIndex(l => l.id === 9)).id === 11), 'next: skips solved rooms and rooms not out');
+  ok(await p.evaluate(() => { solved = LEVELS.filter(isOut).map(l => l.id); return nextUnsolved(3) === null; }), 'next: nothing unsolved left: no next (the win sheet goes to the list)');
+  // deep links
+  // a real dated room (once the file has some) is no deep link before its day
+  await p.goto('http://localhost:8765/kje-je-kdo/?date=2999-01-01'); await wait(200);
+  const fut = await p.evaluate(() => { const d = LEVELS.filter(l => l.date).sort((a, b) => a.date < b.date ? -1 : 1).pop(); return d ? { id: d.id, date: d.date } : null; });
+  if (fut) {
+    await p.goto(`http://localhost:8765/kje-je-kdo/?date=2000-01-01&uganka=${fut.id}`); await wait(200);
+    ok(!(await p.$eval('#list', e => e.hidden)) && await p.$eval('#game', e => e.hidden), 'deep link: ?uganka= of a room that is not out shows the list');
+  }
+  await p.goto('http://localhost:8765/kje-je-kdo/?date=2999-01-01&uganka=3'); await wait(300);
+  ok(await p.$eval('#list', e => e.hidden) && !(await p.$eval('#game', e => e.hidden)), 'deep link: a room that is out starts');
+  await open('2030-01-10', [1, 2, 3, 4], 'list-ipad-820.png', { width: 820, height: 1180 });
+  ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'dates: iPad: no sideways scroll');
+  await open('2030-01-10', [1, 2, 3, 4], null, { width: 340, height: 700 });
+  ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'dates: 340 px: no sideways scroll');
+  ok(!errors.length, 'dates: no page errors ' + errors.join('|'));
   await p.close();
 }
 await b.close();
