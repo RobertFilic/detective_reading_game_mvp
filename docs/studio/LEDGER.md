@@ -44,8 +44,14 @@ The 🚀 v and 🐄 k cases were removed from the game on 2026-11-08; they stay 
 | ⚽ p4 | elim, scene, ⏰ (4 cards) | Pia | daisy chains for the final's goal | a time sighting: »Medtem ko so jedli, je Pia pletla venčke« | Tone at the goal before lunch, Zoja after | 🔤 word search with riddles (no geslo) |
 | ⚽ p5 | elim, scene, ❗ lie (culprit, broken by the timetable), `when: 'after'` | Sodnica Neža | one shot with the golden ball | the camera: Neža takes the golden ball at one | Tone on the roof, at two | 🕐 timeline (preden / šele) |
 | ⚽ p6 | elim, final, ⏰ (4 cards, a window with two edges) | Hišnik Tone | to engrave every team's name on the cup | pair: Tone carried a box to the cellar + the empty cup box there | Luka held the cup before the photo; the cabinet empty at nine | 🔐 lock 3120 (two scores) + 🖍️ rubbing |
+| ❄️ n1 | elim, scene, rung 5 (shown) | Luka | to make the first track | absence: no snow on his sled (all others white) | Zoja's sled at the top of the hill, under snow | 🔤 word search (3 words) |
+| ❄️ n2 | elim, ask + 👁️, rung 5 (heard) | Hana | the trees are cold »po pravilu« | seen: Ajda saw her carry scarves | Pia's footprints among the trees (from the morning) | 📜 torn (Zoja's absence alibi) |
+| ❄️ n3 | elim, scene, ❗ lie (tall tale, broken by an absence) | Lan | to hear who makes the snowmen | pair: Lan took Ajda's red cord + the bell hangs on a red cord | whose bell it is (Pia's) | ✉️ cipher (»Ponoči ni zvonilo«) |
+| ❄️ n4 | elim, scene, »Kdo ali kaj« | the roof 🏠 (nobody) | – (the snow slid) | absence: the roof above the igloo has no snow | Marko ploughed at night (not there at two) | 🕐 order (4 cards of the night) |
+| ❄️ n5 | elim, ask + words, rung 5 (the goat that didn't bleat) | Pia | to hide a mistake (cracked the sled) | pair: Bor bleats at all but Pia + Bor didn't bleat | Zoja drew teeth on Strela (yesterday) | 🔤 word search + geslo (Luka's alibi) |
+| ❄️ n6 | elim, final, 🧭 (1 clue) | Ajda | a bet with Luka (»ne ujameš me«) | pair: Ajda went to the woodshed at half eight + the front bell didn't ring | Marko ploughed after nine (explained by no footprints / snow cap + snow from nine) | 🔐 lock 1964 + 📜 torn |
 
-(🦔 rows: drafted, in review 2026-11-01; update them if the cases change before they ship.) 🦕 rows: written and reviewed 2026-11-05. ⚽ rows: written and reviewed 2026-11-06 (no animal culprits from now on, the producer's rule).
+(🦔 rows: drafted, in review 2026-11-01; update them if the cases change before they ship.) 🦕 rows: written and reviewed 2026-11-05. ⚽ rows: written and reviewed 2026-11-06 (no animal culprits from now on, the producer's rule). ❄️ rows: written 2026-11-15, reviewed and fixed 2026-11-16.
 
 ## Worn out: avoid or vary next season
 
@@ -70,4 +76,4 @@ The 🚀 v and 🐄 k cases were removed from the game on 2026-11-08; they stay 
 
 ## Never used yet (fresh ground)
 
-Two culprits · the client did it · a missing clue (nothing happened that should have; pitched for ❄️) · a clue in a list · a logic grid · a map · a denouement where the child explains · a case told in a diary · a recurring rival detective · a season where the red thread is a person to find, not a thing.
+Two culprits · the client did it · a clue in a list · a logic grid · a map · a denouement where the child explains · a case told in a diary · a recurring rival detective · a season where the red thread is a person to find, not a thing.

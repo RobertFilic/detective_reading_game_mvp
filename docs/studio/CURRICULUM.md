@@ -58,7 +58,7 @@ The knobs are the same in every language; each language's examples are in its st
 | Suspects | 4 | 4–5 |
 | Names vs pronouns | names only | pronouns that point to the sentence before (»she said«, »his«) |
 | Time words | sequence words (first, then, at the end) | clock times, »before«, »while«, »only when« |
-| Negation | rare | »not«, »never«, »nobody« (careful: a child often misses the »not«) |
+| Negation | rare | »not«, »never«, »nobody« (careful: a child often misses the »not«). ❄️ sneg (2026-11-19) raised it: »ni«, »brez« early in the sentence, one negation phrase per sentence, every negation word bold (`neg: true`). The next negation season lowers the scaffold (no bold). |
 | Who speaks | narration and short quotes | witnesses who contradict each other; a diary; a letter |
 | Text across screens | one screen | two clues on different screens that must be combined |
 
@@ -72,7 +72,7 @@ Rungs 1–2 are done. The order after that is a plan; the showrunner may swap ne
 | 2 ✅ | **Follow the thread** | Clues from different cases belong to one bigger story; a guess is not a proof | the recurring small oddities that only make sense at the end (Bip) |
 | 3 ✅ | **The lie (UGOVOR!)** | A witness says something; another sentence shows it can't be true | the alibi that breaks: »I was in the kitchen« vs the kitchen light was off |
 | 4 ✅ | **The obvious suspect is innocent** | The clue that points at someone too clearly was planted or misread | the red herring; the person everybody suspects from page one is not the one |
-| 5 | **What did *not* happen** | Missing evidence is a clue: the dog didn't bark, the snow has no footprints | the dog in the night (Holmes, but Christie used it too) |
+| 5 ✅ | **What did *not* happen** | Missing evidence is a clue: the dog didn't bark, the snow has no footprints | the dog in the night (Holmes, but Christie used it too) |
 | 6 ✅ | **When, exactly?** | A true alibi for the wrong time is no alibi; order events by clock and »preden / potem« | the timetable murder, minus the murder: who could have been there at 8? |
 | 7 | **The clue in a list** | One item in an ordinary list matters (a shopping list, a packing list) | Christie's favourite trick: hide the clue among boring things |
 | 8 | **Why?** | Motive: who *wanted* this to happen, and why it was kind or funny | the motive revealed at the end, here always warm |

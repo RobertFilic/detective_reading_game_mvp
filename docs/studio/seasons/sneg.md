@@ -1,6 +1,6 @@
 # ❄️ Sneženi možje brez sledi (season 5): pitch
 
-**Status:** briefed (2026-11-11) → pitched (2026-11-11, showrunner) → **approved (2026-11-11, producer)** → sitting B next (puzzles, writing). Live 2026-11-19, see [RELEASES.md](../RELEASES.md).
+**Status:** briefed (2026-11-11) → pitched (2026-11-11, showrunner) → **approved (2026-11-11, producer)** → puzzles + cases n1–n6 written (sitting B, 2026-11-15) → reviewed, fixed, screens, tests, **pushed with `opens` (sittings C + D, 2026-11-16)** → the producer reads it (`node tools/read.mjs`). Live 2026-11-19, see [RELEASES.md](../RELEASES.md).
 
 > All Slovenian below is a draft for the writers; word counts are the checker's way (emoji and »…« count). A native speaker checks it before it ships.
 
@@ -184,3 +184,171 @@ One puzzle a case, two in the final; no type twice in a row; the last hint gives
 - **2026-11-11, producer:** negation words are bold, every one, in innocent lines too. The engine change goes behind a `neg: true` flag and is done by sitting D (11-16).
 - **2026-11-11, producer:** Zoja stays in the cast.
 - **For sitting B:** fix the director's 🟠 items from §9b in the text (put the negation early and use one negation phrase per sentence). Weigh the ⚪ items while the cases are written: Marko as the decoy three times, how easy the guess after case 3 is, Ajda only in the lit yard before nine, and case 3's day.
+
+## 11. Puzzles (puzzle designer, 2026-11-15)
+
+> Slovenian is a draft for the writers and the Slovenian editor. Every line was counted with the checker's rule (`words()` in `tools/cases.mjs`: per sentence, **except the lock**, where `note`, `h1`, `h2` are each counted as a whole string). Sentence ids (`s1` …) are placeholders; the writer sets the real ones. **No new mechanic:** every puzzle is data for a step the engine has. The two grids below were built by a script and checked with the checker's rules (every word exactly once, → and ↓ only, no rude word, no cast name in a row or column, the geslo letters in reading order). Do not change a letter without re-checking.
+
+### 11.1 At a glance
+
+| # | Steps | Puzzle (knob) | What it gives the case | ❗ / 🧭 |
+|---|---|---|---|---|
+| 1 | call → 🔤 words → scene → solve | 🔤 **Iskanka**, the lightest: 3 words, no crossing, no geslo | nothing to the pocket; the words name three places to search (the engine does **not** lock scene objects behind words, it only shows the list) | – |
+| 2 | call → ask → 📜 torn → solve | 📜 **Raztrgan listek**, 4 strips, one is a single preposition | **Zoja's alibi, an absence**: »Popoldne Zoja ni šla iz kuhinje.« (6) | – |
+| 3 | call → scene → ✉️ cipher → ❗ → solve | ✉️ **Šifra**, complete key, 8 symbols, Č has its own | the **UGOVOR breaker**: »Ponoči ni zvonilo.« (3) | ❗ Luka |
+| 4 | call → 🕐 order → scene → solve | 🕐 **Časovnica**, 4 cards: Najprej / Potem / Nato / Na koncu | the night's order (`done` line only) | – |
+| 5 | call → ask → 🔤 words (geslo) → solve | 🔤 **Iskanka z geslom**, 3 words, **one crossing** | **Luka's alibi**: »Popoldne je Luka zidal iglu.« (5) | – |
+| 6 ⭐ | call → 🔐 lock → scene → 📜 torn → 🧭 → solve | 🔐 **Ključavnica**, 4 wheels, the **year carved on Cilka's sled** (case 5) + 📜 **torn**, 4 strips | the lock opens the woodshed (the scene); the torn note gives the 🧭 explanation: »Snežilo je od devetih zvečer.« (5) | 🧭 Marko |
+
+**Why this shape**
+- **Five types, no neighbours the same** (words, torn, cipher, order, words, lock + torn): the checker's rule holds (5 is words, 6 is lock and torn; 2 torn, 3 cipher). Words and torn each come twice, with a different job and one notch up the second time.
+- **Case 3 follows the Galeb/Muzej way:** a puzzle hands over the UGOVOR breaker, because ❗ needs a sentence-giving puzzle in front of it (the lock or the timeline would give none). The season's ❗ is the child's fourth, so the puzzle is gentle (full key).
+- **The negation is read, not skipped.** Two of the seven puzzles hand over a sentence with »ni« as the content (2, 3), and the geslo in 5 is an ordinary alibi, so the child reads the »not« in the cases that teach it (1–2, 3), not only in the final.
+- **The lock is a read-off, with one link:** Cilka's call in case 6 says »leto mojih sani«; the child must remember which sled (Strela, case 5) and read its year. Not a count, not a score (muzej, pokal). The wheels (4) tell it is a year.
+- **The final has two puzzles** (the lock and a torn note one notch above case 2); no new mechanic lands in the final, as the lessons ask.
+- **Time:** about 1 minute for 1 and 4, 1–2 for 2, 3, 5 and 6's torn, 1 for the lock. The final has 6 steps like pokal's.
+
+### 11.2 Case by case
+
+#### Case 1 · Prva sled (`steps: ['call', 'words', 'scene', 'solve']`)
+- **Language-bound:** the words and the grid. **Must produce:** three scene places to look at (a light warm-up; the absence has the stage).
+- **Call:** end it with **»Išči, česar ni!«** (3). Case 1's scene has 3 objects labelled exactly **tabla, okno, miza** (the words), so the list is useful; the sleds are other objects.
+```js
+words: {
+  note: 'Cilka ti je pustila iskanko. Poišči tri besede.',
+  grid: ['MHZOLE', 'MTMHGK', 'IAUIHN', 'ZBOKNO', 'ALOLEJ', 'AAUZNK'],
+  find: [['📋', 'TABLA'], ['🪟', 'OKNO'], ['🍽️', 'MIZA']],   // TABLA and MIZA go down, OKNO across
+  h1: 'Besede gredo samo → in ↓.',
+},
+```
+- **Ladder** (the engine's): a gentle note → `h1` (2nd wrong) → the row or column of the next word lights (4th) → its first and last letter pulse (6th).
+- **Difficulty:** 6×6 (the only size the screens were tested with; do not use 5×5), 3 words, no crossing, no geslo: the lightest word search so far.
+
+#### Case 2 · Šali na drevescih (`steps: ['call', 'ask', 'torn', 'solve']`)
+- **Language-bound:** the strips (»ni šla« is the genitive-free past negative; »iz kuhinje« needs »iz«). **Must produce:** Zoja's alibi, the season's first absence heard/read. Call ends **»Išči, česar ni!«**.
+- **Story:** Cilka writes down who is where; Bor (a little boy in a goat hat) has torn the page. The case has no scene, so this narrator line needs this home (as muzej 2).
+```js
+torn: {
+  note: 'Bor je raztrgal Cilkin listek. Sestavi ga.',
+  parts: ['Popoldne Zoja', 'ni šla', 'iz', 'kuhinje.'],
+  gives: 's?',
+  h1: 'Velika črka je na začetku, pika na koncu.',
+  h2: 'Poglej »ni šla«: iz česa ni šla?',
+},
+// ['s?', 'Popoldne Zoja ni šla iz kuhinje.', 'clear', { from: 'torn', clears: 'zoja' }]
+```
+- **The one reasoning point:** »iz« needs its place right before »kuhinje.«; the capital and the full stop fix the ends. The only other order (»… iz ni šla kuhinje.«) is nonsense, and the checker's single order is the right one. The negation sits **on its own strip** (do not split »ni« from »šla«).
+- **Ladder:** gentle note → `h1` → `h2` → the next right strip pulses (the last rung is the answer, as in the timeline).
+- **Writers:** Cilka's ask answers must not repeat Zoja's alibi; give Cilka another line (Pia's or Luka's alibi is from Ajda and Lan as in §4.2).
+
+#### Case 3 · Zvonec na vratih (`steps: ['call', 'scene', 'cipher', 'lie', 'solve']`)
+- **Language-bound:** the message. **Must produce:** the UGOVOR breaker »the bell did not ring at night«.
+- **Story:** Cilka writes her night watch in »snežni znaki«, a game with the grandchildren; the key is printed under the note (it is found in the scene, in the hall by the door).
+```js
+cipher: {
+  note: 'Cilka je pisala v snežnih znakih. Ključ je spodaj.',
+  key: { '🧣': 'P', '🔔': 'O', '⛄': 'N', '🧤': 'Č', '🛷': 'I', '🌲': 'Z', '⭐': 'V', '🥕': 'L' },
+  gives: 's?',
+  h1: 'Vsak znak ima svojo črko. Poglej ključ.',
+},
+// ['s?', 'Ponoči ni zvonilo.', 'neutral', { from: 'cipher' }]   (15 letters, 8 different: within the checker's 20 and 9)
+lie: { claims: [Hana's true claim, Luka's claim], claim: Luka's, breaks: [['s?']], truth: …, h1: 'Je zvonec ponoči zvonil?' }
+```
+- **Ladder:** a note → `h1` (2nd) → the symbol lights in the key (4th) → the tile pulses (6th).
+- **🔴 for the writer (fair play):** the night's snow **covers footprints**, so »no footprints« cannot break Luka's lie (it would break the season's own logic). **The breaker is the silent bell.** Luka's claim must therefore say the front door: »Ponoči sem skozi vrata videl snežaka!« (8) or similar, and the scene must say the bell has hung on the door since bedtime (»Zvonec visi na vratih od večera.«), so the child links »ni zvonilo« to »nobenih vrat ni odprl«. The card 🔔 can point at the same cipher sentence or at a scene line; the writer decides, but the card must not name a suspect.
+- **Difficulty:** full key, no `missing`, no `extra` tiles: the child's first Č symbol is the only new thing. Optional harder knob if the playtest says the season is easy: `extra: ['K', 'M']`.
+
+#### Case 4 · Podrti iglu (`steps: ['call', 'order', 'scene', 'solve']`)
+- **Language-bound:** the time words (Najprej, Potem, Nato, Na koncu). **Must produce:** the night's order; the `done` line sends the child to look at what the snow did. **No roof word in the cards** (»streh-« is the suspect's name pattern; the roof is the case's proof).
+```js
+order: {
+  note: 'Slike noči so se pomešale. Kaj je bilo najprej?',
+  cards: [
+    ['⛺', 'Najprej je iglu še stal.'],
+    ['❄️', 'Potem je zapadel debel sneg.'],
+    ['💨', 'Nato je zadonelo: fuuuš!'],
+    ['🧊', 'Na koncu je iglu ležal na tleh.'],
+  ],
+  h1: 'Poglej prvo besedo: Najprej, Potem, Nato.',
+  h2: 'Najprej zapade sneg. Šele nato zadoni fuuuš!',
+  done: 'Debel sneg je zapadel. Kam je šel?',
+},
+```
+- **The one reasoning point:** »Potem« and »Nato« are near-synonyms; the sound »fuuuš« can only come after the snow (content decides, as in Bip 6). Ladder: gentle note → `h1` (2nd) → `h2` (3rd) → the next card pulses (4th); the right cards stay green after a wrong check.
+- **Difficulty:** 4 cards, no clock times; the same notch as Bip 6, with a reasoning pair instead of a pure word order.
+
+#### Case 5 · Skrite sani (`steps: ['call', 'ask', 'words', 'solve']`)
+- **Language-bound:** the words and the geslo. **Must produce:** Luka's alibi (the igloo was rebuilt after Thursday's collapse). **New combination:** `ask` + `words` has not been used in any case; the checker and the engine accept it (words needs no scene), but **run `node tools/cases.mjs` and the case in the browser once**.
+- **Call (the lock's code, plainly):** »Moje stare sani Strela so izginile!« (6) · »Vanje je vrezano leto 1964.« (5) · a third line with the question. The year must be in the call, not a letter or a P. S. (a letter arrives on the next visit).
+```js
+words: {
+  note: 'Cilka je skrila iskanko. Kaj povedo ostale črke?',
+  grid: ['SPOSPO', 'ALDTNE', 'NJDRVA', 'IELEUK', 'AZILDA', 'LIGALU'],
+  find: [['⚡', 'STRELA'], ['🪵', 'DRVA'], ['🛷', 'SANI']],   // STRELA and SANI go down, DRVA across and crosses STRELA at R
+  geslo: 's?',   // the 23 letters left over read POPOLDNE JE LUKA ZIDAL IGLU
+  h1: 'Besede gredo → in ↓. Lahko se križajo!',
+},
+// ['s?', 'Popoldne je Luka zidal iglu.', 'clear', { from: 'words', clears: 'luka' }]
+```
+- **Ladder:** note → `h1` → the row or column of the next word lights → first and last letter pulse; the geslo then glows and spells itself.
+- **Difficulty:** 3 words, **one crossing** (muzej 5 had two), a 23-letter geslo (muzej 5 had 24).
+- **Fair play for the tester:** the igloo must stand somewhere other than the woodshed (the plan puts it »behind the house«, as the woodshed is; place the woodshed by the yard or the igloo at the orchard). Marko is the decoy in 4, 6; give case 5 another decoy (§9b).
+
+#### Case 6 · Snežak pred vrati (`steps: ['call', 'lock', 'scene', 'torn', 'herring', 'solve']`)
+- **Language-bound:** the torn strips. **Must produce:** the woodshed open, and the explanation sentence for 🧭.
+- **Call:** »Drvarnica je zaklenjena.« (3) · »Šifra je leto mojih sani.« (5).
+```js
+lock: {
+  note: 'Šifra je leto, vrezano v Strelo.',           // 6
+  code: '1964',
+  h1: 'Poglej Cilkine stare sani. Katero leto imajo?',  // 7
+  h2: 'Leto Strele. Šifra je 1-9-6-4.',                // 5; digits only once
+},
+torn: {
+  note: 'Veter je raztrgal Cilkin zvezek. Sestavi ga.',
+  parts: ['Snežilo je', 'od', 'devetih', 'zvečer.'],
+  gives: 's?',
+  h1: 'Velika črka je na začetku, pika na koncu.',
+  h2: 'Za »od« pride ura. Zadnja je zvečer.',
+},
+// ['s?', 'Snežilo je od devetih zvečer.', 'neutral', { from: 'torn' }]
+herring: { clues: [Marko's night ploughing], points: { …: 'marko' }, explains: { …: [['s_noprints', 's?(torn)']] }, h1: 'Kdaj je začelo snežiti? Kje ni stopinj?' }
+```
+- **Ladder (lock):** note → `h1` (2nd wrong try) → `h2` (4th) says the code, so a child who skipped case 5 is never blocked. Nothing is checked while the wheels turn; only »Odpri«.
+- **Ladder (torn):** note → `h1` → `h2` → the next right strip pulses. **Order of steps:** the torn note comes after the scene and right before 🧭, which needs its sentence; it is a gentle second puzzle after the lock and the scene.
+- **Difficulty:** 4 wheels (as muzej 4 and pokal 6); the one reasoning point is **which sled**, because Cilka's call names »moje sani« and case 5 named Strela. The torn note is the case 2 notch (4 strips, one preposition), with a number word in the genitive (»devetih«) as the new content.
+- **The 🧭 explanation set** has two sentences (the scene's »Okoli snežaka ni nobene stopinje.« and this torn one); the torn sentence must be listed in `hmm` as a near miss for Marko only if the writer can: **a child who uses it alone should hear »Skoraj!«**.
+
+### 11.3 For the writers: what the puzzles need from the other sentences
+
+1. **The year (cases 5 → 6): 1964**, in case 5's call (»Vanje je vrezano leto 1964.«) and nowhere else in case 5 with another number next to it (no second year, no »ob 8«). Case 6's call and `lock.note` name the same sled: the sled is **Strela** (case 4's P. S. »Ime jim je Strela!« plants it). `lock.code` is `'1964'`.
+2. **Case 3's lie and the silent bell** (11.2): the claim names the front door, and the scene says the bell has hung there since bedtime. The same silent bell is the final's pair half, so write it once the same way (»ni zvonilo« / »ni zazvonil« are both fine, but keep »ni« as the 2nd–3rd word).
+3. **Negation on top:** the director's 🟠: lead with it in every proof, card and puzzle sentence. The strips in 2 and the cipher in 3 already do it. With `neg: true` the bold lands in sentences, not in torn strips: do not rely on it there.
+4. **Count the words** of every sentence with the checker's rule before handing in: the draft lines above are all ≤ 8.
+5. **A puzzle's sentence does not count against the proof rule:** it is `clear` (2, 5) or `neutral` (3, 6), never `evidence`.
+6. **Log:** the existing events (`puzzle_word`, `puzzle_torn`, `puzzle_cipher`, `puzzle_order`, `puzzle_lock`, `puzzle_hint`, `puzzle_done`); no new ones.
+7. **Small screens:** nothing new. All grids are 6×6 (iPhone 14 390×844 and the landscape rail 852×393 were tested with 6×6); the final has 6 steps, as pokal's.
+
+### 11.4 For the playtest (watch)
+- Case 3: the hint level on the cipher (it is the child's first Č symbol) and whether the breaker, »ni zvonilo«, is read as »nobody went out«.
+- Case 5: the first `ask` + `words` case: does the geslo come as an alibi the child uses?
+- Case 6: do children find the year in case 5's call, or reach `h2`? If most reach `h2`, the next season puts the digits into a scene line.
+
+## 12. Notes from sitting B for sitting C (2026-11-15)
+
+- **Ids:** n1–n6. Guess after 3 and 5, options Marko, **Ajda**, Luka (the answer in the middle). Cipher V is 🎿 (⭐ is taken in Galeb's alphabet).
+- **Deviations:** n1 says »pred zajtrkom« instead of »zjutraj«; n3 has no `hmm` pair with the breaker (the checker rejects it); n5's decoy is Zoja (Strela's teeth), and Bor's silence is now three lines (Hana, Bor, Cilka); n6's alibis use »Včeraj zvečer«, and the call has »Ponoči sem slišala: fuuuš!« for n4's order card.
+- **Fair-play doubts:** n4's »Ni sledi Markovega pluga za hišo.« assumes a plough track lasts the night (fallback: a thump at two with Marko at the chapel). n5 needs the child to remember that Bor is Pia's goat (pokal season).
+- **Slovenian to check:** »v ivje / po ivju risala«, »Pijine«, »zebejo«, »z menoj«, »Najprej čaj, šele potem klanec!«, »Ni sledi Markovega pluga za hišo.«, »za drvmi«, »Streli«, »Zvečer ni zazvonil zvonec na vratih« (word order).
+- **Open for D:** the `neg: true` bold build (main session) with its test; the case-writer lessons file (71 lines) needs a merge.
+
+## 13. Sitting C + D (2026-11-16): what was fixed, what was not
+
+Fixed (main session, from the three reviews and the UX review):
+- **Fair-play:** n1 question without »prvi« (it pointed at Luka), proof label »ograja« and s2 »Ponoči je sneg pobelil vse druge sani.« (no roof as a second explanation); n3 the rope is Ajda's red cord (one rope, not any sled's), Zoja's line »Lan je šepetal. Potem sva s Hano zaspali.«; n4 question »Kdo ali kaj je ob dveh podrlo iglu?« (no one-tap win), every alibi at two (»Ob dveh ni bilo Marka pri hiši.«), the Rumenko line replaced by the Ajda wood plant; n5 Bor »vse popoldne«, Marko »do večera«; n6 alibis »od osmih do devetih«, Marko ploughs »po devetih«, new s11 snow cap on the hat as the second 🧭 explanation, lock h1 points back to Strela.
+- **Book editor:** the snowman is pictured in n1 (»na trgu«), »drsalka« → »sani«, Ajda gets a voice in the final (excuse »ne ujameš me!«, letter »Naslednjič te ujamem jaz!«), n2 P.S. without the double negative, n5 call »Našla sem jih za drvmi.«
+- **Slovenian:** 24 edits in place by the editor, plus »Bralni detektivi rešijo vse!« (no masculine-only line).
+- **UX:** negation words underlined as well as bold (they looked like names), »razen« bold, Pia »Tako mi je žal!«.
+- **Build:** `neg: true` on the sneg file, `names()` bolds negation words (`NEG_RE`), test `tools/tests/neg.mjs`.
+
+Not done, on purpose (⚪ or no room in a 3-line call): BIM-BAM in the n4/n5 calls, extra hush lines in the calls, the n5 card speaker (Marko), the ask-screen witness ring explanation, the coach bubble crowding the footer on cipher/torn (an engine-wide layout item, not this season's), the n6 doorbell reading as electric (n3's call sets it up). For the native speaker: »Pijine/Piin«, »po ivju«, »za drvmi«, »zašumelo«. Lessons files over 60 lines need a merge pass.

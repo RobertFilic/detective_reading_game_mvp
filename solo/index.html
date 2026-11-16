@@ -1199,6 +1199,7 @@ tr.clickable { cursor: pointer; }
 .row mark, .row .tw { background: var(--mark); color: var(--ink); padding: 0 4px; border-radius: 5px; }
 .rows { gap: 10px; }
 .nm { font-weight: 600; }
+.ng { font-weight: 800; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 4px; }
 
 /* faces: a person on a coin, crossed off with one pencil line (never a red ✖) */
 .suspects { gap: 8px 12px; }
@@ -1554,6 +1555,12 @@ const CHARACTERS = {
   tone: { name: 'Hišnik Tone', animal: '👨🏻‍🔧', color: '#ece4d4', re: 'Ton(e|eta|etu|etom|etov\\p{L}*)' },
   neza: { name: 'Sodnica Neža', animal: '👩🏼‍⚖️', color: '#e3f2e3', re: 'Než(a|e|i|o|in\\p{L}*)' },
   bor: { name: 'Bor', animal: '🧒🏻', color: '#f0f0e0', re: 'Bor(a|u|om|ov\\p{L}*)?' },
+  // ❄️ Sneženi možje brez sledi (with Luka, Hana, Lan, Pia, Zoja, Bor). ⚠ A sentence never starts with »Bor …« (pine).
+  cilka: { name: 'Gospa Cilka', animal: '👵🏻', color: '#fde8c8', re: 'Cilk(a|e|i|o|in\\p{L}*)' },
+  ajda: { name: 'Ajda', animal: '👧🏼', color: '#e0f0d0', re: 'Ajd(a|e|i|o|in\\p{L}*)' },
+  marko: { name: 'Marko', animal: '👷🏻', color: '#f2e0c9', re: 'Mark(o|a|u|om|ov\\p{L}*)' },
+  // case 4's »culprit«: nobody, the roof (like 🌊 Morje). ⚠ Use »streh-« only in case n4.
+  streha: { name: 'Streha', animal: '🏠', color: '#e3edf5', re: '[Ss]treh(a|e|i|o)' },
 };
 
 // Case files (shown to children as pustolovščine, adventures): one place, one cast. Every case has file + no (1, 2, … within the file).
@@ -1591,11 +1598,16 @@ const FILES = [
     answer: { id: 'tone', icon: '🏆', text: 'Pokal je bil pri hišniku Tonetu v kleti!' },
     // the final's solved screen goes on to the cup: the cloth comes off, every team's name lights up, the child's last
     cup: { q: 'Pokal je pod prtom. Ali ga odkriješ?', cloth: 'Pod prtom je nekaj zlatega …', btn: 'Odgrni prt!', cheer: 'Bo že, bo! Vsaka ekipa mora na pokal!', names: ['BARCELONA', 'REAL', 'CITY', 'BAYERN'] } },
+  { id: 'sneg', icon: '❄️', hue: 275, title: 'Sneženi možje brez sledi', cast: ['luka', 'hana', 'lan', 'pia', 'zoja', 'ajda', 'marko', 'cilka', 'bor', 'streha'], paper: 'SNEŽNE NOVICE',
+    season: true, neg: true, mystery: 'Kdo ponoči dela snežene može?', teaser: 'Kdo ponoči dela snežene može?', opens: '2026-11-19',
+    // after case 3 the child guesses who makes the snowmen; after case 5 they may change their mind once (the right one is in the middle)
+    guess: { after: 3, again: 5, q: 'Kaj misliš, kdo dela snežake?', q2: 'Ali še vedno tako misliš?',
+      options: [['marko', '👷🏻', 'Marko, ki ponoči pluži'], ['ajda', '👧🏼', 'Ajda, ki ve, kdaj bo snežilo'], ['luka', '👦🏼', 'Luka, ki je vedno prvi na snegu']] },
+    answer: { id: 'ajda', icon: '⛄', text: 'Snežake je delala Ajda. Zvečer, preden je snežilo!' } },
 ];
 // Adventures announced but not written yet: the same teaser card. When one is written, it moves into
 // FILES with its teaser line (and opens, if it has a date).
 const COMING = [
-  { id: 'sneg', icon: '❄️', hue: 275, title: 'Sneženi možje brez sledi', teaser: 'Kdo ponoči dela snežene može?', opens: '2026-11-19' },
 ];
 
 // Every line the child can hear outside the stories. Clip id = "ui_" + key.
@@ -2675,6 +2687,251 @@ const CASES = [
     card: { icon: '🏆', sid: 's9', think: 'Vsa imena na enem pokalu! 🏆' },
     letter: ['Hvala! Vsi smo na zlatem pokalu! 🏆', 'Hišnik Tone pravi: »Naslednjič povem vsaj Neži.«', 'P. S. Pozimi gremo vsi na sneg! ❄️'],
   },
+  // ======== ❄️ Sneženi možje brez sledi (season 5): six mornings, Monday to Saturday, one snowman a day ========
+  {
+    id: 'n1', file: 'sneg', no: 1, type: 'elim', level: 'A', sticker: '🛷', place: 'Klanec',
+    steps: ['call', 'words', 'scene', 'solve'],
+    // rung 5 SHOWN: one sled lacks what the others have (snow). Plants: Ajda's board (alibi), Luka's »Naš detektiv reši vse!«
+    client: 'cilka', call: ['Najprej čaj, šele potem klanec!', 'Pred zajtrkom pa se je nekdo sankal!', 'Kdo je bil? Išči, česar ni!'],
+    // 🔤 the lightest word search: the three words are the places to search
+    words: {
+      note: 'Cilka ti je pustila iskanko. Poišči tri besede.',
+      grid: ['MHZOLE', 'MTMHGK', 'IAUIHN', 'ZBOKNO', 'ALOLEJ', 'AAUZNK'],
+      find: [['📋', 'TABLA'], ['🪟', 'OKNO'], ['🍽️', 'MIZA']],
+      h1: 'Besede gredo samo → in ↓.',
+    },
+    question: 'Kdo se je sankal pred zajtrkom?',
+    suspects: ['pia', 'zoja', 'luka', 'ajda'], culprit: 'luka',
+    sentences: [
+      // the proof at the top: the bare sled (hidden behind the place, not behind Luka's emoji)
+      ['s1', 'Ni snega na Lukovih saneh.', 'evidence', { obj: '🛷', label: 'ograja' }],
+      ['s2', 'Ponoči je sneg pobelil vse druge sani.', 'neutral', { obj: '🪵', label: 'drva' }],
+      // the decoy: her sled is at the top of the hill, but under snow (left there, unused)
+      ['s3', 'Zojine sani na vrhu klanca so pod snegom.', 'distractor', { obj: '⛰️', label: 'klanec' }],
+      ['s4', 'Pred zajtrkom je Pia s Cilko pogrinjala mizo.', 'clear', { obj: '🍽️', label: 'miza', clears: 'pia' }],
+      ['s5', 'Pred zajtrkom je Zoja risala dinozavra v ivje.', 'clear', { obj: '🪟', label: 'okno', clears: 'zoja' }],
+      ['s6', 'Pred zajtrkom je Ajda pisala vreme na tablo.', 'clear', { obj: '📋', label: 'tabla', clears: 'ajda' }],
+      ['s7', 'Luka je rekel: »Bralni detektivi rešijo vse!«', 'neutral', { obj: '📰', label: 'časopis' }],
+      ['s8', 'Ni stopinj okoli snežaka na trgu.', 'neutral', { obj: '⛄', label: 'snežak' }],
+    ],
+    h1: 'Kdo NI mogel biti? Na čem ni snega?',
+    reveal: ['Na Lukovih saneh ni snega.', 'Med vožnjo je sneg padel s sani.', 'Luka je hotel narediti prvo sled.', 'Zojine sani pa so ostale pod snegom.'],
+    caught: 'Luko', excuse: 'Prvi! Nov sneg je kot torta s smetano!',
+    card: { icon: '👣', sid: 's8', think: 'Ni stopinj? Kako je snežak prišel tja? 🤔' },
+    letter: ['Hvala! Luka zdaj čaka do zajtrka.', 'Zojine sani še spijo pod snegom.', 'P. S. Cilka nam je vsem spletla šale!'],
+  },
+  {
+    id: 'n2', file: 'sneg', no: 2, type: 'elim', level: 'A', sticker: '🧣', place: 'Sadovnjak',
+    steps: ['call', 'ask', 'torn', 'solve'],
+    // rung 5 HEARD: Zoja's alibi is an absence (the torn note); the call shows the gap (no scarf on any hook)
+    client: 'cilka', call: ['Na kavljih ni nobenega šala!', 'Vsi so zdaj na drevescih v sadovnjaku!', 'Kdo je bil? Išči, česar ni!'],
+    question: 'Kdo je popoldne oblekel drevesca v šale?',
+    suspects: ['zoja', 'pia', 'luka', 'hana'], culprit: 'hana',
+    // 👁️ Ajda saw from the woodshed, Lan was with Luka, Cilka read the board
+    witnesses: ['ajda', 'lan', 'cilka'],
+    sentences: [
+      // the decoy: footprints among the trees (Pia's own answer says they are from the morning)
+      ['s1', '»Med drevesci so Pijine stopinje!«', 'distractor', { who: 'luka', ask: 'Kaj si videl v sadovnjaku?' }],
+      // names Hana outside the proof, and plants her book (the motive)
+      ['s2', '»Rišem dinozavre. Hana pa bere o drevesih.«', 'neutral', { who: 'zoja', ask: 'Kaj delaš v kuhinji?' }],
+      ['s3', '»Popoldne se je Luka sankal z menoj.«', 'clear', { who: 'lan', ask: 'Kje je bil Luka popoldne?', clears: 'luka' }],
+      // card 2 (names nobody)
+      ['s4', '»Na snežakovem klobuku je debela kapa snega.«', 'neutral', { who: 'cilka', ask: 'Kaj je novega v vasi?' }],
+      // the proof, from the woodshed window
+      ['s5', '»Popoldne je Hana nosila šale v sadovnjak.«', 'evidence', { who: 'ajda', ask: 'Kaj si videla iz drvarnice?' }],
+      ['s6', '»Zjutraj sem med drevesci nabirala sneg.«', 'neutral', { who: 'pia', ask: 'Kdaj si bila med drevesci?' }],
+      ['s7', '»Popoldne je Pia pri drvarnici zidala trdnjavo.«', 'clear', { who: 'ajda', ask: 'Kje je bila Pia popoldne?', clears: 'pia' }],
+      ['s8', '»Po pravilu je pozimi vsem mrzlo. Brr!«', 'neutral', { who: 'hana', ask: 'Kako je pozimi?' }],
+      ['s9', 'Popoldne Zoja ni šla iz kuhinje.', 'clear', { from: 'torn', clears: 'zoja' }],
+    ],
+    // 📜 Cilka's note: Bor tore it up; the »ni šla« strip stays whole
+    torn: {
+      note: 'Bor je raztrgal Cilkin listek. Sestavi ga.',
+      parts: ['Popoldne Zoja', 'ni šla', 'iz', 'kuhinje.'],
+      gives: 's9',
+      h1: 'Velika črka je na začetku, pika na koncu.',
+      h2: 'Poglej »ni šla«: iz česa ni šla?',
+    },
+    h1: 'Kdo NI mogel biti? Kdo je nosil šale?',
+    reveal: ['Ajda je videla Hano s kupom šalov.', 'Po Hanini knjigi je drevescem pozimi mrzlo.', 'Zato jih je Hana oblekla v šale.', 'Pijine stopinje pa so od jutra.'],
+    caught: 'Hano', excuse: 'Drevescem je bilo mrzlo! Po pravilu!',
+    card: { icon: '🎩', sid: 's4', think: 'Sneg na klobuku? Kdaj je padel? 🤔' },
+    letter: ['Hvala! Drevesca so zdaj topla.', 'Hana je šale vrnila na kavlje.', 'P. S. Kdo dela snežake? Skrivnost!'],
+  },
+  {
+    id: 'n3', file: 'sneg', no: 3, type: 'elim', level: 'A', sticker: '🔔', place: 'Veža',
+    steps: ['call', 'scene', 'cipher', 'lie', 'solve'],
+    // rung 5 BREAKS A LIE: the bell hung on the front door and did not ring all night, so nobody went out (Luka's tall tale)
+    // Tuesday evening deed, Wednesday call: the day is said in the call (»včeraj«). Plants: Ajda's wood and the sled ropes
+    client: 'cilka', call: ['Ob šestih sem odprla vrata: BIM-BAM!', 'Včeraj je nekdo nanje obesil zvonec.', 'Kdo je bil? Pomagaj mi!'],
+    question: 'Kdo je včeraj pred spanjem obesil zvonec na vrata?',
+    suspects: ['lan', 'luka', 'pia', 'hana'], culprit: 'lan',
+    sentences: [
+      // the two claims: Hana's (true, backed by Zoja) and Luka's tall tale (the lie, second)
+      ['s1', '»Ponoči sem trdno spala.«', 'neutral', { obj: '🛏️', label: 'postelja', who: 'hana' }],
+      ['s2', '»Ponoči sem šel skozi vrata. Videl sem snežaka!«', 'distractor', { obj: '👢', label: 'škornji', who: 'luka' }],
+      // names Lan outside the proof and proves nothing
+      ['s3', '»Lan je šepetal. Potem sva s Hano zaspali.«', 'neutral', { obj: '🧸', label: 'medvedek', who: 'zoja' }],
+      ['s4', 'Pred spanjem je Pia brala Boru pravljico.', 'clear', { obj: '📖', label: 'knjiga', clears: 'pia' }],
+      ['s5', 'Pred spanjem je Hana z Zojo umivala zobe.', 'clear', { obj: '🪥', label: 'kopalnica', clears: 'hana' }],
+      ['s6', 'Pred spanjem je Luka pil čaj pri Cilki.', 'clear', { obj: '🍵', label: 'skodelica', clears: 'luka' }],
+      // the decoy: whose bell it is (a thing that is true and proves nothing)
+      ['s7', 'Zvonec je Pijin, s kmetije.', 'distractor', { obj: '🏷️', label: 'napis' }],
+      // the proof pair: the half that names Lan first, then the half that names nobody
+      ['s8', '»Pred spanjem je Lan vzel mojo rdečo vrvico.«', 'evidence', { obj: '🛷', label: 'sani', who: 'ajda' }],
+      ['s9', 'Zvonec visi na rdeči vrvici.', 'evidence', { obj: '🔔', label: 'zvonec' }],
+      ['s10', 'Ponoči ni zvonilo.', 'neutral', { from: 'cipher' }],
+      ['s11', '»No ja … Samo skozi okno sem gledal.«', 'neutral', { from: 'lie', who: 'luka' }],
+    ],
+    // ✉️ Cilka's night watch in »snežni znaki«: the full key, Č is the new symbol
+    cipher: {
+      note: 'Cilka je pisala v snežnih znakih. Ključ je spodaj.',
+      key: { '🧣': 'P', '🔔': 'O', '⛄': 'N', '🧤': 'Č', '🛷': 'I', '🌲': 'Z', '🎿': 'V', '🥕': 'L' },
+      gives: 's10',
+      h1: 'Vsak znak ima svojo črko. Poglej ključ.',
+    },
+    // ❗ the bell hung on the door from bedtime and was silent at night: nobody opened the door
+    lie: { claims: ['s1', 's2'], claim: 's2', breaks: [['s10']], truth: 's11',
+      hmm: [['s1', 's3', 'Zoja pravi isto. To se ujema!']],
+      h1: 'Je zvonec ponoči zvonil?' },
+    h1: 'Kdo NI mogel biti? Kdo je vzel vrvico?',
+    reveal: ['Lan je vzel Ajdino rdečo vrvico.', 'Nanjo je privezal Pijin zvonec.', 'Hotel je slišati, kdo dela snežake.', 'Luka ni šel ven. Zvonec ni zvonil.'],
+    caught: 'Lana', excuse: 'Hotel sem ujeti snežaka. Zbudil sem vse!',
+    card: { icon: '🔔', sid: 's10', think: 'Nihče ni šel ven? Kdo potem? 🤔' },
+    letter: ['Hvala! Zdaj zvoni vsako jutro: BIM-BAM!', 'Cilka pravi: »Spet BIM-BAM!«', 'P. S. Za hišo smo zgradili iglu!'],
+  },
+  // ❄️ Sneženi možje brez sledi, cases 4–6 (writer B)
+  {
+    id: 'n4', file: 'sneg', no: 4, type: 'elim', level: 'A', sticker: '🧊', place: 'Iglu za hišo',
+    steps: ['call', 'order', 'scene', 'solve'],
+    // the question is »Kaj …?«: nobody did it, the roof's snow slid down. The proof is a bare roof, never »no footprints«
+    client: 'cilka', call: ['Pomagaj! Naš iglu za hišo je podrt!', 'Ob dveh ponoči sem slišala: fuuuš!', 'Kaj je podrlo iglu? Čaj že čaka!'],
+    // 🕐 the night in four cards: the snow comes first, the »fuuuš« after it (no roof word: that is the proof)
+    order: {
+      note: 'Slike noči so se pomešale. Kaj je bilo najprej?',
+      cards: [
+        ['⛺', 'Najprej je iglu še stal.'],
+        ['❄️', 'Potem je zapadel debel sneg.'],
+        ['💨', 'Nato je zašumelo: fuuuš!'],
+        ['🧊', 'Na koncu je iglu ležal na tleh.'],
+      ],
+      h1: 'Poglej prvo besedo: Najprej, Potem, Nato.',
+      h2: 'Najprej zapade sneg. Šele nato zašumi fuuuš!',
+      done: 'Debel sneg je zapadel. Kam je šel?',
+    },
+    question: 'Kdo ali kaj je ob dveh podrlo iglu?',
+    suspects: ['marko', 'streha', 'ajda', 'lan'], culprit: 'streha',
+    sentences: [
+      // the proof first (top of the list), hidden behind the ladder, not behind the roof
+      ['s1', 'Brez snega je streha nad iglujem.', 'evidence', { obj: '🪜', label: 'lestev' }],
+      // the decoy: Marko ploughed at night, and a plough throws snow high
+      ['s2', 'Ponoči je Marko plužil pred hišo.', 'distractor', { obj: '🚧', label: 'cesta', points: 'marko' }],
+      ['s3', 'Ob dveh ni bilo Marka pri hiši.', 'clear', { obj: '🕑', label: 'ura', clears: 'marko' }],
+      // the plant for the final (Ajda and the woodshed), on screen before the second guess
+      ['s4', 'Vsak večer Ajda nese drva iz drvarnice.', 'neutral', { obj: '🪵', label: 'drva' }],
+      ['s5', 'Ob dveh je Ajda spala pri Cilki.', 'clear', { obj: '🛏️', label: 'soba', clears: 'ajda' }],
+      ['s6', 'Vse druge strehe so bele.', 'neutral', { obj: '🏘️', label: 'vas' }],
+      ['s7', 'Iglu je pod velikim kupom snega.', 'neutral', { obj: '🧊', label: 'iglu' }],
+      ['s8', 'Ob dveh je Luka slišal Lana smrčati.', 'clear', { obj: '🛌', label: 'postelja', clears: 'lan' }],
+      // the plant for the final: Ajda reads about detectives (once a real clue, not a decoy)
+      ['s9', 'Ajda bere knjigo o detektivu.', 'neutral', { obj: '📖', label: 'knjiga' }],
+      ['s10', 'Snežakove roke so palčke iz drvarnice.', 'neutral', { obj: '☃️', label: 'snežak' }],
+    ],
+    h1: 'Kje ni snega? Išči, česar ni!',
+    reveal: ['Streha nad iglujem je brez snega.', 'Torej je sneg ponoči zdrsnil z nje.', 'Fuuuš! Težak kup je padel na iglu.', 'Marka pa ob dveh ni bilo pri hiši.'],
+    caught: 'streho', excuse: 'Fuuuš! Sneg je bil pretežak. Oprosti!',
+    card: { icon: '🪵', sid: 's10', think: 'Kdo hodi v drvarnico? 🤔' },
+    letter: ['Hvala! Kriva je bila streha.', 'Luka in Lan bosta zidala nov iglu.', 'P. S. Cilkine sani se imenujejo Strela! 🛷'],
+  },
+  {
+    id: 'n5', file: 'sneg', no: 5, type: 'elim', level: 'A', sticker: '🛷', place: 'Drvarnica',
+    steps: ['call', 'ask', 'words', 'solve'],
+    // the year 1964 stands alone in the call: it is the lock's code in case 6 (no other number in this case)
+    client: 'cilka', call: ['Moje stare sani Strela so izginile!', 'Vanje je vrezano leto 1964.', 'Našla sem jih za drvmi. Kdo jih je skril?'],
+    question: 'Kdo je popoldne skril Cilkine stare sani?',
+    suspects: ['zoja', 'luka', 'marko', 'pia'], culprit: 'pia',
+    witnesses: ['hana', 'bor', 'cilka'],
+    sentences: [
+      // the igloo stands behind the house, the woodshed in front: Luka's alibi place is not the deed's place
+      ['s1', '»Moj iglu je za hišo, drvarnica pa spredaj.«', 'neutral', { who: 'luka', ask: 'Kje je tvoj iglu?' }],
+      // the decoy: Zoja draws teeth on everything (yesterday, so it proves nothing about the afternoon)
+      ['s2', '»Rrr! Včeraj sem na Strelo narisala zobe.«', 'distractor', { who: 'zoja', ask: 'Si risala na Strelo?', points: 'zoja' }],
+      // the proof pair: this half names the culprit (it comes first, as the checker reads the first proof) …
+      ['s3', '»Bor meketa na vse, razen na Pio.«', 'evidence', { who: 'cilka', ask: 'Na koga Bor meketa?' }],
+      ['s4', '»Popoldne je Zoja z menoj risala v kuhinji.«', 'clear', { who: 'hana', ask: 'Kaj je delala Zoja popoldne?', clears: 'zoja' }],
+      // … and the silence names nobody (the dog that did not bark)
+      ['s5', '»Bor popoldne ni zameketal.«', 'evidence', { who: 'hana', ask: 'Kaj je bilo z Borom popoldne?' }],
+      ['s6', '»Marko je do večera popravljal mojo peč.«', 'clear', { who: 'cilka', ask: 'Kaj je delal Marko popoldne?', clears: 'marko' }],
+      ['s7', '»Meee! Vse popoldne sem sedel pri drvarnici.«', 'neutral', { who: 'bor', ask: 'Kje si bil popoldne?' }],
+      ['s8', '»Na hribu sem lovila snežinke z jezikom.«', 'neutral', { who: 'pia', ask: 'Kje si bila popoldne?' }],
+      ['s9', '»Brmmm! Snežak drži lupo iz ledu!«', 'neutral', { who: 'marko', ask: 'Ste danes videli snežaka?' }],
+      // 🔤 the geslo: Luka's alibi (the igloo was rebuilt after Thursday's collapse)
+      ['s10', 'Popoldne je Luka zidal iglu.', 'clear', { from: 'words', clears: 'luka' }],
+    ],
+    // 🔤 one crossing: DRVA goes across and crosses STRELA at R
+    words: {
+      note: 'Cilka je skrila iskanko. Kaj povedo ostale črke?',
+      grid: ['SPOSPO', 'ALDTNE', 'NJDRVA', 'IELEUK', 'AZILDA', 'LIGALU'],
+      find: [['⚡', 'STRELA'], ['🪵', 'DRVA'], ['🛷', 'SANI']],
+      geslo: 's10',
+      h1: 'Besede gredo → in ↓. Lahko se križajo!',
+    },
+    h1: 'Kdo NI mogel biti? Kaj Bor ni naredil?',
+    reveal: ['Bor popoldne ni zameketal pri drvarnici.', 'Torej je šla mimo Pia, njegova sestra.', 'Pia se je s Strelo zaletela v sneg.', 'Zato je počene sani skrila za drva.'],
+    caught: 'Pio', excuse: 'Mee! Zaletela sem se. Tako mi je žal!',
+    card: { icon: '🔍', sid: 's9', think: 'Lupa? Kdo se igra detektiva? 🤔' },
+    letter: ['Hvala! Strela bo spet cela.', 'Pia bo Cilki pomagala popraviti sani.', 'P. S. Jutri je zadnji dan. Bo snežak?'],
+  },
+  {
+    id: 'n6', file: 'sneg', no: 6, final: true, type: 'elim', level: 'A', sticker: '⛄', place: 'Drvarnica in vrata',
+    steps: ['call', 'lock', 'scene', 'torn', 'herring', 'solve'],
+    // the window has two edges on screen: no snowman at eight (s1), snow from nine (the torn note)
+    client: 'cilka', call: ['Pred vrati stoji nov snežak!', 'Njegove palčke so iz drvarnice.', 'Šifra drvarnice: leto mojih sani.'],
+    // 🔐 the year carved on Strela (case 5's call); h2 gives it to a child who skipped case 5
+    lock: {
+      note: 'Šifra je leto, vrezano v Strelo.',
+      code: '1964',
+      h1: 'Se spomniš Strele? Katero leto ima?',
+      h2: 'Leto Strele. Šifra je 1-9-6-4.',
+    },
+    question: 'Kdo je včeraj zvečer naredil snežaka pred vrati?',
+    suspects: ['luka', 'ajda', 'marko', 'zoja'], culprit: 'ajda',
+    sentences: [
+      ['s1', 'Ob osmih ni bilo snežaka pred vrati.', 'neutral', { obj: '🕗', label: 'ura' }],
+      ['s2', 'Ni nobene stopinje okoli snežaka.', 'neutral', { obj: '👣', label: 'tla' }],
+      // three alibis, three forms: Cilka's word, a narrated game, Hana's word
+      ['s3', '»Od osmih do devetih sva z Markom kartala.«', 'clear', { obj: '🃏', label: 'karte', who: 'cilka', clears: 'marko' }],
+      ['s4', 'Od osmih do devetih je Luka igral spomin.', 'clear', { obj: '🧩', label: 'spomin', clears: 'luka' }],
+      ['s5', 'Drvarnica ima vrata na dvorišče.', 'neutral', { obj: '🚪', label: 'dvorišče' }],
+      // the proof pair: this half names the culprit (it comes first) …
+      ['s6', '»Ob pol devetih je Ajda šla v drvarnico.«', 'evidence', { obj: '🧹', label: 'metla', who: 'cilka' }],
+      // … and the silent bell names nobody (the bell has hung on the front door since case 3)
+      ['s7', 'Včeraj zvečer ni zazvonil zvonec na vratih.', 'evidence', { obj: '🪑', label: 'klop' }],
+      ['s8', '»Od osmih do devetih je Zoja risala.«', 'clear', { obj: '🖼️', label: 'risba', who: 'hana', clears: 'zoja' }],
+      // 🧭 the obvious suspect: Marko ploughed at night, after the snow
+      ['s9', 'Po devetih je Marko plužil pred vrati.', 'distractor', { obj: '🚜', label: 'plug' }],
+      ['s10', 'Snežilo je od devetih zvečer.', 'neutral', { from: 'torn' }],
+      // card 2 pays off: the snowman stood through the snow, so it was built before nine
+      ['s11', 'Na snežakovem klobuku je debela kapa snega.', 'neutral', { obj: '🎩', label: 'klobuk' }],
+    ],
+    // 📜 one notch above case 2: the number word in the genitive
+    torn: {
+      note: 'Veter je raztrgal Cilkin zvezek. Sestavi ga.',
+      parts: ['Snežilo je', 'od', 'devetih', 'zvečer.'],
+      gives: 's10',
+      h1: 'Velika črka je na začetku, pika na koncu.',
+      h2: 'Za »od« pride ura. Zadnja je zvečer.',
+    },
+    // 🧭 no footprints + snow from nine: the snowman stood before the snow, so Marko's night ploughing is too late
+    herring: { clues: ['s9'], points: { s9: 'marko' }, explains: { s9: [['s2', 's10'], ['s11', 's10']] },
+      hmm: [['s9', 's2', 'Skoraj! Kdaj je začelo snežiti?'], ['s9', 's10', 'Skoraj! Kaj pa stopinje?']],
+      h1: 'Kdaj je začelo snežiti? Kje ni stopinj?' },
+    h1: 'Kdo NI mogel biti? Kaj ni zazvonilo?',
+    reveal: ['Zvonec ni zazvonil. Vrata so ostala zaprta.', 'Torej je Ajda šla ven skozi drvarnico.', 'Snežak je stal že pred snegom. Zato ni stopinj.', 'Marko pa je plužil šele po devetih.'],
+    caught: 'Ajdo', excuse: 'Stavila sem se z Luko: ne ujameš me!',
+    card: { icon: '🚪', sid: 's5', think: 'Ven se da tudi skozi drvarnico! 🤔' },
+    letter: ['Hvala! Ajda je stavo izgubila.', 'Zdaj Luko vleče na hrib. Hihi!', 'Ajda pravi: »Naslednjič te ujamem jaz!« ⛄'],
+  },
 ];
 
 // The two warm-up cases every new detective plays before the first season (docs/WARMUP_AND_HELP.md):
@@ -3132,7 +3389,12 @@ const esc = (s) => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&l
 // with a capital: the sea (»morje«) and a mystery guest's hiding place stay plain.
 let nameRe;
 const names = (t) => '<span>' + esc(t).replace(nameRe ||= new RegExp(`(?<!\\p{L})(?:${Object.values(CHARACTERS)
-  .filter(ch => /^\p{Lu}/u.test(ch.re)).map(ch => ch.re).join('|')})(?!\\p{L})`, 'gu'), m => `<b class="nm">${m}</b>`) + '</span>';
+  .filter(ch => /^\p{Lu}/u.test(ch.re)).map(ch => ch.re).join('|')})(?!\\p{L})`, 'gu'), m => `<b class="nm">${m}</b>`)
+  .replace(negOn() ? NEG_RE : /$^/, m => `<b class="ng">${m}</b>`) + '</span>';
+// A season with `neg: true` (sneg) also bolds every negation word, in innocent lines too, so a child
+// doesn't miss the »ni« the clue hangs on (producer, 2026-11-11). Off for other seasons.
+const NEG_RE = /(?<!\p{L})(?:ni|nisem|nisi|nisva|nista|nismo|niste|niso|nima|nimam|nimaš|nimata|nimamo|nimajo|ne|brez|nihče|nič|nikoli|nikjer|noben|nobena|nobeno|nobene|nobenega|nobeni|nobenih|nobenim|razen)(?!\p{L})/giu;
+const negOn = () => !!FILES.find(f => f.id === (S.c?.file || S.file))?.neg;
 const pad = (n) => String(n).padStart(2, '0');
 const sent = (sid) => S.c.sentences.find(s => s.id === sid);
 // a sentence as shown in a list: an answer (ask step) shows who said it
