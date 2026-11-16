@@ -80,10 +80,13 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   ok(await p.evaluate(() => { const r = document.getElementById('board').getBoundingClientRect(); return r.right <= innerWidth && r.left >= 0; }), `${dev}: the board fits the width`);
   ok(await p.$$eval('.clue', els => els.length === 4 && els.every(e => e.getBoundingClientRect().height >= 48)), `${dev}: 4 sentences, each a ≥ 48 px target`);
   ok(await tokens() === 0, `${dev}: nobody stands on the board at the start`);
+  const errs = () => p.$eval('#errs', e => e.textContent);
+  ok(await errs() === 'Napake: 0', `${dev}: the question bar shows »Napake: 0«`);
   await tap('.clue[data-p="ana"]'); await tap(cell(1, 0));
   ok((await said()).includes('torta') && await tokens() === 0, `${dev}: a tap on the cake says nobody can stand there`);
   await tap(cell(0, 1));
   ok(await tokens() === 0 && await p.$eval('.clue[data-p="ana"]', e => e.classList.contains('glow')), `${dev}: a wrong cell places nobody, Ana's sentence glows`);
+  ok(await errs() === 'Napake: 2', `${dev}: both wrong taps are counted: »Napake: 2«`);
   await tap(cell(1, 3));
   ok(await p.$eval(cell(1, 3), e => e.textContent.includes('Ana')) && await p.$eval('.clue[data-p="ana"]', e => e.classList.contains('placed')), `${dev}: Ana goes on the sofa, her sentence gets ✓`);
   ok(await p.$eval(cell(1, 1), e => !!e.querySelector('.x')), `${dev}: Ana's row is crossed out by itself`);
@@ -125,6 +128,8 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   await tap('#whoFaces [data-p="dan"]');
   ok(await p.$eval('#sheet', (e, l) => !e.hidden && e.textContent.includes('Primer rešen!') && e.textContent.includes(l.win) && e.textContent.includes(l.heart) && e.textContent.includes('Bravo, detektivka Ana!'), L1), `${dev}: Dan → »Primer rešen!«, »Bravo, detektivka Ana!« and the reason why`);
   ok(await p.evaluate(() => localStorage.getItem('dp_kjekdo_v1')) === '[1]', `${dev}: puzzle 1 is remembered`);
+  const e1 = await errs();
+  ok(/^Napake: [3-9]$/.test(e1) && (await p.$eval('#sheet', e => e.textContent)).includes(e1), `${dev}: the win sheet shows the same count (${e1})`);
 
   // puzzle 2: the help lights cells, the child taps
   const L2 = LV[1];
@@ -149,6 +154,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   await tap('#toList');
   ok(await p.$$eval('.levels .lvl .done', els => els.length) === 2 && await p.$eval('.lvl.main', e => e.dataset.level === '3'), `${dev}: 2 ✓ on the list, the big card now starts puzzle 3`);
   ok(await wide(), `${dev}: no sideways scroll`);
+
   if (process.env.SHOTS) await p.screenshot({ path: `shots/kjekdo-${dev}.png`, fullPage: true });
 
   // the events: anonymous, one random sitting number, nothing from the ID card
@@ -161,8 +167,20 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   ok(ev('wrong', 1).some(e => e.data.kind === 'block') && ev('wrong', 1).some(e => e.data.kind === 'row' && e.data.who === 'bor') && ev('wrong', 1).some(e => e.data.kind === 'answer' && e.data.who === 'ana'), `${dev}: wrong taps say what kind (cake, row, wrong answer)`);
   const s1 = ev('solved', 1)[0], s2 = ev('solved', 2)[0];
   ok(s1 && s1.data.first === true && s1.data.done === 1 && s1.data.hints === 0 && s1.data.notes === true && s1.placed === 4 && s1.data.wrongs >= 3, `${dev}: puzzle 1 solved: first time, 1 done, no help, used notes`);
+  ok(ev('start', 2)[0].placed === 0, `${dev}: a start event counts 0 people placed (not the last puzzle's)`);
   ok(s2 && s2.data.done === 2 && s2.data.hints === 3 + 3 * L2.people.length && ev('hint', 2)[0].data.step === 1 && ev('hint', 2)[0].placed === 0, `${dev}: puzzle 2 solved with ${s2 && s2.data.hints} helps, each help counted with its step`);
   ok(!ev('left').length && !ev('stuck').length, `${dev}: no »left« or »stuck« for solved puzzles`);
+  // VELIKE TISKANE ČRKE: one switch in the header, remembered on this device
+  ok(await p.$eval('#capsBtn', e => e.textContent === 'ABC' && e.getBoundingClientRect().height >= 48) && !(await p.evaluate(() => document.documentElement.classList.contains('caps'))), `${dev}: »ABC« in the header, small letters to start`);
+  await tap('#capsBtn');
+  ok(await p.evaluate(() => document.documentElement.classList.contains('caps') && getComputedStyle(document.querySelector('.lvl b')).textTransform === 'uppercase' && localStorage.getItem('dp_caps_v1') === '1') && await p.$eval('#capsBtn', e => e.textContent === 'abc'), `${dev}: »ABC« turns on capitals everywhere (the cards too), and is remembered`);
+  await p.reload(); await wait(500);
+  ok(await p.evaluate(() => document.documentElement.classList.contains('caps')), `${dev}: capitals stay on after a reload`);
+  await tap('.lvl.main'); await tap('#sheetBody .big');
+  ok(await p.$$eval('.cell .lab', els => els.every(l => { const c = l.closest('.cell').getBoundingClientRect(), r = l.getBoundingClientRect(); return l.scrollWidth <= l.clientWidth + 1 && r.left >= c.left - 1 && r.right <= c.right + 1; })) && await p.$$eval('.tool', els => els.every(e => e.scrollWidth <= e.clientWidth + 1)) && await wide(), `${dev}: in capitals, room names fit their cells, tool labels fit, no sideways scroll`);
+  await tap('#capsBtn');
+  ok(!(await p.evaluate(() => document.documentElement.classList.contains('caps'))) && await p.evaluate(() => localStorage.getItem('dp_caps_v1')) === '0', `${dev}: »abc« turns them off again`);
+  await tap('#back');
   ok(!errors.length, `${dev}: no page errors ${errors.join('|')}`);
   await p.close();
 }

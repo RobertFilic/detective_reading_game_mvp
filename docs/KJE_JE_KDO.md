@@ -205,3 +205,13 @@ What it tells us (one child, so a direction, not a rule yet):
 - For a 7-year-old who has played a few rooms, 🟢 lahko (all »na X«, 0 steps) is too easy.
 
 Producer's direction: use this when creating the next rooms — fewer all-»na« rooms, daily rooms mostly need real thinking (a »ni ob« / »ni v« clue that matters), keep 💡 help for the hard ones. Text fix: puzzle 7 »Toda kdo jo je vrgel?« → »Toda kdo je zadel koš?«.
+
+## Playtest, 2026-11-16: room 14, and two new switches
+
+**Room 14 »Kje je zvonec na peronu?«** (srednje, 5×5, »odprta polja« 30): *relatively hard, very good* (producer). The child's key step: after Alja (on the cushion), **two people can each only be in one column**: Nika (»ob zvoncu«) only in column 4, Jernej (»ob zaboju«) only in column 1. Those two columns are taken, so Mark (»ob klopi«) is left with column 3, and the rest follows. The checker finds another way (column 5 → Vita), so it doesn't count this step, but it is the kind of thinking the producer wants: **a person whose cells all lie in one row or column takes it away from the others**. Build daily srednje/težje rooms around one such step. The measure agrees: 30 sits between 7 (25, easy) and 9 (32, hard).
+
+**Mistake counter** (producer's idea): the question bar shows »Napake: N« for this room. Every wrong tap counts (a cell the sentence rules out, a »maybe« cell, a taken row or column, a tree, the wrong culprit), the same number the events send as `wrongs`. It bumps red for a moment, never blocks anything, starts at 0 in each room, and the win sheet says »Napake: N« or »Brez napake! 🌟«. Why: the data showed children trying »maybe« cells one after another (room 12: 7 of 8 mistakes); a visible count asks them to think before tapping. It is not stored and not shown on the list.
+
+**VELIKE TISKANE ČRKE**: the »ABC« button in the header (next to »?«) turns every text into capitals, because first-graders learn capitals first; »abc« turns it back. It is remembered on the device (`dp_caps_v1`, listed on the privacy page); the main game can use the same key if it gets the switch too. In capitals the room names on the board are smaller (sized to the cell) so they fit; on a landscape phone the 6×6 room 18's »Garderoba« still touches its edge.
+
+Also fixed: a `start` event sent `placed` from the previous room (4 or 5 instead of 0).
