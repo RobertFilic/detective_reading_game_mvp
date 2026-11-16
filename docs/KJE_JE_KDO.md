@@ -167,20 +167,20 @@ The producer wants to see where players get stuck. The game sends anonymous even
 
 ## Rooms 13–22 (2026-11-15)
 
-One new room a day from Sunday 2026-11-15 (producer moved the start to today; the weekday/weekend difficulty pattern is off by two days for this first batch) (`date` on the level; weekdays easy/medium, the weekend harder). `node solo/tools/kjekdo.mjs` passes for all 22 puzzles (one placement, every sentence needed, a child's path without guessing, ≤ 8 words in the new texts); the browser test `node solo/tools/tests/run.mjs kjekdo` solves all 22 with the help alone (266 ok). The checker now wants ≥ 4 puzzles per group, dates that rise with the ids, and sentences of ≤ 8 words in dated puzzles. Ten new missing things were added to `OBJ` (kruh, zvonec, medalja, sonce, smuci, klobuk, sestavljanka, balon, kolo, trobenta).
+One new room a day (producer moved the start to 2026-11-15; on 2026-11-16 the producer asked for three more at once from the next day: 15, 16 and 17 all open on 11-17, then one a day again, 18 on 11-18 … 22 on 11-22. Several rooms may share a date: the big card shows the first unsolved one, the teaser says »Jutri: 3 nove sobe«; the weekday/weekend difficulty pattern does not hold for this first batch) (`date` on the level; weekdays easy/medium, the weekend harder). `node solo/tools/kjekdo.mjs` passes for all 22 puzzles (one placement, every sentence needed, a child's path without guessing, ≤ 8 words in the new texts); the browser test `node solo/tools/tests/run.mjs kjekdo` solves all 22 with the help alone (266 ok). The checker now wants ≥ 4 puzzles per group, dates that rise with the ids, and sentences of ≤ 8 words in dated puzzles. Ten new missing things were added to `OBJ` (kruh, zvonec, medalja, sonce, smuci, klobuk, sestavljanka, balon, kolo, trobenta).
 
 | # | Date | Group | Title | Setting | Size · people | New element | Culprit and the reason why |
 |---|---|---|---|---|---|---|---|
 | 13 | Sun 11-15 | 🟢 | 🥖 Kdo je vzel zadnji kruh? | shop, storeroom, street | 5×5 · 5 | shop; new person Erik (»sedel na preprogi«); culprit's sentence is »štel drobiž« (no place) | Nejc took the bread to a neighbour with an empty cupboard; they had supper together |
 | 14 | Mon 11-16 | 🟡 | 🚂 Kje je zvonec na peronu? | train station: carriage, platform, waiting room, car park | 5×5 · 5 | train; 1 row/column step | Vita hid the bell so the train would wait for late grandpa Franc |
 | 15 | Tue 11-17 | 🟢 | 🏅 Kdo je obesil medaljo? | swimming pool, changing room, stand | 5×5 · 5 | sport: swimming (slide, mat); new person Polona (»sedela na stolu«) | Neža gave her medal to Toni, who came in last: »Za pogum!« |
-| 16 | Wed 11-18 | 🟡 | 🌻 Kdo je prinesel sončnico? | greenhouse, garden, woodshed, yard | 5×5 · 5 | garden in winter | Ines grew a sunflower in a pot for sad grandpa Jože |
-| 17 | Thu 11-19 | 🟠 | 🎿 Kje so Katjine smuči? | ski hut, slope, car park, lift | 5×5 · 5 | skiing; 2 ni sentences, 2 row/column steps | Drago waxed Katja's skis; she glided like a bird |
-| 18 | Fri 11-20 | 🟠 | 🎩 Kje je čarovnikov klobuk? | circus: arena, backstage, caravan, yard, ticket booth | 6×6 · 6 | circus; 6×6, 2 ni sentences, 2 row/column steps | Zarja sewed up the magician's hat (a hole); a rabbit came out of it |
-| 19 | Sat 11-21 | 🟢 | 🧩 Kdo je sestavil sestavljanko? | home: child's room, hall, living room | 5×5 · 5 | jigsaw puzzle; new person Mitja (»sedel na preprogi«) | Hugo built the puzzle at night for his sister Tara, leaving her the last piece |
-| 20 | Sun 11-22 | 🟡 | 🎈 Kdo je privezal balon? | park: park, hill, pond, playground | 5×5 · 5 | park, log, pond | Tia tied a balloon for lonely Mr Stane's birthday |
-| 21 | Mon 11-23 | 🟢 | 🚲 Kdo je popravil kolo? | garage, house, yard | 5×5 · 5 | workshop (bike, flat tyre); new person Staš (»sedel na preprogi«) | Lucija fixed Rene's bike overnight for his birthday, with a bow |
-| 22 | Tue 11-24 | 🟡 | 🎺 Kje je Alenova trobenta? | music school: stage, classroom, hall, concert room | 5×5 · 5 | music | Neja cleaned Alen's squeaky trumpet with a toothbrush before the concert |
+| 16 | Tue 11-17 | 🟡 | 🌻 Kdo je prinesel sončnico? | greenhouse, garden, woodshed, yard | 5×5 · 5 | garden in winter | Ines grew a sunflower in a pot for sad grandpa Jože |
+| 17 | Tue 11-17 | 🟠 | 🎿 Kje so Katjine smuči? | ski hut, slope, car park, lift | 5×5 · 5 | skiing; 2 ni sentences, 2 row/column steps | Drago waxed Katja's skis; she glided like a bird |
+| 18 | Wed 11-18 | 🟠 | 🎩 Kje je čarovnikov klobuk? | circus: arena, backstage, caravan, yard, ticket booth | 6×6 · 6 | circus; 6×6, 2 ni sentences, 2 row/column steps | Zarja sewed up the magician's hat (a hole); a rabbit came out of it |
+| 19 | Thu 11-19 | 🟢 | 🧩 Kdo je sestavil sestavljanko? | home: child's room, hall, living room | 5×5 · 5 | jigsaw puzzle; new person Mitja (»sedel na preprogi«) | Hugo built the puzzle at night for his sister Tara, leaving her the last piece |
+| 20 | Fri 11-20 | 🟡 | 🎈 Kdo je privezal balon? | park: park, hill, pond, playground | 5×5 · 5 | park, log, pond | Tia tied a balloon for lonely Mr Stane's birthday |
+| 21 | Sat 11-21 | 🟢 | 🚲 Kdo je popravil kolo? | garage, house, yard | 5×5 · 5 | workshop (bike, flat tyre); new person Staš (»sedel na preprogi«) | Lucija fixed Rene's bike overnight for his birthday, with a bow |
+| 22 | Sun 11-22 | 🟡 | 🎺 Kje je Alenova trobenta? | music school: stage, classroom, hall, concert room | 5×5 · 5 | music | Neja cleaned Alen's squeaky trumpet with a toothbrush before the concert |
 
 From 2026-11-15 every new room is at least 5×5; 4×4 only for rooms 1–4 (producer). Rooms 13, 15, 19 and 21 were redrawn 5×5 with one extra person each (the easiest 5×5: only »on object« sentences plus one free person, 0 row/column steps).
 

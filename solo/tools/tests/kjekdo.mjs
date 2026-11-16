@@ -361,6 +361,18 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   await open('2030-01-20', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], null);
   ok(!(await txt('.teaser')) , 'dates: no teaser when no future room exists');
 
+  // several rooms on one day (the producer opened 15, 16 and 17 together on 2026-11-17)
+  const upTo14 = Array.from({ length: 14 }, (_, i) => i + 1);
+  await open('2026-11-16', upTo14, null);
+  ok((await txt('.teaser')).includes('Jutri: 3 nove sobe 🔒') && !(await ids()).some(i => [15, 16, 17].includes(i)), 'one day, three rooms: the day before, »Jutri: 3 nove sobe 🔒«, none listed yet');
+  await open('2026-11-17', upTo14, 'list-three-390.png');
+  ok((await ids()).includes(15) && (await ids()).includes(16) && (await ids()).includes(17) && (await main()).id === 15 && (await main()).t.includes('Današnja soba'), 'one day, three rooms: all three are out, the big card is the first, 15');
+  ok((await txt('.teaser')).includes('Jutri: nova soba 🔒'), 'one day, three rooms: then one a day again');
+  await open('2026-11-17', [...upTo14, 15], null);
+  ok((await main()).id === 16 && (await main()).t.includes('Današnja soba'), 'one day, three rooms: 15 solved, the big card moves on to 16');
+  await open('2026-11-17', [...upTo14, 15, 16, 17], null);
+  ok((await main()).id === 17 && (await main()).t.includes('✓'), 'one day, three rooms: all solved, the last one with ✓');
+
   // next after a win: the next unsolved room that is out, skipping solved and unreleased ones
   await open('2030-01-09', [1, 2, 3, 4, 5, 6, 7, 8, 9], null);
   ok(await p.evaluate(() => { const n = nextUnsolved(8); return !n || (n.id < 9 || n.id > 12); }), 'next: after room 9 it does not pick a room that is not out yet');

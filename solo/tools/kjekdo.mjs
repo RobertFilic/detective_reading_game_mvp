@@ -7,7 +7,7 @@
 //      need only the first kind of step, the others at most a few of the second;
 //   4. the culprit is the only person in the room with the missing thing, and their own sentence doesn't
 //      name that thing;
-//   5. 4 or more puzzles per group, dates (if any) rise, every sentence of the clues and the story has at most 8 words;
+//   5. 4 or more puzzles per group, dates (if any) never go down, every sentence of the clues and the story has at most 8 words;
 //      labels sit in their room on no one's spot, 4 puzzles per group, ids 1, 2, 3 … in order.
 //   6. (measured, not enforced yet) how much thinking a puzzle takes. The producer's playtest
 //      (docs/KJE_JE_KDO.md, 2026-11-15) found the deduction, not the kind of sentence, makes a room hard:
@@ -33,8 +33,8 @@ function perms(a) { return a.length <= 1 ? [a] : a.flatMap((x, i) => perms([...a
 ok(LEVELS.every((l, i) => l.id === i + 1), `ids run 1 to ${LEVELS.length}`);
 for (const [g, label] of GROUPS) ok(LEVELS.filter(l => l.group === g).length >= 4, `${label}: ${LEVELS.filter(l => l.group === g).length} puzzles (at least 4)`);
 const dates = LEVELS.filter(l => l.date).map(l => l.date);
-ok(new Set(dates).size === dates.length && dates.every(d => /^\d{4}-\d\d-\d\d$/.test(d)), 'every date is YYYY-MM-DD and used once');
-ok(dates.every((d, i) => !i || d > dates[i - 1]), 'dates rise with the ids');
+ok(dates.every(d => /^\d{4}-\d\d-\d\d$/.test(d)), 'every date is YYYY-MM-DD');
+ok(dates.every((d, i) => !i || d >= dates[i - 1]), 'dates never go down with the ids (several rooms may open on one day)');
 
 for (const L of LEVELS) {
   const n = L.rooms.length, tag = `uganka ${L.id}`;
