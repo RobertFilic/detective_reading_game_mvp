@@ -215,3 +215,13 @@ Producer's direction: use this when creating the next rooms — fewer all-»na«
 **VELIKE TISKANE ČRKE**: the »ABC« button in the header (next to »?«) turns every text into capitals, because first-graders learn capitals first; »abc« turns it back. It is remembered on the device (`dp_caps_v1`, listed on the privacy page); the main game can use the same key if it gets the switch too. In capitals the room names on the board are smaller (sized to the cell) so they fit; on a landscape phone the 6×6 room 18's »Garderoba« still touches its edge.
 
 Also fixed: a `start` event sent `placed` from the previous room (4 or 5 instead of 0).
+
+## Playtest, 2026-11-17: rooms 15 and 16 (one 7-year-old, producer's notes)
+
+| Room | Group · »odprta polja« | How it felt |
+|---|---|---|
+| 15 Kdo je obesil medaljo? | lahko · 0 | **very easy**: every sentence places its person straight away |
+| 16 Kdo je prinesel sončnico? | srednje · 28 | relatively easy: some thinking, no mistakes |
+
+- Confirms 2026-11-15: an all-»na X« room (0 open cells) is too easy for a child who has played a few rooms. New lahko rooms should still leave a little to work out (about 9, like 13), and srednje rooms nearer 30 than 22–28.
+- **Story logic counts.** The child asked of 15: *why is there a medal for him if he came last?* The story now ends »Kako to?«, so the oddity is the mystery, and the »Zakaj?« says Toni was afraid of deep water but swam to the finish, so Neža gave him her own medal »Za pogum!«. Lesson for writers: if a story sets up something surprising, the reason must be in the heart, said plainly.
