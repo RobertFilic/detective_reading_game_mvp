@@ -48,12 +48,18 @@ The main game already keeps a play log on the device for the adult review (`log(
 | `left` | A case left unsolved: another case picked, or the page closed | `step` (the last screen reached), `hints` |
 | `warm` | The warm-up | `how`: `intro`, `skip`, `offer` (the child followed every step of w1 and may go on alone) |
 | `card` | A new detective's ID card | `how`: `new`, `saved`; never the name or the picture |
+| `rate` | The child taps a face under »Ti je bil primer všeč?« on the solved screen (optional, once per solve, not in the warm-up) | `r` (3 = 😍 Zelo!, 2 = 🙂 Še kar, 1 = 😕 Ne preveč), `first` (the first solve of this case on this device). It says whether a case was *fun*; how *hard* it was comes from `verdict`, `hint` and `stuck`. Children of 7 tap 😍 a lot, so compare cases with each other, not with 3.0 |
 
 ```sql
 -- main game: per case and step, where they stop
 SELECT json_extract(data, '$.case') AS c, json_extract(data, '$.step') AS step,
   SUM(ev = 'step') AS reached, SUM(ev = 'stuck') AS stuck, SUM(ev = 'left') AS left_, SUM(ev = 'wrong') AS wrong, SUM(ev = 'hint') AS hints
 FROM events WHERE game = 'solo' AND json_extract(data, '$.step') IS NOT NULL GROUP BY c, step ORDER BY c;
+
+-- main game: did they like it, per case (first solves), next to how hard it was
+SELECT json_extract(data, '$.case') AS c, COUNT(*) AS n, ROUND(AVG(json_extract(data, '$.r')), 2) AS liked,
+  SUM(json_extract(data, '$.r') = 1) AS meh
+FROM events WHERE game = 'solo' AND ev = 'rate' AND json_extract(data, '$.first') GROUP BY c ORDER BY c;
 
 -- main game: the game's verdict per case
 SELECT json_extract(data, '$.case') AS c, json_extract(data, '$.verdict') AS v, COUNT(*) AS n

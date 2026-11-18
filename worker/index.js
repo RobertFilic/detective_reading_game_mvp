@@ -4,10 +4,10 @@
 
 const GAMES = new Set(['sobe', 'solo']);
 const EVENTS = new Set(['intro', 'start', 'wrong', 'hint', 'stuck', 'solved', 'left',
-  'step', 'skim', 'back', 'verdict', 'warm', 'card', 'file']);   // the last line: the main game (solo/)
+  'step', 'skim', 'back', 'verdict', 'warm', 'card', 'file', 'rate']);   // the last line: the main game (solo/)
 // allowed keys inside `data`, each a small number, a boolean or a short word
 const DATA = new Set(['card', 'how', 'first', 'who', 'kind', 'step', 'hints', 'wrongs', 'undos', 'notes', 'done', 'new', 'tries',
-  'case', 'file', 'warm', 'replay', 'suggested', 'lvl', 'help', 'hint', 'level', 'via', 'sc', 'wrong', 'assisted', 'verdict', 'from', 'to']);
+  'case', 'file', 'warm', 'replay', 'suggested', 'lvl', 'help', 'hint', 'level', 'via', 'sc', 'wrong', 'assisted', 'verdict', 'from', 'to', 'r']);
 const KEEP_DAYS = 365;
 
 const int = (v, lo, hi) => (Number.isInteger(v) && v >= lo && v <= hi ? v : null);

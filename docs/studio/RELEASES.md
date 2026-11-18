@@ -7,6 +7,14 @@ Agreed with the producer on 2026-11-05: one new season a week. A season is built
 | 🦕 Duh v muzeju | 2026-11-05 (live on push) | 2026-11-05 | 2026-11-05 | – |
 | ⚽ Skrivnost zlatega pokala | **2026-11-12** | 2026-11-06 | 2026-11-06 ✅ (built, reviewed, pushed in one day) | 2026-11-12 ✅ (live, teaser gone, case 1 opens) |
 | ❄️ Sneženi možje brez sledi | **2026-11-19** | 2026-11-11 (A) ✅ approved; B ✅ 11-15 (3 days late); C ✅ and D ✅ 11-16 in one sitting (producer asked) | 2026-11-16 ✅ (tests 2488 ✔; producer reads it after the push) | 2026-11-19 morning |
+| 🎄 Advent (3 directions, [advent.md](seasons/advent.md)) | **2026-11-26** | 2026-11-17 (A) | by 2026-11-24 | 2026-11-26 morning |
+| 🎅 Miklavž | **2026-12-03** | 2026-11-24 | by 2026-12-01 | 2026-12-03 |
+| 🎪 Winter circus | **2026-12-10** | 2026-12-01 | by 2026-12-08 | 2026-12-10 |
+| 🎭 Christmas show | **2026-12-17** | 2026-12-08 | by 2026-12-15 | 2026-12-17 |
+| 🎄 Sveti večer | **2026-12-24** | 2026-12-10 (early) | by 2026-12-18 | 2026-12-24 |
+| ✨ Silvestrovo | **2026-12-31** | 2026-12-15 (early) | by 2026-12-21 | 2026-12-31 |
+
+Rows from 12-03 are the plan of 2026-11-17 ([STRATEGY.md](STRATEGY.md)); themes are working titles. Weekly rhythm: A Tue, B Wed, C Thu, D Mon, push Tue, opens Thu. The two holiday seasons are built ahead so the producer's holidays are free; `opens` keeps them closed until their day.
 
 ## The steps for each season (docs/studio/README.md has the details)
 

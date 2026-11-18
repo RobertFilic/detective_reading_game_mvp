@@ -130,6 +130,14 @@ button.suspect { cursor: pointer; }
   border-radius: 12px; padding: 6px 22px; transform: rotate(-5deg);
 }
 .reveal-rows { flex: none; width: 100%; max-width: 720px; }
+.rate { flex: none; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 20px; }
+.rate-faces { display: flex; gap: 12px; }
+.rate-btn { appearance: none; font: inherit; cursor: pointer; min-width: 84px; min-height: 84px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; background: #fff; border: 3px solid var(--line, #e2dccd); border-radius: 20px; padding: 6px 8px; color: var(--ink); }
+.rate-btn:active { transform: scale(.94); }
+.rate-btn small { font-size: 14px; color: var(--muted); }
+.rate-face { font-size: 40px; line-height: 1; }
+.rate.is-done { flex-direction: row; gap: 10px; font-size: 22px; }
 /* a finale's solved screen is long (answer, excuse, the story): »Naprej« stays on screen at the bottom */
 .reveal > .btn[data-act="next"]:last-child { position: sticky; bottom: 0; z-index: 2; flex: none; box-shadow: 0 -8px 0 var(--bg), var(--sh-lift); }
 .board-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
@@ -3326,10 +3334,20 @@ function beacon(type, x) {
     case 'case_done':
       if (!EV || EV.done) return;
       EV.done = true;
-      return sendEvent('solved', { first: !(S.c && !S.c.warm && isSolved(S.c)), wrong: x.wrong || 0, hints: EV.hints, assisted: !!x.assisted });
+      EV.first = !(S.c && !S.c.warm && isSolved(S.c));
+      return sendEvent('solved', { first: EV.first, wrong: x.wrong || 0, hints: EV.hints, assisted: !!x.assisted });
+    case 'case_rate': return sendEvent('rate', { r: x.r, first: !!(EV && EV.first) });
     case 'help_level': return sendEvent('verdict', { verdict: x.verdict, from: x.from, to: x.to });
     case 'session_end': if (x.abandoned) leftCase(); return;
   }
+}
+// the solved screen asks once, three big faces (they mean »did you like it«, not »was it hard«: the game measures hard)
+const RATE = [[3, '😍', 'Zelo!'], [2, '🙂', 'Še kar'], [1, '😕', 'Ne preveč']];
+function rateHTML() {
+  const r = S.run && S.run.rated;
+  if (r) return `<div class="rate is-done"><span class="rate-face">${RATE.find(x => x[0] === r)[1]}</span><b>Hvala!</b></div>`;
+  return `<div class="rate"><b>Ti je bil primer všeč?</b><div class="rate-faces">${RATE.map(([n, f, t]) =>
+    `<button class="rate-btn" data-act="rate" data-r="${n}" aria-label="${t}"><span class="rate-face">${f}</span><small>${t}</small></button>`).join('')}</div></div>`;
 }
 function leftCase() {
   if (EV && !EV.done && EV.step) { sendEvent('left', { step: EV.step, hints: EV.hints }); EV.done = true; }
@@ -5264,6 +5282,7 @@ const T = {
       ${c.excuse ? `<div class="excuse" data-act="say" data-clip="${c.id}_x">${avatar(c.culprit, 'sm', who)}<span>»${esc(c.excuse)}«</span></div>` : ''}
       <div class="rows reveal-rows">${c.reveal.map((t, i) => `<div class="row" data-act="say" data-clip="${c.id}_r${i + 1}">${names(t)}</div>`).join('')}</div>
       <div class="sticker">${c.sticker}</div>
+      ${c.warm ? '' : rateHTML()}
       <button class="btn big" data-act="next">Naprej</button>
     </div>`;
   },
@@ -5890,6 +5909,14 @@ const ACTIONS = {
     S.run = { ...newRun(), bookYes: true, fromBoard: true };
     log('book_open');
     go('book');
+  },
+  // »Ti je bil primer všeč?«: one optional tap on the solved screen (the anonymous event `rate`)
+  rate(el) {
+    if (!S.run || S.run.rated) return;
+    S.run.rated = Number(el.dataset.r);
+    log('case_rate', { r: S.run.rated });
+    sfx('tada');
+    render();
   },
   bookYes() {
     S.run.bookYes = true;

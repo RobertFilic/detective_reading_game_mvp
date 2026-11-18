@@ -81,7 +81,8 @@ function soloEvents() {
        ROUND(AVG(CASE WHEN ev = 'solved' AND ${j('first')} THEN ${j('hints')} END), 1) AS hints,
        ROUND(AVG(CASE WHEN ev = 'solved' AND ${j('first')} THEN ${j('wrong')} END), 1) AS wrong,
        ROUND(AVG(CASE WHEN ev = 'solved' AND ${j('first')} THEN sec END) / 60.0, 1) AS minutes,
-       SUM(ev = 'verdict' AND ${j('verdict')} = 'clean') AS clean, SUM(ev = 'verdict' AND ${j('verdict')} = 'helped') AS helped, SUM(ev = 'verdict' AND ${j('verdict')} = 'hard') AS hard
+       SUM(ev = 'verdict' AND ${j('verdict')} = 'clean') AS clean, SUM(ev = 'verdict' AND ${j('verdict')} = 'helped') AS helped, SUM(ev = 'verdict' AND ${j('verdict')} = 'hard') AS hard,
+       SUM(ev = 'rate' AND ${j('r')} = 3) AS r3, SUM(ev = 'rate' AND ${j('r')} = 2) AS r2, SUM(ev = 'rate' AND ${j('r')} = 1) AS r1
      FROM events WHERE game = 'solo' AND ${j('case')} IS NOT NULL GROUP BY c`,
     // 1 per case and step: reached, stuck, left, wrong, hints, back
     `SELECT ${j('case')} AS c, ${j('step')} AS step, SUM(ev = 'step') AS reached, SUM(ev = 'stuck') AS stuck, SUM(ev = 'left') AS left_,
@@ -167,11 +168,12 @@ export function soloHtml(r) {
     return c ? `${f ? f.icon + ' ' : ''}${c.final ? '⭐' : c.no + '.'} ${esc(c.question)}` : /^w\d$/.test(id) ? `🎓 Ogrevanje ${id.slice(1)}` : esc(id); };
   const order = (a, b) => (CASES.findIndex(c => c.id === a) + 100 * /^w/.test(a)) - (CASES.findIndex(c => c.id === b) + 100 * /^w/.test(b));
   const st = (k) => STEP[k] || esc(k);
-  let h = '<h4>Po primerih</h4>' + table(['Primer', 'Začeli', 'Rešili', 'Obupali', 'Zataknili', 'Preleteli', 'Namigov', 'Napak', 'Minut', 'Ocena igre'],
+  let h = '<h4>Po primerih</h4>' + table(['Primer', 'Začeli', 'Rešili', 'Obupali', 'Zataknili', 'Preleteli', 'Namigov', 'Napak', 'Minut', 'Ocena igre', 'Všeč'],
     per.sort((a, b) => order(a.c, b.c)).map(p => `<tr><td>${t(p.c)}</td><td class="n">${p.started}</td><td class="n b">${p.solved}</td><td class="n">${p.left_}</td><td class="n">${p.stuck}</td><td class="n">${p.skim || '·'}</td>
       <td class="n">${p.hints ?? '·'}</td><td class="n">${p.wrong ?? '·'}</td><td class="n">${p.minutes ?? '·'}</td>
-      <td>${p.clean + p.helped + p.hard ? `🟢 ${p.clean} · 🟡 ${p.helped} · 🔴 ${p.hard}` : '·'}</td></tr>`));
-  h += '<p class="note">Rešili = prvič. Namigov, napak, minut = povprečje teh rešitev. Ocena igre: 🟢 sam, 🟡 s pomočjo, 🔴 težko (igra tako tudi nastavi pomoč). Preleteli = obtožili, preden so prebrali zgodbo do konca.</p>';
+      <td>${p.clean + p.helped + p.hard ? `🟢 ${p.clean} · 🟡 ${p.helped} · 🔴 ${p.hard}` : '·'}</td>
+      <td>${p.r3 + p.r2 + p.r1 ? `😍 ${p.r3} · 🙂 ${p.r2} · 😕 ${p.r1}` : '·'}</td></tr>`));
+  h += '<p class="note">Rešili = prvič. Namigov, napak, minut = povprečje teh rešitev. Ocena igre: 🟢 sam, 🟡 s pomočjo, 🔴 težko (igra tako tudi nastavi pomoč). Preleteli = obtožili, preden so prebrali zgodbo do konca. Všeč = kaj je otrok tapnil ob »Ti je bil primer všeč?« (neobvezno); otroci pogosto tapnejo 😍, zato primerjaj primere med seboj.</p>';
   const cases = [...new Set(steps.map(x => x.c))].sort(order);
   h += '<h4>Koraki: kje se ustavijo</h4>' + (cases.length ? table(['Primer', 'Korak', 'Prišli', 'Zataknili', 'Obupali', 'Napak', 'Namigov', 'Nazaj'],
     cases.flatMap(c => steps.filter(x => x.c === c).sort((a, b) => ORDER.indexOf(a.step) - ORDER.indexOf(b.step)).map((x, i) =>
