@@ -135,7 +135,7 @@ The checker also refuses a puzzle in which the culprit's own sentence points at 
 
 **How a new puzzle is made:**
 1. Draw a map: rooms plus objects, and the missing thing's place in one room.
-2. A design script searches for a placement and one sentence per person that pass every check. It lives in the session scratchpad; it should become `solo/tools/kjekdo-design.mjs` if we make more.
+2. The design tool `solo/tools/kjekdo-design.mjs` searches for a placement and one sentence per person that pass every check (see »Design tool« below).
 3. A writer (us or the puzzle-designer) writes the story and the reason why.
 4. The **slovenian-editor** and the **book-editor** read the texts.
 5. `kjekdo.mjs` and the browser test `node solo/tools/tests/run.mjs kjekdo` (all 12 puzzles on a phone, 1–2 on iPad and landscape) must pass before a push.
@@ -225,3 +225,23 @@ Also fixed: a `start` event sent `placed` from the previous room (4 or 5 instead
 
 - Confirms 2026-11-15: an all-»na X« room (0 open cells) is too easy for a child who has played a few rooms. New lahko rooms should still leave a little to work out (about 9, like 13), and srednje rooms nearer 30 than 22–28.
 - **Story logic counts.** The child asked of 15: *why is there a medal for him if he came last?* The story now ends »Kako to?«, so the oddity is the mystery, and the »Zakaj?« says Toni was afraid of deep water but swam to the finish, so Neža gave him her own medal »Za pogum!«. Lesson for writers: if a story sets up something surprising, the reason must be in the heart, said plainly.
+
+## Rooms 23–28: two rooms a day from 2026-11-20 (2026-11-19)
+
+The producer made it two new rooms a day. Rooms 21 and 22 open 2026-11-20 (the stock ran out there), 23 and 24 on 11-21, 25 and 26 on 11-22, 27 and 28 on 11-23. Each day has one 🟡 srednje and one 🟠 težje. `node solo/tools/kjekdo.mjs` passes for all 28 rooms. Six new missing things were added to `OBJ` (drsalke, zvezda, rokavice, lopar, barvice, vedro) and eight room colours (Drsališče, Bife, Pekarna, Trg, Parkirišče, Telovadnica, Plaža, Kiosk).
+
+| # | Date | Group | Title | Rooms | odprta polja | Row/col steps |
+|---|---|---|---|---|---|---|
+| 23 | 11-21 | 🟠 | ⛸️ Kje so Ankine drsalke? | changing room, corridor, snack bar, ice rink | 37 | 2 |
+| 24 | 11-21 | 🟡 | 🌟 Kdo je popravil zvezdo? | bakery, library, town square, car park | 29 | 1 |
+| 25 | 11-22 | 🟡 | 🧤 Kje so vratarjeve rokavice? | changing room, in front of the goal, midfield, stand | 26 | 1 |
+| 26 | 11-22 | 🟠 | 🏓 Kje je Vanjin lopar? | corridor, changing room, gym, playground | 41 | 2 |
+| 27 | 11-23 | 🟡 | 🖍️ Kje so Liine barvice? | classroom, corridor, library, playground | 29 | 1 |
+| 28 | 11-23 | 🟠 | 🪣 Kje je rdeče vedro? | beach, changing room, kiosk, playground | 41 | 3 |
+
+Every sentence is a draft for the Slovenian editor. The srednje rooms hold 4–5 people who can't be placed straight from their own sentence (»ob«, »ni v«, a room), and one row/column claim; the težje rooms 2–3 claims.
+
+### Design tool: `solo/tools/kjekdo-design.mjs`
+Draw a map in a small spec file (`export default { rooms, names, objects, room, people, culprit, where, forms, ... }`, the fields are listed at the top of the script) and run
+`node solo/tools/kjekdo-design.mjs spec.mjs --n 3 --band 24,34 --claims 1,1`
+(`--seed`, `--ms` for the search time). It hill-climbs on one sentence per person until the checker's rules hold: exactly one placement, every sentence needed, a child's path without guessing, the number of row/column claim steps within `--claims` (srednje 1,1; težje 2,3 for 5×5; 2,4 for 6×6) and »odprta polja« within `--band` (srednje about 24–34, težje about 35–44; 5×5 srednje above ~29 is rare on small rooms), the culprit alone in the room of the missing thing and not pointing at it, and a free cell for every room label. It writes the Slovenian sentences from the rule (needs `forms`: the dative/locative of each object) and prints the finished LEVELS entry to paste above `// LEVELS-END`, with the story texts from the spec. The same map often works for both groups, only the band and claims change; the sentences then need the Slovenian editor. Run `node solo/tools/kjekdo.mjs` afterwards.
