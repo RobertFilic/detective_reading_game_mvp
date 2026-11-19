@@ -548,7 +548,7 @@ const LEVELS = [
     win: 'Lara je obesila venček!', why: 'Bila je sama pred golom.',
     heart: 'Lara je venček spletla sama, cvet za cvetom. Žiga ga je videl in se nasmejal do ušes. Domen je vstal z žoge in ploskal. Tisti dan je Žiga ubranil vse strele.',
   },
-  // ---- Sobe 13–22 (ena nova soba na dan, od 2026-11-17)
+  // ---- Sobe 13–22 (ena nova soba na dan od 2026-11-17; od 2026-11-20 dve na dan)
   {
     id: 13, date: '2026-11-15', group: 'lahko', icon: '🥖', title: 'Kdo je vzel zadnji kruh?',
     story: 'V mali trgovini je ostal še en kruh. Zdaj ga ni več na polici! Tam je bilo pet ljudi.',
@@ -677,7 +677,7 @@ const LEVELS = [
     heart: 'Hugo je ponoči sestavil skoraj vse. En košček je pustil za Taro. Tara ga je vstavila in zavriskala.',
   },
   {
-    id: 20, date: '2026-11-20', group: 'srednje', icon: '🎈', title: 'Kdo je privezal balon?',
+    id: 20, date: '2026-11-19', group: 'srednje', icon: '🎈', title: 'Kdo je privezal balon?',
     story: 'Gospod Stane ima rojstni dan. Sam sedi v parku. Na igrišču pa se ziblje balon!',
     rooms: ['PPPHH', 'PPRHH', 'IIRRH', 'IIIRR', 'PPPRR'],
     names: { P: 'Park', H: 'Hrib', R: 'Ribnik', I: 'Igrišče' },
@@ -695,7 +695,7 @@ const LEVELS = [
     heart: 'Tia je vedela za Stanetov rojstni dan. Na igrišču mu je privezala balon. Potem so mu otroci zapeli. Stane je pel najglasneje!',
   },
   {
-    id: 21, date: '2026-11-21', group: 'lahko', icon: '🚲', title: 'Kdo je popravil kolo?',
+    id: 21, date: '2026-11-20', group: 'lahko', icon: '🚲', title: 'Kdo je popravil kolo?',
     story: 'Rene ima jutri rojstni dan. Njegovo kolo ima počeno gumo. Zjutraj je guma cela!',
     rooms: ['GGHHH', 'GGHHH', 'DDDHH', 'DDDDD', 'DDDDD'],
     names: { G: 'Garaža', H: 'Hiša', D: 'Dvorišče' },
@@ -713,7 +713,7 @@ const LEVELS = [
     heart: 'Lucija je ponoči zamenjala gumo. Na krmilo je privezala veliko roza pentljo. Rene je od veselja zavriskal.',
   },
   {
-    id: 22, date: '2026-11-22', group: 'srednje', icon: '🎺', title: 'Kje je Alenova trobenta?',
+    id: 22, date: '2026-11-20', group: 'srednje', icon: '🎺', title: 'Kje je Alenova trobenta?',
     story: 'Alen ima nocoj koncert. Njegove trobente ni v učilnici! Brez nje ne more igrati.',
     rooms: ['OOOHH', 'OOUUH', 'DDUUH', 'DDDHH', 'DDDDH'],
     names: { O: 'Oder', U: 'Učilnica', H: 'Hodnik', D: 'Dvorana' },
@@ -818,13 +818,14 @@ setInterval(() => {
   if (T.idle >= STUCK_MS && !T.stuck.has(placedN())) { T.stuck.add(placedN()); track('stuck', tally()); }
 }, TICK);
 
-// ---- Which rooms are out: one new room a day by date, and every room already out stays open
+// ---- Which rooms are out: by date (rooms share a date when several open together), and every room already out stays open
 // today on this device; ?date=YYYY-MM-DD pretends another day (for testing)
+// hold: true = written and checked but kept back (waiting for the children's feedback; no teaser, no date shown)
 const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const TODAY = (() => { const o = new URLSearchParams(location.search).get('date'); return /^\d{4}-\d{2}-\d{2}$/.test(o || '') ? o : ymd(new Date()); })();
-const isOut = (l) => !l.date || l.date <= TODAY;
+const isOut = (l) => !l.hold && (!l.date || l.date <= TODAY);
 const dayDiff = (a, b) => Math.round((Date.UTC(...b.split('-').map((x, i) => i === 1 ? x - 1 : +x)) - Date.UTC(...a.split('-').map((x, i) => i === 1 ? x - 1 : +x))) / 864e5);
-function nextDate() { const f = LEVELS.filter(l => l.date && l.date > TODAY).map(l => l.date).sort(); return f[0] || null; }
+function nextDate() { const f = LEVELS.filter(l => l.date && !l.hold && l.date > TODAY).map(l => l.date).sort(); return f[0] || null; }
 const dayWord = (d) => { const n = dayDiff(TODAY, d); return n === 1 ? 'Jutri' : `Čez ${n} dni`; };
 // »nova soba«, »2 novi sobi«, »3 nove sobe«, »5 novih sob«: how many rooms open on that day
 const newRooms = (d) => { const n = LEVELS.filter(l => l.date === d).length; return n === 1 ? 'nova soba' : n === 2 ? '2 novi sobi' : n < 5 ? `${n} nove sobe` : `${n} novih sob`; };
