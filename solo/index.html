@@ -1592,6 +1592,15 @@ const CHARACTERS = {
   marko: { name: 'Marko', animal: '👷🏻', color: '#f2e0c9', re: 'Mark(o|a|u|om|ov\\p{L}*)' },
   // case 4's »culprit«: nobody, the roof (like 🌊 Morje). ⚠ Use »streh-« only in case n4.
   streha: { name: 'Streha', animal: '🏠', color: '#e3edf5', re: '[Ss]treh(a|e|i|o)' },
+  // 🧸 Igrače, ki hodijo same (Delavnica Vrtavka; with Hana, who reads every list aloud). ⚠ Never write »Galeb«,
+  // and no sentence starts with »Iza…/Ize…/Izo…« words (»Izid«, »Izogni«); »Iz predala« is fine.
+  ferdo: { name: 'Mojster Ferdo', animal: '👴🏼', color: '#fde8c8', re: 'Ferd(o|a|u|om|ov\\p{L}*)' },
+  gal: { name: 'Gal', animal: '🧑🏻', color: '#dfeaf7', re: 'Gal(a|u|om|ov\\p{L}*)?' },
+  iza: { name: 'Iza', animal: '👧🏻', color: '#ffe0ec', re: 'Iz(a|e|i|o|in\\p{L}*)' },
+  zan: { name: 'Žan', animal: '👦🏽', color: '#e2f2e6', re: 'Žan(a|u|om|ov\\p{L}*)?' },
+  zofka: { name: 'Teta Zofka', animal: '👵🏼', color: '#efe3f7', re: 'Zofk(a|e|i|o|in\\p{L}*)' },
+  nusa: { name: 'Nuša', animal: '👩🏻', color: '#ffe6d6', re: 'Nuš(a|e|i|o|in\\p{L}*)' },
+  oskar: { name: 'Gospod Oskar', animal: '👨🏻‍🦳', color: '#ece4d4', re: 'Oskar(ja|ju|jem|jev\\p{L}*)?' },
 };
 
 // Case files (shown to children as pustolovščine, adventures): one place, one cast. Every case has file + no (1, 2, … within the file).
@@ -1638,12 +1647,18 @@ const FILES = [
     guess: { after: 3, again: 5, q: 'Kaj misliš, kdo dela snežake?', q2: 'Ali še vedno tako misliš?',
       options: [['marko', '👷🏻', 'Marko, ki ponoči pluži'], ['ajda', '👧🏼', 'Ajda, ki ve, kdaj bo snežilo'], ['luka', '👦🏼', 'Luka, ki je vedno prvi na snegu']] },
     answer: { id: 'ajda', icon: '⛄', text: 'Snežake je delala Ajda. Zvečer, preden je snežilo!' } },
+  { id: 'igrace', icon: '🧸', hue: 100, title: 'Igrače, ki hodijo same', cast: ['ferdo', 'gal', 'iza', 'zan', 'zofka', 'nusa', 'oskar', 'hana'], paper: 'VRTAVKINE NOVICE',
+    season: true, mystery: 'Zakaj igrače hodijo same?', teaser: 'Zakaj igrače hodijo same?', opens: '2026-11-26',
+    group: 'praznik', kovcek: { icon: '🧲', name: 'Galov prvi magnet' },
+    // after case 3 the child guesses who moves the toys; after case 5 they may change their mind once (the right one is first this time)
+    guess: { after: 3, again: 5, q: 'Kaj misliš, kdo premika igrače?', q2: 'Ali še vedno tako misliš?',
+      options: [['gal', '🧑🏻', 'Gal, ki zvečer pometa delavnico'], ['zofka', '👵🏼', 'teta Zofka, ki povsod izgublja bucike'], ['zan', '👦🏽', 'Žan, ki ima avto na daljinca']] },
+    answer: { id: 'gal', icon: '🧲', text: 'Igrače je vlekel Galov magnet pod mizo!' } },
 ];
 // Adventures announced but not written yet: the same teaser card. When one is written, it moves into
 // FILES with its teaser line (and opens, if it has a date).
 const COMING = [
   // TODO producer: title/teaser (working titles from STRATEGY.md; the band shows only the icon and the countdown)
-  { id: 'praznik1', group: 'praznik', opens: '2026-11-26', icon: '🎄', hue: 150, title: 'Adventni primer' },
   { id: 'praznik2', group: 'praznik', opens: '2026-12-03', icon: '🎅', hue: 20, title: 'Miklavževa noč' },
   { id: 'praznik3', group: 'praznik', opens: '2026-12-10', icon: '🎪', hue: 330, title: 'Zimski cirkus' },
   { id: 'praznik4', group: 'praznik', opens: '2026-12-17', icon: '🎭', hue: 285, title: 'Božična predstava' },
@@ -2972,6 +2987,267 @@ const CASES = [
     caught: 'Ajdo', excuse: 'Stavila sem se z Luko: ne ujameš me!',
     card: { icon: '🚪', sid: 's5', think: 'Ven se da tudi skozi drvarnico! 🤔' },
     letter: ['Hvala! Ajda je stavo izgubila.', 'Zdaj Luko vleče na hrib. Hihi!', 'Ajda pravi: »Naslednjič te ujamem jaz!« ⛄'],
+  },
+  // ======== 🧸 Igrače, ki hodijo same (season 6, »Praznični primeri« window 1): Delavnica Vrtavka, the week before the fair ========
+  // Rung 7, the clue in a list. Every call is Ferdo's, after the deed, with the countdown to Saturday's fair.
+  {
+    id: 'i1', file: 'igrace', no: 1, type: 'elim', level: 'A', sticker: '👓', place: 'Delavnica',
+    steps: ['call', 'words', 'scene', 'solve'],
+    // rung 7 SHOWN: one list, one item. Monday afternoon. Plants: kovinske igrače (card), the small magnet that
+    // catches metal fish, the wooden horse, Brzec on the square, and Žan's remote going home at six (director's 🟠 1)
+    client: 'ferdo', call: ['Še pet dni do sejma! Igrače hodijo!', 'Medvedek nosi moja očala iz predala!', 'Kdo? Preberi vse na seznamu!'],
+    // 🔤 the lightest word search: the three words are the places to search
+    words: {
+      note: 'Kje so očala? Poišči tri besede.',
+      grid: ['PREDAL', 'MGENAO', 'KŽUDIK', 'ŽAMŽDN', 'IČČBUO', 'POLICA'],
+      find: [['🗄️', 'PREDAL'], ['📚', 'POLICA'], ['🪟', 'OKNO']],
+      h1: 'Besede gredo → in ↓.',
+    },
+    question: 'Kdo je popoldne medvedku nadel Ferdova očala?',
+    suspects: ['gal', 'zan', 'iza', 'zofka'], culprit: 'iza',
+    sentences: [
+      // the drawer list (Ferdo's rule: who takes something writes it down): three lines, the proof in the middle, top of the solve list
+      ['s1', 'Predal: Gal, čopič.', 'neutral', { obj: '🗄️', label: 'predal' }],
+      ['s2', 'Predal: Iza, očala.', 'evidence', { obj: '🗄️', label: 'predal' }],
+      ['s3', 'Predal: Žan, vrvica.', 'neutral', { obj: '🗄️', label: 'predal' }],
+      // the decoy: Zofka handled the bear, but in the morning
+      ['s4', 'Zjutraj je teta Zofka medvedku prišila uho.', 'distractor', { obj: '🧸', label: 'okno', points: 'zofka' }],
+      // card 1: only the metal toys walk
+      ['s5', 'Zjutraj so kovinski vojaki in robotek stali drugje.', 'neutral', { obj: '🤖', label: 'miza' }],
+      // plant: a magnet pulls metal (names Iza outside the proof, proves nothing)
+      ['s6', 'Iza z majhnim magnetom lovi kovinske ribice.', 'neutral', { obj: '🎣', label: 'polica' }],
+      // three alibis, three forms: a witness, a place and a game, an errand
+      ['s7', '»Popoldne sva z Galom na dvorišču barvala konjička.«', 'clear', { obj: '🎨', label: 'dvorišče', who: 'ferdo', clears: 'gal' }],
+      ['s8', 'Popoldne je Žan na trgu vozil Brzca: brrrm!', 'clear', { obj: '🚪', label: 'vrata', clears: 'zan' }],
+      ['s9', 'Popoldne je bila teta Zofka pri frizerki.', 'clear', { obj: '🪑', label: 'stol', clears: 'zofka' }],
+      // plant for the final's 🧭 and the second guess: Brzec never drives after six
+      ['s10', 'Žan vsak dan ob šestih nese daljinec domov.', 'neutral', { obj: '🎒', label: 'torba' }],
+    ],
+    h1: 'Preberi vse na seznamu! Kdo je vzel očala?',
+    reveal: ['Na seznamu iz predala piše: Iza, očala.', 'Iza je torej vzela Ferdova rezervna očala.', 'Nadela jih je medvedku, da bi bral.', 'Teta Zofka pa mu je uho prišila zjutraj.'],
+    caught: 'Izo', excuse: 'Medo je hotel brati. Brez očal ne vidi!',
+    card: { icon: '🤖', sid: 's5', think: 'Zakaj samo kovinske igrače? 🤔' },
+    letter: ['Hvala! Očala so spet moja … na čelu!', 'Gal je popravil ribolov. Ribice spet grizejo!', 'P. S. Izložba je pod papirjem. Ne kukaj!'],
+  },
+  {
+    id: 'i2', file: 'igrace', no: 2, type: 'elim', level: 'A', sticker: '🎶', place: 'Skrinjice',
+    steps: ['call', 'ask', 'torn', 'when', 'solve'],
+    // rung 7, a list that is a schedule: Hana writes down from the stairs who is where. Tuesday, the call after six.
+    // Plants: the wooden horse (card 2), Ferdo's closing rule (Gal sweeps after six)
+    client: 'ferdo', call: ['Še štiri dni do sejma, pa koncert!', 'Ob petih so zaigrale vse skrinjice!', 'Hana vse zapiše. Vprašaj jo!'],
+    question: 'Kdo je ob petih navil vse skrinjice?',
+    suspects: ['iza', 'oskar', 'gal', 'nusa'], culprit: 'oskar',
+    // 👁️ Hana reads her list aloud; Ferdo answers too
+    witnesses: ['hana', 'ferdo'],
+    sentences: [
+      // card 2 (names nobody): Iza's joke on the horse she calls Len
+      ['s1', '»Lesen konjiček se ni nikoli premaknil. Len je!«', 'neutral', { who: 'iza', ask: 'Kaj pa tvoj konjiček Len?' }],
+      // the culprit beside the decoy, no hour: proves nothing
+      ['s2', '»Gal briše skrinjice, Oskar jih uglašuje.«', 'neutral', { who: 'ferdo', ask: 'Kdo skrbi za skrinjice?' }],
+      // Hana's list, line 1: the decoy, before
+      ['s3', '»Ob štirih: Gal briše prah s skrinjic.«', 'distractor', { who: 'hana', ask: 'Kaj si s stopnic videla ob štirih?' }],
+      // two who were together at the post office vouch for each other
+      ['s4', '»Ob petih sem Galu na pošti stehtala pakete.«', 'clear', { who: 'nusa', ask: 'Kje je bil Gal ob petih?', clears: 'gal' }],
+      // Hana's list, line 2: the proof, in the middle
+      ['s5', '»Ob petih: Oskar pri skrinjicah.«', 'evidence', { who: 'hana', ask: 'Kaj si s stopnic videla ob petih?' }],
+      ['s6', '»Tik-tak! Ena skrinjica cvili kot miška.«', 'neutral', { who: 'oskar', ask: 'Kaj delate s skrinjicami?' }],
+      ['s7', '»Ob petih je Nuša na pošti lepila znamke.«', 'clear', { who: 'gal', ask: 'Kje je bila Nuša ob petih?', clears: 'nusa' }],
+      // Ferdo's closing rule (after): the final needs it
+      ['s8', '»Ob šestih grem gor. Gal pometa.«', 'neutral', { who: 'ferdo', ask: 'Kdaj zaprete delavnico?' }],
+      ['s9', 'Ob petih je Iza pisala nalogo v sobi.', 'clear', { from: 'torn', clears: 'iza' }],
+    ],
+    // 📜 Hana's torn page: the lone »v« goes before »sobi.«
+    torn: {
+      note: 'Hanin listek je raztrgan. Sestavi ga.',
+      parts: ['Ob petih je Iza', 'pisala nalogo', 'v', 'sobi.'],
+      gives: 's9',
+      h1: 'Velika črka je na začetku, pika na koncu.',
+      h2: 'Beseda »v« gre pred »sobi«.',
+    },
+    // ⏰ the season's only Kdaj?: Gal at four (before), Iza at five (during), Gal sweeping at six (after)
+    when: { deed: 'ob petih: koncert skrinjic',
+      cards: { s3: 'before', s9: 'during', s8: 'after' },
+      h1: 'Ob štirih, ob petih ali ob šestih?' },
+    h1: 'Preberi vse na seznamu! Kdo je bil ob petih?',
+    reveal: ['Hana je zapisala: ob petih Oskar pri skrinjicah.', 'Oskar je takrat navil vseh dvanajst skrinjic.', 'Zakaj? Iskal je tisto, ki cvili kot miška.', 'Gal pa je skrinjice brisal že ob štirih.'],
+    caught: 'gospoda Oskarja', excuse: 'Tik-tak! Miška je bila skrinjica številka sedem!',
+    card: { icon: '🐴', sid: 's1', think: 'Zakaj konjiček nikoli ne hodi? 🤔' },
+    letter: ['Hvala! Zdaj vse skrinjice pojejo lepo.', 'Skozi papir na izložbi je nekaj zasvetilo.', 'P. S. Jutri pride Nuša z velikim paketom.'],
+  },
+  {
+    id: 'i3', file: 'igrace', no: 3, type: 'elim', level: 'A', sticker: '📦', place: 'Paket za hiško',
+    steps: ['call', 'scene', 'cipher', 'lie', 'solve'],
+    // rung 7 + the season's one absence: the item with no tick on Ferdo's list. ❗ the season's one lie, told by the
+    // culprit (Nuša). Wednesday morning; the call says Ferdo opened the parcel the moment it came, so »ni cel« is at hand-over
+    client: 'ferdo', call: ['Še tri dni do sejma! Paket je tu.', 'Odprl sem ga takoj, ko je prišel.', 'Nekdo ga je odprl prej! Kaj manjka?'],
+    question: 'Kdo je dopoldne prvi odprl paket za hiško?',
+    suspects: ['nusa', 'zofka', 'oskar', 'gal'], culprit: 'nusa',
+    sentences: [
+      // the two claims: Zofka's (true, card 3, names nobody) first, Nuša's lie second
+      ['s1', '»Mhm-mhm! Bucike so v krogu pod izložbeno mizo!«', 'neutral', { obj: '📍', label: 'miza', who: 'zofka' }],
+      ['s2', '»Paket je bil cel, ko sem ga dala!«', 'neutral', { obj: '🚲', label: 'kolo', who: 'nusa' }],
+      // the list: Ferdo ticked what he found; one item has no tick
+      ['s3', 'Ferdov seznam: postelja✓, miza✓, stol✓, omara✓, lučka.', 'neutral', { obj: '📋', label: 'seznam' }],
+      // the decoy: a »lučka«, but the one Oskar wears on his forehead
+      ['s4', 'Oskar ima na čelu majhno lučko.', 'distractor', { obj: '💡', label: 'vrata', points: 'oskar' }],
+      // three alibis: a place, a witness who could see it from there, Ferdo
+      ['s5', 'Dopoldne je teta Zofka na trgu šivala zastavice.', 'clear', { obj: '🚩', label: 'trg', clears: 'zofka' }],
+      ['s6', '»Mhm! Dopoldne je Oskar na lestvi popravljal uro.«', 'clear', { obj: '🪜', label: 'lestev', who: 'zofka', clears: 'oskar' }],
+      ['s7', '»Dopoldne je Gal pri meni slikal obraze punčkam.«', 'clear', { obj: '🖌️', label: 'čopič', who: 'ferdo', clears: 'gal' }],
+      // the proof pair, low in the list: the half that names Nuša first
+      ['s8', 'Rdeč trak ima samo Nuša.', 'evidence', { obj: '👜', label: 'torba' }],
+      ['s9', 'Paket je prelepljen z rdečim trakom.', 'evidence', { obj: '📦', label: 'paket' }],
+      ['s10', 'Paket ni cel.', 'neutral', { from: 'cipher' }],
+      ['s11', '»No ja … Lučka se je razbila.«', 'neutral', { from: 'lie', who: 'nusa' }],
+    ],
+    // ✉️ Ferdo's note in toy signs (complete key, 9 symbols: the checker's cap)
+    cipher: {
+      note: 'Ferdo je zapisal, kaj je našel. Ključ je spodaj.',
+      key: { '🧸': 'P', '🪀': 'A', '🚂': 'K', '🎲': 'E', '🪁': 'T', '🤖': 'N', '🎠': 'I', '🥁': 'C', '🎈': 'L' },
+      gives: 's10',
+      h1: 'Vsak znak ima svojo črko. Poglej ključ.',
+    },
+    // ❗ Ferdo opened it the moment it came (call): not whole then means not whole when Nuša gave it
+    lie: { claims: ['s1', 's2'], claim: 's2', breaks: [['s10'], ['s3']], truth: 's11',
+      hmm: [['s2', 's9', 'Trak je res rdeč. Ampak ali je paket cel?'], ['s2', 's8', 'Res. Ampak ali je paket cel?']],
+      h1: 'Kaj je Ferdo našel v paketu?' },
+    h1: 'Kdo NI mogel biti? Kdo ima rdeč trak?',
+    reveal: ['Paket je prelepljen z Nušinim rdečim trakom.', 'Na kolesu je poskočil. Lučka se je razbila.', 'Zato ga je Nuša odprla in skrila koščke.', 'Oskarjeva lučka pa je samo za na čelo.'],
+    caught: 'Nušo', excuse: 'Crr-crr, bum! Lučka je skočila višje od mene!',
+    card: { icon: '📍', sid: 's1', think: 'Kdo je bucike zložil v krog? 🤔' },
+    letter: ['Hvala! Nuša je naročila novo lučko.', 'Izložba diši po svežem lesu in barvi.', 'P. S. Jutri postavimo stojnico na trgu!'],
+  },
+  {
+    id: 'i4', file: 'igrace', no: 4, type: 'elim', level: 'A', sticker: '⏰', place: 'Stojnica na trgu',
+    steps: ['call', 'words', 'scene', 'solve'],
+    // rung 7: every innocent's line on the stand list is a quiet thing; one is not. Thursday; the window has two
+    // edges on screen: the basket held only cloth at three (s5), the clock rang at five (call, question)
+    client: 'ferdo', call: ['Še dva dneva do sejma!', 'Ob petih je pod prtom zazvonilo!', 'Budilka! Čigava je? Pomagaj mi!'],
+    // 🔤 one notch above case 1: the geslo is Gal's alibi
+    words: {
+      note: 'Hana je skrila iskanko. Poišči tri besede.',
+      grid: ['ODTREH', 'DLUČIO', 'PEKMTI', 'HJLIEG', 'ALOZSL', 'IKPAAL'],
+      find: [['🍽️', 'MIZA'], ['💡', 'LUČI'], ['🪑', 'KLOP']],
+      geslo: 's7',
+      h1: 'Besede gredo → in ↓. Ostale črke povedo več!',
+    },
+    question: 'Čigava budilka je ob petih zazvonila?',
+    suspects: ['oskar', 'iza', 'gal', 'zofka'], culprit: 'zofka',
+    sentences: [
+      // the stand list (who brought what), one line per object; the proof's half that names Zofka on top
+      ['s1', 'Na seznamu: Zofka, košara z blagom.', 'evidence', { obj: '📋', label: 'seznam' }],
+      ['s2', 'Na seznamu: Gal, boben.', 'neutral', { obj: '📋', label: 'seznam' }],
+      // the decoy, inside the list: the clockmaker brought a clock, but a wall clock, and it rang from the basket
+      ['s3', 'Na seznamu: Oskar, stenska ura.', 'distractor', { obj: '📋', label: 'seznam', points: 'oskar' }],
+      ['s4', 'Na seznamu: Iza, medo Bruno.', 'neutral', { obj: '📋', label: 'seznam' }],
+      // the window's start: at three there was no clock in the basket
+      ['s5', '»Ob treh sem pogledal v košaro: samo blago.«', 'neutral', { obj: '🧺', label: 'košara', who: 'ferdo' }],
+      // the proof's nameless half
+      ['s6', 'Budilka je zvonila iz košare z blagom.', 'evidence', { obj: '🍽️', label: 'miza' }],
+      ['s7', 'Od treh do petih je Gal slikal.', 'clear', { from: 'words', clears: 'gal' }],
+      // three alibis, three forms: the geslo, a place and a song, a witness
+      ['s8', 'Vse popoldne je Iza pela v šolskem zboru.', 'clear', { obj: '🎶', label: 'zbor', clears: 'iza' }],
+      ['s9', '»Vse popoldne je Oskar v trgovini popravljal ure.«', 'clear', { obj: '💡', label: 'luči', who: 'nusa', clears: 'oskar' }],
+      // card 4 (names nobody): something hums in the window after six
+      ['s10', '»Po šestih izložba tiho brni: brrr.«', 'neutral', { obj: '🪑', label: 'klop', who: 'ferdo' }],
+    ],
+    h1: 'Preberi vse na seznamu! Kaj je zvonilo?',
+    reveal: ['Budilka je zvonila iz košare z blagom.', 'To košaro je prinesla Zofka. Piše na seznamu!', 'Budilko je nastavila na pet. Takrat gre po luči!', 'Oskarjeva stenska ura pa samo tiho tiktaka.'],
+    caught: 'teto Zofko', excuse: 'Mhm-mhm-mhm! … Oprostite, bucike. Ja, budilka je moja!',
+    card: { icon: '🔊', sid: 's10', think: 'Kaj brni v izložbi? 🤔' },
+    letter: ['Hvala! Zofka je šla po luči. Točno ob petih!', 'Zdaj stojnica sveti kot zvezdnato nebo.', 'P. S. Jutri Nuša polni paketnik. Crr-crr!'],
+  },
+  {
+    id: 'i5', file: 'igrace', no: 5, type: 'elim', level: 'A', sticker: '🏷️', place: 'Paketnik',
+    steps: ['call', 'order', 'scene', 'ask', 'solve'],
+    // rung 7: two lists disagree (Nuša's list says door 2 is Oskar's, the door now says Zofka).
+    // Friday afternoon, from Nuša filling the locker to Zofka opening »her« door. 4712 (case 6's lock) is in s3 only.
+    client: 'ferdo', call: ['Jutri je sejem! A paketnik nagaja.', 'Zofka je dobila Oskarjev paket.', 'Kdo je zmešal imena? Pomagaj!'],
+    // 🕐 the order comes before the scene, so it never sits between the list and the doors
+    order: {
+      note: 'Popoldne se je pomešalo. Kaj je bilo najprej?',
+      cards: [
+        ['📦', 'Najprej je Nuša napolnila paketnik.'],
+        ['🏷️', 'Potem so na vratih zamenjali imena.'],
+        ['🔑', 'Nato je Zofka odprla svoja vrata.'],
+        ['😮', 'Na koncu je dobila Oskarjev paket.'],
+      ],
+      h1: 'Poglej prvo besedo: Najprej, Potem, Nato.',
+      h2: 'Zofka je dobila tuj paket. Imena so bila že zamenjana.',
+      done: 'Imena na vratih so zamenjana. Poglej Nušin seznam!',
+    },
+    question: 'Kdo je popoldne zamenjal imena na paketniku?',
+    suspects: ['zan', 'iza', 'zofka', 'oskar'], culprit: 'iza',
+    // 👁️ Hana saw the tags being written; Ferdo answers for Oskar
+    witnesses: ['hana', 'ferdo'],
+    sentences: [
+      // Nuša's list, the case's one list (shape b); line 3 carries the parcel number
+      ['s1', 'Nušin seznam: vrata 1, Zofka.', 'neutral', { obj: '📋', label: 'seznam' }],
+      ['s2', 'Nušin seznam: vrata 2, Oskar.', 'neutral', { obj: '📋', label: 'seznam' }],
+      ['s3', 'Nušin seznam: vrata 3, delavnica, paket 4712.', 'neutral', { obj: '📋', label: 'seznam' }],
+      // the decoy, and the place where the two lists disagree: Zofka's name, held by a pin (pins are everywhere)
+      ['s4', 'Na vratih 2 piše Zofka. Listek drži bucika.', 'distractor', { obj: '🏷️', label: 'listek', points: 'zofka' }],
+      // card 5 (names nobody), in the voice of the boy whose car eats batteries
+      ['s5', '»Na seznamu baterij je vsak dan ena manj.«', 'neutral', { who: 'zan', ask: 'Si kaj opazil?' }],
+      // three alibis, a chain, never two people vouching for each other
+      ['s6', '»Vse popoldne je Zofka šivala na stojnici.«', 'clear', { who: 'oskar', ask: 'Kje je bila teta Zofka?', clears: 'zofka' }],
+      ['s7', '»Mhm-mhm! Žan mi je vse popoldne podajal bucike.«', 'clear', { who: 'zofka', ask: 'Kdo je bil pri Vas?', clears: 'zan' }],
+      ['s8', '»Vse popoldne je Oskar na trgu nosil lestev.«', 'clear', { who: 'ferdo', ask: 'Kje je bil gospod Oskar?', clears: 'oskar' }],
+      // the motive on screen, in Iza's own words (proves nothing alone)
+      ['s9', '»Danes sem vse pospravila po abecedi!«', 'neutral', { who: 'iza', ask: 'Kaj si delala danes?' }],
+      // the proof pair, low in the list: the half that names Iza first
+      ['s10', '»Popoldne je Iza z bleščicami pisala listke.«', 'evidence', { who: 'hana', ask: 'Kaj si videla popoldne?' }],
+      ['s11', 'Na vratih sta nova listka z bleščicami.', 'evidence', { obj: '🚪', label: 'vrata' }],
+    ],
+    h1: 'Kdo NI mogel biti? Kaj se blešči na vratih?',
+    reveal: ['Na vratih sta nova listka z bleščicami.', 'Z bleščicami je popoldne pisala Iza.', 'Imeni je zamenjala. O je pred Z, po abecedi!', 'Bucika pa je Zofkina. Te so povsod!'],
+    caught: 'Izo', excuse: 'Po abecedi je lepše! A, B, C … O, Z!',
+    card: { icon: '🔋', sid: 's5', think: 'Kdo jemlje baterije? 🤔' },
+    letter: ['Hvala! Oskar in Zofka imata spet svoja paketa.', 'Za vrati 3 čaka še paket za delavnico.', 'P. S. Jutri je sejem! Bodo igrače spet hodile?'],
+  },
+  {
+    id: 'i6', file: 'igrace', no: 6, final: true, type: 'elim', level: 'A', sticker: '🧲', place: 'Izložba',
+    steps: ['call', 'lock', 'scene', 'herring', 'solve'],
+    // rung 7 NEEDED: one list item (the magnet) is half the proof. The window: at six the soldiers stood in the middle
+    // (s1), every alibi says »ves večer«. Ferdo didn't order the parcel; the shop's owner may open it.
+    client: 'ferdo', call: ['Danes je sejem! Vojaki so spet hodili!', 'V paketniku je še paket za nas.', 'Jaz ga nisem naročil! Odpri ga.'],
+    // 🔐 the parcel number from Nuša's list in case 5; h2 gives it to a child who skipped case 5
+    lock: {
+      note: 'Vrata 3 se odprejo s številko paketa.',
+      code: '4712',
+      h1: 'Poglej Nušin seznam: vrata 3, delavnica.',
+      h2: 'Številka paketa je 4-7-1-2.',
+    },
+    question: 'Kdo je včeraj zvečer premaknil vojake?',
+    suspects: ['iza', 'zan', 'gal', 'zofka'], culprit: 'gal',
+    sentences: [
+      ['s1', '»Ob šestih so vojaki stali na sredi mize.«', 'neutral', { obj: '👓', label: 'očala', who: 'ferdo' }],
+      // 🧭 the obvious suspect: Brzec, forgotten under the window table
+      ['s2', 'Pod mizo v izložbi je Žanov Brzec.', 'distractor', { obj: '🏎️', label: 'avto' }],
+      // three alibis, three forms: a witness who was with her, a witness who saw her, a funny fact at home
+      ['s3', '»Ves večer sva z Izo zgoraj lepila lampijon.«', 'clear', { obj: '🏮', label: 'lampijon', who: 'ferdo', clears: 'iza' }],
+      // Ferdo's closing rule (planted in case 2): names Gal outside the proof, proves nothing
+      ['s4', '»Ob šestih grem gor. Gal pometa.«', 'neutral', { obj: '🧹', label: 'metla', who: 'ferdo' }],
+      // the proof pair: the list item that names Gal first (middle of the list) …
+      ['s5', 'Seznam v paketu: Gal, baterije, lepilo, večji magnet.', 'evidence', { obj: '📦', label: 'paket' }],
+      ['s6', '»Ves večer je Zofka na stojnici šivala prt.«', 'clear', { obj: '🚲', label: 'kolo', who: 'nusa', clears: 'zofka' }],
+      // the 🧭 explanation (planted in case 1: Žan takes the remote home at six)
+      ['s7', 'Žan je ob šestih nesel daljinec domov.', 'neutral', { obj: '🪝', label: 'kljuka' }],
+      ['s8', 'Ves večer je Žan doma iskal Brzca.', 'clear', { obj: '🖼️', label: 'slika', clears: 'zan' }],
+      // metal walks, wood stays: the season's »how« once more, for a child who comes in fresh
+      ['s9', 'Vojaki so na robu, konjiček pa na mestu.', 'neutral', { obj: '🐴', label: 'konjiček' }],
+      // … and the dark object that names nobody: the train under the thin table top
+      ['s10', 'Pod tanko mizo je vlakec z magnetom.', 'evidence', { obj: '🚂', label: 'tla', dark: true }],
+    ],
+    // 🧭 Brzec points at Žan; it can't drive without its remote, and Žan didn't even know where it was
+    herring: { clues: ['s2'], points: { s2: 'zan' }, explains: { s2: [['s7']] },
+      hmm: [['s2', 's8', 'Žan je bil res doma. Kaj pa Brzec?'], ['s2', 's1', 'Vojaki so res stali. Kaj pa Brzec?']],
+      h1: 'Kaj potrebuje Brzec, da vozi?' },
+    h1: 'Preberi vse na seznamu! Kaj je pod mizo?',
+    reveal: ['Pod tanko mizo je vozil vlakec z magnetom.', 'Magnet je vlekel kovino: vojake in bucike. Lesa pa ne!', 'Vlakec je skril Gal in naročil večji magnet.', 'Ni še delalo prav. Zato je Gal molčal.'],
+    caught: 'Gala', excuse: 'Hotel sem čarobno izložbo. A vojaki so hodili po svoje!',
+    card: { icon: '🧲', sid: 's10', think: 'Magnet! Zato hodijo samo kovinske igrače. 🤔' },
+    letter: ['Hvala! Igrače res hodijo same!', 'Ob petih so vojaki korakali v krogu. Gal ima zdaj svoj ključ!', 'Poskusi doma z odraslim: hladilniški magnet in sponka.', 'P. S. Drugo okence: kdo ropota z verigo?', 'Ajda je deklica iz Smrečja. Rada postavlja uganke.', '»Pozdrav s počitnic! Uganka: kdo je živel v zračniku? 👾«', '»V svoj kovček skrivnosti sem dala žličko.«'],
   },
 ];
 

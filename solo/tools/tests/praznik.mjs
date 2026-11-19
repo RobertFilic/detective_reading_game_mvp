@@ -9,11 +9,13 @@ const ok = (c, m) => { console.log((c ? '✔ ' : '✘ ') + m); if (!c) process.e
 const wait = (ms = 150) => new Promise(r => setTimeout(r, ms));
 const SHOTS = new URL('./shots/', import.meta.url).pathname; mkdirSync(SHOTS, { recursive: true });
 const html = readFileSync(new URL('../../index.html', import.meta.url), 'utf8');
-// bip becomes the first window (opens 11-26) and brings its object; its placeholder goes (a written season replaces it)
+// bip becomes the first window (opens 11-26) and brings its object; the real 11-26 season (igrace) or its placeholder
+// leaves the band, so the test keeps a season whose cases it can solve by taps
 const patched = html
   .replace("{ id: 'bip', icon: '👾', hue: 300,", "{ id: 'bip', icon: '👾', hue: 300, group: 'praznik', opens: '2026-11-26', kovcek: { icon: '🥄', name: 'Bipova žlica' },")
-  .replace(/  \{ id: 'praznik1'.*\n/, '');
-if (patched === html || patched.includes("id: 'praznik1'")) throw new Error('patch failed');
+  .replace(/  \{ id: 'praznik1'.*\n/, '')
+  .replace(/(\{ id: 'igrace'[\s\S]*?)group: 'praznik',\s*/, '$1');
+if (patched === html || patched.includes("id: 'praznik1'") || /\{ id: 'igrace'[^\n]*\n?[^{]*group: 'praznik'/.test(patched.slice(patched.indexOf("{ id: 'igrace'"), patched.indexOf("{ id: 'igrace'") + 800))) throw new Error('patch failed');
 
 async function open(day, { w = 390, h = 844, patch = false, played = [] } = {}) {
   const p = await b.newPage();

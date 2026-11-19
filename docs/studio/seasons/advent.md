@@ -232,3 +232,142 @@ One puzzle a case; no type twice in a row; the last hint gives the answer; no ne
 - **2026-11-18, producer:** the content matters most this December (more testers over the holidays); a season that grips them should send them back to earlier seasons (the souvenir shelf, Ajda's riddle).
 - **2026-11-18, producer:** the six December seasons are one collection, **»🎄 Praznični primeri«**: a shared start-screen band like an advent calendar with six windows (one opens each Thursday), Ajda's »kovček skrivnosti« on the ID card with six slots (each finished holiday season adds its object), and a »Diploma velikega detektiva« with the child's name for a full suitcase on 12-31. Ajda's riddles about older seasons stay a bonus. **This season is window 1; its object is 🧲 Galov prvi magnet**; the final letter hands over to window 2 (Miklavž, 12-03).
 - **2026-11-18, showrunner:** the film answer is replaced by the magnet (§7), pending the producer's yes (§9, question 1).
+
+## 11. Puzzles (puzzle designer, 2026-11-19)
+
+> Slovenian is a draft for the writers and the Slovenian editor. Every line was counted with the checker's rule (`words()` in `tools/cases.mjs`; the lock's `note`, `h1`, `h2` are each counted as a whole string). Sentence ids (`s?`) are placeholders. **No new mechanic:** every puzzle is data for a step the engine has (formats: `solo/README.md`; worked examples: sneg `n1`, `n2`, `n3`, `n5`, `n6` in `node tools/case.mjs n1 n2 n3 n5 n6`, and §11 of `sneg.md`). Both grids were built by a script and checked with the checker's rules (every word exactly once, → and ↓ only, no rude word, no cast name in a row or column, the geslo letters in reading order). **Do not change a letter or a word without sending it back**: a changed word needs a new grid.
+
+### 11.1 At a glance
+
+| # | Steps | Puzzle (knob) | What it gives the case | ❗ / 🧭 |
+|---|---|---|---|---|
+| 1 | call → 🔤 words → scene → solve | 🔤 **Iskanka**, the lightest: 3 words, no crossing, no geslo | nothing to the pocket; the words name three scene places | – |
+| 2 | call → ask → 📜 torn → ⏰ when → solve | 📜 **Raztrgan listek**, 4 strips, one a lone preposition | **Iza's alibi**, one line of Hana's list: »Ob petih je Iza pisala nalogo v sobi.« (8) | – (⏰ is the skill step) |
+| 3 | call → scene → ✉️ cipher → ❗ → solve | ✉️ **Šifra**, complete key, 9 symbols | the **UGOVOR breaker** (half of it): »Paket ni cel.« (3) | ❗ Nuša |
+| 4 | call → 🔤 words (geslo) → scene → solve | 🔤 **Iskanka z geslom**, 3 words, no crossing, a 24-letter geslo | **Gal's alibi**: »Od treh do petih je Gal slikal.« (7) | – |
+| 5 | call → 🕐 order → scene → ask → solve | 🕐 **Časovnica**, 4 cards, Najprej / Potem / Nato / Na koncu | the afternoon's order (`done` line only) | – |
+| 6 ⭐ | call → 🔐 lock → scene → 🧭 → solve | 🔐 **Ključavnica**, 4 wheels, **4712**, read from a line of Nuša's list in case 5 | the lock opens the parcel (the scene with the slip and the train) | 🧭 Žan (Brzec) |
+
+**Why this shape**
+- **No type twice in a row:** words, torn, cipher, words, order, lock. Five types; words twice with a harder knob (the geslo) and a different job. The final has **two puzzles in the director's count: the lock and 🧭**; a third (a torn note) would put a fourth text step in the case that already carries the slip and the closing lines.
+- **Rung 7 (the clue in a list) feeds the puzzles, never the other way round.** Case 2's torn strip *is* one line of the list the child reads; case 6's code is *one item of a list* (the lock is where the list is read for a number).
+- **A puzzle screen is its own step:** it never sits on the same screen as a case list, and none of the six puzzles outputs a list. **No second list in cases 4–6 (director's 🟠 3):** case 4's geslo is one sentence (the three found words are the puzzle's own chips, not a clue list); case 5's order comes **before** the scene so it never sits between the two lists, and its cards are sentences; case 6's lock shows wheels only. If the director reads the chips of 🔤 in case 4 as a list, the fallback is a 📜 torn note with Gal's alibi, and **I must write the strips** (a free word order makes it a trap without a lone preposition).
+- **Cipher slot 3 changed:** the plan's »Rdeč trak ima samo Nuša.« has 19 letters and **14 different**; the checker's cap is 20 and **9**. It cannot be a cipher, and it stays the proof's half in a scene line. The cipher carries the short breaker instead (11.2, case 3).
+- **Time:** about 1 minute for 1, 4 and 5, 1–2 for 2 and 3, 1 for the lock. The final has 5 steps.
+
+### 11.2 Case by case
+
+#### Case 1 · Medo z očali (`steps: ['call', 'words', 'scene', 'solve']`)
+- **Language-bound:** the three words and the grid. **Must produce:** three scene places to look at; no sentence.
+- **Call:** end it with **»Preberi vse na seznamu!«** (5). The scene has objects labelled exactly **predal, polica, okno**; the drawer holds the list (`Predal: Gal, čopič · Žan, vrvica · Iza, očala.`), the window the bear and the window list.
+```js
+words: {
+  note: 'Kje so očala? Poišči tri besede.',
+  grid: ['PREDAL', 'MGENAO', 'KŽUDIK', 'ŽAMŽDN', 'IČČBUO', 'POLICA'],
+  find: [['🗄️', 'PREDAL'], ['📚', 'POLICA'], ['🪟', 'OKNO']],   // PREDAL and POLICA across (rows 1 and 6), OKNO down (column 6, rows 2–5)
+  h1: 'Besede gredo → in ↓.',
+},
+```
+- **Ladder** (the engine's): a gentle note → `h1` (2nd wrong) → the row or column of the next word lights (4th) → its first and last letter pulse (6th).
+- **Difficulty:** 6×6, 3 words, no crossing, no geslo, the lightest knob. The one word that goes ↓ is OKNO (the short one).
+
+#### Case 2 · Koncert ob petih (`steps: ['call', 'ask', 'torn', 'when', 'solve']`)
+- **Language-bound:** the strips. **Must produce:** Iza's alibi, as a line of Hana's notebook list (the schedule list, shape b).
+- **Story:** Hana writes down who is where. The page with Iza's line is torn; the child mends it (Hana reads her lists aloud: she is the voice of the hints). Where the *rest* of Hana's list sits (an `ask` answer or a scene) is the writer's call; the torn line must not be repeated in any other sentence.
+```js
+torn: {
+  note: 'Hanin listek je raztrgan. Sestavi ga.',
+  parts: ['Ob petih je Iza', 'pisala nalogo', 'v', 'sobi.'],
+  gives: 's?',
+  h1: 'Velika črka je na začetku, pika na koncu.',
+  h2: 'Beseda »v« gre pred »sobi«.',
+},
+// ['s?', 'Ob petih je Iza pisala nalogo v sobi.', 'clear', { from: 'torn', clears: 'iza' }]
+```
+- **The one reasoning point:** the lone »v« goes right before »sobi.«; the capital and the full stop fix the ends, so `pisala nalogo` takes the only place left. Checked by hand: one grammatical order. The Slovenian editor confirms.
+- **Ladder:** gentle note → `h1` (2nd) → `h2` (3rd) → the next right strip pulses (4th, the answer).
+- **Writers:** the line is at five, the deed's time, so it is a `during` sentence for ⏰; the wrong-time cards (Gal at four, any after-six line) are the writer's. Plant here Ferdo's closing rule and **Žan's remote** (»Daljinec za Brzca je Žan ob šestih odnesel domov.« (8), director's 🟠 1); no puzzle carries it.
+
+#### Case 3 · Paket za hiško (`steps: ['call', 'scene', 'cipher', 'lie', 'solve']`)
+- **Language-bound:** the message. **Must produce:** half of the UGOVOR breaker: the parcel is **not complete** (the lamp is missing). The other half is a scene line the writer sets (the checker allows `breaks` sets of 1–2 sentences).
+- **Story:** Ferdo opens the parcel at noon and writes what he finds in toy signs, so Iza can't read it (the key is on the shelf in the scene).
+```js
+cipher: {
+  note: 'Ferdo piše v znakih iz igrač. Ključ je spodaj.',
+  key: { '🧸': 'P', '🪀': 'A', '🚂': 'K', '🎲': 'E', '🪁': 'T', '🤖': 'N', '🎠': 'I', '🥁': 'C', '🎈': 'L' },
+  gives: 's?',
+  h1: 'Vsak znak ima svojo črko. Poglej ključ.',
+},
+// ['s?', 'Paket ni cel.', 'neutral', { from: 'cipher' }]   (10 letters, 9 different: at the checker's cap)
+```
+- **Ladder:** note → `h1` (2nd) → the symbol lights in the key (4th) → the tile pulses (6th).
+- **Difficulty:** complete key, no `missing`, no `extra`; nine symbols is the most the checker allows, so no longer message is possible (do not add `extra` here).
+- **🔴 for the writer and the fair-play tester (logic):** the breaker must really break Nuša's claim *in time*. Suggested: Nuša's claim »Paket je bil cel, ko sem ga dala.« (8) and a scene line that says the parcel stood on Ferdo's table from eleven to noon (»Od enajstih je paket stal na Ferdovi mizi.«, 8), so »ni cel« can only come from before eleven. The red-tape pair (proof) is **separate** and stays in scene lines; the cipher never carries it. Truth card: the plan's »No ja … Lučka se je razbila.«.
+- **The absence:** »Paket ni cel« is how the child *reads* the missing lamp (five on the list, four in the box); the call asks »Kaj manjka?«.
+
+#### Case 4 · Budilka na stojnici (`steps: ['call', 'words', 'scene', 'solve']`)
+- **Language-bound:** the words and the geslo. **Must produce:** Gal's alibi.
+- **Call:** a countdown, the alarm, the question; no list item in it. Scene: the carry list (shape b) and the stand's toys as plain scene sentences; three scene objects labelled **miza, luči, klop** if the writer has them (not required, the words only name places).
+```js
+words: {
+  note: 'Hana je skrila iskanko. Poišči tri besede.',
+  grid: ['ODTREH', 'DLUČIO', 'PEKMTI', 'HJLIEG', 'ALOZSL', 'IKPAAL'],
+  find: [['🍽️', 'MIZA'], ['💡', 'LUČI'], ['🪑', 'KLOP']],   // LUČI across (row 2), MIZA down (column 4, rows 3–6), KLOP down (column 3, rows 3–6)
+  geslo: 's?',   // the 24 letters left over read ODTREHDOPETIHJEGALSLIKAL
+  h1: 'Besede gredo → in ↓. Ostale črke povedo več!',
+},
+// ['s?', 'Od treh do petih je Gal slikal.', 'clear', { from: 'words', clears: 'gal' }]
+```
+- **Ladder:** note → `h1` → the row or column of the next word lights → first and last letter pulse; the geslo then glows and spells itself.
+- **Difficulty:** one notch above case 1: the same 6×6 and three 4-letter words, plus the geslo. No crossing (case 1 has none either; the geslo is the only new thing). The geslo is the whole alibi: the **place** (»v delavnici«, Ferdo saw) belongs to a second sentence the writer adds (`ask` is not in the steps, so a scene line).
+- **Writers:** the same alibi must not appear twice; Iza's choir alibi (Hana) and Oskar's are scene sentences. The case has **one list on screen** (the carry list); the words screen is a separate step before it.
+
+#### Case 5 · Pomešani paketnik (`steps: ['call', 'order', 'scene', 'ask', 'solve']`)
+- **Language-bound:** the time words. **Must produce:** the afternoon's order; the `done` line sends the child to the two lists. **The order comes first**, so it never sits between Nuša's list and the doors.
+```js
+order: {
+  note: 'Popoldne se je pomešalo. Kaj je bilo najprej?',
+  cards: [
+    ['📦', 'Najprej je Nuša napolnila paketnik.'],
+    ['🏷️', 'Potem so na vratih zamenjali imena.'],
+    ['🔑', 'Nato je Zofka odprla svoja vrata.'],
+    ['😮', 'Na koncu je dobila Oskarjev paket.'],
+  ],
+  h1: 'Poglej prvo besedo: Najprej, Potem, Nato.',
+  h2: 'Zofka je dobila tuj paket. Imena so bila že zamenjana.',
+  done: 'Imena na vratih so zamenjana. Poglej oba seznama!',
+},
+```
+- **The one reasoning point:** »Potem« and »Nato« are near-synonyms; the last card (she got Oskar's parcel) can only follow if the names were swapped **before** she opened. Nobody is named for the swap (not Iza). Ladder: note → `h1` (2nd) → `h2` (3rd) → the next card pulses (4th); the right cards stay green.
+- **Writers:** the doors are scene objects of one word each (`vrata 1`, `vrata 2`, `vrata 3`) and Nuša's list the only list; **»3: delavnica, paket 4712«** is one of its lines (11.3, point 1). Hana 👁️ stays in `ask`.
+
+#### Case 6 · Igrače, ki hodijo same (`steps: ['call', 'lock', 'scene', 'herring', 'solve']`)
+- **Language-bound:** nothing (digits). **Must produce:** the parcel open; the packing slip (list shape a) and the dark train are in the scene.
+- **Call:** »Paketnik: vrata 3 so zaklenjena.« (5) · »Paket za delavnico? Jaz ga nisem naročil!« (7). The code is **not** in the call.
+```js
+lock: {
+  note: 'Vrata 3 se odprejo s številko paketa.',   // 7
+  code: '4712',
+  h1: 'Poglej Nušin seznam: vrata 3, delavnica.',    // 6
+  h2: 'Številka paketa je 4-7-1-2.',                // 5; digits only once
+},
+```
+- **Ladder:** note → `h1` (2nd wrong try) → `h2` (4th) says the code, so a child who skipped case 5 is never blocked. Nothing is checked while the wheels turn; only »Odpri«.
+- **Difficulty:** 4 wheels (muzej 4, pokal 6, sneg 6). The reasoning is **reading a number out of one line of a list** and remembering which door (3, the shop's).
+- **🧭:** the explanation sentence is Žan's remote (planted in case 2, repeated in the final as a scene line or in the closing list); not a puzzle. Ferdo's three closing lines are **scene lines**, not a 📋 list (director's 🟠 3).
+
+### 11.3 For the writers: what the puzzles need from the other sentences
+
+1. **The code (cases 5 → 6): 4712**, as digits in **one** line of Nuša's list in case 5 (`3: delavnica, paket 4712`). No other number of four digits or next to it in case 5; the number in case 6's call is the door (3) only. `lock.code` is `'4712'`. Case 6's `lock.note` and `h1` name the same door.
+2. **Writer 1–3** (cases 1–3): case 1's call ends »Preberi vse na seznamu!« and the scene labels are exactly predal, polica, okno; case 2's torn line is **only** in the torn step (no copy in `ask`); case 3's cipher has the key printed in the scene (one object), and the claim and the breaker are the pair in 11.2 (or another ≤ 20 letters, ≤ 9 different, Slovenian editor and fair-play tester agreeing). Case 2 plants **Žan's remote** (director's 🟠 1).
+3. **Writer 4–6** (cases 4–6): the geslo grid and the order cards are fixed as above; the writer owns the other sentences. **One list a case** (the carry list in 4, Nuša's list in 5, the slip in 6); nothing but the puzzles' own screens sits next to them.
+4. **A puzzle's sentence is never `evidence`:** it is `clear` (2, 4) or `neutral` (3); the proof stays in scene lines.
+5. **Count the words** of every sentence with the checker's rule; the draft lines above are all ≤ 8.
+6. **Log:** the existing events only (`puzzle_word`, `puzzle_torn`, `puzzle_cipher`, `puzzle_order`, `puzzle_lock`, `puzzle_hint`, `puzzle_done`).
+7. **Small screens:** nothing new. 6×6 grids, a 4-card timeline, 4 torn strips, 9 cipher symbols and a 4-wheel lock were all shown on iPhone 14 390×844 and the landscape rail 852×393 in earlier seasons; the finals' 5–6 steps are as sneg 6 and pokal 6.
+
+### 11.4 For the playtest (watch)
+- Case 2: the hint level on the lone »v« (do they place it?); case 3: do children read »Paket ni cel« as »something is missing« and use it against Nuša?
+- Case 4: does the geslo come as Gal's alibi the child uses, and is it done without `h1`?
+- Case 6: do children find 4712 in case 5's list or reach `h2`? If most reach `h2`, the next season puts the digits into a scene line.
+- Whether the puzzle order (almost sneg's: words, torn, cipher, **words, order**, lock) is felt as »the same again«; if so, the next season changes the opener.
