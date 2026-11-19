@@ -4658,9 +4658,18 @@ function solveRung(n) {
 // later the next thing to read glows, then its coin pulses (HELP.idle, by help level). Once per screen each.
 let idleTimer = null, lastTap = Date.now();
 const canNudge = () => stepCase() && !!BRIEF[S.screen] && !S.run.lead && !S.run.hint && !S.run.note && !briefOpen() && !truthOpen() && !$('.coach') && !document.hidden;
+// The goal bubble sits just above the footer's top edge (the footer's height differs per step), so it never covers »Preveri«, »Naprej« or the coin.
+function placeSay() {
+  const b = $('.pal-say');
+  if (!b) return;
+  let top = innerHeight;
+  document.querySelectorAll('.footer, .ui-foot, .pal').forEach(el => { const r = el.getBoundingClientRect(); if (r.width && r.height) top = Math.min(top, r.top); });
+  b.style.bottom = `${Math.round(innerHeight - top + 8)}px`;
+}
 function sayGoal() {
   document.querySelectorAll('.pal-say').forEach(el => el.remove());
   document.body.insertAdjacentHTML('beforeend', `<div class="pal-say">${UI.coin(helperEmoji())}<span>${esc(goalText())}</span></div>`);
+  placeSay();
   setTimeout(() => { const b = $('.pal-say'); if (b) b.classList.add('out'); }, HELP.fade * 1000);
 }
 // What to read or open next (never the answer): the next thing still closed, the next face with questions,
@@ -4698,6 +4707,7 @@ function helpAids() {
     if (!S.c.warm && L >= 2 && !r.said.includes(S.screen) && !pinGoal() && canNudge()) { r.said.push(S.screen); sayGoal(); }
     if (L === 3 || r.lit[S.screen]) applyGlow();
   }
+  placeSay();
   armIdle();
 }
 function armIdle() {

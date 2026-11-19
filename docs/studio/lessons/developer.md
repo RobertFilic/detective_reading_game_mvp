@@ -16,3 +16,5 @@ Read before every task. Add up to 3 lessons after every task: the rule, then —
 - `tools/tests/run.mjs` drops a test's screenshots unless `--shots` is passed (`setup.mjs`): run it with `--shots` to look at them. — praznik band, 2026-11-18.
 - Test a dated or grouped feature by patching the served HTML (`setBypassServiceWorker` + request interception, as `soon.mjs` does) instead of adding fake data to the game: one real season (`bip`) can borrow the new fields. — praznik.mjs, 2026-11-18.
 - `qr` and `rate` crash (puppeteer disconnect, no check failed) when the full suite runs 4 at a time; rerun them alone before calling it a failure. — full suite, 2026-11-18.
+- A floating bubble with a fixed `bottom` will sooner or later cover a footer whose height differs per step: place it from the footer's measured top (`placeSay()`), and test it as box-overlap with `.footer *`, `.ui-foot *`, `.pal` on three screen sizes. — `.pal-say` over »Preveri«, saybox.mjs, 2026-11-19.
+- A full-suite run that shows dozens of `goto` crashes is a dead static server or Chrome overload, not your change: rerun the whole suite once before reading failures. — 2026-11-19.
