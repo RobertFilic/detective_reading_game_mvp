@@ -952,6 +952,16 @@ tr.clickable { cursor: pointer; }
 .ui-id-stamps { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 18px 18px; }
 .ui-id-stamps > span { width: 38px; height: 38px; border-radius: 50%; box-sizing: border-box; border: 2px dashed var(--line); display: grid; place-items: center; font-size: 20px; filter: grayscale(1); opacity: .45; }
 .ui-id-stamps > span.is-done { border: 2px solid var(--stamp); background: #fff; filter: none; opacity: 1; transform: rotate(-8deg); }
+/* Ajda's suitcase on the ID card: a slot per holiday season, an empty outline until its season is solved */
+.ui-id-case { padding: 0 18px 18px; }
+.ui-id-case-head { font: 600 var(--t-small) var(--font); color: var(--ink-2); margin-bottom: 8px; }
+.ui-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.ui-slot { appearance: none; background: none; border: 0; padding: 0; min-width: 0; min-height: 56px; display: flex; flex-direction: column; align-items: center; gap: 2px; font: inherit; color: var(--ink); }
+.ui-slot-pic { width: 56px; height: 56px; border-radius: 50%; box-sizing: border-box; border: 2px dashed var(--line); display: grid; place-items: center; font-size: 28px; line-height: 1; color: var(--ink-2); }
+.ui-slot.is-open { cursor: pointer; }
+.ui-slot.is-open .ui-slot-pic { border-color: var(--season-mid); color: var(--season); font-weight: 600; }
+.ui-slot.is-full .ui-slot-pic { border: 2px solid var(--stamp); background: #fff; }
+.ui-slot-name { font: 400 14px/1.2 var(--font); text-align: center; overflow-wrap: anywhere; }
 
 /* an adventure's own colour on one card (style="--hue:300"), e.g. on the start screen */
 @supports (color: oklch(0 0 0)) {
@@ -1039,6 +1049,19 @@ tr.clickable { cursor: pointer; }
 .ui-medal.is-empty { background: transparent; border: 2px dashed var(--line); box-shadow: none; cursor: default; }
 .ui-medal.is-new { box-shadow: 0 0 0 4px #fff, 0 0 22px 6px rgba(248, 202, 101, .6); animation: ui-fly 800ms var(--ease) .3s both; }
 .ui-ledge { height: 14px; margin: 6px -14px 0; border-radius: 0 0 18px 18px; background: linear-gradient(#c7a27a, #a98361); }
+
+/* 🎄 the advent band: one window per holiday season (3 × 2 on a phone, 6 in a row when wide) */
+.ui-adv { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
+.ui-win { appearance: none; min-width: 0; min-height: 104px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 4px; text-align: center; color: var(--ink); cursor: pointer;
+  background: var(--paper); border: 1.5px solid var(--line); border-radius: 20px; box-shadow: 0 2px 0 var(--line); font: inherit; }
+.ui-win-date { font: 600 var(--t-small) var(--font); color: var(--season); }
+.ui-win-pic { width: 52px; height: 52px; border-radius: 16px; background: var(--season-soft); display: grid; place-items: center; font-size: 30px; line-height: 1; }
+.ui-win > .ui-tag, .ui-win > .ui-count { padding: 2px 8px; font-size: 14px; white-space: nowrap; }
+.ui-win.is-soon { background: transparent; border-style: dashed; box-shadow: none; cursor: default; }
+.ui-win.is-soon .ui-win-pic { filter: grayscale(1); opacity: .5; background: transparent; }
+.ui-win.is-done { border: 2px solid var(--stamp); }
+.ui-win.is-wiggle { animation: ui-sway 280ms ease-in-out; }
+@media (min-width: 560px) { .ui-adv { grid-template-columns: repeat(6, 1fr); gap: 8px; } }
 
 /* a choice on a big tile (the detective, the helper) */
 .ui-picks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
@@ -1579,6 +1602,9 @@ const CHARACTERS = {
 // guess.again = the case after which the child may change the guess (q2); book = the final's book cover.
 // opens = the release date (YYYY-MM-DD, the device's own date): until then the file is only a teaser card
 // on the start screen (its line: teaser), and its cases stay out of the game.
+// group: 'praznik' = one of the six December seasons of »🎄 Praznični primeri«: it gets a window in the band on the
+// start screen (not a card in the list) and needs opens + kovcek: { icon, name } = its object, which fills its slot
+// in Ajda's suitcase on the ID card once the season is solved. A written season replaces the COMING placeholder.
 const FILES = [
   { id: 'bip', icon: '👾', hue: 300, title: 'Skrivnost v zračniku', cast: ['tim', 'ela', 'robi', 'kiki'], paper: 'ZVEZDNI ČASNIK',
     season: true, mystery: 'Kaj se skriva v zračniku?', peek: { icon: '👀', label: 'zračnik', say: 'pip-pip!' },
@@ -1616,6 +1642,13 @@ const FILES = [
 // Adventures announced but not written yet: the same teaser card. When one is written, it moves into
 // FILES with its teaser line (and opens, if it has a date).
 const COMING = [
+  // TODO producer: title/teaser (working titles from STRATEGY.md; the band shows only the icon and the countdown)
+  { id: 'praznik1', group: 'praznik', opens: '2026-11-26', icon: '🎄', hue: 150, title: 'Adventni primer' },
+  { id: 'praznik2', group: 'praznik', opens: '2026-12-03', icon: '🎅', hue: 20, title: 'Miklavževa noč' },
+  { id: 'praznik3', group: 'praznik', opens: '2026-12-10', icon: '🎪', hue: 330, title: 'Zimski cirkus' },
+  { id: 'praznik4', group: 'praznik', opens: '2026-12-17', icon: '🎭', hue: 285, title: 'Božična predstava' },
+  { id: 'praznik5', group: 'praznik', opens: '2026-12-24', icon: '🌟', hue: 50, title: 'Sveti večer' },
+  { id: 'praznik6', group: 'praznik', opens: '2026-12-31', icon: '✨', hue: 220, title: 'Silvestrovo' },
 ];
 
 // Every line the child can hear outside the stories. Clip id = "ui_" + key.
@@ -3469,6 +3502,14 @@ const UI = {
   item: (o) => `<${o.act ? 'button' : 'div'} class="ui-item ${o.hue != null ? 'ui-hue' : ''} ${o.state || ''}"${o.hue != null ? ` style="--hue:${o.hue}"` : ''}${uiAttrs(o)}>
     <span class="ui-item-pic ${o.round ? 'is-round' : ''}">${o.pic}${o.sk ? UI.coin(o.sk) : ''}</span>
     <span class="ui-item-text"><span class="ui-item-title">${esc(o.title)}</span>${o.sub ? `<span class="ui-item-sub">${o.sub}</span>` : ''}${o.tags ? `<span class="ui-item-tags">${o.tags}</span>` : ''}</span>${o.end || ''}</${o.act ? 'button' : 'div'}>`,
+  // a window of the advent band: o.date, o.pic (emoji), o.tag (html: countdown, NOVO, count), o.hue, o.state (is-soon dimmed, is-done)
+  win: (o) => `<${o.act ? 'button' : 'div'} class="ui-win ${o.hue != null ? 'ui-hue' : ''} ${o.state || ''}"${o.hue != null ? ` style="--hue:${o.hue}"` : ''}${uiAttrs(o)}>
+    <span class="ui-win-date">${esc(o.date)}</span><span class="ui-win-pic">${o.pic}</span>${o.tag || ''}</${o.act ? 'button' : 'div'}>`,
+  // Ajda's suitcase: one slot per holiday season (o.slots from kovcekSlots()); o.go = a slot of an open season is a button
+  case: (slots, o = {}) => `<div class="ui-id-case"><div class="ui-id-case-head">🧳 Ajdin kovček</div><div class="ui-slots">${slots.map(x => {
+    const go = o.go && x.open && !x.full;
+    return `<${go ? 'button' : 'div'} class="ui-slot ${x.full ? 'is-full' : x.open ? 'is-open' : ''}"${go ? ` data-act="kovcekGo" data-file="${x.id}"` : ''} aria-label="${esc(x.full ? x.name : x.title)}">
+      <span class="ui-slot-pic">${x.full ? x.icon : x.open ? '?' : ''}</span><span class="ui-slot-name">${x.full ? esc(x.name) : ''}</span></${go ? 'button' : 'div'}>`; }).join('')}</div></div>`,
   // onboarding: one pill per step, the one now is long
   pills: (n, at) => `<span class="ui-pills">${Array.from({ length: n }, (_, i) => `<i class="${i === at ? 'is-now' : i < at ? 'is-done' : ''}"></i>`).join('')}</span>`,
   // the player's chip in the band (who is playing)
@@ -3479,7 +3520,7 @@ const UI = {
     return `<div class="ui-id ${o.stamp ? 'is-new' : ''}"><div class="ui-id-head"><span>${esc(o.brand || BRAND)}</span>${UI.coin('🔍')}</div>
       <div class="ui-id-body"><span class="ui-id-photo"><span>${p.av}</span>${UI.coin(p.sk)}</span>
         <span class="ui-id-text"><span class="ui-id-name">${esc(p.name || detTitle(p))}</span>${UI.pill(rankName(rankFor(n), p))}${n ? `<span class="ui-count">✔ ${solvedLabel(n)}</span>` : ''}</span></div>
-      ${n ? `<div class="ui-id-stamps">${FILES.map(f => `<span class="${fileDone(f.id) ? 'is-done' : ''}" title="${esc(f.title)}">${f.icon}</span>`).join('')}</div>` : ''}${o.stamp ? UI.stamp(o.stamp) : ''}</div>`; },
+      ${n ? `<div class="ui-id-stamps">${FILES.filter(f => !f.group).map(f => `<span class="${fileDone(f.id) ? 'is-done' : ''}" title="${esc(f.title)}">${f.icon}</span>`).join('')}</div>` : ''}${PRAZNIK.length ? UI.case(kovcekSlots(), o) : ''}${o.stamp ? UI.stamp(o.stamp) : ''}</div>`; },
 };
 const BRAND = 'Bralni detektivi';
 const helperEmoji = () => (profile() || {}).sk || '🦉';   // the helper the child picked on the ID card
@@ -3533,16 +3574,19 @@ function caseFor(file, no) {
 // Release dates: a file whose day hasn't come leaves FILES and CASES and waits with the COMING teasers.
 const TODAY = ((d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)(new Date());
 const SOON = [...FILES.filter(f => f.opens > TODAY), ...COMING];
+// »🎄 Praznični primeri«: the seasons of the band, from FILES and COMING (before the dated ones leave FILES), in the order of their dates.
+const PRAZNIK = [...FILES, ...COMING].filter(f => f.group === 'praznik').sort((a, b) => (a.opens || '9').localeCompare(b.opens || '9'));
 for (const list of [FILES, CASES]) list.splice(0, list.length,
   ...list.filter(x => !SOON.some(f => f.id === (x.file || x.id))));
 // »Še 6 dni«, counted in calendar days on the device; a teaser without a date says only »Kmalu«.
 function soonLabel(f) {
-  if (!f.opens) return 'Kmalu';
+  if (!f.opens || f.opens <= TODAY) return 'Kmalu';   // written later than planned: no countdown
   const n = Math.round((Date.parse(f.opens) - Date.parse(TODAY)) / 864e5);
   return n <= 1 ? 'Jutri!' : `Še ${n} ${n === 2 ? 'dneva' : n < 5 ? 'dnevi' : 'dni'}`;
 }
 const soonTag = (f) => { const l = soonLabel(f); return UI.tag(l === 'Kmalu' ? '📅 Kmalu' : l === 'Jutri!' ? l : '⏳ ' + l, l === 'Kmalu' ? 'is-soon' : l === 'Jutri!' ? 'is-tomorrow' : 'is-days'); };
-const teasersHTML = () => SOON.length ? `<h2 class="ui-head">📅 Kmalu nove pustolovščine</h2>${SOON.map(f => UI.item({ act: 'teaser', state: 'is-soon file-card teaser', hue: f.hue,
+// the holiday seasons wait in their band, not in this list
+const teasersHTML = () => SOON.some(f => !f.group) ? `<h2 class="ui-head">📅 Kmalu nove pustolovščine</h2>${SOON.filter(f => !f.group).map(f => UI.item({ act: 'teaser', state: 'is-soon file-card teaser', hue: f.hue,
   attrs: `aria-label="${esc(f.title)}: ${soonLabel(f)}"`, pic: f.icon, title: f.title, sub: esc(f.teaser), end: soonTag(f) })).join('')}` : '';
 
 const casesIn = (file) => [...new Set(CASES.filter(c => c.file === file).map(c => c.no))].sort((a, b) => a - b).map(no => caseFor(file, no));
@@ -3577,10 +3621,29 @@ function fileOrder() {
   const last = [...solvedKeys()].reverse().map(k => FILES.find(f => f.id === k.split(':')[0])).find(f => f && open(f));
   const fresh = FILES.filter(f => !started(f));
   const hero = last || fresh[fresh.length - 1];
-  const rest = FILES.filter(f => f !== hero && !fileDone(f.id));
+  // a holiday season may be the big card (newest, or the one played last), otherwise only its window in the band opens it
+  const rest = FILES.filter(f => f !== hero && !f.group && !fileDone(f.id));
   const cards = [...(hero ? [[hero, true]] : []),
     ...[rest.filter(f => started(f) && open(f)), rest.filter(f => !started(f)), rest.filter(f => started(f) && !open(f))].flat().map(f => [f, false])];
-  return { cards, shelf: FILES.filter(f => fileDone(f.id)) };
+  return { cards, shelf: FILES.filter(f => !f.group && fileDone(f.id)) };
+}
+// A holiday season's suitcase slot is full when its whole file is solved (its final too); saves need nothing new.
+const kovcekFull = (f) => !!f.kovcek && casesIn(f.id).length > 0 && fileDone(f.id);
+const kovcekSlots = () => PRAZNIK.map(h => { const f = FILES.find(x => x.id === h.id);
+  return { id: h.id, title: h.title, open: !!f, full: !!f && kovcekFull(f), icon: f && f.kovcek && f.kovcek.icon, name: f && f.kovcek && f.kovcek.name }; });
+// The advent band: six windows. Open = opens the season, not yet = wiggles and counts down, solved = its object.
+function adventHTML() {
+  if (!PRAZNIK.length) return '';
+  const wins = PRAZNIK.map(h => {
+    const f = FILES.find(x => x.id === h.id), date = h.opens ? `${+h.opens.slice(8)}. ${+h.opens.slice(5, 7)}.` : '';
+    if (!f) { const l = soonLabel(h);
+      return UI.win({ act: 'teaser', state: 'is-soon', hue: h.hue, date, pic: h.icon, attrs: `aria-label="${esc(h.title)}: ${l}"`,
+        tag: UI.tag(l, l === 'Kmalu' ? 'is-soon' : l === 'Jutri!' ? 'is-tomorrow' : 'is-days') }); }
+    const cs = casesIn(f.id), done = cs.filter(isSolved).length, full = kovcekFull(f);
+    return UI.win({ act: 'openFile', attrs: `data-file="${f.id}" aria-label="${esc(f.title)}"`, state: full ? 'is-done' : '', hue: f.hue, date,
+      pic: full ? f.kovcek.icon : f.icon, tag: full ? UI.tag('✔', 'is-season') : done ? `<span class="ui-count">✔ ${done} / ${cs.length + (f.soon || 0)}</span>` : UI.tag('NOVO', 'is-new') });
+  });
+  return `<h2 class="ui-head">🎄 Praznični primeri</h2><div class="ui-adv">${wins.join('')}</div>`;
 }
 // A medal that is new since this screen was last shown flies onto the shelf.
 function shelfHTML(shelf) {
@@ -4742,7 +4805,9 @@ const T = {
         body: '<div class="ui-sheet-text">👉 Preišči prostor. Tapni vsako stvar in preberi, kaj najdeš.</div>' })}</div>
       <h2>Oznake · ui-pill · ui-tag</h2>
       <div class="ui-wrap">${UI.pill('Igrišče')}${UI.pill('🔰 Vajenka')}${UI.tag('NOVO', 'is-new')}${UI.tag('📅 Kmalu', 'is-soon')}${UI.tag('⏳ Še 3 dni', 'is-days')}${UI.tag('Jutri!', 'is-tomorrow')}${UI.tag('🔎 skrivnost')}<span class="ui-count">✔ 3 / 6</span></div>
-      <h2>Izkaznica · ui-id</h2>
+      <h2>Adventni pas · ui-win</h2>
+      <div class="ui-adv">${UI.win({ act: 'uiTap', date: '26. 11.', pic: '🎄', hue: 150, tag: UI.tag('NOVO', 'is-new') })}${UI.win({ act: 'uiTap', date: '3. 12.', pic: '🎅', hue: 20, tag: '<span class="ui-count">✔ 2 / 6</span>' })}${UI.win({ act: 'uiTap', date: '10. 12.', pic: '🧸', hue: 330, state: 'is-done', tag: UI.tag('✔', 'is-season') })}${UI.win({ act: 'uiTap', date: '17. 12.', pic: '🎭', state: 'is-soon', tag: UI.tag('Še 7 dni', 'is-days') })}${UI.win({ act: 'uiTap', date: '24. 12.', pic: '🌟', state: 'is-soon', tag: UI.tag('Jutri!', 'is-tomorrow') })}${UI.win({ act: 'uiTap', date: '31. 12.', pic: '✨', state: 'is-soon', tag: UI.tag('Še 14 dni', 'is-days') })}</div>
+      <h2>Izkaznica · ui-id (z Ajdinim kovčkom)</h2>
       ${UI.id(p)}
       <div class="ui-card">To je galerija sestavnih delov za odrasle. Igra: <a href="./?play">?play</a></div>
     </div></div>`;
@@ -4808,7 +4873,7 @@ const T = {
       foot = UI.btn('Naprej', { act: 'mkName' }) + UI.btn('Preskoči', { act: 'mkSkip', kind: 'is-quiet' });
     } else {
       const p = { id: m.id, av: m.av, g: m.g, sk: m.sk, name: m.name };
-      body = `<div class="ui-body">${idCard(p, { stamp: edit ? '' : 'To si ti!' })}${edit ? '' : UI.helper(m.g === 'f' ? 'Postala si detektivka!' : 'Postal si detektiv!', { e: m.sk })}</div>`;
+      body = `<div class="ui-body">${idCard(p, { stamp: edit ? '' : 'To si ti!', go: edit })}${edit ? '' : UI.helper(m.g === 'f' ? 'Postala si detektivka!' : 'Postal si detektiv!', { e: m.sk })}</div>`;
       foot = UI.btn('Začni 🔍', { act: 'mkDone' });
     }
     return `<div class="ui-screen make"><header class="ui-band"><div class="ui-band-top">${back ? `<button class="ui-band-btn" data-act="${back}" aria-label="Nazaj">←</button>` : '<span class="ui-band-gap"></span>'}
@@ -4853,6 +4918,7 @@ const T = {
       ${UI.badge(p, { act: 'editCard', attrs: 'aria-label="Uredi izkaznico"', rank: rankName(rankFor(n), p) })}
       <div class="ui-band-name">${esc(p.name || detTitle(p))}</div></header>
       <div class="ui-body file-list">${order.cards.slice(0, 1).map(card).join('')}
+        ${adventHTML()}
         ${order.cards.length > 1 ? `<h2 class="ui-head">🗺️ Pustolovščine</h2>${order.cards.slice(1).map(card).join('')}` : ''}
         ${shelfHTML(order.shelf)}
         ${teasersHTML()}
@@ -5387,6 +5453,12 @@ const ACTIONS = {
     S.toast = null;
     log('file_open', { file: S.file });
     toBoard();
+  },
+  // an empty slot of an open season on the ID card (edit mode): keep the card as it is, then open the season
+  kovcekGo(el) {
+    const m = S.mk;
+    if (m) { store.write(PROFILE_KEY, { av: m.av, g: m.g, sk: m.sk, name: m.name, id: m.id }); S.mk = null; }
+    ACTIONS.openFile(el);
   },
   toFiles() { S.toast = null; toHome(); },
   back() { goBack('button'); },

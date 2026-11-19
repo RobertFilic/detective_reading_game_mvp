@@ -351,8 +351,17 @@ const fileIds = FILES.map(f => f.id);
 for (const f of [...FILES, ...COMING]) {
   if (f.opens && !/^\d{4}-\d{2}-\d{2}$/.test(f.opens)) fail(f.id, `opens must be YYYY-MM-DD: ${f.opens}`);
   if (!Number.isInteger(f.hue) || f.hue < 0 || f.hue > 359) fail(f.id, `a season's colour: hue, a whole number 0–359 (160 green, 235 sea blue, 55 warm brown, 300 violet): ${f.hue}`);
-  if ((f.opens || COMING.includes(f)) && (!f.teaser || words(f.teaser) > LEVEL_RULES.A.maxWords)) fail(f.id, 'a teaser card needs its line (teaser, ≤ 8 words)');
+  if ((f.opens || COMING.includes(f)) && !f.group && (!f.teaser || words(f.teaser) > LEVEL_RULES.A.maxWords)) fail(f.id, 'a teaser card needs its line (teaser, ≤ 8 words)');
 }
+// »🎄 Praznični primeri«: at most six windows, each with its own date; a written season brings its suitcase object
+{ const g = [...FILES, ...COMING].filter(f => f.group);
+  for (const f of g) {
+    if (f.group !== 'praznik') fail(f.id, `unknown group ${f.group}`);
+    if (!f.opens) fail(f.id, 'a holiday season (group) needs its opens date');
+    if (FILES.includes(f) && (!f.kovcek || !f.kovcek.icon || !f.kovcek.name || words(f.kovcek.name) > LEVEL_RULES.A.maxWords)) fail(f.id, 'a holiday season needs kovcek: { icon, name (≤ 8 words) }, its object in Ajda\'s suitcase');
+    if (g.some(x => x !== f && x.opens === f.opens)) fail(f.id, `two holiday seasons open on ${f.opens}`);
+  }
+  if (g.length > 6) fail('praznik', `the band has six windows, not ${g.length}: a written season replaces its COMING placeholder`); }
 for (const f of COMING) if (fileIds.includes(f.id) || COMING.filter(x => x.id === f.id).length > 1) fail(f.id, 'teaser id used twice');
 for (const c of CASES) if (!fileIds.includes(c.file)) fail(c.id, `unknown file ${c.file}`);
 for (const f of FILES) {

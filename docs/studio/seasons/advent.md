@@ -1,6 +1,6 @@
-# 🎄 Advent season (season 6, opens 2026-11-26): working id `advent`, theme open
+# 🧸 Igrače, ki hodijo same (season 6, opens 2026-11-26, »Praznični primeri« window 1): id `igrace`, file `advent.md`
 
-**Status:** briefed (2026-11-17, editorial director) → **pitched (2026-11-17, showrunner: §1, three options, recommends B)** → the showrunner pitches **three options** (one per direction below) → the producer picks one (the id and title are then fixed).
+**Status:** briefed (2026-11-17, editorial director) → pitched (2026-11-17, showrunner: three options) → **B approved (2026-11-18, producer)** → **full plan written (2026-11-18, showrunner: §1–§9; the answer reworked from a film to a magnet, pending the producer's yes, §9 q1)** → next: puzzles (§8) and cases, sitting B/C.
 
 ## 0. Season brief (editorial director, 2026-11-17)
 
@@ -22,105 +22,213 @@ All three: a **new place and a new cast file** (new faces; the old gang may visi
 
 **A. 🎄 »Skrivnost adventnega koledarja«** (title candidate: »Okence št. 13«). A town street with a *živi adventni koledar*: every house opens one lit window an evening, and the street's list says what goes in each window. Something wrong appears behind a window (the wrong object, a window that opens early, one that won't open). *Must deliver:* the corkboard **is** the calendar (case N = window N opening on screen, the light turns on when solved: the glow); the schedule list is the clue family; Advent's countdown; the big answer a **person with a small funny reason** (to fix a mistake, to try something), not a gift for all. *Risk:* it is the closest to the party shape: keep the motive away from »surprise«.
 
-**B. 🧸 »Skrivnost igračarne«** (title candidate: »Igrače, ki hodijo ponoči«). The old toy-maker's workshop before the rush: toys seem to move, a train runs at night, an order is wrong. *Must deliver:* wonder (a shop full of toys, music boxes, wooden things; the child wants to be inside); the order or packing list as the clue family (a wrong toy in a box that reads fine); every »movement« is explained by a **person** (never a toy or an animal as culprit); a little spooky and always friendly; a maker or assistant as the culprit with a **»to fix / to try / to hide a mistake«** motive. *Risk:* »night« (🦕): keep the cases in the evening with the lamps on.
+**B. 🧸 »Skrivnost delavnice igrač«** (title candidate: »Igrače, ki hodijo ponoči«). The old toy-maker's workshop before the rush: toys seem to move, a train runs at night, an order is wrong. *Must deliver:* wonder (a shop full of toys, music boxes, wooden things; the child wants to be inside); the order or packing list as the clue family (a wrong toy in a box that reads fine); every »movement« is explained by a **person** (never a toy or an animal as culprit); a little spooky and always friendly; a maker or assistant as the culprit with a **»to fix / to try / to hide a mistake«** motive. *Risk:* »night« (🦕): keep the cases in the evening with the lamps on.
 
 **C. ✉️ »Skrivnost božične pošte«** (title candidate: »Pismo brez naslova«). The village post office in the weeks of the wish letters (to Božiček, Dedek Mraz, Miklavž), parcels and a sorting room. *Must deliver:* secrets (a wish that changed, a parcel for the wrong house, a letter with no address); the parcel list and the wish list as clue families (the child reads a wish list **with** its writer's permission, framed as a puzzle, never snooping on a real child); the pull of a **map** of the village (optional, only if the format allows a picture) for the final delivery round; a postman or clerk as culprit with a funny, not greedy, reason. *Risk:* the gift motive and Santa's belief: the pitch shows how Božiček stays real.
 
 Each option, in a few lines, shows: the **final case** (the list that is half the proof, and the other half), the **ladder** of the list across cases 1–5, the **big mystery** and its true answer, and the **three decoys** you would use (things that happened, not »likes it«).
 
-## 1. Three pitches (showrunner, 2026-11-17)
+## 0a. The three pitches (2026-11-17), in short
 
-> Compact pitches, one per direction. The full skeleton (alibi table, line-ups, card wording) comes after the producer picks. All Slovenian here is a draft.
+A 🎄 »Kdo kuka v okenca?« (a street advent calendar; Feliks the clockmaker peeks) · **B 🧸 »Igrače, ki hodijo same« (a toy workshop): picked by the producer, 2026-11-18** · C ✉️ »Pismo brez naslova« (the Christmas post; Petra the new postwoman). The full pitches are in git history (2026-11-17). The plan below is B, reworked (§7, first risk): the toys are not moved by hand for a film; a magnet walks them.
 
-**Common to all three**
-- **Level A** holds (≤ 8 words, 4 suspects, 7–9 sentences, final 10–11, names only). Rung 7, ladder as briefed: c1 a short list, one question about one item (»Preberi vse na seznamu!«); c2 a list that is a schedule; c3 a list with an item missing (the season's one absence); c4 a list where the innocents' items are all fine and one is not; c5 two lists that disagree; c6 a list item is half of the proof. One ❗ lie (c3), ⏰ at most once (c2), elimination everywhere, the 🔐 lock in the final.
-- **How a list is shown without a new mechanic:** (a) a whole list in one sentence, items in the nominative: »Na seznamu: sani, zvonček, sveča, angel.« (6 words, counts); or (b) one item per scene object (each window, shelf or pigeonhole is an object; its line is »Okence 3: sani.«). The 📜 torn note and 🕐 order can also carry a list. No build needed.
-- **The pull back to older seasons, twice:** (1) Ajda's postcard riddle (below); (2) the new world holds harmless *souvenirs* of the detective's earlier cases (a newspaper clipping, a toy, a drawing: »To je Bip iz zračnika!«). Never needed for a solve; a child who hasn't met Bip wants to.
-- **Ajda's postcard** closes the final's letter (3 lines, + the one-sentence intro for new players: »Ajda je dekle iz Smrečja, ki rada postavlja uganke.«). Each pitch picks the riddle that fits its world. Ajda is nowhere else in the season.
-- **Hook to 12-03 (Miklavž):** each pitch ends with a P. S. that points to Miklavž's eve, so the six December seasons feel like one road.
+## 0b. Director's check of the pitch against the brief (editorial director, 2026-11-18)
 
-### A. 🎄 »Kdo kuka v okenca?« (adventni koledar)
+**Verdict: pass with four 🟠 to fix in the text; no 🔴.** Rung 7 is the final's spine (the slip's »magnet« is half the proof), one knob moves (the list), the feeling is there (a covered window, a countdown, a curtain that lifts), the 🔐 is in, all suspects are people, Božiček, Dedek Mraz and Miklavž never appear, Ajda is only a postcard, nothing on the ledger list returns (no Tim, food, »vso noč«, »likes it« decoy, gift or party; the lie is second; questions vary), and no build is needed for the text.
 
-**Premise.** On Zvezdna ulica the whole street is an advent calendar: every evening at six one house lifts its paper curtain and a lit window shows a picture. But every morning, *tomorrow's* paper has a tiny tear, mended with a gold star: someone can't wait.
+**The magnet answer: yes, it is the right change.** It is clear (three cards say metal moves, wood does not, and the fishing game is planted), fair (the how is solvable before the who), and fun: the toys really do walk, and a child can try it at home. Fixes so it holds for a 7-year-old:
+- 🟠 **Žan's elimination arrives too late.** After case 5 the second guess leans on Žan (hum, batteries), and the fact that clears him (»Ob šestih grem domov«, the remote goes with him) appears only in the final. Plant it earlier as a Ferdo line (case 2 or 4, next to the closing rule »Ob šestih grem gor. Gal pometa.«) so 🧭 and the second guess are fair.
+- 🟠 **Still muzej in shape.** An employee secretly works on a show for a public reveal, in the evenings, alone: the how is new, the who-and-why is Mila again. Fix the motive's weight: make it »to try, and he is too embarrassed to say it doesn't work yet« (a mistake to hide, a first job), and cut »to win an argument with his master« from the cases (it is sneg's bet, softened). The fair is only where it ends, not why he does it. Keep the cases in lamplight, no night.
+- ⚪ Physics a child will notice: pins »under the table« and soldiers »at the door« do not fit a magnet under a table top. Say the table top is thin (»tanka plošča«) and put the pins in a ring on the floor where the train runs (a better clue); the soldiers end »na robu mize«, not at the door.
+- ⚪ The proof names Gal plainly in the slip (»Gal je naročil …«); the pair softens it. Keep the dark train line nameless, as planned.
 
-- **Big mystery (child's words):** »Kdo vsak večer pokuka v jutrišnje okence?«
-- **True answer: gospod Feliks** 👴🏻, the street's grumpy old clockmaker, who says »Advent je za otroke!« and is the only house that refused a window. He can't wait either: every evening at half past nine, after he winds the street clock, he climbs his clock ladder, peeks, and mends the tear with the gold stars he sticks on every clock he repairs. Motive: **to see**, funny. Ending: Vanda makes him »čuvaj okenc« (he may look first, officially, one hour early) and his house gets window 24. Line the child repeats: **»Ne morem čakati!«**
-- **Why a 7-year-old begs to play it:** every child has peeked behind a chocolate-calendar door. The sin is theirs, and the culprit turns out to be the grumpiest grown-up on the street. And the corkboard **is** the calendar: solving case N lights window N (the glow).
-- **Rung 7 here:** the street's window list on the notice board (»Okence 1: zlata zvezda.«) is the clue family; Vanda's evening timetable is the schedule; Feliks's repair list at the clock shop hides »zlate zvezdice« among »olje za ure, baterije, vijački«.
+**Other findings**
+- 🟠 **»One list on screen« is broken in 5 and 6.** Case 5 has Nuša's list and the door names, case 6 has the slip and Ferdo's closing list, case 4 has the carry list and the stand list. Fix: the doors are scene objects (one word each), not a list; in case 6 the closing list becomes three scene lines under Ferdo, not a 📋 list; in case 4 the stand items are plain scene sentences. If a second list is really needed, say so in §9 for the producer.
+- 🟠 **The suitcase and band depend on the developer build** (due 11-26, STRATEGY). The letter must read well without it: »Magnet je v tvojem kovčku skrivnosti« only if the build is merged by sitting D (11-23); otherwise the letter says nothing about a suitcase, and Ajda's postcard still ends it. Order: Ferdo, then the P. S. hand-over, then Ajda's postcard last (the brief says the letter ends with it).
+- ⚪ **Names: eight with Ferdo, not too many for level A**, because the same seven people return and each case shows only four. The risk is the thin ones: Nuša (2 line-ups) and Hana. Introduce each in the case's call with a role (»Nuša, ki vozi pakete«), and give the one-line introduction to Hana (»Hana, Ferdova pravnukinja, ki vse zapiše«); do not write more than three witness lines for her.
+- ⚪ Iza is the culprit twice (1, 5) and both times »she plays«. Give case 5 a different edge (the tidy-minded »po abecedi« is good: stress tidying, not playing) so the child does not learn »Iza plays = culprit«.
+- ⚪ Do not print weekdays (Pon … Sob) in titles or screens: a child who opens it on a Thursday plays all six in one sitting. Only the countdown (»Še pet dni do sejma!«) and, in the final, the call says »včeraj, v petek«.
+- ⚪ The list is *needed* in the final for the proof, but alibis alone leave Gal; fine for the rung (every season's proof works this way), as long as the h1 says »Preberi vse na seznamu!«.
+- ⚪ The P. S. to 12-03 (»ropota z verigo«) is a hand-over only; the Miklavž brief decides whether it stays.
 
-| # | Case (question) | Culprit, motive | Proof / list moment | Card for the big mystery |
+**Gripping enough for new holiday testers?** The promise is strong (a covered window, »Ne kukaj!«, a countdown, toys that walk), but cases 2–5 are small domestic troubles that do not touch the window. Three cheap lifts, no new mechanic: (1) case 1's first call line is the walking toys and the paper on the window, before the glasses on the bear; (2) every P. S. line gives one sensory peek at the window (»Skozi papir se je nekaj zasvetilo.«), never a clue; (3) each case's scene has one object that is pure wonder (a music box that plays three notes, a tin robot with a key) so the child wants to be in the shop. The souvenir shelf pulls back to older seasons: spread it over the cases (Bip, Rex, the cup, the snowman: one line each) rather than one line in case 2.
+
+**Recommendations on the open questions (the producer decides)**
+1. **Film to magnet: yes**, with the fixes above (Žan planted, motive softened, thin table).
+2. **Hana as witness only: yes**, one-line introduction, never a suspect; she is the list reader, the voice of the hint ladder, and a face for children who played before. No other old faces.
+3. **Take-home trick: yes, with conditions.** It appears only after the reveal (solved screen or letter), never in a case screen. Wording: »Poskusi doma z odraslim: hladilniški magnet in sponka.« Fridge magnet and paper clip only; no small strong magnets, no pins or needles, no opening toys for batteries, no »build a train«. Magnet away from the screen is not worth a line.
+
+> All Slovenian below is a draft for the writers; word counts are the checker's way. A native speaker checks it before it ships.
+
+## 1. Title, place, level, rung
+
+- **Title:** 🧸 *Igrače, ki hodijo same* (kept: it is the promise the season keeps). Season id **`igrace`** (the file stays `advent.md`). Board question: **»Zakaj igrače hodijo same?«**: an honest question, not a trap (sneg's was a trap).
+- **Place:** **Delavnica Vrtavka**, mojster Ferdo's toy workshop on Lipova ulica: he makes wooden and tin toys and mends broken ones. A *vrtavka* (spinning top) is the sign over the door; a child likes saying it, and it is easy to decode (vr-tav-ka). *Also considered:* »Delavnica Kolešček« (»šč« is hard to read at 7), »Pri lesenem konjičku« (long), »Ropotulja« (sounds like a noise, not a place). The rooms: the shop with the **window table** (the big table in the shop window, the toys on display; all week the street side is covered with paper, »Ne kukaj!«), the workbench at the back with Ferdo's drawer, the shelf of music boxes, Zofka's sewing corner, the **paketnik** (Nuša's parcel locker by the door, three small doors), Oskar's clock shop next door (one shared wall), Ferdo and Iza's flat upstairs, and the town square, where the stands for Saturday's **Adventni sejem** go up.
+- **Shape:** Monday to Saturday of the week before the fair, one case a day. Every morning Ferdo calls: the toys in the window stand somewhere new, and there is the day's small trouble. Saturday at five the fair opens and the paper comes off the window.
+- **Level A:** ≤ 8 words a sentence, 4 suspects, 7–9 sentences (final 10–11), names only, no new time or negation words. **Reading knob: the list as a text shape** (items 1–4 words, 4–8 items, one list on screen at a time, items in the nominative).
+- **How a list is shown (no new mechanic):** (a) a list of things in one sentence: »Na seznamu: postelja, miza, stol, omara, lučka.« (6); or (b) a list with names, one line per scene object, all under the same label (»📋 seznam«): »Predal: Iza, očala.« (3). The writers keep the two shapes apart: (a) for things, (b) for who-what.
+- **Rung 7, the clue in a list.** The ladder:
+  1. Case 1, **one list, one item**: Ferdo's drawer list; the proof is one ordinary line among boring ones. The call ends »Preberi vse na seznamu!«.
+  2. Case 2, **a list that is a schedule**: Hana's »who was where« list; ⏰ sorts its lines (the season's only ⏰).
+  3. Case 3, **an item is missing** (the season's one absence): the packing list has five pieces, the box four; ❗ the season's one lie.
+  4. Case 4, **every innocent's item is fine, one is not**: who carried what to the fair stand.
+  5. Case 5, **two lists disagree**: Nuša's locker list against the names on the locker doors (and the code for the final).
+  6. Final, **needed**: one item on a packing slip (»magnet«) is half of the proof; Ferdo's closing list tells who stayed after six.
+- **Old skills mixed in:** crossing off every case; the corkboard and two guesses; ❗ once (3, the culprit lies); absence once (3); ⏰ once (2); 🧭 once (final); a time window with two edges in the final.
+
+## 2. The big mystery and the true answer
+
+- **As a child would say it:** »V delavnici igrač igrače vsako jutro stojijo drugje. Kdo jih premika? Ali hodijo same?«
+- **The true answer: Gal**, 16, Ferdo's apprentice, who paints the toys' faces. Saturday's window is **his first job alone**, and he wants it to be magic: toys that walk with no hand on them. Under the window table he built a hidden circle of track, and on it runs **an old toy train with a big magnet on its roof**. The magnet pulls the **metal** toys standing on the table above: the tin soldiers, the tin robot, the little tin car. Every evening after six, when he is alone sweeping, he switches the train on as a test, and it runs till its battery is flat. It doesn't work yet: the soldiers end up at the door, the robot turns round. So every morning the metal toys stand somewhere new, and the wooden and cloth ones never move. He says nothing, because Ferdo grumbles every day »Igrače ne hodijo same!« and Gal wants to show him at the fair. On Friday a stronger magnet comes in a parcel.
+- **Motive:** **to try** (his first window) and **to win a friendly argument** with his master. Not a gift, not a surprise for everyone: it is his own work, in his own window.
+- **Why it is fair (the chain):** only metal toys walk (card 1 + the window list in case 1); the wooden horse never moves (card 2) → it's not someone playing with the toys; something pulls metal. The pins end up under the window table (card 3), and a magnet pulls metal (planted in case 1: the magnetic fishing game, »Z magnetom lovimo kovinske ribice«) → **a magnet under the window table**. The window hums after six (card 4) and a battery goes missing every day (card 5) → **something electric runs there after six**. Who is in the shop after six? Ferdo's closing list: only Gal. Who has a magnet? The packing slip in the final: »Gal je naročil: … magnet.«
+- **Why the tempting ones are innocent:** **Žan** has a remote-control car, Brzec, that goes »Brrrm!« and eats batteries (cards 4, 5 seem to be his); but he goes home at six, and his car never drives without its remote, which he takes home. **Zofka** loses pins everywhere (card 3 seems to be hers); but the pins are pulled *to* the table, they aren't dropped, and after six she sews at the fair stand. **Iza** talks to every toy and lives upstairs (»Toys walk at night because I asked them to?«); after six she is upstairs with Ferdo.
+- **The warm ending:** Saturday at five the paper comes off the window, the lights go on, and the tin soldiers march in a slow circle with no hand on them. Children press their noses to the glass. Ferdo puts on his glasses (they were on his head) and says the line the child will repeat: **»Igrače res hodijo same!«** Gal gets his own key to the shop. `answer`: 🧲 »Igrače je vlekel magnet. Pod mizo ga je skril Gal.« (writer's wording, ≤ 8 + 8).
+- **The surprise that is kind:** the title's spooky promise comes true: the toys really do walk by themselves, and nobody is pushing them. It is the magnet trick children know from science kits, so the »aha« is one they can try at home with a grown-up (§9, question 3).
+- **The feeling (the brief's »anticipation«):** *the evening before the fair.* A lit workshop full of sawdust and music boxes, the window covered with paper, a countdown in every call (»Še pet dni do sejma!«) and one question underneath: what will the window be? The child is waiting for a curtain to lift, and in the final it lifts.
+- **Wink for grown-ups:** Christie's list of ordinary things with one that doesn't belong (*A Pocket Full of Rye*), and a »how« inside the »who«, as in *The ABC Murders*.
+
+## 3. The red thread
+
+Each morning Ferdo's call pins one oddity. All are nameless (the checker: no card names a suspect), harmless alone, and three of five flip.
+
+| After | Card (draft, words) | Seems to mean | Means at the end |
+|---|---|---|---|
+| 1 | 📋 »Zjutraj so stali drugje: vojaki, robotek, avtek.« (7) | someone played with them (Žan?) | the three **metal** toys (the window list in case 1 says »kovinski«) |
+| 2 | 🐴 »Lesen konjiček se ni nikoli premaknil.« (5) | Iza: »Konjiček je len!« (a joke) | wood doesn't follow a magnet |
+| 3 | 📍 »Zjutraj so bile bucike pod mizo v izložbi.« (8) | Zofka dropped her pins again | the magnet pulled them **to** the table |
+| 4 | 🔊 »Po šestih izložba tiho brni: brrr.« (5) | Žan's car Brzec (»Brrrm!«) | the train under the table |
+| 5 | 🔋 »Na seznamu baterij je vsak dan ena manj.« (8) | Brzec eats batteries | the train's battery, one a night |
+
+**Thoughts (`card.think`):** 1 »Zakaj ravno ti trije? 🤔« · 2 »Zakaj konjiček ne hodi? 🤔« · 3 »Kdo izgublja bucike? 🤔« · 4 »Kaj brni v temi? 🤔« · 5 »Kdo jemlje baterije? 🤔«
+
+**Planted early, paid off late** (none may be cut): case 1 the window list with »kovinski vojaki, kovinski robotek, kovinski avtek, lesen konjiček, punčka iz blaga« (one object per item); the magnetic fishing game (»Z magnetom lovimo kovinske ribice!«, Iza) and »Gal popravlja ribolov.« (neutral); case 2 Ferdo's closing rule »Ob šestih grem gor. Gal pometa.«; case 3 Zofka's pins (»Mhm-mhm!«); case 4 Žan's car eats batteries (his own line); case 5 the parcel number on Nuša's list (the lock's code).
+
+**The guess after case 3**, again after case 5: »Kaj misliš, kdo premika igrače?« (5). The right option **first** this time (last in 👾 🦔 🦕, middle in ⚽ ❄️), and its label must not say »magnet«:
+- 🧑🏻 *Gal, ki zvečer pometa delavnico* (right: he is the one there after six)
+- 👵🏼 *Zofka, ki povsod izgublja bucike* (card 3)
+- 👦🏽 *Žan, ki ima avto na daljinca* (cards 4, 5 make him the obvious answer after case 5)
+
+## 4. The six cases
+
+Client in every case: **mojster Ferdo** (Vi), who calls each morning: what moved in the window, the countdown to the fair, then the day's trouble. ❗ = UGOVOR, 🧭 = Napačna sled?, ⏰ = Kdaj?, 👁️ = a witness who is not a suspect.
+
+### 4.1 At a glance
+
+| # | Title · question | Culprit · motive | Proof kind | Decoy (a thing that happened) | Steps | The list moment | Card |
+|---|---|---|---|---|---|---|---|
+| 1 Mon | **Medo z očali** · »Kdo je popoldne medvedu nadel Ferdova očala?« | **Iza**: Medo Bruno »wanted to read the window list« (to play) | **one list line**: »Predal: Iza, očala.« among Gal's brush and Žan's string | Zofka's thread on the bear's ear (she sewed it on in the morning) | call → 🧩 → scene → solve | one list, one item; »Preberi vse na seznamu!« | 📋 |
+| 2 Tue | **Koncert ob petih** · »Kdo je ob petih navil vse skrinjice?« | **Oskar**: to find the one that plays out of tune (to fix). »Ena cvili!« | a schedule line: Hana's list, »Ob petih: Oskar pri skrinjicah.« | Gal dusted the music boxes **at four** (true, wrong time) | call → ask → 🧩 → ⏰ → solve | a list that is a schedule; ⏰ sorts its lines | 🐴 |
+| 3 Wed | **Paket za hiško** · »Kdo je dopoldne odprl paket za hiško?« | **Nuša**: the tiny lamp broke when her bike hit a bump; she hid it (to hide a mistake) | pair: »Paket je prelepljen z rdečim trakom.« + »Rdeč trak ima samo Nuša.« | Iza has a doll's lamp (her own, from last year) | call → scene → 🧩 → ❗ → solve | **absence**: five items on the list, four in the box; the call asks »Kaj manjka?« | 📍 |
+| 4 Thu | **Budilka na stojnici** · »Čigava košara je ob petih zazvonila?« | **Zofka**: she set an alarm clock to remember to fetch the lights at five; with pins in her mouth she couldn't warn anyone (»Mhm-mhm!«) | pair: the carry list »Zofka: košara z blagom.« + »Budilka je zvonila iz košare z blagom.« | at two Oskar hung lights right by the basket (true, wrong time) | call → 🧩 → scene → solve | every innocent's line is a toy on Ferdo's stand list; one line is not | 🔊 |
+| 5 Fri | **Pomešani paketnik** · »Kdo je popoldne zamenjal imena na paketniku?« | **Iza**: she put the names »po abecedi« (Oskar before Zofka): to tidy, to try being a postwoman | pair: two lists disagree (Nuša's list vs the doors) + Hana 👁️ »Popoldne je Iza pisala listke z imeni.« | Zofka's pin in the locker's lock (she opened her door at five, after) | call → ask → 🧩 → solve | **two lists disagree**; the shop's parcel number is on Nuša's list | 🔋 |
+| 6 Sat ⭐ | **Igrače, ki hodijo same** · »Kdo je včeraj po šestih premaknil vojake?« | **Gal**: to try, to win the argument | pair: the packing slip »Gal je naročil: baterije, lepilo, žeblji, magnet.« (one item) + »Pod mizo v izložbi vozi vlakec z magnetom.« (names nobody, 🔦 dark) | 🧭 Žan's car Brzec under the window table (true: forgotten there at five; its remote went home with Žan at six) | call → 🔐 lock → scene → 🧭 → solve | **needed**: one list item is half the proof; Ferdo's closing list leaves Gal alone after six | (the answer) |
+
+Questions: four »Kdo …?«, one »Čigava …?« (4), and the board's »Zakaj …?«.
+
+### 4.2 The skeleton (facts)
+
+| # | Deed (what, when, where) | Culprit, motive | Proof (fact) | Alibis (suspect: the fact; same window, another place) | Decoy (fact) | Card (fact) |
+|---|---|---|---|---|---|---|
+| 1 | Ferdo's spare glasses, in his workbench drawer at three, are on the bear Bruno in the window at five; Bruno holds the window list. **Monday, three to five** | Iza: Bruno »wanted to read« (she talks to every toy) | the drawer list (Ferdo's rule: whoever takes something writes it down), three lines: Gal, brush · Žan, string · **Iza, glasses** | Gal: three to five painted soldiers at the workbench (Ferdo saw) · Žan: three to five drove Brzec on the square (Hana saw) · Zofka: three to five sewed at the fair stand (Nuša saw) | the bear has Zofka's thread on its ear: she sewed it back on in the morning | the soldiers, the robot and the little car stood somewhere new this morning |
+| 2 | all twelve music boxes on the shelf played at once, **Tuesday at five**; Ferdo dropped his brush | Oskar, the clockmaker next door, who tunes them for Ferdo: to find the one out of tune by ear | Hana's notebook list (she writes down everything): »at five: Oskar at the music boxes« | Iza: at five, homework upstairs · Nuša: at five, at the post office · Gal: at five, in the storeroom (all three are lines in Hana's list, and each backed by a second voice in ask: Ferdo, Oskar, Ferdo) | Gal dusted the music boxes at four (a list line: before) | the wooden horse has never moved |
+| 3 | the doll's-house parcel was opened and taped shut again; the tiny lamp is missing. Collected sealed at eight, delivered at eleven, opened by Ferdo at noon in front of the whole shop: **Wednesday, eight to eleven, while it was on Nuša's bike** | Nuša: the lamp broke on a bump; she hid the pieces and ordered a new one | pair: the parcel is taped with red tape + only Nuša has red tape (her bike bag) | Zofka: all morning at the fair stand (Oskar saw from the town clock) · Oskar: all morning up the ladder at the town clock (Hana saw) · Gal: all morning painting at the workbench (Ferdo) | Iza has a doll's lamp: her own, from last year | in the morning the pins lay under the window table |
+| 4 | an alarm clock rang loud from a basket under the fair stand's tablecloth, **Thursday at five**, during the choir's rehearsal; it was put there **between three and five** | Zofka: so she wouldn't forget the lights at five | pair: the carry list (who brought what to the stand) »Zofka: basket of cloth« + the clock rang from the basket of cloth; every other line is a toy on Ferdo's stand list (drum, bear, horse) | Gal: three to five painted the fair sign in the shop (Ferdo) · Iza: three to five sang in the choir, indoors at school (Hana) · Oskar: three to five mended clocks in his shop (Nuša) | Oskar hung lights by the basket **at two** | after six the window hums softly |
+| 5 | the names on two locker doors were swapped (Oskar ↔ Zofka) and Zofka got Oskar's parcel; Nuša filled the locker at three, Zofka opened her door at five: **Friday, three to five** | Iza: »Po abecedi je lepše!« (to tidy, to play postwoman) | pair: Nuša's list (»1: Zofka · 2: Oskar · 3: delavnica, paket 4712«) disagrees with the doors (1: Oskar, 2: Zofka) + Hana saw Iza writing name tags | Žan: three to five at the dentist with his mother (Ferdo heard her call) · Zofka: three to five at the stand (Oskar) · Oskar: three to five carried the big ladder with Gal | Zofka's pin in door 1: from five (after) | one battery fewer on the battery list every day |
+| 6 | the soldiers moved from the left of the window table to the door: at six they stood in place (Ferdo, locking the front door), at seven they stood at the door and the window hummed (Oskar, walking past): **Friday, six to seven** | Gal: his first window, to show Ferdo toys can walk | pair: the packing slip in the shop's parcel (»Gal je naročil: baterije, lepilo, žeblji, magnet.«) + under the window table runs a train with a magnet (dark) | Iza: six to seven upstairs, making a lantern with Ferdo · Žan: six to seven on the square watching the lights go up (Nuša) · Zofka: six to seven sewing at the stand with Nuša. Gal has only his own claim: »Po šestih sem samo pometal.« (partial) | 🧭 Brzec is under the window table: Žan forgot it at five; explained by »Daljinec za Brzca je Žan ob šestih odnesel domov.« (8) | – |
+
+**Ferdo's closing list** (final, scene, list shape b): »Ob šestih: Žan domov.« · »Ob šestih: Zofka na trg.« · »Ob šestih: Gal pometa.« It tells who left; the alibis tell where they were.
+
+**Language-bound:** item lists in the nominative (»Na seznamu: postelja, miza …«), never after a number (»pet svečk« → write the items, not counts); »po abecedi« (case 5) only works in an alphabet where O comes before Z (true for Slovenian and English; check other languages); Iza's »Konjiček je len!« is a joke, not a clue; »vojaki« are tin soldiers (»kovinski vojaki«), say »kovinski« in case 1's window list so the metal is on screen; the generic masculine questions (»je nadel«, »je odprl«) are fair only because every line-up has two genders (checked below).
+
+### 4.3 Line-ups
+
+- **Line-ups** (culprit in bold; its place 3, 2, 1, 4, 2, 2): 1 Gal, Žan, **Iza**, Zofka · 2 Iza, **Oskar**, Gal, Nuša (👁️ Hana, Ferdo) · 3 **Nuša**, Zofka, Oskar, Gal · 4 Oskar, Iza, Gal, **Zofka** · 5 Žan, **Iza**, Zofka, Oskar (👁️ Hana) · 6 Iza, **Gal**, Žan, Zofka (👁️ Oskar, Nuša).
+- **Culprits:** Iza, Oskar, Nuša, Zofka, Iza, Gal. Nobody twice in a row; Iza twice (1, 5), with three cases between. **Never culprits of a small case: Gal and Žan**, and both are in the guess, so »never caught« is no tell. Every suspect is in ≥ 2 line-ups (Gal 5, Iza 5, Zofka 5, Oskar 4, Žan 3, Nuša 2).
+- **Gender check (sneg lesson):** every line-up has at least one male and one female suspect; no question has a feminine ending; no line-up has a non-person.
+- **Unique objects (sneg lesson):** red tape: only Nuša's (said in case 3, not shared with the shop); the basket of cloth: only Zofka's line on the carry list; the magnet: the fishing game's magnet is »majhen«, the train's is »velik«, and only the packing slip has »magnet« next to a name.
+- **Lie map:** one ❗ (case 3). Claims: Zofka's true one first, Nuša's lie second; this time the liar *is* the culprit (sneg and galeb had innocent liars). Truth: »No ja … Lučka se je razbila. Kupila bom novo.«
+- **Proof map:** one list line (1), a list line that is a time (2), a pair with a unique object (3), a pair list + place (4), two lists + a sighting (5), a list item + a dark scene object (6). The culprit's possessive is never the proof. Proof row: top in 1 and 4, middle in 2 and 6, bottom in 3 and 5.
+- **Who looks guilty rotates:** Zofka (1, the thread), Gal (2), Iza (3), Oskar (4), Zofka (5), Žan (6 and the big thread).
+
+### 4.4 Hooks and running jokes
+
+- **The countdown** opens every call: »Še pet dni do sejma!« … »Danes je sejem!«
+- **P. S. lines** (never clues): 1 »Gal je popravil ribolov. Ribice spet grizejo!« · 2 »Jutri pride Nuša z velikim paketom.« · 3 »V četrtek postavimo stojnico na trgu!« · 4 »Jutri Nuša polni paketnik.« · 5 »Jutri je sejem! Bodo igrače spet hodile?«
+- **Running jokes:** Ferdo's glasses are on his forehead while he looks for them (»Kje so moja očala?«); Zofka can't talk with pins in her mouth (»Mhm-mhm!«); Iza names every toy (Medo Bruno, Konjiček Len); Žan's Brzec, »Brrrm!«; Oskar's »Tik-tak, točno ob petih!«; Nuša's bike bell »Crr-crr!«; Hana reads every list aloud: »Po pravilu preberem vse!« (she gives the hint ladder its voice).
+- **Souvenirs** (never clues, a pull back to older seasons): Ferdo makes toys from newspaper stories; the top shelf holds a wind-up 👾 Bip, a little Rex, a golden cup and a snowman music box. One line in case 2's scene: »Na polici je pločevinast Bip iz zračnika.«
+
+### 4.5 The final letter: Ajda's postcard, the suitcase, the next window
+
+Ferdo's letter (writer's wording), then the postcard, then the hand-over:
+- **Ferdo:** »Hvala! Igrače res hodijo same.« · »Gal ti pošilja svoj prvi magnet.«
+- **The suitcase object (»Praznični primeri«, window 1):** 🧲 **Galov prvi magnet**, a little red horseshoe magnet, the weak one that made the soldiers fall over. It goes into Ajda's »kovček skrivnosti« on the ID card: »Magnet je v tvojem kovčku skrivnosti!«
+- **Ajda's postcard** (3 lines + the intro for new players): »Ajda je dekle iz Smrečja, ki rada postavlja uganke.« · »Pozdrav s počitnic!« · riddle 👾 »Kdo je živel v zračniku?« (answer Bip; the toy Bip on Ferdo's shelf echoes it) · »V svoj kovček sem dala žličko.«
+- **The next window:** »P. S. Okence 2 se odpre v četrtek. Kdo zvečer ropota z verigo?« (Miklavž's eve season, 12-03; Miklavž himself is never named as a suspect.)
+
+## 5. What is new
+
+- **Structure:** the first **»how« inside the »who«**: the child works out *what* moves the toys (a magnet) from lists before finding *who*; the **corkboard is a list of lists** (cards 1, 5 are lists, the rest are list-like oddities); the culprit is the liar this time; the right guess option is first; the big answer is neither a gift nor a bet.
+- **The lock 🔐** opens Nuša's parcel locker door 3. Nuša sets each door's code to its parcel number, as real lockers do, and the number is on her list in case 5 (»paket 4712«). Ferdo: »Paket za delavnico? Jaz ga nisem naročil!« The shop's parcel may be opened by the shop's owner; it is not snooping. `h2` gives the code.
+- **Feelings:** *anticipation*, the evening before the fair, with a covered window and a countdown; *wonder* that stays true at the end (the toys do walk); and a **take-home aha**: the magnet trick a child can show their family.
+- **The holiday collection:** this is **window 1 of »🎄 Praznični primeri«**; its suitcase object is the magnet (§4.5).
+- **No developer build needed.** Optional XS (main session): the solved screen's newspaper headline »IGRAČE RES HODIJO!«.
+- **Deliberately not repeated:** no film, no camera, no flip-book; no figure moved by hand each night for a show (🦕); nothing collected or taken to build something (👾); no night watch, no tournament clock, no snow; no trap question; no gift, no party; no animal; no Tim; no food motive; no »X ima rad Y« decoy (every decoy is a thing that happened); no »vso noč« in any alibi; the culprit's face never first twice; the proof never the culprit's possessive.
+
+## 6. Cast (new file `igrace`)
+
+| Who | Role | One trait (and its use) | Pattern (for the developer) | Address |
 |---|---|---|---|---|
-| 1 | Okence 1 · »Kdo je v okence 1 dal copat?« | Jaka: the paper star fell, he propped the curtain with his slipper (to fix) | the list says »Okence 1: zlata zvezda«; the only wrong item; Jaka walks in one slipper (decoy: Tara on a ladder at window 1, hanging lights, that morning) | ⭐ window 2's paper has a tiny tear, mended with a gold star |
-| 2 | Okence 2 · »Kdo je okence 2 prižgal ob petih?« | Nina: to try her new lamp before anyone (to try) | ⏰ Vanda's timetable as the list: who was where at five; only Nina's line is »doma« next to window 2 | 🕘 »Ob devetih je bil papir okenca 3 še cel.« (after nine: kids are in bed?) |
-| 3 | Okence 3 · »Kaj manjka v okencu 3?« | Tara: broke the angel's wing, took it home to glue (to hide a mistake) | absence: the list has five things, the window four; ❗ Tara »Danes nisem bila pri okencu 3.« breaks on a list line | 🛢️ the tear smells of oil (Luka oils his bike chain: tempting) |
-| 4 | Okence 4 · »Zakaj okence 4 ne sveti?« | Vanda: her list said »ob sedmih« (her own typo), so she unplugged it (to follow the list) | each helper's task line is right except one: the list itself is the culprit's slip | ✨ the gold stars are not the street's (Nina's sticker album has only silver ones) |
-| 5 | Okence 5 · »Kdo je zamenjal sani in zvonček?« | Luka (visiting, from ⚽/❄️): to have his aunt's window first (to win) | two lists disagree: the board vs Vanda's copy; the swapped pair names him by place | 🔔 every evening at half past nine the street clock rings, then a ladder creaks |
-| 6 ⭐ | Okence 6 (Miklavžev) · »Kdo je pokukal v okence 6?« | **Feliks** | 🔐 Vanda's curtain box (code from case 5's list) → pair: Feliks's repair list ends »zlate zvezdice« + the tear on window 6 is mended with a gold star after half past nine; Luka and Vanda alibied by the timetable | – (the answer) |
+| **mojster Ferdo** 👴🏼 | client, every case; a witness | »Igrače ne hodijo same!«; his glasses on his forehead | `Ferd(o\|a\|u\|om\|ov\p{L}*)` | Vi |
+| **Gal** 🧑🏻 | the answer; suspect 1, 2, 3, 4, 6; never a small culprit | 16, the apprentice; paints toy faces; mends the fishing game; sweeps after six | `Gal(a\|u\|om\|ov\p{L}*)?` ⚠ never write »Galeb« this season | ti |
+| **Iza** 👧🏻 | culprit 1, 5 | 8, Ferdo's granddaughter, lives upstairs; names every toy and talks to them | `Iz(a\|e\|i\|o\|in\p{L}*)` ⚠ avoid words that start »Iza/Ize/Izi/Izo« (»Izid«, »Izogni«); »Iz predala« is fine | ti |
+| **Žan** 👦🏽 | the big thread's obvious suspect; never a small culprit | 9, comes every day after school; remote car Brzec, »Brrrm!« | `Žan(a\|u\|om\|ov\p{L}*)?` | ti |
+| **teta Zofka** 👵🏼 | culprit 4 | sews doll clothes; pins in her mouth: »Mhm-mhm!« | `Zofk(a\|e\|i\|o\|in\p{L}*)` | Vi |
+| **Nuša** 👩🏻 | culprit 3 | delivers parcels on a red bike, »Crr-crr!«; red tape; the parcel locker | `Nuš(a\|e\|i\|o\|in\p{L}*)` | Vi |
+| **gospod Oskar** 👨🏻‍🦳 | culprit 2; witness 6 | the clockmaker next door; »Tik-tak, točno ob petih!«; mends the town clock | `Oskar(ja\|ju\|jem\|jev\p{L}*)?` | Vi |
+| **Hana** 👧🏽 (visiting) | witness only (👁️ 2, 3, 5); never a suspect | Ferdo's great-niece from earlier seasons; reads every list aloud, writes everything down | built | ti |
 
-- **Guess after case 3** (right in the middle): Luka (always »Prvi!«, oil on his bike) · **Feliks** · Vanda (holds every key, does the nine o'clock round).
-- **Decoys (things that happened):** Luka oiled his bike chain; Vanda carries every window key; Nina has a sticker album. A card that flips: 🛢️ oil = bike → clock oil; ⭐ gold star = a child's sticker → a repaired clock's seal.
-- **Final reveal:** the corkboard's six windows glow; Feliks, red-faced: »Že sedemdeset let ne morem čakati!«
-- **Red thread:** souvenirs: each house paints its window like a famous case from the newspaper (window 2 a vent with eyes, window 4 a seagull's hotel; never needed). Postcard: riddle 👾 »Kdo je živel v zračniku?«; kovček: a little spoon. P. S. »Okence 6 je Miklavževo. Kaj bo v njem?« → 12-03.
-- **Cast (new file):** gospa **Vanda** 👩🏼‍💼 (client; clipboard; »Seznam je seznam!«), gospod **Feliks** 👴🏻 (clockmaker, »Advent je za otroke!«), **Jaka** 👦🏻 (one slipper), **Nina** 👧🏽 (lamps), **Tara** 👧🏻 (ladders, lights), **Luka** 👦🏼 visiting (»Prvi!«).
-- **Risk:** Feliks as »the grump who is secretly soft« leans toward rung 9 (least likely); keep him a plain suspect in 2 small line-ups with his clock ladder and stars planted. A window lit by a person is not a gift: the street makes the windows *for themselves*, no surprise party.
+Ajda is only on the postcard. Iza 👧🏻 and Hana 👧🏽 need different colours (UX). Name checks: none of the new names is a cast name in `CHARACTERS` or a common sentence opener. Nine names with Ferdo, one fewer than sneg.
 
-### B. 🧸 »Igrače, ki hodijo same« (igračarna)
+## 7. Risks and how the season avoids them
 
-**Premise.** In Igračarna Kolešček, a week before the Christmas fair, the toys stand somewhere new every morning: the bear one step nearer the door, the soldiers turned round, the train off its track. Mojster Ferdo grumbles »Igrače ne hodijo same!« and calls the detective.
+- **Too close to 🦕 muzej (found in this pass, the biggest risk).** B as pitched, »a shy staff member moves the toys a little every evening; the moves in order make a film for the fair«, was muzej's big answer again (Mila moves Rex every night; the poses in order are a dance for the birthday). **Fix:** nobody moves the toys by hand; a hidden magnet does, and Gal isn't shy. The thread is solved by lists (which toys moved, which never did), not by putting moves in order. And the 🦕 postcard riddle (»Kdo je premikal Rexa?«) was dropped for the 👾 one.
+- **Too close to 👾 Bip** (secretly building something from collected parts): nothing is taken or collected; Gal *orders* his magnet, and the packing slip says so. The pins are pulled, not gathered by a person.
+- **The flip-book in case 1** (my own flag): gone with the film. What the child must know is **»a magnet pulls metal, not wood or cloth«**, planted in case 1 with the magnetic fishing game every child knows, and said again by card 2's wooden horse.
+- **Near 12-17's puppet stage:** no stage, no show, no puppets; the word »lutka« is not used (the doll is a »punčka«). The window is a shop window, not a performance, and the fair is the setting of the ending, not a stage.
+- **A toy workshop in December looks like Božiček's workshop:** no case says the toys are for Božiček, Miklavž or Dedek Mraz; they are for the fair. None of the three appears or is mentioned, except the hand-over P. S. to 12-03, which names nobody.
+- **Magnets and small children:** the story's magnet is big and on a train; no line suggests swallowing-size magnets. The take-home trick is only offered with »z odraslim« (question 3).
+- **The »how« is too hard:** three cards point at metal and a magnet before the guess; the second guess comes after the battery card; the final's dark scene object *shows* the train with the magnet, so a child who missed the chain still sees it before solve.
+- **Scary:** none. Moving toys are seen only in the morning light, never »coming alive« in the dark; the hum is »brrr«, and Oskar, who hears it, laughs.
+- **Unfair final:** the window has two edges on screen (at six in place, at seven at the door); every alibi says »od šestih do sedmih«; Gal's only line is his own claim (partial); the magnet is unique (§4.3); 🧭 is explained by the remote going home at six.
+- **List text is heavy:** at most one list on screen; items 1–4 words in the nominative; every list-clue hint ladder starts »Preberi vse na seznamu!«.
 
-- **Big mystery:** »Kdo zvečer premika igrače?« (or, in the final, »Zakaj igrače hodijo?«)
-- **True answer: Gal** 🧑🏻‍🔧, Ferdo's shy apprentice. Every evening after closing, under the shelf lamp, he moves each toy a tiny bit and takes a photo: he is making a little film, **»Igrače, ki hodijo same«**, for the shop window at the fair, to show his master that toys *do* walk (to try, and to win a friendly argument). The toys really walk, on film. Line the child repeats: **»Igrače res hodijo!«** (Ferdo, at the end).
-- **Why a 7-year-old begs to play it:** a shop full of toys that seem alive is the dream of every November child, a little spooky and always friendly; the answer is a real »wow«: the spooky promise of the title comes true, kindly. Toys are things a child can picture in every sentence.
-- **Rung 7 here:** the shop is made of lists: the window display list, Ferdo's closing list (»Ob šestih: ugasni luči …«), the doll's-house order, the fair's packing list, and in the final **Gal's shot list** (»1 vlakec, 2 medved, 3 vojaki, 4 punčka, 5 balerina, 6 …«).
+## 8. Puzzle slots (for the puzzle designer)
 
-| # | Case (question) | Culprit, motive | Proof / list moment | Card for the big mystery |
-|---|---|---|---|---|
-| 1 | »Kdo je vlakec postavil s tirov?« | Žan, a boy who visits every day: to see the wheels up close (to see) | the display list says »vlakec s šestimi vagoni«; five on the track, the sixth in Žan's coat (decoy: Iza dusted that shelf at five) | 👣 the bear is one step nearer the door every morning |
-| 2 | »Kdo je po šestih navil glasbeno skrinjico?« | Iza, Ferdo's granddaughter: to hear the song once more (to hear) | ⏰ Ferdo's closing list as a schedule: who left before six, who after | ✖️ a chalk cross on the floor under every moved toy (Iza plays hopscotch: tempting) |
-| 3 | »Kaj manjka v hiški za punčke?« | Nuša, the parcel woman: packed the tiny lamp in the wrong box (to hide a mistake) | absence: the order list has five pieces, the house four; ❗ Nuša »Danes nisem odprla nobenega paketa.« | 💡 the shelf lamp burned all evening (Ferdo forgets lamps: tempting) |
-| 4 | »Kdo je vojakom obrnil hrbet?« | Hana (visiting her uncle Ferdo, from 🦔/⚽/❄️): »po pravilu«, paint fades in the sun (to fix) | every helper's task list is fine except one line too many | 🔺 three small dots in the sawdust, in a triangle (Ferdo's three-legged stool: tempting) |
-| 5 | »Kdo je zamenjal medvedka v škatli?« | Rudi, the chimney sweep: dropped the fair bear in soot, swapped in a clean one (to hide a mistake) | two lists disagree: the fair's packing list vs the shelf; the sooty bear's number | 📋 the toys moved in an order: train, bear, soldiers, doll, ballerina |
-| 6 ⭐ | »Zakaj igrače hodijo same?« | **Gal** | 🔐 the workshop cupboard (code from case 5's packing list) → pair: the shot list's item 6 is the toy that moved last night + the closing list: on Friday only Gal stayed after six; Iza, Nuša, Hana alibied | – (the answer) |
+One puzzle a case; no type twice in a row; the last hint gives the answer; no new mechanic. Suggestions:
+1. 🔤 **words** (the lightest, 3 words) naming three scene places: PREDAL, POLICA, OKNO (a 6×6 grid; the designer checks it).
+2. 📜 **torn**: Hana's torn notebook page gives one alibi line of her list (Iza's »at five« line). Then ⏰ sorts Gal-at-four / Oskar-at-five / one after-six line.
+3. ✉️ **cipher**: gives the UGOVOR breaker »Rdeč trak ima samo Nuša.« (a full key, as in sneg 3; ❗ needs a sentence-giving puzzle in front of it).
+4. 🔤 **words + geslo**: the geslo gives one alibi (Iza in the choir).
+5. 🕐 **order** of the afternoon at the locker (Nuša fills it → Iza writes tags → Zofka opens door 1 → the wrong parcel), its `done` line pointing at the two lists.
+6. 🔐 **lock**, 4 wheels, code **4712** (the shop's parcel number on Nuša's list in case 5); `h1` »Poglej Nušin seznam paketov.«, `h2` says the code. Then scene (🔦 the train under the table) and 🧭. One puzzle in the final is enough: the lock is the reveal's door.
 
-- **Guess after case 3:** Iza (chalk crosses) · Nuša (comes at six with parcels, has a key) · **Gal** (stays late to sweep). Right option in the middle.
-- **Cards that flip:** ✖️ chalk crosses = hopscotch → a film-maker's marks; 🔺 three dots = a stool → a tripod; 💡 a forgotten lamp → light for filming; 👣 toys walk → frames of a film.
-- **Final reveal:** the solved screen plays the film as five lines, one toy a line (»🚂 … 🧸 … 💂 …«), then Ferdo: »Igrače res hodijo!« Optional XS build: the lines appear one by one. Gal's film runs in the shop window at the fair.
-- **Red thread:** souvenirs: Ferdo makes toys from newspaper stories, so the top shelf holds a wind-up 👾 Bip, a little Rex, a golden cup, a snowman music box (»Kdo je to?« in one P. S.; never needed). Postcard: riddle 🦕 »Kdo je ponoči premikal Rexa?« (moving things, like this season); kovček: a toy dinosaur tooth. P. S. »Na sejmu je bil tudi Miklavž. Kdo pa je ropotal z verigo?« → 12-03.
-- **Cast (new file):** mojster **Ferdo** 👴🏼 (client; »Igrače ne hodijo same!«), **Gal** 🧑🏻‍🔧 (shy apprentice, phone and pencil behind his ear), **Iza** 👧🏻 (chalk), **Žan** 👦🏽 (the train), **Nuša** 👩🏻 (parcels, ringing bicycle), **Rudi** 👨🏻 (chimney sweep, soot), **Hana** 👧🏽 visiting (»Po pravilu …«: reads every list aloud, the season's running joke). (Not »Val« or »Jasna«: both start Slovenian sentences.)
-- **Risk:** close to Bip (»someone collects things to build something«): avoided, nothing is taken, things are *moved*, and the answer is a film, not a machine. A film made of photos must be clear to a 7-year-old: the call plants it (Ferdo shows an old flip-book, »listanka«, in case 1). Evening with the lamps on, never night. Next to 12-17's puppet stage: different kind of fun (wonder vs stage).
+## 9. Questions for the producer
 
-### C. ✉️ »Pismo brez naslova« (božična pošta)
+1. **The answer moves from a film to a magnet** (§7, first risk: the film was muzej's big answer again). Same title, same Gal, same »Igrače res hodijo same!«: yes?
+2. **Hana as a witness only** (👁️, she reads every list aloud), or no old faces at all, for a cleaner new world?
+3. **The take-home trick:** may the final's letter or the solved screen say »Poskusi doma z odraslim: magnet, papir, sponka.«? (Fun and real, but it is about magnets near children; I'd only use a fridge magnet.)
 
-**Premise.** At the little post office in Brinje, the wish letters to Božiček go north in a golden box, and the village waits for its parcels. But every morning the red box holds a letter with no address and no name: only a list of four things.
+**Alternative premise (two lines):** *Igrače, ki ponoči igrajo.* Every morning the music boxes are wound down, as if they had played all night; the answer is **Oskar**, who can't sleep since his clock shop went quiet and plays them through the shared wall to fall asleep (to hear; a lonely, kind grown-up, closer to rung 8 »why?«).
 
-- **Big mystery:** »Kdo piše pisma brez naslova?«
-- **True answer: Petra** 👩🏽, the new postwoman. She can't find the houses (the village has no street names, the numbers jump), and she is afraid Dragica will send her away before the Christmas rush. So every evening she writes one house as a list (»zelena vrata, dva dimnika, lipa, zvonec«), posts it to herself and practises the round at dawn (to hide a mistake, to try). Ending: the detective and the children draw her a map of Brinje; she delivers the Christmas post without one wrong turn. Line: **»Spet sem zavila narobe!«**
-- **Why a 7-year-old begs to play it:** secret letters, a red post box, stamps, and a village map that fills in, house by house, on the corkboard. The child becomes the post's detective in the week of the wish letters.
-- **Rung 7 here:** every letter **is** a list (a house in four things), plus the parcel list, the stamp list, the round's timetable; the final pairs a letter's list with the map.
+## 10. Decisions
+- **2026-11-19, producer:** the full plan is approved: the magnet train instead of the film; Hana as a witness who reads every list aloud (one role line, no other old faces); »Poskusi doma z odraslim: hladilniški magnet in sponka.« only after the reveal, never in a case screen. Fix the director's four 🟠 from §0b while writing (Žan cleared early, Gal's motive »to try, too shy to say it doesn't work yet«, one list on screen per case, the letter reads well without the suitcase) and take the ⚪ where cheap. Writers and the book editor on Opus.
+- **2026-11-19, producer:** the »Praznični primeri« band and Ajda's suitcase go live today, with countdowns, ahead of this season.
 
-| # | Case (question) | Culprit, motive | Proof / list moment | Card (a house on the map) |
-|---|---|---|---|---|
-| 1 | »Kdo je na paket narisal zobe?« | Zoja (visiting, from 🦕/⚽/❄️): to try her new marker | the parcel's label list; one line is in green marker | 🏠 letter 1's list matches the mill: the writer knows what houses *look like* |
-| 2 | »Kdo je zamenjal znamke?« | Žiga, stamp collector: to see a rare stamp up close | ⏰ the counter's timetable as the list | 📮 letters are posted after closing, after six |
-| 3 | »Kaj manjka v Ulinem paketu?« | Jože, the retired postman: re-tied a torn parcel and left the scarf on the counter (to fix) | absence: the parcel list has five things, the box four; ❗ Jože's claim | 🗺️ the lists never use a house's *name*, only what it looks like (Jože knows every name: he is not the writer) |
-| 4 | »Zakaj je pismo prišlo nazaj?« | Ula: wrote her grandma's old address (to hide a mistake) | the innocents' address lines are all fine, one is not | ✏️ the lists are in a green post pen (every post worker has one) |
-| 5 | »Kdo je pomešal pošto za hrib?« | Rok, the van driver: to beat Petra's bicycle up the hill (to win) | two lists disagree: the round list vs the bag | 🌅 at dawn someone walks the round before the post opens |
-| 6 ⭐ | »Kdo piše pisma brez naslova?« | **Petra** | 🔐 the parcel locker (code from case 5) → pair: the last letter's list is the post office itself + only Petra has the key after six | – |
-
-- **Guess after case 3:** Jože (knows every house; tempting until card 3 flips) · **Petra** · Ula (writes letters to everyone).
-- **Božiček stays real:** the golden box is never opened (»Teh pisem ne odpiramo. So za Božička.«); no case touches a letter to him. The wish list a child reads is Ula's own, shown with »Samo ti smeš prebrati.«
-- **Red thread:** souvenirs: the dead-letter shelf holds letters from the detective's old clients (Kapitanka Vesna, Bepi, Rambo). Postcard: riddle 🦔 »Kdo piše knjige o Ježku?«; kovček: a stamp. P. S. »V pošti je prišlo pismo za Miklavža …« → 12-03.
-- **Cast (new file):** gospa **Dragica** 👩🏼‍🦳 (client; »Žig je žig!«), **Petra** 👩🏽 (new, gets lost), **Jože** 👴🏻 (retired postman, knows every name), **Ula** 👧🏼 (letters), **Žiga** 👦🏻 (stamps), **Rok** 👨🏻 (the van, »Hitreje!«), **Zoja** 👧🏻 visiting.
-- **Risk:** the most text-heavy (letters + lists on the same screen); belief near the golden box; case 5 is the weakest small case. And Petra is the »new one who gets lost«: an obvious answer unless card 3 makes Jože very tempting.
-
-### Recommendation: B, »Igrače, ki hodijo same«
-
-1. **A child's eye:** »toys that walk by themselves« is the strongest promise a 7-year-old can hear in November, and the answer keeps it (they *do* walk, on film). A ends with a grumpy man peeking (a giggle, not a wow); C's answer, a lost postwoman, is the weakest wow and the heaviest reading.
-2. **The list is natural, not forced:** a toy shop runs on lists (display, orders, packing, closing), and the final's proof is a list nobody would look at twice, a shot list: pure Christie.
-3. **The most cards that flip** (chalk, dots, lamp, steps): the end reorders four of five cards, which is what makes a child feel clever.
-4. **The best pull back:** Bip, Rex, the cup and a snowman as toys on the shelf, plus the 🦕 riddle about something that moved at night.
-5. **The brief's feeling:** wonder first, anticipation second (the fair's Saturday, the film's premiere). If the producer wants anticipation pure, **A** is the safer fit and the closest second: its corkboard-as-calendar is the best »glow« mechanic, and it hands 12-03 window 6 on a plate.
-
-**Brief note (one line):** the brief bars »a kind grown-up with a secret gift«; B's Gal is a kind grown-up with a *secret*, but no gift: his film is his own work, shown at the fair, not given to anyone.
-
-## 0b. Director's check of the pitch (to be written after the pitch)
+- **2026-11-18, producer:** pitch **B** is approved for 11-26.
+- **2026-11-18, producer:** »Igračarna« is not a good word. The place is a toy workshop, **»Delavnica Vrtavka«** (showrunner's pick; also considered Kolešček, Pri lesenem konjičku, Ropotulja); the title »Igrače, ki hodijo same« stays.
+- **2026-11-18, producer (a rule for every season):** Miklavž, Božiček and Dedek Mraz are **never unmasked**, as anyone.
+- **2026-11-18, producer:** 12-17 is the puppet stage, so this season uses no stage, show or puppets.
+- **2026-11-18, producer:** the content matters most this December (more testers over the holidays); a season that grips them should send them back to earlier seasons (the souvenir shelf, Ajda's riddle).
+- **2026-11-18, producer:** the six December seasons are one collection, **»🎄 Praznični primeri«**: a shared start-screen band like an advent calendar with six windows (one opens each Thursday), Ajda's »kovček skrivnosti« on the ID card with six slots (each finished holiday season adds its object), and a »Diploma velikega detektiva« with the child's name for a full suitcase on 12-31. Ajda's riddles about older seasons stay a bonus. **This season is window 1; its object is 🧲 Galov prvi magnet**; the final letter hands over to window 2 (Miklavž, 12-03).
+- **2026-11-18, showrunner:** the film answer is replaced by the magnet (§7), pending the producer's yes (§9, question 1).

@@ -10,4 +10,7 @@ Read before every task. Add up to 3 lessons after every task: the rule, then —
 - When the audience is about to grow (holiday testers), freeze the reading load and grow skill and feeling: a newcomer meets the newest season first. — advent plan, 2026-11-17 (untested until the January debriefs).
 - A thread that pulls players back must be a bonus, never a requirement (CURRICULUM »stands on its own«): riddles about old seasons plus a collection, with every season solvable alone. — advent plan, 2026-11-17 (untested).
 - Plan the holiday seasons early: the last A sittings fall in family time, so build them ahead and push with `opens`. — RELEASES calendar, 2026-11-17.
+- Check a fixed plot twist against the old season's *who-and-why*, not only its trick: swapping the film for a magnet changed the how, but an employee secretly preparing a public reveal is still muzej. — advent check, 2026-11-18 (untested).
+- When the brief limits a shape (one list on screen), count it per case in the plan's tables: cases 4–6 each hid a second list. — advent check, 2026-11-18.
+- A clue that clears the obvious suspect must be planted before the guess that leans on him, not only in the final scene. — advent check, 2026-11-18 (Žan).
 - Read the last two seasons' *motive and ending shape* too, not only setting: muzej (party) and pokal (names on the cup) both ended on a secret kind gift, so the brief bans a third. — sneg brief, 2026-11-11.

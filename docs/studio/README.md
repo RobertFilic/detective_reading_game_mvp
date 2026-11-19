@@ -85,7 +85,7 @@ Each agent has a lessons file in [lessons/](lessons/) that it **reads before eve
 - **Privacy.** Names are never logged. Children's data stays on the device.
 - **Slovenian is a draft** until a native speaker has read it.
 - Agents do not commit, push or edit `docs/PLAN.md`. The producer says when to commit.
-- **The cheapest model that does the task very well** (the producer, 2026-11-09): Sonnet for writing, puzzles, building, screens, the season brief and the fun review; Opus only where Sonnet falls short: the season's architecture (showrunner), proving one answer (fair-play tester) and Slovenian grammar (Slovenian editor). A new role starts on Sonnet unless there is a reason.
+- **The cheapest model that does the task very well** (the producer, 2026-11-09): Sonnet for puzzles, building, screens and the season brief; Opus where Sonnet falls short: the season's architecture (showrunner), proving one answer (fair-play tester), Slovenian grammar (Slovenian editor), and since 2026-11-18 **the story itself: the case writers and the book editor** (the producer: the content, interesting and right for children, matters most). A new role starts on Sonnet unless there is a reason.
 - **Mind the token budget** (the producer's plan has a session limit, and a season used to run into it):
   - Never read `solo/index.html` whole (300 KB). Print what you need with `cd solo && node tools/case.mjs` (`<ids>`, `--file <season>`, `--cast <season>`, `--format`, `--list`), and grep for anything else.
   - Read only the sections of a season plan your task needs. Don't read an older season's plan as a model; one or two of its cases via `tools/case.mjs` are enough.

@@ -13,3 +13,6 @@ Read before every task. Add up to 3 lessons after every task: the rule, then —
 - Several headless Chromes closing at once sometimes never confirm; `tools/tests/setup.mjs` limits close to 15 s. Run tests through `run.mjs`, not by hand in parallel. — 2026-11-08.
 - When a card moves from "after a delay" to "never", grep tests for the counter text too (`👝 5 / 5`, `noteOk`): galeb-mech read the counter as its "all found" check. — all-found chip, 2026-11-13.
 - A new first-run card changes every test that starts from a new profile: add the tap to the shared `open()` helper, not to each test. — warm intro card, 2026-11-13.
+- `tools/tests/run.mjs` drops a test's screenshots unless `--shots` is passed (`setup.mjs`): run it with `--shots` to look at them. — praznik band, 2026-11-18.
+- Test a dated or grouped feature by patching the served HTML (`setBypassServiceWorker` + request interception, as `soon.mjs` does) instead of adding fake data to the game: one real season (`bip`) can borrow the new fields. — praznik.mjs, 2026-11-18.
+- `qr` and `rate` crash (puppeteer disconnect, no check failed) when the full suite runs 4 at a time; rerun them alone before calling it a failure. — full suite, 2026-11-18.
