@@ -43,7 +43,7 @@ Each sitting ends with its results written down (the season file, the ledger, th
 ## When the producer pings
 
 There are no timers. The producer pings a session (»check the releases«, »what's due?«), and the main session:
-1. Reads this file and compares today's date with the tables above.
+1. Reads this file and [TASKS.md](TASKS.md) (the producer's dated tasks), and compares today's date with both.
 2. Does what is due: a sitting whose day has come (A–D, in order; a sitting is never skipped), or the release check on a season's day.
 3. Writes the result back here (the table's dates and ✅), so the next ping starts from this file alone.
 
