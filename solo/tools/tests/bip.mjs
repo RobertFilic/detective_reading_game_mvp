@@ -30,7 +30,9 @@ for (const [name, w, h] of devices) {
 
   ok((await text()).includes('Vajenka'), `${name}: ID card shows the rank (🔰 Vajenka)`);
   await check('files');
-  ok((await p.$$('.file-card:not(.teaser)')).length === await p.evaluate(() => FILES.length) && await p.$('.file-card.season[data-file="bip"]'), `${name}: every adventure, the new season is marked`);
+  // holiday seasons (group) sit in the advent band; one shows in the list only as the big card
+  ok((await p.$$('.file-card:not(.teaser)')).length === await p.evaluate(() => { const hero = document.querySelector('.file-card.hero'), heroF = hero && FILES.find(f => f.id === hero.dataset.file);
+    return FILES.filter(f => !f.group).length + (heroF && heroF.group ? 1 : 0); }) && await p.$('.file-card.season[data-file="bip"]'), `${name}: every adventure, the new season is marked`);
   await p.click('.file-card[data-file="bip"]'); await wait();
   ok(await st() === 'board' && (await p.$$('.folder')).length === 6 && (await p.$$('.folder.soon')).length === await p.evaluate(() => 6 - casesIn('bip').length), `${name}: board: written cases + the rest coming soon`);
   if (name !== 'land') ok((await p.$$('.cork .pincard.empty')).length === 6, `${name}: corkboard with 6 empty slots`);

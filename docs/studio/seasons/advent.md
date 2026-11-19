@@ -1,6 +1,6 @@
 # 🧸 Igrače, ki hodijo same (season 6, opens 2026-11-26, »Praznični primeri« window 1): id `igrace`, file `advent.md`
 
-**Status:** briefed (2026-11-17, editorial director) → pitched (2026-11-17, showrunner: three options) → **B approved (2026-11-18, producer)** → **full plan written (2026-11-18, showrunner: §1–§9; the answer reworked from a film to a magnet, pending the producer's yes, §9 q1)** → next: puzzles (§8) and cases, sitting B/C.
+**Status:** briefed (2026-11-17) → pitched (2026-11-17) → **B approved (2026-11-18/19, producer)** → puzzles, cases i1–i6 (writers on Opus), reviews (fair-play, Slovenian ×2, book editor, UX) and fixes, **pushed with `opens` 2026-11-19** → opens by itself **2026-11-26**, window 1 of »🎄 Praznični primeri«. Release check 11-26 morning. Not done (⚪/engine-wide): the first-entry toast that covers the footer button on torn/cipher/order steps; icon vs label on scene tiles; identical »predal«/»seznam« tiles; bigger ✓ ticks.
 
 ## 0. Season brief (editorial director, 2026-11-17)
 
@@ -222,6 +222,7 @@ One puzzle a case; no type twice in a row; the last hint gives the answer; no ne
 **Alternative premise (two lines):** *Igrače, ki ponoči igrajo.* Every morning the music boxes are wound down, as if they had played all night; the answer is **Oskar**, who can't sleep since his clock shop went quiet and plays them through the shared wall to fall asleep (to hear; a lonely, kind grown-up, closer to rung 8 »why?«).
 
 ## 10. Decisions
+- **2026-11-19, case writer (sitting C fixes applied):** the fair-play and book-editor findings are in i1–i6 (the Slovenian editor's 16 edits kept). i4 asks »Kdo je v košaro skril budilko?« and uses the designer's 📜 fallback (»Od treh do petih je Gal v delavnici.«) instead of the 🔤 geslo, so the puzzle order is words, torn, cipher, torn, order, lock (no type twice in a row). i5's timeline now ends at five (Zofka's and Žan's alibis run »do petih«; her pin in the lock is a trace of opening at five). The final letter was cut to 8 rows (it overflowed the iPhone 14): the noses on the glass, Gal's »Drugo leto bodo plesali!« and Ajda's separate intro line are out; the landscape phone still overflows (the letter overlay doesn't scroll, as before). Skipped ⚪: Hana's »Po pravilu preberem vse!« (no line with room) and the glasses-on-forehead callback (letter space).
 - **2026-11-19, producer:** the full plan is approved: the magnet train instead of the film; Hana as a witness who reads every list aloud (one role line, no other old faces); »Poskusi doma z odraslim: hladilniški magnet in sponka.« only after the reveal, never in a case screen. Fix the director's four 🟠 from §0b while writing (Žan cleared early, Gal's motive »to try, too shy to say it doesn't work yet«, one list on screen per case, the letter reads well without the suitcase) and take the ⚪ where cheap. Writers and the book editor on Opus.
 - **2026-11-19, producer:** the »Praznični primeri« band and Ajda's suitcase go live today, with countdowns, ahead of this season.
 
@@ -244,7 +245,7 @@ One puzzle a case; no type twice in a row; the last hint gives the answer; no ne
 | 1 | call → 🔤 words → scene → solve | 🔤 **Iskanka**, the lightest: 3 words, no crossing, no geslo | nothing to the pocket; the words name three scene places | – |
 | 2 | call → ask → 📜 torn → ⏰ when → solve | 📜 **Raztrgan listek**, 4 strips, one a lone preposition | **Iza's alibi**, one line of Hana's list: »Ob petih je Iza pisala nalogo v sobi.« (8) | – (⏰ is the skill step) |
 | 3 | call → scene → ✉️ cipher → ❗ → solve | ✉️ **Šifra**, complete key, 9 symbols | the **UGOVOR breaker** (half of it): »Paket ni cel.« (3) | ❗ Nuša |
-| 4 | call → 🔤 words (geslo) → scene → solve | 🔤 **Iskanka z geslom**, 3 words, no crossing, a 24-letter geslo | **Gal's alibi**: »Od treh do petih je Gal slikal.« (7) | – |
+| 4 | ~~call → 🔤 words (geslo) → scene → solve~~ **sitting C: call → 📜 torn → scene → solve** (»Od treh do petih je Gal v delavnici.«, the fallback below) | 🔤 **Iskanka z geslom**, 3 words, no crossing, a 24-letter geslo | **Gal's alibi**: »Od treh do petih je Gal slikal.« (7) | – |
 | 5 | call → 🕐 order → scene → ask → solve | 🕐 **Časovnica**, 4 cards, Najprej / Potem / Nato / Na koncu | the afternoon's order (`done` line only) | – |
 | 6 ⭐ | call → 🔐 lock → scene → 🧭 → solve | 🔐 **Ključavnica**, 4 wheels, **4712**, read from a line of Nuša's list in case 5 | the lock opens the parcel (the scene with the slip and the train) | 🧭 Žan (Brzec) |
 

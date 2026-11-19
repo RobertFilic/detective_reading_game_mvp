@@ -8,7 +8,14 @@ import puppeteer from 'puppeteer-core';
 const launch = puppeteer.launch.bind(puppeteer);
 puppeteer.launch = async (o) => {
   const b = await launch(o), newPage = b.newPage.bind(b), close = b.close.bind(b);
-  if (!process.env.SHOTS) b.newPage = async () => { const p = await newPage(); p.screenshot = async () => {}; return p; };
+  b.newPage = async () => {
+    const p = await newPage();
+    if (!process.env.SHOTS) p.screenshot = async () => {};
+    // 3. TEST_DATE=2026-11-27 runs the pages on that day (a test that fakes its own clock still wins: it is injected later)
+    if (process.env.TEST_DATE) await p.evaluateOnNewDocument((day) => { const D = Date, t = new D(`${day}T09:00:00`).getTime() - D.now();
+      window.Date = class extends D { constructor(...a) { super(...(a.length ? a : [D.now() + t])); } static now() { return D.now() + t; } }; }, process.env.TEST_DATE);
+    return p;
+  };
   b.close = async () => {
     await Promise.race([close(), new Promise(r => setTimeout(r, 15e3).unref())]);
     const chrome = b.process();

@@ -50,13 +50,20 @@ The 🚀 v and 🐄 k cases were removed from the game on 2026-11-08; they stay 
 | ❄️ n4 | elim, scene, »Kdo ali kaj« | the roof 🏠 (nobody) | – (the snow slid) | absence: the roof above the igloo has no snow | Marko ploughed at night (not there at two) | 🕐 order (4 cards of the night) |
 | ❄️ n5 | elim, ask + words, rung 5 (the goat that didn't bleat) | Pia | to hide a mistake (cracked the sled) | pair: Bor bleats at all but Pia + Bor didn't bleat | Zoja drew teeth on Strela (yesterday) | 🔤 word search + geslo (Luka's alibi) |
 | ❄️ n6 | elim, final, 🧭 (1 clue) | Ajda | a bet with Luka (»ne ujameš me«) | pair: Ajda went to the woodshed at half eight + the front bell didn't ring | Marko ploughed after nine (explained by no footprints / snow cap + snow from nine) | 🔐 lock 1964 + 📜 torn |
+| 🧸 i1 | elim, scene, rung 7 (list) | Iza | the bear wanted to read | one line of Ferdo's drawer list »Predal: Iza, očala.« | Zofka sewed the bear's ear in the morning | 🔤 word search (3 words) |
+| 🧸 i2 | elim, ask + ⏰ | Oskar | to find the music box out of tune | a line of Hana's list »Ob petih: Oskar pri skrinjicah.« | Gal dusts the boxes every day (habit) | 📜 torn (Iza's alibi) |
+| 🧸 i3 | elim, scene, ❗ lie (culprit) | Nuša | to hide a mistake (the lamp broke on her bike) | pair: only Nuša has red tape + the parcel is resealed with red tape; Ferdo's ticked list misses »lučka« | Oskar's headlamp | ✉️ cipher (»Paket ni cel.«) |
+| 🧸 i4 | elim, scene, rung 7 | Zofka | to remember the lights at five (pins in her mouth) | pair: the stand list »Zofka, košara z blagom« + it rang from that basket | Oskar's wall clock on the list | 📜 torn (Gal's alibi with place) |
+| 🧸 i5 | elim, ask + order | Iza | tidying »po abecedi« | pair: Hana saw Iza write tags with glitter + the new glitter tags | Zofka's pin in the lock (she opened after the swap) | 🕐 order (4 cards) |
+| 🧸 i6 | elim, final, 🧭 (1 clue), rung 7 | Gal | to try a magic window, too shy to say it didn't work yet | pair: the parcel list »Paket za Gala: … večji magnet« + the magnet train under the thin table | Žan's car Brzec under the table (remote went home at six) | 🔐 lock 4712 |
 
-(🦔 rows: drafted, in review 2026-11-01; update them if the cases change before they ship.) 🦕 rows: written and reviewed 2026-11-05. ⚽ rows: written and reviewed 2026-11-06 (no animal culprits from now on, the producer's rule). ❄️ rows: written 2026-11-15, reviewed and fixed 2026-11-16.
+(🦔 rows: drafted, in review 2026-11-01; update them if the cases change before they ship.) 🦕 rows: written and reviewed 2026-11-05. ⚽ rows: written and reviewed 2026-11-06 (no animal culprits from now on, the producer's rule). ❄️ rows: written 2026-11-15, reviewed and fixed 2026-11-16. 🧸 rows: written 2026-11-19 (writers on Opus), reviewed and fixed the same day.
 
 ## Worn out: avoid or vary next season
 
 - **»X ima (zelo) rad(a) Y« as the decoy**: used in 8 of 18 cases. A child can learn »likes it = decoy« without reading the rest. Next season: decoys are things that *happened* (was near, was seen, has a tool), and at least once »likes it« is the real clue.
 - **»vso noč« in alibis**: in most Bip alibis. Vary: a witness, an object (a ticket, a photo), being too small or too big, being busy elsewhere with someone, a lock they can't open.
+- **»Vse popoldne / Ves večer« as every alibi's opener** (the new »vso noč«): 🧸 i4 2 of 3, i5 3 of 3, i6 3 of 3 (draft, 2026-11-19). A child learns »Ves/Vse … + name = cross off«. Vary within a case: two edges (»od šestih do jutra«), a witness, an object.
 - **Tim as culprit**: 4 of 12 space cases. Rest him for a season.
 - **Food as motive**: about a third of the cases. Use other wishes: to help, to surprise, to fix, to see, to win, to hide a mistake.
 - **The proof always names the culprit plainly.** Next skill rungs need proofs that point through a trace, a time or a missing thing.

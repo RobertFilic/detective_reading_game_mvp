@@ -41,7 +41,10 @@ ok((await text()).includes('Detektivka Ana je ujela Bineta!'), 'the solved scree
 await wait(250);   // brief-auto closes the excuse card
 ok((await p.$eval('.coach .say', el => el.textContent)).includes('Bravo, detektivka!') && (await p.$eval('.coach .say', el => el.textContent)).startsWith('Hov!'), 'the dog\'s praise: "Hov! Bravo, detektivka!"');
 await p.click('[data-act="next"]'); await wait(200); await p.click('[data-act="warmSkip"]'); await wait();
-ok(await st() === 'files' && (await p.$$('.file-card:not(.teaser)')).length === await p.evaluate(() => FILES.length), 'file picker with every adventure out today');
+// holiday seasons (group) live in the advent band, not in the list, unless one is the big card
+ok(await st() === 'files' && (await p.$$('.file-card:not(.teaser)')).length === await p.evaluate(() => {
+  const hero = document.querySelector('.file-card.hero'), heroF = hero && FILES.find(f => f.id === hero.dataset.file);
+  return FILES.filter(f => !f.group).length + (heroF && heroF.group ? 1 : 0); }), 'file picker with every adventure out today');
 ok((await p.$eval('.coach .say', el => el.textContent)).includes('izberi pustolovščino'), 'coach: "Zdaj izberi pustolovščino…"');
 await p.screenshot({ path: 'shots/f4-files.png' });
 await p.click('[data-coach="ok"]');
