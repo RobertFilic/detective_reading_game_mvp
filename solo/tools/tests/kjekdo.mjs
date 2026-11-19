@@ -278,7 +278,8 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   await p.goto('http://localhost:8765/kje-je-kdo/'); await wait();
   await p.evaluate(() => { localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })); localStorage.setItem('dp_kjekdo_intro_v1', '1'); });
   const LV = await p.evaluate(() => LEVELS);
-  for (const L of LV) {
+  // rooms on hold (hold: true) are not playable in the game yet; tools/kjekdo.mjs checks them on disk
+  for (const L of LV.filter(l => !l.hold)) {
     await p.goto(`http://localhost:8765/kje-je-kdo/?date=2999-01-01&uganka=${L.id}`); await wait(200);
     await p.$eval('#go', e => e.click());
     let presses = 0;
@@ -299,7 +300,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   await p.goto('http://localhost:8765/kje-je-kdo/'); await wait();
   await p.evaluate(() => { localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: '', id: '1234' })); localStorage.setItem('dp_kjekdo_intro_v1', '1'); });
   const LV = await p.evaluate(() => LEVELS);
-  for (const L of LV) {
+  for (const L of LV.filter(l => !l.hold)) {
     await p.goto(`http://localhost:8765/kje-je-kdo/?date=2999-01-01&uganka=${L.id}`); await wait();
     await p.$eval('#go', e => e.click()); await wait(200);
     const n = L.rooms.length;
