@@ -64,9 +64,11 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['se', 375, 667], ['land', 84
   await p.screenshot({ path: `shots/warm-${dev}-offer.png` });
   await p.click('[data-act="warmSkip"]'); await wait(300);
   const hp = await p.help();
-  ok(await p.st() === 'files' && hp.warm === 'skipped' && hp.g === 2, `${dev}: »Sama!« goes to the adventures (warm: skipped, help 2)`);
+  ok(await p.st() === 'office' && hp.warm === 'skipped' && hp.g === 2, `${dev}: »Sama!« goes to the office (warm: skipped, help 2)`);
+  ok((await p.say()).includes('detektivske primere'), `${dev}: the owl points at the cases' door`);
+  await p.click('.door-primeri'); await wait(300);
   ok(await p.evaluate(() => document.querySelector('.file-card.hero').dataset.file === FILES[FILES.length - 1].id), `${dev}: the newest season is the big card`);
-  ok((await p.say()).includes('izberi pustolovščino') && await p.evaluate(() => localStorage.getItem('dp_played_v1') === null && document.querySelector('.ui-badge-rank').textContent.includes('Vajenka')), `${dev}: the last bubble; the warm-up is no solved case and no rank`);
+  ok((await p.say()).includes('izberi pustolovščino') && await p.evaluate(() => localStorage.getItem('dp_played_v1') === null && document.querySelector('.dp-me-rank').textContent.includes('Vajenka')), `${dev}: the last bubble; the warm-up is no solved case and no rank`);
   ok(!p.errors.length, `${dev}: no page errors ${p.errors.join('|')}`);
   await p.close();
 }
@@ -120,7 +122,7 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['se', 375, 667], ['land', 84
   ok(await p.st() === 'reveal' && (await p.say()) === 'Zdaj znaš! Greva na pravi primer.', 'w2 solved: »Zdaj znaš! Greva na pravi primer.«');
   await p.click('[data-act="next"]'); await wait(300);
   const hp = await p.help();
-  ok(await p.st() === 'files' && hp.warm === 'done' && hp.g === 3, 'shown the answer in w2 → a lot of help (3) to start with');
+  ok(await p.st() === 'office' && hp.warm === 'done' && hp.g === 3, 'shown the answer in w2 → a lot of help (3) to start with');
   ok(await p.evaluate(() => LOG.some(e => e.type === 'help_level' && e.verdict === 'hard' && e.to === 3) && LOG.filter(e => e.type === 'hint_shown' && e.via === 'coin').length === 4), 'the log has help_level and the coin\'s hints');
   // the grown-up's review still opens with warm-up cases in the log
   await p.evaluate(() => go('debrief')); await wait(200);
@@ -153,11 +155,11 @@ for (const [name, slip, g] of [['clean', false, 1], ['one wrong pair', true, 2]]
 {
   const p = await open('iphone14', 390, 844, { ...newKid, dp_tutorial_done: 'true' });
   const hp = await p.help();
-  ok(await p.st() === 'files' && hp.warm === 'legacy' && hp.g === 1, 'a detective who played before: straight to the adventures (legacy, help 1)');
+  ok(await p.st() === 'office' && hp.warm === 'legacy' && hp.g === 1, 'a detective who played before: straight to the office (legacy, help 1)');
   await p.click('[data-act="tutorial"]'); await wait(200);
   ok(await p.evaluate(() => S.c.id === 'w1' && S.warmReplay) && await p.$('[data-act="back"]'), '❓ plays w1 again, with a way back');
   await p.click('[data-act="back"]'); await wait(200);
-  ok(await p.st() === 'files' && (await p.help()).warm === 'legacy' && !(await p.$('.coach')), 'back from the replay: the adventures, nothing changed');
+  ok(await p.st() === 'office' && (await p.help()).warm === 'legacy' && !(await p.$('.coach')), 'back from the replay: the office, nothing changed');
   await p.evaluate(() => { HELP.idle[1][0][0] = 0.4; S.file = 'bip'; playCase(1); }); await wait(100);
   await p.click('[data-act="answer"]'); await p.click('[data-act="toScene"]'); await wait(100);
   await p.click('[data-act="briefOk"]');

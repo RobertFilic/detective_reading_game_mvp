@@ -6,7 +6,12 @@
 //    and the test exits once its output is written (with its own exit code).
 import puppeteer from 'puppeteer-core';
 const launch = puppeteer.launch.bind(puppeteer);
-puppeteer.launch = async (o) => {
+// 4. On a computer without the Mac's Chrome (Linux, CI), use CHROME or /usr/bin/google-chrome instead, without the sandbox
+import fs from 'node:fs';
+puppeteer.launch = async (o = {}) => {
+  if (o.executablePath && !fs.existsSync(o.executablePath)) {
+    o = { ...o, executablePath: process.env.CHROME || '/usr/bin/google-chrome', args: [...(o.args || []), '--no-sandbox'] };
+  }
   const b = await launch(o), newPage = b.newPage.bind(b), close = b.close.bind(b);
   b.newPage = async () => {
     const p = await newPage();

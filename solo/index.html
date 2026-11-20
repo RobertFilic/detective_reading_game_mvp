@@ -1531,6 +1531,47 @@ tr.clickable { cursor: pointer; }
 .ui-gallery .ui-wrap { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 .ui-gallery .ui-swatch { width: 64px; display: flex; flex-direction: column; gap: 4px; font: 500 11px ui-monospace, Menlo, monospace; color: var(--ink-2); }
 .ui-gallery .ui-swatch > span { height: 40px; border-radius: 10px; border: 1px solid rgba(0, 0, 0, .08); }
+
+/* ---- Two games, one detective (docs/TWO_GAMES.md): the office's doors, the shared band (shared/detective.js) */
+#app { --dp-top: var(--safe-top); }
+.dp-band { flex: none; }
+.dp-band .ui-band-btn { width: 48px; height: 48px; font-size: 18px; }
+.dp-band + .ui-body { padding-top: 16px; }
+.ui-band.is-home + .ui-body.office { margin-top: 0; padding-top: 26px; gap: 14px; }
+.office .ui-head { font-size: 20px; font-weight: 700; }
+.door { appearance: none; position: relative; display: flex; align-items: center; gap: 14px; width: 100%; box-sizing: border-box; min-height: 120px; padding: 16px; border-radius: var(--r-xl);
+  text-align: left; text-decoration: none; font: inherit; cursor: pointer; }
+.door-primeri { border: 0; background: var(--season); color: #fff; box-shadow: 0 12px 26px var(--season-shadow, rgba(22, 75, 51, .3)); }
+.door-sobe { border: 2.5px solid var(--season); background: var(--paper); color: var(--ink); box-shadow: var(--sh-float); }
+.door-pic { width: 84px; height: 84px; flex: none; border-radius: 22px; background: var(--season-soft); display: grid; place-items: center; font-size: 46px; transform: rotate(-4deg); }
+.door-board { flex: none; }
+.door-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.door-text small { font: 600 13px var(--font); letter-spacing: .08em; text-transform: uppercase; }
+.door-primeri .door-text small { color: rgba(255, 255, 255, .85); }
+.door-sobe .door-text small { color: var(--season-mid); }
+.door-text b { font: 700 23px/1.15 var(--font); }
+.door-text > span { font: 400 var(--t-small)/1.3 var(--font); }
+.door-primeri .door-text > span { color: rgba(255, 255, 255, .9); }
+.door-sobe .door-text > span { color: var(--ink-2); }
+.door-go { font: 700 28px var(--font); }
+.door-sobe .door-go { color: var(--season); }
+.door-tag { position: absolute; top: -12px; right: 18px; background: var(--stamp); color: #fff; font: 700 13px var(--font); letter-spacing: .06em; padding: 3px 10px; border-radius: 9px; transform: rotate(3deg); }
+.door:active { transform: scale(.98); }
+@media (max-height: 740px) {
+  .ui-band.is-home + .ui-body.office { padding-top: 22px; gap: 10px; }
+  .door { min-height: 96px; padding: 12px 14px; gap: 12px; }
+  .door-pic { width: 64px; height: 64px; font-size: 36px; border-radius: 18px; }
+  .door-board { width: 72px; height: 72px; display: grid; place-items: center; }
+  .door-board .dp-board { transform: scale(.76); }
+  .door-text b { font-size: 20px; }
+}
+.waiting { flex-wrap: wrap; }
+.waiting .waiting-btns { flex: none; display: flex; gap: 8px; flex-wrap: wrap; }
+.waiting .waiting-sobe { text-decoration: none; display: inline-flex; align-items: center; }
+.survey { display: flex; flex-direction: column; gap: 12px; background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--r-l, 18px); padding: 16px; margin: 12px 0; }
+.survey-q { display: flex; flex-direction: column; gap: 8px; }
+.survey-a { display: flex; flex-wrap: wrap; gap: 6px; }
+.survey-a .btn { min-height: 44px; padding: 0 14px; }
 </style>
 <!-- Cloudflare Web Analytics: anonymous visit counts only (no cookies, no names, no game data) -->
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "43f23b7bd5c7498597842d9997dcc64d"}'></script>
@@ -1539,7 +1580,10 @@ tr.clickable { cursor: pointer; }
 <div id="app"></div>
 <div id="gate" aria-hidden="true"></div>
 <div id="modal" hidden></div>
+<script src="../shared/detective.js"></script>
 <script>
+DP.css();
+DP.startSitting();   // this device's sittings, for »Kdo danes igra?« (kept on the device)
 'use strict';
 
 // ---------------------------------------------------------------------------
@@ -2542,9 +2586,9 @@ const CASES = [
       // the culprit's »alibi« from his happy sister: true, but before the match (a yellow card)
       ['s1', '»Pred tekmo je Bor plesal ob igrišču.«', 'neutral', { who: 'pia', ask: 'Kje je bil tvoj bratec Bor?' }],
       // a lead, not a proof: white (the film's blur) and horns (the proof)
-      ['s2', '»Meee! Jaz sem bela maskota Reala z rogovi!«', 'neutral', { who: 'bor', ask: 'Kdo si ti na tekmi?' }],
+      ['s2', '»Meee! Sem bela koza, maskota Reala iz Madrida!«', 'neutral', { who: 'bor', ask: 'Kaj delaš na tekmi?' }],
       // the proof, in the upper half: a trace of the deed (the net tore on the film) on the culprit
-      ['s3', '»Na rogu ima Bor kos mreže malega gola.«', 'evidence', { who: 'tone', ask: 'Kaj manjka na malem golu?' }],
+      ['s3', '»Kos mreže visi na rogu Borovega kostuma.«', 'evidence', { who: 'tone', ask: 'Kje je kos mreže z malega gola?' }],
       ['s4', '»Med tekmo je Pia branila na velikem igrišču.«', 'clear', { who: 'neza', ask: 'Kje je bila Pia med tekmo?', clears: 'pia' }],
       // the decoy: Hana at the goal, after the match (the film's last frame)
       ['s5', '»Po tekmi sem pobrala žogo iz malega gola.«', 'distractor', { who: 'hana', ask: 'Si bila ti pri malem golu?' }],
@@ -2554,17 +2598,17 @@ const CASES = [
       // plant for the big mystery: Tone is at every bench before every match
       ['s8', '»Pred vsako tekmo postavim klopi.«', 'neutral', { who: 'tone', ask: 'Kaj delate pred vsako tekmo?' }],
       // card 2: white letters (a rubbing, as the child made in p1)
-      ['s9', '»Na risbi REAL so bele črke.«', 'neutral', { who: 'pia', ask: 'Kaj je na klopi Reala?' }],
+      ['s9', '»Na klopi je risba REAL. Črke so bele!«', 'neutral', { who: 'pia', ask: 'Kaj si našla na vaši klopi?' }],
     ],
     // ⏰ 3 cards: Bor before (true, no alibi), Hana's alibi during, Hana at the goal after
     when: { deed: 'med tekmo: skrivni gol',
       cards: { s1: 'before', s7: 'during', s5: 'after' },
       h1: 'Pred tekmo, med tekmo ali po tekmi?' },
     h1: 'Kdo NI mogel biti? Kje je kos mreže?',
-    reveal: ['Kos mreže je visel na Borovem rogu.', 'Med tekmo je Bor stekel k malemu golu.', 'Žogo je zabil z glavo, kot prava koza!', 'Ples pa je bil pred tekmo. Napačen čas! 🟨'],
+    reveal: ['Kos mreže je visel na rogu Borovega kostuma.', 'Med tekmo je Bor stekel k malemu golu.', 'Žogo je zabil z glavo, kot prava koza!', 'Ples pa je bil pred tekmo. Napačen čas! 🟨'],
     caught: 'Bora', excuse: 'Meee! Tudi jaz sem Mbappe!',
     card: { icon: '🖍️', sid: 's9', think: 'Bele črke na sivem? Kot z mojim svinčnikom! 🤔' },
-    letter: ['Hvala! Boru so dali medaljo »najboljša maskota«. 🏅', 'Pia bo Boru zlepila rog. Meee!', 'P. S. Luka je kapetan Cityja. Ima rdeč trak!'],
+    letter: ['Hvala! Boru so dali medaljo »najboljša maskota«. 🏅', 'Pia bo Boru popravila rog kostuma. Meee!', 'P. S. Luka je kapetan Cityja. Ima rdeč trak!'],
   },
   {
     id: 'p3', file: 'pokal', no: 3, type: 'elim', level: 'A', sticker: '🎗️', place: 'Klop Cityja',
@@ -3805,13 +3849,45 @@ const UI = {
   player: (p) => `<span class="ui-player">${UI.coin(p.av)}${esc(p.name || '')}</span>`,
   pill: (text) => `<span class="ui-pill">${esc(text)}</span>`,
   tag: (text, cls = '') => `<span class="ui-tag ${cls}">${esc(text)}</span>`,
-  id: (p, o = {}) => { const n = solvedKeys().filter(k => ALL_KEYS.includes(k)).length;
+  id: (p, o = {}) => { const n = myTotal(), pts = myPoints();
     return `<div class="ui-id ${o.stamp ? 'is-new' : ''}"><div class="ui-id-head"><span>${esc(o.brand || BRAND)}</span>${UI.coin('🔍')}</div>
       <div class="ui-id-body"><span class="ui-id-photo"><span>${p.av}</span>${UI.coin(p.sk)}</span>
-        <span class="ui-id-text"><span class="ui-id-name">${esc(p.name || detTitle(p))}</span>${UI.pill(rankName(rankFor(n), p))}${n ? `<span class="ui-count">✔ ${solvedLabel(n)}</span>` : ''}</span></div>
+        <span class="ui-id-text"><span class="ui-id-name">${esc(p.name || detTitle(p))}</span>${UI.pill(rankName(rankFor(pts, profile() || p), p))}${n ? `<span class="ui-count">✔ ${DP.solvedLabel(n)}</span>` : ''}</span></div>
       ${n ? `<div class="ui-id-stamps">${FILES.filter(f => !f.group).map(f => `<span class="${fileDone(f.id) ? 'is-done' : ''}" title="${esc(f.title)}">${f.icon}</span>`).join('')}</div>` : ''}${PRAZNIK.length ? UI.case(kovcekSlots(), o) : ''}${o.stamp ? UI.stamp(o.stamp) : ''}</div>`; },
 };
 const BRAND = 'Bralni detektivi';
+// The band on top of every game's dashboard (shared/detective.js): the small detective card goes back to the
+// office, a tab per game switches straight to it. The rooms game draws the same band.
+// The parent's 30 seconds (docs/marketing/ANALYTICS.md §6): four optional taps behind »Za odrasle«, offered once the
+// device had 5 sittings or a season was finished, and again after each newly finished season. Each answer is its
+// own anonymous `survey` event; no free text. `dp_survey_v1` (on the device) = { m: the milestone answered, ans: [q] }.
+const SURVEY_KEY = 'dp_survey_v1';
+const SURVEY = [
+  { q: 'skupaj', t: 'Ste igrali skupaj?', a: [[1, 'Vedno'], [2, 'Včasih'], [3, 'Otrok sam']] },
+  { q: 'vredno', t: 'Je bil ta čas pred zaslonom dobro porabljen?', a: [[1, 'Da'], [2, 'Ne vem'], [3, 'Ne']] },
+  { q: 'priporocil', t: 'Bi igro priporočili prijatelju? (0 = ne, 10 = zagotovo)', a: [...Array(11)].map((_, i) => [i, String(i)]) },
+  { q: 'skrb', t: 'Kaj vas pri igri najbolj skrbi?', a: [[1, 'Čas pred zaslonom'], [2, 'Premalo časa za skupno igro'], [3, 'Igra je pretežka'], [4, 'Igra je prelahka'], [5, 'Nič']] },
+];
+const surveyMilestone = () => {
+  const seasons = FILES.filter(f => f.season && fileDone(f.id)).length, n = (store.read('dp_visits_v1', {}) || {}).n || 0;
+  return seasons ? seasons : (n >= 5 ? 0 : null);
+};
+function surveyHTML() {
+  const m = surveyMilestone(), st = store.read(SURVEY_KEY, { m: -1, ans: [] });
+  if (m === null || st.m >= m) return '';
+  const left = SURVEY.filter(x => !(st.cur === m && st.ans.includes(x.q)));
+  return `<section class="survey"><h2>Imate 30 sekund?</h2><p class="muted">Štiri kratka vprašanja o igri. Odgovori so neobvezni in anonimni.</p>
+    ${left.map(x => `<div class="survey-q"><b>${esc(x.t)}</b><div class="survey-a">${x.a.map(([a, t]) => `<button class="btn secondary" data-act="surveyA" data-q="${x.q}" data-a="${a}">${esc(t)}</button>`).join('')}</div></div>`).join('')}
+    <button class="btn secondary" data-act="surveyNo">Ne zdaj</button></section>`;
+}
+
+function gameBand(on) {
+  const p = profile(), room = DP.nextRoom(roomsDone());
+  return `<header class="dp-band"><div class="dp-band-top">${DP.me({ p, name: p.name || detTitle(p), rank: rankName(rankFor(myPoints()), p), total: myTotal(), attrs: 'data-act="toOffice"' })}
+      <button class="ui-band-btn" data-act="tutorial" aria-label="Kako igram?">❓</button></div>
+    ${DP.tabs([{ id: 'primeri', label: '🕵️ Primeri', on: on === 'primeri', attrs: 'data-act="toFiles"' },
+      { id: 'sobe', label: '🚪 Sobe', on: on === 'sobe', href: '../kje-je-kdo/', fresh: !!(room && room.fresh) }])}</header>`;
+}
 const helperEmoji = () => (profile() || {}).sk || '🦉';   // the helper the child picked on the ID card
 
 // ---------------------------------------------------------------------------
@@ -3968,10 +4044,11 @@ const openCaseScreen = () => go(S.c.steps ? 'call' : 'intro');
 // Bookkeeping when a case is solved: the tick, a rank-up to celebrate, the client's letter.
 function markSolved(c) {
   const played = solvedKeys();
-  const before = solvedKeys().filter(k => ALL_KEYS.includes(k)).length;
+  const before = myPoints();
   if (!played.includes(caseKey(c))) store.write(PLAYED_KEY, [...played, caseKey(c)]);
-  const after = solvedKeys().filter(k => ALL_KEYS.includes(k)).length;
-  if (rankFor(after) !== rankFor(before)) S.run.rankUp = rankFor(after);
+  const p = profile(), was = DP.rankAt(p, before), now = DP.rankAt(p, myPoints());
+  if (now > was) S.run.rankUp = RANKS[now];
+  if (p && now > (Number.isInteger(p.rk) ? p.rk : 0)) store.write(PROFILE_KEY, { ...p, rk: now });
   const mail = store.read(LETTER_KEY, { pending: [], read: [] });
   if (c.letter && !mail.read.includes(c.id) && !mail.pending.some(x => x.id === c.id)) {
     store.write(LETTER_KEY, { ...mail, pending: [...mail.pending, { id: c.id, session: S.session }] });
@@ -3979,14 +4056,15 @@ function markSolved(c) {
 }
 
 // ---------- Ranks: earned by solved cases, never lost
-const RANKS = [
-  { n: 0, i: '🔰', m: 'Vajenec', f: 'Vajenka' },
-  { n: 3, i: '🕵️', m: 'Detektiv', f: 'Detektivka' },
-  { n: 6, i: '⭐', m: 'Višji detektiv', f: 'Višja detektivka' },
-  { n: 10, i: '🎖️', m: 'Inšpektor', f: 'Inšpektorica' },
-  { n: 15, i: '👑', m: 'Glavni inšpektor', f: 'Glavna inšpektorica' },
-];
-const rankFor = (n) => RANKS.filter(r => n >= r.n).pop();
+// One rank for every game (docs/TWO_GAMES.md §3, shared/detective.js): a case counts 3 points, a room 1 (the child
+// never sees points), and the best rank a detective ever reached is kept on the ID card (`rk`), so it never goes down.
+const RANKS = DP.RANKS;
+const casesDone = () => solvedKeys().filter(k => ALL_KEYS.includes(k)).length;
+const roomsDone = () => DP.roomsSolved(store.read(KJEKDO_KEY, []));
+const myPoints = () => DP.points(casesDone(), roomsDone().length);
+const myTotal = () => casesDone() + roomsDone().length;
+const rankFor = (pts, p = profile()) => DP.rankOf(p, pts);
+const keepRk = () => { const p = profile(); return p && Number.isInteger(p.rk) ? { rk: p.rk } : {}; };
 const rankName = (r, p = profile()) => `${r.i} ${p && p.g === 'f' ? r.f : r.m}`;
 // verb forms for the child: ga('ujel', 'ujela')
 const ga = (m, f) => (profile() || {}).g === 'f' ? f : m;
@@ -4041,6 +4119,7 @@ const detName = (p = profile()) => detTitle(p) + (p && p.name ? ' ' + p.name : '
 // Slovenian plural after a number: 1 rešen primer, 2 rešena primera, 3–4 rešeni primeri, 5+ rešenih primerov.
 const solvedLabel = (n) => n % 100 === 1 ? `${n} rešen primer` : n % 100 === 2 ? `${n} rešena primera`
   : (n % 100 === 3 || n % 100 === 4) ? `${n} rešeni primeri` : `${n} rešenih primerov`;
+const roomsLabel = (n) => n % 100 === 1 ? `${n} soba` : n % 100 === 2 ? `${n} sobi` : (n % 100 === 3 || n % 100 === 4) ? `${n} sobe` : `${n} sob`;
 const cleanName = (v) => v.replace(/[^\p{L}\p{N} '-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 12)
   .replace(/^\p{L}/u, ch => ch.toUpperCase());
 
@@ -4322,6 +4401,17 @@ function coachStep() {
     const f = $('.folder.suggest') || $('.folder:not(.locked):not(.solved):not(.soon)');
     if (f) return { text: `Tukaj so tvoji primeri. Tapni primer ${f.dataset.no} in začni!`, sel: `.folder[data-no="${f.dataset.no}"]` };
   }
+  // the office: after the warm-ups, the finger on the cases' door; after the first real case, once, the rooms' door
+  if (S.screen === 'office') {
+    if (t && t.board) return { text: 'Zdaj odpri detektivske primere!', sel: '.door-primeri' };
+    // shown once: it counts as seen as soon as it shows, stays while the office stays, and never blocks the other door
+    // one thing at a time: never while »Kdo danes igra?« is on screen (it shows again on the next visit to the office)
+    if (S.sobeTipNow || (!document.querySelector('.office .dp-who') && casesDone() && !roomsDone().length && !store.read(SOBE_TIP_KEY, false))) {
+      if (!S.sobeTipNow) { S.sobeTipNow = true; store.write(SOBE_TIP_KEY, true); }
+      return { text: 'Tu so skrivnostne sobe. Preizkusi eno!', sel: '.door-sobe' };
+    }
+    return null;
+  }
   if (!t) return null;
   if (S.screen === 'files') return t.board ? { text: 'Zdaj izberi pustolovščino in reši svoj primer!', sel: '.file-card', ok: true } : null;
   return null;
@@ -4415,7 +4505,8 @@ const GUESS_KEY = 'dp_guess_v1';   // { fileId: the option the child guessed now
 const UGOVOR_KEY = 'dp_ugovor_v1'; // the detective has shouted UGOVOR once (the owl and the shout come only the first time)
 const KJEKDO_KEY = 'dp_kjekdo_v1'; // the solved puzzles of »Skrivnostne sobe« (kje-je-kdo/), which reads this ID card too
 const KJEKDO_INTRO_KEY = 'dp_kjekdo_intro_v1'; // and whether this detective has seen its »Kako se igra?«
-const KID_KEYS = [PROFILE_KEY, PLAYED_KEY, TUT_KEY, LETTER_KEY, PLAYER_KEY, GUESS_KEY, UGOVOR_KEY, HELP_KEY, KJEKDO_KEY, KJEKDO_INTRO_KEY];
+const SOBE_TIP_KEY = 'dp_sobe_tip_v1'; // the owl has shown this detective the rooms' door in the office (once, after the first real case)
+const KID_KEYS = [PROFILE_KEY, PLAYED_KEY, TUT_KEY, LETTER_KEY, PLAYER_KEY, GUESS_KEY, UGOVOR_KEY, HELP_KEY, KJEKDO_KEY, KJEKDO_INTRO_KEY, SOBE_TIP_KEY];
 const raw = {
   get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
   set(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} },
@@ -4474,8 +4565,8 @@ function detectiveCards() {
     const live = x.key === d.active;
     const read = (k, def) => { const v = live ? raw.get(k) : x.data && x.data[k]; try { return v ? JSON.parse(v) : def; } catch (e) { return def; } };
     const p = read(PROFILE_KEY, null);
-    const n = read(PLAYED_KEY, []).filter(k => ALL_KEYS.includes(k)).length;
-    return p && { key: x.key, p, n, live };
+    const n = read(PLAYED_KEY, []).filter(k => ALL_KEYS.includes(k)).length, rooms = DP.roomsSolved(read(KJEKDO_KEY, [])).length;
+    return p && { key: x.key, p, n, rooms, pts: DP.points(n, rooms), total: n + rooms, live };
   }).filter(Boolean);
 }
 
@@ -4486,7 +4577,7 @@ function toHome() {
   const warm = help().warm;
   if (warm === 'new' || warm === 'w1' || warm === 'w2') { startWarm(warm === 'w2' ? 2 : 1); return; }
   S.file = null;
-  go('files');
+  go('office');
 }
 
 function toBoard() {
@@ -4520,6 +4611,7 @@ function go(screen) {
     S.run.free[key] = (S.run.free[key] || 0) + 1;
   }
   if (screen !== 'board') S.pinNew = null;
+  if (screen !== 'office') S.sobeTipNow = false;
   if (screen !== 'who') S.whoEdit = false;
   S.screen = screen;
   render();
@@ -4541,7 +4633,7 @@ function backTarget() {
       if (S.mk.step > (S.mk.hello ? 0 : 1)) return () => { S.mk.step--; render(); };
       if (profile()) return () => { S.mk = null; toHome(); };
       return detectiveCards().length ? () => { S.mk = null; go('who'); } : null;
-    case 'board': return () => { S.toast = null; toHome(); };
+    case 'board': return ACTIONS.toFiles;
     case 'who': return S.whoEdit ? ACTIONS.whoEdit : profile() ? toHome : 'stay';
     case 'intro':
       return S.orderMode === 'board' ? toBoard : 'stay';
@@ -4559,7 +4651,8 @@ function backTarget() {
     case 'thanks': return KID_MODE ? ACTIONS.backToBoard : 'stay';
     case 'title': return ACTIONS.toSetup;
     case 'debrief': return S.resume ? ACTIONS.resume : ACTIONS.toSetup;
-    case 'files': case 'setup': return null;
+    case 'files': return ACTIONS.toOffice;
+    case 'office': case 'setup': return null;
     default: return 'stay';
   }
 }
@@ -4586,7 +4679,7 @@ addEventListener('popstate', () => {
 });
 
 // The season's colour on the screens of its board and cases; the start, the ID card and the adult screens stay brand green.
-const SEASONLESS = new Set(['setup', 'debrief', 'title', 'make', 'who', 'files', 'thanks', 'more', 'soon', 'ui']);
+const SEASONLESS = new Set(['setup', 'debrief', 'title', 'make', 'who', 'files', 'office', 'thanks', 'more', 'soon', 'ui']);
 function seasonHue() {
   if (S.screen === 'ui') return S.uiHue != null ? S.uiHue : 160;
   const f = !SEASONLESS.has(S.screen) && FILES.find(x => x.id === (S.c ? S.c.file : S.file));
@@ -5198,14 +5291,40 @@ const T = {
         <span class="ui-brand" style="flex:1">${esc(BRAND)}</span>${profile() ? '<span class="ui-band-gap"></span>' : ''}</div>
       <h1 class="ui-band-title">${UI.coin(edit ? '🗑️' : '👥')}<span>${edit ? 'Koga odstranim?' : 'Kdo igra?'}</span></h1></header>
       <div class="ui-body">${cards.map(x => UI.item({ act: edit ? 'askRemove' : 'pickDetective', attrs: `data-key="${x.key}"`, state: 'who-card' + (x.live && !edit ? ' is-on' : ''), round: true, pic: x.p.av, sk: x.p.sk,
-          title: x.p.name || detTitle(x.p), tags: UI.pill(rankName(rankFor(x.n), x.p)), end: `<span class="ui-item-go">${edit ? '🗑️' : '›'}</span>` })).join('')}
+          title: x.p.name || detTitle(x.p), tags: UI.pill(rankName(rankFor(x.pts, x.p), x.p)), end: `<span class="ui-item-go">${edit ? '🗑️' : '›'}</span>` })).join('')}
         ${edit ? '' : UI.item({ act: 'addDetective', state: 'is-add who-card add', round: true, pic: '+', title: 'Nov detektiv', sub: 'za drugega otroka' })}</div>
       ${cards.length ? `<div class="ui-foot">${UI.btn(edit ? 'Končano' : 'Odstrani detektiva', { act: 'whoEdit', kind: edit ? 'is-sec' : 'is-quiet' })}</div>` : ''}</div>`;
   },
 
-  // Start: the badge on top, the next adventure as a big card, the others, the medals, what comes soon.
+  // The office (docs/TWO_GAMES.md §2): the detective, the rank, and one door per game. »Igraj zdaj« lands here;
+  // a door opens that game's own dashboard, whose band leads back here.
+  office() {
+    const p = profile(), order = fileOrder(), f = ((order.cards[0] || order.shelf.map(x => [x])[0]) || [])[0] || null;
+    const cs = f ? casesIn(f.id) : [], next = cs.find(c => !isSolved(c) && !isLocked(c));
+    const room = DP.nextRoom(roomsDone());
+    const sub = f && next ? `${f.title} · Primer ${next.no}` : 'Novi primeri prihajajo.';
+    return `<div class="ui-screen office-screen"><header class="ui-band is-home"><div class="ui-band-top">
+        <button class="ui-band-btn" data-act="toWho" aria-label="Kdo igra?">👥</button><span class="ui-brand">${esc(BRAND)}</span>
+        <button class="ui-band-btn" data-act="tutorial" aria-label="Kako igram?">❓</button></div>
+      ${UI.badge(p, { act: 'editCard', attrs: 'aria-label="Uredi izkaznico"', rank: `${rankName(rankFor(myPoints()), p)} · ✔ ${myTotal()}` })}
+      <div class="ui-band-name">${esc(p.name || detTitle(p))}</div></header>
+      <div class="ui-body office">
+        ${DP.askWho() && !(S.tut && S.tut.board) ? DP.whoCard() : ''}
+        <h2 class="ui-head">Kam greš danes?</h2>
+        <button class="door door-primeri ui-hue" style="--hue:${f ? f.hue : 160}" data-act="toFiles">
+          <span class="door-pic" aria-hidden="true">${f ? f.icon : '🕵️'}</span>
+          <span class="door-text"><small>Detektivski primeri</small><b>Kdo je bil?</b><span>${esc(sub)}</span></span><span class="door-go" aria-hidden="true">›</span></button>
+        <a class="door door-sobe" href="../kje-je-kdo/" data-door="sobe">
+          ${room && room.fresh ? '<span class="door-tag">NOVA SOBA</span>' : ''}
+          <span class="door-board" aria-hidden="true">${DP.miniBoard(22, false)}</span>
+          <span class="door-text"><small>Skrivnostne sobe</small><b>Kje je bil kdo?</b><span>${room ? `Uganka ${room.room.id} te čaka` : 'Vse uganke so rešene. Nove prihajajo!'}</span></span><span class="door-go" aria-hidden="true">›</span></a>
+      </div>
+      <div class="ui-foot">${UI.btn('Dovolj za danes', { act: 'moreNo', kind: 'is-quiet' })}</div></div>`;
+  },
+
+  // Detektivski primeri's dashboard: the next adventure as a big card, the others, the medals, what comes soon.
   files() {
-    const p = profile(), n = solvedKeys().filter(k => ALL_KEYS.includes(k)).length, order = fileOrder();
+    const order = fileOrder();
     const card = ([f, hero]) => {
       const cs = casesIn(f.id), done = cs.filter(isSolved).length, all = cs.length + (f.soon || 0);
       const tags = [done ? '' : UI.tag('NOVO', 'is-new'), f.season ? UI.tag('🔎 skrivnost') : ''].join('');
@@ -5220,11 +5339,7 @@ const T = {
       return UI.item({ act: 'openFile', attrs: `data-file="${f.id}"`, state: `file-card ${f.season ? 'season' : ''}`, hue: f.hue, pic: f.icon, title: f.title,
         sub: done ? `✔ ${done} / ${all}` : '', tags });
     };
-    return `<div class="ui-screen files-screen"><header class="ui-band is-home"><div class="ui-band-top">
-        <button class="ui-band-btn" data-act="toWho" aria-label="Kdo igra?">👥</button><span class="ui-brand">${esc(BRAND)}</span>
-        <button class="ui-band-btn" data-act="tutorial" aria-label="Kako igram?">❓</button></div>
-      ${UI.badge(p, { act: 'editCard', attrs: 'aria-label="Uredi izkaznico"', rank: rankName(rankFor(n), p) })}
-      <div class="ui-band-name">${esc(p.name || detTitle(p))}</div></header>
+    return `<div class="ui-screen files-screen">${gameBand('primeri')}
       <div class="ui-body file-list">${order.cards.slice(0, 1).map(card).join('')}
         ${adventHTML()}
         ${order.cards.length > 1 ? `<h2 class="ui-head">🗺️ Pustolovščine</h2>${order.cards.slice(1).map(card).join('')}` : ''}
@@ -5243,8 +5358,8 @@ const T = {
     return `${UI.band({ cls: 'board-band', step: `${f.icon} ${f.title}`, back: '←', backAct: 'toFiles', end: UI.pill(`✔ ${done} / ${cases.length + soon}`) })}<div class="screen boardscreen">
       ${fileDone(S.file) ? `<div class="trophy">🏅 Pustolovščina rešena! Bravo, ${esc(detName(p))}!${f.book ? ' <button class="btn secondary" data-act="openBook">📖 Moja knjiga</button>' : f.cup ? ' <button class="btn secondary" data-act="openBook">🏆 Moj pokal</button>' : ''}</div>` : ''}
       ${S.toast && S.toast !== 'soon' ? `<div class="toast">${esc(S.toast)}</div>` : ''}
-      ${soon && done === cases.length ? `<div class="waiting ${S.toast === 'soon' ? 'flash' : ''}"><span>⏳ Primer ${cases.length + 1} pride kmalu! Medtem reši druge pustolovščine.</span>
-        <button class="btn" data-act="toFiles">🗺️ Pojdi</button></div>` : ''}
+      ${soon && done === cases.length ? `<div class="waiting ${S.toast === 'soon' ? 'flash' : ''}"><span>⏳ Primer ${cases.length + 1} pride kmalu! Medtem reši druge pustolovščine ali odpri skrivnostno sobo.</span>
+        <span class="waiting-btns"><button class="btn" data-act="toFiles">🗺️ Pojdi</button><a class="btn secondary waiting-sobe" href="../kje-je-kdo/">🚪 Odpri sobo</a></span></div>` : ''}
       ${f.season ? corkboard(f, cases) : ''}
       <div class="board">${cases.map(c => {
         const solved = isSolved(c), locked = isLocked(c);
@@ -5722,6 +5837,7 @@ const T = {
       </div>
       <p class="muted">Vse ostane na tej napravi. <a href="../zasebnost/">Zasebnost in pogoji</a></p>
       ${storeOk ? '' : '<p class="warn-text">Shranjevanje na napravo ne deluje – takoj izvozi JSON.</p>'}
+      ${surveyHTML()}
       ${helpBlockHTML()}
       <h2>Povzetek po starosti</h2>
       ${['6-7', '8-9'].map(age => groupHTML(age, counted.filter(s => s.age === age))).join('')}
@@ -5765,10 +5881,11 @@ const ACTIONS = {
   // an empty slot of an open season on the ID card (edit mode): keep the card as it is, then open the season
   kovcekGo(el) {
     const m = S.mk;
-    if (m) { store.write(PROFILE_KEY, { av: m.av, g: m.g, sk: m.sk, name: m.name, id: m.id }); S.mk = null; }
+    if (m) { store.write(PROFILE_KEY, { av: m.av, g: m.g, sk: m.sk, name: m.name, id: m.id, ...keepRk() }); S.mk = null; }
     ACTIONS.openFile(el);
   },
-  toFiles() { S.toast = null; toHome(); },
+  toFiles() { S.toast = null; S.file = null; go('files'); },
+  toOffice() { S.toast = null; S.file = null; go('office'); },
   back() { goBack('button'); },
   // the waiting note says it already; without one (earlier cases unsolved) a toast does
   vent(el) {
@@ -5835,7 +5952,7 @@ const ACTIONS = {
   mkSkip() { S.mk.name = ''; S.mk.id = S.mk.id || String(1000 + Math.floor(Math.random() * 9000)); S.mk.step = 4; render(); },
   mkDone() {
     const m = S.mk;
-    store.write(PROFILE_KEY, { av: m.av, g: m.g, sk: m.sk, name: m.name, id: m.id });
+    store.write(PROFILE_KEY, { av: m.av, g: m.g, sk: m.sk, name: m.name, id: m.id, ...keepRk() });
     log('profile_saved', { gender: m.g, named: !!m.name }); // the name itself is never logged
     S.mk = null;
     toHome();
@@ -5896,7 +6013,15 @@ const ACTIONS = {
     log('session_start', { pilot: S.pilot, orderMode: S.orderMode, order: S.order, kid: KID_MODE });
     go('title');
   },
-  toDebrief() { go('debrief'); },
+  toDebrief() { sendEvent('adult', { how: 'debrief' }); go('debrief'); },
+  surveyA(el) {
+    const m = surveyMilestone(), st = store.read(SURVEY_KEY, { m: -1, ans: [] }), q = el.dataset.q, a = +el.dataset.a;
+    sendEvent('survey', { q, a, n: (store.read('dp_visits_v1', {}) || {}).n || 0 });
+    const ans = st.cur === m ? [...new Set([...st.ans, q])] : [q];
+    store.write(SURVEY_KEY, ans.length >= SURVEY.length ? { m, ans: [] } : { m: st.m, cur: m, ans });
+    render();
+  },
+  surveyNo() { store.write(SURVEY_KEY, { m: surveyMilestone(), ans: [] }); render(); },
   backToBoard() { S.ended = false; log('session_resume'); toBoard(); },
   toSetup() {
     if (S.session && !S.ended) log('session_end', { abandoned: true });
@@ -5921,6 +6046,7 @@ const ACTIONS = {
   },
   timeline(el) { S.open = S.open === el.dataset.key ? null : el.dataset.key; render(); },
   exportLog() {
+    sendEvent('adult', { how: 'export' });
     const blob = new Blob([JSON.stringify(exportData(), null, 1)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -5953,6 +6079,7 @@ const ACTIONS = {
     input.click();
   },
   async qrShow() {
+    sendEvent('adult', { how: 'qr' });
     xferOpen('<p>Pripravljam kodo …</p>');
     let url = null, svg;
     try {
@@ -6762,6 +6889,8 @@ const ACTIONS = {
 };
 
 app.addEventListener('click', (e) => {
+  const w = e.target.closest('[data-with]');   // »Kdo danes igra?« in the office: one answer, then the card goes
+  if (w) { sendEvent('with', { ...DP.answerWho(w.dataset.with), g: 'solo' }); const c = w.closest('.dp-who'); if (c) c.remove(); return; }
   const el = e.target.closest('[data-act]');
   if (!el || el.disabled) return;
   const fn = ACTIONS[el.dataset.act];
@@ -6822,6 +6951,7 @@ modal.addEventListener('click', (e) => {
     S.resume = S.screen;
     log('adult_gate');
   }
+  sendEvent('adult', { how: 'gate' });
   go('debrief');
 });
 
@@ -7015,7 +7145,7 @@ function helpBlockHTML() {
   const rows = cards.map(x => {
     const h = helpRead(x.key), now = h.over || h.g, open = ['new', 'w1', 'w2'].includes(h.warm);
     const seg = [0, 1, 2, 3].map(n => `<button class="btn ${(h.over || 0) === n ? '' : 'secondary'}" data-act="helpOver" data-key="${x.key}" data-n="${n}">${n || 'Samodejno'}</button>`).join('');
-    return `<tr data-det="${x.key}"><td>${x.p.av}${x.p.sk} <b>${esc(x.p.name || detTitle(x.p))}</b>${x.live ? ' <span class="tag">igra zdaj</span>' : ''}<br><span class="muted">${esc(rankName(rankFor(x.n), x.p))} · ${solvedLabel(x.n)}</span></td>
+    return `<tr data-det="${x.key}"><td>${x.p.av}${x.p.sk} <b>${esc(x.p.name || detTitle(x.p))}</b>${x.live ? ' <span class="tag">igra zdaj</span>' : ''}<br><span class="muted">${esc(rankName(rankFor(x.pts, x.p), x.p))} · ${solvedLabel(x.n)} · ${roomsLabel(x.rooms)}</span></td>
       <td class="help-now"><b>${HELP_LABEL[now]} (${now})</b>${h.over ? `<br><span class="muted">samodejno bi bilo ${h.g}</span>` : ''}</td>
       <td class="help-trail">${h.hist.slice(-6).map(e => `<span class="tag ${HELP_CLS[e.v]}" title="${esc(e.c)}">${e.g}</span>`).join(' ') || '<span class="muted">–</span>'}</td>
       <td class="help-warm">${h.warm === 'done' ? HELP_WV[h.wv] || 'končana' : HELP_WARM[h.warm]}</td>
@@ -7118,7 +7248,11 @@ if (new URLSearchParams(location.search).has('ui')) {
   Object.assign(S, { age: '7-8', orderMode: 'board', pilot: false });
   ACTIONS.startSession();
   // "Igraj!" on the start page was the start button: who plays → ID card / practice / files
-  if (detectiveCards().length > 1) go('who'); else toHome();
+  { const d = DP.sittingData('solo'); if (d) sendEvent('sitting', d); }
+  const igra = new URLSearchParams(location.search).get('igra'), warmOpen = ['new', 'w1', 'w2'].includes(help().warm);
+  if (igra === 'primeri' && profile() && !warmOpen) ACTIONS.toFiles();
+  else if (igra === 'pisarna' && profile()) toHome();
+  else if (detectiveCards().length > 1) go('who'); else toHome();
 } else {
   render();
 }

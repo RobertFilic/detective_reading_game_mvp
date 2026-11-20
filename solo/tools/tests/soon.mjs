@@ -19,8 +19,8 @@ async function open(day, { w = 375, h = 667, patch = false, played = [] } = {}) 
     globalThis.Date = class extends R { constructor(...a) { super(...(a.length ? a : [fixed])); } static now() { return fixed; } };
   }, `${day}T09:30:00`);
   if (patch) { await p.setBypassServiceWorker(true); await p.setRequestInterception(true);
-    p.on('request', r => r.url().endsWith('/solo/?play') ? r.respond({ status: 200, contentType: 'text/html', body: dated }) : r.continue()); }
-  await p.goto('http://localhost:8765/solo/?play');
+    p.on('request', r => r.url().endsWith('/solo/?play&igra=primeri') ? r.respond({ status: 200, contentType: 'text/html', body: dated }) : r.continue()); }
+  await p.goto('http://localhost:8765/solo/?play&igra=primeri');
   await p.evaluate((pl) => { localStorage.clear(); localStorage.setItem('dp_save_version', '4'); localStorage.setItem('dp_tutorial_done', 'true');
     localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: 'Klai', id: '9745' }));
     localStorage.setItem('dp_played_v1', JSON.stringify(pl)); }, played);

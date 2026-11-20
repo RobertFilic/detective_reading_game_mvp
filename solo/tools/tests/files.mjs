@@ -41,6 +41,11 @@ ok((await text()).includes('Detektivka Ana je ujela Bineta!'), 'the solved scree
 await wait(250);   // brief-auto closes the excuse card
 ok((await p.$eval('.coach .say', el => el.textContent)).includes('Bravo, detektivka!') && (await p.$eval('.coach .say', el => el.textContent)).startsWith('Hov!'), 'the dog\'s praise: "Hov! Bravo, detektivka!"');
 await p.click('[data-act="next"]'); await wait(200); await p.click('[data-act="warmSkip"]'); await wait();
+// the office: the detective and one door per game; the owl points at the cases first
+ok(await st() === 'office' && await p.$('.door-primeri') && await p.$('a.door-sobe[href="../kje-je-kdo/"]'), 'after the warm-ups: the office with a door per game');
+ok((await p.$eval('.coach .say', el => el.textContent)).includes('detektivske primere') && await p.$('.door-primeri.coach-target'), 'coach: the finger on the cases\' door');
+await p.screenshot({ path: 'shots/f4-office.png' });
+await p.click('.door-primeri'); await wait();
 // holiday seasons (group) live in the advent band, not in the list, unless one is the big card
 ok(await st() === 'files' && (await p.$$('.file-card:not(.teaser)')).length === await p.evaluate(() => {
   const hero = document.querySelector('.file-card.hero'), heroF = hero && FILES.find(f => f.id === hero.dataset.file);
@@ -61,15 +66,19 @@ ok((await text()).includes('Pustolovščina rešena') && (await p.$$('.folder.so
 await p.screenshot({ path: 'shots/f7-file-done.png' });
 await p.click('[data-act="toFiles"]'); await wait(150);
 ok(await p.$('.medal[data-file="bip"]'), 'the 👾 medal is on the shelf');
-ok((await p.$eval('.ui-badge-rank', el => el.textContent)).includes('Višja detektivka'), 'the badge shows the rank for 6 cases: ⭐ Višja detektivka');
+ok((await p.$eval('.dp-me-rank', el => el.textContent)).includes('Višja detektivka · ✔ 6'), 'the band shows the rank for 6 cases: ⭐ Višja detektivka · ✔ 6');
+ok(await p.$('.dp-tab.is-on[data-tab="primeri"]') && await p.$('a.dp-tab[data-tab="sobe"][href="../kje-je-kdo/"]'), 'the band\'s tabs: Primeri on, Sobe a link to the rooms');
 ok(!(await p.$('.file-card[data-file="gozd"], .file-card[data-file="vesolje"], .file-card[data-file="kmetija"]')), 'the old forest, space and farm stories are gone');
 await p.screenshot({ path: 'shots/f8-files-after.png' });
 
 // ---- edit the card: skip the name → "Detektivka" only
+await p.click('#dpMe'); await wait(150);
+ok(await st() === 'office', 'the small card in the band goes back to the office');
 await p.click('[data-act="editCard"]'); await wait(150);
 await p.click('[data-act="mkAvatar"][data-i="1"]'); await p.click('[data-act="mkSidekick"][data-e="🦉"]'); await p.click('[data-act="mkSkip"]'); await wait(150);
 await p.click('[data-act="mkDone"]'); await wait(150);
-ok(await st() === 'files' && (await p.$eval('.ui-band-name', el => el.textContent)) === 'Detektiv', 'edited card: boy avatar, no name → "Detektiv"');
+ok(await st() === 'office' && (await p.$eval('.ui-band-name', el => el.textContent)) === 'Detektiv', 'edited card: boy avatar, no name → "Detektiv"');
+await p.click('.door-primeri'); await wait(150);
 ok((await p.$$('.medal')).length === 1, 'progress kept after editing the card');
 
 ok(!errors.length, 'no page errors ' + errors.join('|'));

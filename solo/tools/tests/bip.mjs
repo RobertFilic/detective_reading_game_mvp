@@ -11,7 +11,7 @@ for (const [name, w, h] of devices) {
   await p.evaluateOnNewDocument(() => { if (window.speechSynthesis) speechSynthesis.getVoices = () => []; });
   await p.setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1');
   await p.setViewport({ width: w, height: h, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
-  await p.goto('http://localhost:8765/solo/?play');
+  await p.goto('http://localhost:8765/solo/?play&igra=primeri');
   // 2 cases already solved: solving this one makes her a Detektivka (3)
   await p.evaluate(() => { localStorage.clear(); localStorage.setItem('dp_save_version', '3'); localStorage.setItem('dp_tutorial_done', 'true');
     localStorage.setItem('dp_played_v1', JSON.stringify(['galeb:1', 'galeb:2']));

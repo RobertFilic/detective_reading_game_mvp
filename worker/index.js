@@ -2,12 +2,15 @@
 // events (docs/EVENTS.md) and writes them to D1. It keeps only the fields listed below; it never reads
 // or stores the IP address, the user agent or anything else about the visitor.
 
-const GAMES = new Set(['sobe', 'solo']);
+const GAMES = new Set(['sobe', 'solo', 'web']);   // web: the start page
 const EVENTS = new Set(['intro', 'start', 'wrong', 'hint', 'stuck', 'solved', 'left',
-  'step', 'skim', 'back', 'verdict', 'warm', 'card', 'file', 'rate']);   // the last line: the main game (solo/)
+  'step', 'skim', 'back', 'verdict', 'warm', 'card', 'file', 'rate',   // the main game (solo/)
+  'with', 'sitting', 'adult', 'survey',   // both games and the start page (docs/marketing/ANALYTICS.md)
+  'land', 'cta', 'install']);   // the start page
 // allowed keys inside `data`, each a small number, a boolean or a short word
 const DATA = new Set(['card', 'how', 'first', 'who', 'kind', 'step', 'hints', 'wrongs', 'undos', 'notes', 'done', 'new', 'tries',
-  'case', 'file', 'warm', 'replay', 'suggested', 'lvl', 'help', 'hint', 'level', 'via', 'sc', 'wrong', 'assisted', 'verdict', 'from', 'to', 'r']);
+  'case', 'file', 'warm', 'replay', 'suggested', 'lvl', 'help', 'hint', 'level', 'via', 'sc', 'wrong', 'assisted', 'verdict', 'from', 'to', 'r',
+  'with', 'n', 'g', 'days', 'gap', 'wk', 'fw', 'wd', 'hb', 'pm', 'src', 'v', 'pwa', 'which', 'q', 'a']);
 const KEEP_DAYS = 365;
 
 const int = (v, lo, hi) => (Number.isInteger(v) && v >= lo && v <= hi ? v : null);

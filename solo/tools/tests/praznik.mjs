@@ -26,8 +26,8 @@ async function open(day, { w = 390, h = 844, patch = false, played = [] } = {}) 
     globalThis.Date = class extends R { constructor(...a) { super(...(a.length ? a : [fixed])); } static now() { return fixed; } };
   }, `${day}T09:30:00`);
   if (patch) { await p.setBypassServiceWorker(true); await p.setRequestInterception(true);
-    p.on('request', r => r.url().endsWith('/solo/?play') ? r.respond({ status: 200, contentType: 'text/html', body: patched }) : r.continue()); }
-  await p.goto('http://localhost:8765/solo/?play');
+    p.on('request', r => r.url().endsWith('/solo/?play&igra=primeri') ? r.respond({ status: 200, contentType: 'text/html', body: patched }) : r.continue()); }
+  await p.goto('http://localhost:8765/solo/?play&igra=primeri');
   await p.evaluate((pl) => { localStorage.clear(); localStorage.setItem('dp_save_version', '4'); localStorage.setItem('dp_tutorial_done', 'true');
     localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻‍♂️', g: 'm', sk: '🐶', name: 'Klai', id: '9745' }));
     localStorage.setItem('dp_played_v1', JSON.stringify(pl)); }, played);
@@ -98,14 +98,14 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['land', 852, 393]]) {
   ok(await p.$('.file-card.hero[data-file="bip"]'), `${dev}: the season played last is the big card, and still opens from its window`);
   await p.click('.ui-adv .ui-win:not(.is-soon)'); await wait(250);
   ok(await p.evaluate(() => S.screen === 'board' && S.file === 'bip'), `${dev}: the open window opens the season`);
-  await p.evaluate(() => toHome()); await wait(200);
+  await p.evaluate(() => ACTIONS.toFiles()); await wait(200);
 
   // the final is solved: the window shows the object, the suitcase slot fills (saved data only, no new key)
-  await p.evaluate(() => { store.write(PLAYED_KEY, ['bip:1', 'bip:2', 'bip:3', 'bip:4', 'bip:5']); toHome(); }); await wait(200);
+  await p.evaluate(() => { store.write(PLAYED_KEY, ['bip:1', 'bip:2', 'bip:3', 'bip:4', 'bip:5']); ACTIONS.toFiles(); }); await wait(200);
   ok((await wins(p))[0].done === false, `${dev}: five of six: not done`);
   await card(p);
   ok((await slots(p))[0].full === false, `${dev}: five of six: the slot is empty`);
-  await p.evaluate(() => { store.write(PLAYED_KEY, [...store.read(PLAYED_KEY, []), 'bip:6']); toHome(); }); await wait(200);
+  await p.evaluate(() => { store.write(PLAYED_KEY, [...store.read(PLAYED_KEY, []), 'bip:6']); ACTIONS.toFiles(); }); await wait(200);
   ws = await wins(p);
   ok(ws[0].done && ws[0].pic === '🥄' && ws[0].tag === '✔', `${dev}: final solved: the window shows the spoon`);
   ok(!(await p.$('.file-card[data-file="bip"]')) && !(await p.$('.medal[data-file="bip"]')), `${dev}: a solved holiday season is not in the list or on the medal shelf`);

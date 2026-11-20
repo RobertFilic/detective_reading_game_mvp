@@ -57,27 +57,40 @@ header.top .btn { min-height: 44px; padding: 0 20px; border-radius: 14px; font-s
 .lead { max-width: 540px; font-size: clamp(17px, 2vw, 21px); color: rgba(255, 255, 255, .9); text-wrap: pretty; }
 .hero-btns { display: flex; flex-direction: column; gap: 10px; padding-top: 4px; }
 .hero-note { font-size: 15px; color: rgba(255, 255, 255, .78); }
-/* the new side game: in the hero, so nobody misses it */
-.newgame { position: relative; display: flex; flex-direction: column; gap: 12px; max-width: 540px; margin-top: 10px; padding: 18px 16px 14px; background: var(--paper); color: var(--ink); text-decoration: none;
-  border: 3px solid var(--glow); border-radius: 24px; box-shadow: 0 14px 34px rgba(0, 0, 0, .25); }
-.ng-badge { position: absolute; top: -14px; left: 16px; background: var(--stamp); color: #fff; font: 700 15px var(--font); letter-spacing: .06em; text-transform: uppercase; padding: 4px 12px; border-radius: 10px; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0, 0, 0, .2); animation: nudge 2.4s ease-in-out infinite; }
-.ng-row { display: flex; align-items: center; gap: 14px; }
-.ng-board { display: grid; grid-template-columns: repeat(3, 30px); grid-template-rows: repeat(3, 30px); flex: none; border: 3px solid #3a3229; border-radius: 8px; background: #f6e7cf; }
-.ng-board span { display: grid; place-items: center; font-size: 17px; line-height: 1; border-right: 1px solid rgba(58, 50, 41, .22); border-bottom: 1px solid rgba(58, 50, 41, .22); }
-.ng-board span:nth-child(3n) { border-right: 0; }
-.ng-board span:nth-child(n+7) { border-bottom: 0; }
-.ng-board .ng-x { color: rgba(58, 50, 41, .35); font: 700 14px var(--font); }
-.ng-board .y { background: #fdeaa9; }
-.ng-txt { display: flex; flex-direction: column; gap: 2px; }
-.ng-txt small { font: 600 13px var(--font); letter-spacing: .08em; text-transform: uppercase; color: var(--season-mid); }
-.ng-txt b { font: 700 23px/1.15 var(--font); }
-.ng-txt em { font-style: normal; font-size: 15px; line-height: 1.4; color: var(--ink-2); }
-.ng-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-.ng-meta { font: 500 14px var(--font); color: var(--ink-2); }
-.ng-go { min-height: 48px; display: inline-flex; align-items: center; padding: 0 20px; border-radius: 14px; background: var(--season); color: #fff; font: 600 17px var(--font); }
-nav.links a.new { color: var(--ink); font-weight: 600; }
-nav.links a.new b { background: var(--stamp); color: #fff; font: 700 11px var(--font); letter-spacing: .06em; text-transform: uppercase; padding: 2px 6px; border-radius: 6px; margin-left: 4px; vertical-align: 2px; }
 @keyframes nudge { 0%, 88%, 100% { transform: rotate(-4deg); } 92% { transform: rotate(3deg) scale(1.08); } 96% { transform: rotate(-6deg) scale(1.04); } }
+
+/* the two games (docs/TWO_GAMES.md): two equal cards under the hero, one detective for both */
+.games { position: relative; margin-top: 4px; scroll-margin-top: 64px; }
+.games-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+.game { display: flex; flex-direction: column; gap: 14px; background: var(--paper); color: var(--ink); text-decoration: none; border: 1.5px solid var(--line); border-radius: 28px; padding: 22px 20px;
+  box-shadow: 0 10px 24px rgba(40, 30, 10, .12); }
+.game-top { display: flex; align-items: center; gap: 16px; }
+.game-pic { width: 84px; height: 84px; flex: none; border-radius: 22px; background: var(--season-soft); display: grid; place-items: center; font-size: 44px; transform: rotate(-4deg); }
+.game-name { display: flex; flex-direction: column; gap: 2px; }
+.game-name small { font: 600 14px var(--font); letter-spacing: .06em; text-transform: uppercase; color: var(--season); }
+.game-name b { font: 700 28px/1.1 var(--font); }
+.game p { color: var(--ink-2); font-size: 17px; line-height: 1.5; }
+.game-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.game-tags span { background: var(--season-soft); color: var(--season); border-radius: 999px; padding: 3px 12px; font: 600 15px var(--font); }
+.game-go { margin-top: auto; font: 600 18px var(--font); color: var(--season); }
+.one-det { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; background: var(--season-soft); border-radius: 22px; padding: 16px 20px; }
+.one-det-card { display: flex; align-items: center; gap: 10px; background: var(--paper); border: 2px solid var(--season); border-radius: 16px; padding: 8px 14px 8px 8px; }
+.one-det-pic { width: 44px; height: 44px; border-radius: 50%; background: repeating-conic-gradient(var(--glow) 0 10deg, #f2b84b 10deg 20deg); display: grid; place-items: center; }
+.one-det-pic span { width: 34px; height: 34px; border-radius: 50%; background: var(--paper); display: grid; place-items: center; font-size: 20px; }
+.one-det-card b { display: block; font: 600 15px var(--font); }
+.one-det-card small { font: 600 13px var(--font); color: var(--season); }
+.one-det p { flex: 1 1 260px; font-size: 17px; }
+.room-card { position: absolute; left: -36px; bottom: -6px; z-index: 3; background: var(--paper); color: var(--ink); border-radius: 22px; padding: 12px; display: flex; flex-direction: column; gap: 8px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .3); transform: rotate(-4deg); }
+.room-card > small { font: 600 11px var(--font); letter-spacing: .08em; text-transform: uppercase; color: var(--season-mid); }
+.room-card > b { font: 600 15px var(--font); margin-top: -6px; }
+.room-clue { display: flex; align-items: center; gap: 8px; border: 2px solid var(--season); border-radius: 14px; padding: 4px 8px; font-size: 12px; max-width: 168px; }
+.room-clue span { font-size: 18px; }
+.gtag { font: 600 13px var(--font); color: var(--season); }
+.tabs { display: inline-flex; gap: 6px; background: var(--paper); border: 1.5px solid var(--line); border-radius: 999px; padding: 5px; margin-bottom: 18px; }
+.tab { appearance: none; border: 0; min-height: 48px; padding: 0 20px; border-radius: 999px; background: transparent; color: var(--ink-2); font: 500 17px var(--font); cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--season); color: #fff; font-weight: 600; }
+.steps[hidden] { display: none; }
 
 /* the phone: a case on screen, the stamp on top */
 .phone { flex: none; position: relative; width: 280px; height: 578px; }
@@ -196,6 +209,8 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
 @keyframes glow { 0%, 100% { box-shadow: 0 0 0 3px var(--glow), 0 0 16px 2px rgba(248, 202, 101, .35); } 50% { box-shadow: 0 0 0 5px var(--glow), 0 0 28px 8px rgba(248, 202, 101, .55); } }
 @media (min-width: 760px) {
   nav.links { display: flex; }
+  .games { margin-top: -36px; }
+  .games-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
   header.top .btn { display: flex; }
   .dock, .swipe { display: none; }
   .hero .wrap { flex-direction: row; padding-top: 72px; padding-bottom: 80px; gap: 56px; }
@@ -215,7 +230,7 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
 <body>
 <header class="top"><div class="wrap">
   <a class="brand" href="#top"><span class="coin">🔍</span>Bralni detektivi</a>
-  <nav class="links"><a href="kje-je-kdo/" class="new">Skrivnostne sobe <b>novo</b></a><a href="#kako">Kako deluje</a><a href="#vsak-teden">Vsak teden</a><a href="#zakaj">Zakaj branje</a></nav>
+  <nav class="links"><a href="#igre">Igre</a><a href="#kako">Kako deluje</a><a href="#vsak-teden">Vedno kaj novega</a><a href="#zakaj">Za starše</a></nav>
   <a class="btn main" href="solo/?play">Igraj zdaj</a>
 </div></header>
 
@@ -223,24 +238,17 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
   <div class="hero-text">
     <span class="eyebrow">Bralna igra za otroke od 6 do 10 let</span>
     <h1>Vsak stavek je sled.</h1>
-    <p class="lead">Otrok postane detektiv. Da reši primer, mora brati in razumeti.</p>
+    <p class="lead">Otrok postane detektiv. Rešuje primere in skrivnostne sobe – in pri tem bere.</p>
     <div class="hero-btns">
-      <a class="btn gold" href="solo/?play" id="play">▶ Igraj zdaj</a>
+      <a class="btn gold" href="solo/?play" id="play" data-cta="hero">▶ Igraj zdaj</a>
       <a class="btn line" href="#kako">Kako deluje ↓</a>
     </div>
-    <a class="newgame" href="kje-je-kdo/" id="kjekdo">
-      <span class="ng-badge">Novo!</span>
-      <span class="ng-row">
-        <span class="ng-board" aria-hidden="true"><span>👧</span><span class="ng-x">✕</span><span class="ng-x">✕</span><span class="ng-x">✕</span><span>🌳</span><span class="y">🪑</span><span class="ng-x">✕</span><span>👦</span><span class="ng-x">✕</span></span>
-        <span class="ng-txt"><small>Nova igra</small><b>Skrivnostne sobe</b><em>Preberi, kje je bil kdo. Postavi vse na pravo mesto in najdi, kdo je bil.</em></span>
-      </span>
-      <span class="ng-foot"><span class="ng-meta">12 ugank · od lahkih do malo težjih</span><span class="ng-go">Poskusi →</span></span>
-    </a>
-    <p class="hero-note">Za telefon in tablico. Tudi brez povezave. Vsak teden nova pustolovščina.</p>
+    <p class="hero-note">Za telefon in tablico. Tudi brez povezave. Vedno kaj novega.</p>
   </div>
   <div class="phone" aria-hidden="true">
     <div class="call"><b><i>📞</i>Zvoni!</b>Nekdo je ponoči odprl omarico s piškoti!</div>
     <div class="stamp"><i>✓</i>Primer rešen!</div>
+    <div class="room-card"><small>Skrivnostna soba 1</small><b>Kdo je načel torto?</b><span class="dp-board" role="img" aria-label="Plošča skrivnostne sobe" style="display:inline-grid;grid-template-columns:repeat(4,40px);grid-template-rows:repeat(4,40px);border:4px solid #3a3229;border-radius:14px;overflow:hidden;background:#3a3229;line-height:1;vertical-align:middle"><span style="position:relative;display:grid;place-items:center;background:#f3dfbf;border-right:1px solid rgba(58,50,41,.16);border-bottom:1px solid rgba(58,50,41,.16)"></span><span style="position:relative;display:grid;place-items:center;background:#f3dfbf;border-right:3px solid #3a3229;border-bottom:1px solid rgba(58,50,41,.16)"></span><span style="position:relative;display:grid;place-items:center;background:#e6dcf3;border-right:1px solid rgba(58,50,41,.16);border-bottom:1px solid rgba(58,50,41,.16)"><span style="font:700 17px Lexend,Verdana,sans-serif;color:rgba(58,50,41,.28)">✕</span></span><span style="position:relative;display:grid;place-items:center;background:#e6dcf3;border-right:0;border-bottom:1px solid rgba(58,50,41,.16)"><span style="font-size:21px">🪴</span></span><span style="position:relative;display:grid;place-items:center;background:#f3dfbf;border-right:1px solid rgba(58,50,41,.16);border-bottom:3px solid #3a3229"><span style="font-size:21px">🎂</span></span><span style="position:relative;display:grid;place-items:center;background:#f3dfbf;border-right:3px solid #3a3229;border-bottom:3px solid #3a3229"><span style="position:absolute;left:50%;bottom:3px;transform:translateX(-50%);background:rgba(255,253,250,.92);border-radius:6px;padding:1px 4px;font:600 8px/1.15 Lexend,Verdana,sans-serif;color:#1b222e;white-space:nowrap;z-index:2">Kuhinja</span></span><span style="position:relative;display:grid;place-items:center;background:#e6dcf3;border-right:1px solid rgba(58,50,41,.16);border-bottom:1px solid rgba(58,50,41,.16)"><span style="font:700 17px Lexend,Verdana,sans-serif;color:rgba(58,50,41,.28)">✕</span></span><span style="position:relative;display:grid;place-items:center;background:#e6dcf3;border-right:0;border-bottom:1px solid rgba(58,50,41,.16)"><span style="position:absolute;top:1px;right:2px;font-size:10px;z-index:2">🛋️</span><span style="position:relative;z-index:1;width:80%;height:80%;box-sizing:border-box;border-radius:50%;background:#fffdfa;border:3px solid #164b33;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.2)"><span style="font-size:14px">👧🏼</span><b style="font:600 6px/1.2 Lexend,Verdana,sans-serif;color:#1b222e">Ana</b></span></span><span style="position:relative;display:grid;place-items:center;background:#cfeccf;border-right:1px solid rgba(58,50,41,.16);border-bottom:1px solid rgba(58,50,41,.16)"></span><span style="position:relative;display:grid;place-items:center;background:#cfeccf;border-right:3px solid #3a3229;border-bottom:1px solid rgba(58,50,41,.16)"><span style="font:700 17px Lexend,Verdana,sans-serif;color:rgba(58,50,41,.28)">✕</span></span><span style="position:relative;display:grid;place-items:center;background:#e6dcf3;border-right:1px solid rgba(58,50,41,.16);border-bottom:3px solid #3a3229"><span style="position:absolute;top:1px;right:2px;font-size:10px;z-index:2">🪑</span><span style="position:relative;z-index:1;width:80%;height:80%;box-sizing:border-box;border-radius:50%;background:#fffdfa;border:3px solid #164b33;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.2)"><span style="font-size:14px">👵🏻</span><b style="font:600 6px/1.2 Lexend,Verdana,sans-serif;color:#1b222e">Cvetka</b></span></span><span style="position:relative;display:grid;place-items:center;background:#e6dcf3;border-right:0;border-bottom:1px solid rgba(58,50,41,.16)"><span style="font:700 17px Lexend,Verdana,sans-serif;color:rgba(58,50,41,.28)">✕</span><span style="position:absolute;left:50%;bottom:3px;transform:translateX(-50%);background:rgba(255,253,250,.92);border-radius:6px;padding:1px 4px;font:600 8px/1.15 Lexend,Verdana,sans-serif;color:#1b222e;white-space:nowrap;z-index:2">Soba</span></span><span style="position:relative;display:grid;place-items:center;background:#cfeccf;border-right:1px solid rgba(58,50,41,.16);border-bottom:0"><span style="font-size:21px">🌳</span></span><span style="position:relative;display:grid;place-items:center;background:#cfeccf;border-right:1px solid rgba(58,50,41,.16);border-bottom:0"></span><span style="position:relative;display:grid;place-items:center;background:#cfeccf;border-right:3px solid #3a3229;border-bottom:0"><span style="position:absolute;left:50%;bottom:3px;transform:translateX(-50%);background:rgba(255,253,250,.92);border-radius:6px;padding:1px 4px;font:600 8px/1.15 Lexend,Verdana,sans-serif;color:#1b222e;white-space:nowrap;z-index:2">Vrt</span></span><span style="position:relative;display:grid;place-items:center;background:#e6dcf3;border-right:0;border-bottom:0"><span style="font:700 17px Lexend,Verdana,sans-serif;color:rgba(58,50,41,.28)">✕</span></span></span><span class="room-clue"><span>👵🏻</span>Cvetka je sedela na stolu.</span></div>
     <div class="phone-frame"><div class="phone-screen">
       <div class="m-band"><span class="m-notch"></span>
         <div class="m-top"><span class="m-x">←</span><span class="m-track">Primer 1 · Kdo je bil?<span class="m-line"><span class="m-ball">👾</span></span></span></div>
@@ -256,6 +264,27 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
   </div>
 </div></section>
 
+<section class="games" id="igre"><div class="wrap">
+  <div class="games-grid">
+    <a class="game" id="igra-primeri" href="solo/?play" data-cta="solo">
+      <span class="game-top"><span class="game-pic" aria-hidden="true">🕵️</span><span class="game-name"><small>Detektivski primeri</small><b>Kdo je bil?</b></span></span>
+      <p>Zazvoni telefon. Otrok preišče kraj dogodka, zasliši priče, reši uganko in najde stavek, ki dokaže, kdo je bil.</p>
+      <span class="game-tags"><span>Zgodbe v nadaljevanjih</span><span>Namigi, nikoli kazni</span></span>
+      <span class="game-go">Reši primer →</span>
+    </a>
+    <a class="game" id="kjekdo" href="kje-je-kdo/" data-cta="sobe">
+      <span class="game-top"><span class="game-board" aria-hidden="true"><span class="dp-board" role="img" aria-label="Plošča skrivnostne sobe" style="display:inline-grid;grid-template-columns:repeat(4,20px);grid-template-rows:repeat(4,20px);border:3px solid #3a3229;border-radius:9px;overflow:hidden;background:#3a3229;line-height:1;vertical-align:middle"><span style="position:relative;display:grid;place-items:center;background:#f3dfbf;border-right:1px solid rgba(58,50,41,.16);border-bottom:1px solid rgba(58,50,41,.16)"></span><span style="position:relative;display:grid;place-items:center;background:#f3dfbf;border-right:3px solid #3a3229;border-bottom:1px solid rgba(58,50,41,.16)"></span><span style="position:relative;display:grid;place-items:center;background:#e6dcf3;border-right:1px solid rgba(58,50,41,.16);border-bottom:1px solid rgba(58,50,41,.16)"><span style="font:700 8px Lexend,Verdana,sans-serif;color:rgba(58,50,41,.28)">✕</span></span><span style="position:relative;display:grid;place-items:center;background:#e6dcf3;border-right:0;border-bottom:1px solid rgba(58,50,41,.16)"><span style="font-size:10px">🪴</span></span><span style="position:relative;display:grid;place-items:center;background:#f3dfbf;border-right:1px solid rgba(58,50,41,.16);border-bottom:3px solid #3a3229"><span style="font-size:10px">🎂</span></span><span style="position:relative;display:grid;place-items:center;background:#f3dfbf;border-right:3px solid #3a3229;border-bottom:3px solid #3a3229"></span><span style="position:relative;display:grid;place-items:center;background:#e6dcf3;border-right:1px solid rgba(58,50,41,.16);border-bottom:1px solid rgba(58,50,41,.16)"><span style="font:700 8px Lexend,Verdana,sans-serif;color:rgba(58,50,41,.28)">✕</span></span><span style="position:relative;display:grid;place-items:center;background:#e6dcf3;border-right:0;border-bottom:1px solid rgba(58,50,41,.16)"><span style="position:absolute;top:1px;right:2px;font-size:5px;z-index:2">🛋️</span><span style="position:relative;z-index:1;width:80%;height:80%;box-sizing:border-box;border-radius:50%;background:#fffdfa;border:2px solid #164b33;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.2)"><span style="font-size:7px">👧🏼</span></span></span><span style="position:relative;display:grid;place-items:center;background:#cfeccf;border-right:1px solid rgba(58,50,41,.16);border-bottom:1px solid rgba(58,50,41,.16)"></span><span style="position:relative;display:grid;place-items:center;background:#cfeccf;border-right:3px solid #3a3229;border-bottom:1px solid rgba(58,50,41,.16)"><span style="font:700 8px Lexend,Verdana,sans-serif;color:rgba(58,50,41,.28)">✕</span></span><span style="position:relative;display:grid;place-items:center;background:#e6dcf3;border-right:1px solid rgba(58,50,41,.16);border-bottom:3px solid #3a3229"><span style="position:absolute;top:1px;right:2px;font-size:5px;z-index:2">🪑</span><span style="position:relative;z-index:1;width:80%;height:80%;box-sizing:border-box;border-radius:50%;background:#fffdfa;border:2px solid #164b33;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.2)"><span style="font-size:7px">👵🏻</span></span></span><span style="position:relative;display:grid;place-items:center;background:#e6dcf3;border-right:0;border-bottom:1px solid rgba(58,50,41,.16)"><span style="font:700 8px Lexend,Verdana,sans-serif;color:rgba(58,50,41,.28)">✕</span></span><span style="position:relative;display:grid;place-items:center;background:#cfeccf;border-right:1px solid rgba(58,50,41,.16);border-bottom:0"><span style="font-size:10px">🌳</span></span><span style="position:relative;display:grid;place-items:center;background:#cfeccf;border-right:1px solid rgba(58,50,41,.16);border-bottom:0"></span><span style="position:relative;display:grid;place-items:center;background:#cfeccf;border-right:3px solid #3a3229;border-bottom:0"></span><span style="position:relative;display:grid;place-items:center;background:#e6dcf3;border-right:0;border-bottom:0"><span style="font:700 8px Lexend,Verdana,sans-serif;color:rgba(58,50,41,.28)">✕</span></span></span></span><span class="game-name"><small>Skrivnostne sobe</small><b>Kje je bil kdo?</b></span></span>
+      <p>Vsak stavek pove, kje je kdo bil. Otrok postavi vse na pravo mesto in odkrije, kdo je bil sam s stvarjo, ki manjka.</p>
+      <span class="game-tags"><span>Kratke uganke</span><span>Od lahkih do težjih</span></span>
+      <span class="game-go">Odpri sobo →</span>
+    </a>
+  </div>
+  <div class="one-det">
+    <span class="one-det-card" aria-hidden="true"><span class="one-det-pic"><span>🕵️‍♀️</span></span><span><b>Nika</b><small>🕵️ Detektivka</small></span></span>
+    <p><b>En detektiv za obe igri.</b> Ista izkaznica, isti čin: vsak rešen primer in vsaka rešena soba šteje.</p>
+  </div>
+</div></section>
+
 <div class="wrap">
   <div class="install" id="install" hidden>
     <img src="icons/icon-180.png" alt="">
@@ -266,22 +295,31 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
 </div>
 
 <section class="part" id="kako"><div class="wrap">
-  <div class="head"><span class="kicker">Kako deluje</span><h2>Pet kratkih korakov</h2><p class="sub">Velike črke, malo navodil.</p></div>
-  <div class="steps">
+  <div class="head"><span class="kicker">Kako deluje</span><h2>Velike črke, malo navodil.</h2></div>
+  <div class="tabs" role="tablist" aria-label="Igra">
+    <button class="tab" role="tab" id="tabPrimer" aria-selected="true" aria-controls="stepsPrimer">🕵️ Primer</button>
+    <button class="tab" role="tab" id="tabSoba" aria-selected="false" aria-controls="stepsSoba">🚪 Soba</button>
+  </div>
+  <div class="steps" id="stepsPrimer" role="tabpanel" aria-labelledby="tabPrimer">
     <div class="step"><div class="step-top"><i style="background:#dff1ff">📞</i><span>01</span></div><b>Zvoni!</b><p>Nekdo kliče na pomoč.</p><small>»Nekdo je ponoči odprl omarico s piškoti!«</small></div>
-    <div class="step"><div class="step-top"><i style="background:var(--season-soft)">🔍</i><span>02</span></div><b>Na kraju dogodka</b><p>Zbira sledi.</p><small>🍯 🍪 🔦 🚪</small></div>
+    <div class="step"><div class="step-top"><i style="background:var(--season-soft)">🔍</i><span>02</span></div><b>Na kraju dogodka</b><p>Zbira sledi ali zasliši priče.</p><small>🍯 🍪 🔦 🚪</small></div>
     <div class="step"><div class="step-top"><i style="background:#fdeaa9">🔤</i><span>03</span></div><b>Uganka</b><p>Iskanka, šifra, ključavnica …</p><small>A N T E N A</small></div>
-    <div class="step"><div class="step-top"><i style="background:#f1e8fa">🕵️</i><span>04</span></div><b>Kdo je bil?</b><p>Prečrta in dokaže.</p><small>Tapni stavek, nato obraz.</small></div>
-    <div class="step"><div class="step-top"><i style="background:#fbe4e0">📰</i><span>05</span></div><b>Primer rešen!</b><p>Ime v časopisu.</p><small>ZVEZDNI ČASNIK</small></div>
+    <div class="step"><div class="step-top"><i style="background:#f1e8fa">🕵️</i><span>04</span></div><b>Kdo je bil?</b><p>Prečrta, kdo ni bil, in pokaže dokaz.</p><small>Tapni stavek, nato obraz.</small></div>
+    <div class="step"><div class="step-top"><i style="background:#fbe4e0">📰</i><span>05</span></div><b>Primer rešen!</b><p>Ime v časopisu in nov namig na tabli.</p><small>ZVEZDNI ČASNIK</small></div>
+  </div>
+  <div class="steps" id="stepsSoba" role="tabpanel" aria-labelledby="tabSoba" hidden>
+    <div class="step"><div class="step-top"><i style="background:#dff1ff">📖</i><span>01</span></div><b>Preberi namig</b><p>Vsak stavek pove, kje je kdo bil.</p><small>»Cvetka je sedela na stolu.«</small></div>
+    <div class="step"><div class="step-top"><i style="background:var(--season-soft)">✏️</i><span>02</span></div><b>Postavi na pravo mesto</b><p>Vsak v svojo vrstico in svoj stolpec.</p><small>Križci pomagajo.</small></div>
+    <div class="step"><div class="step-top"><i style="background:#fdeaa9">🔑</i><span>03</span></div><b>Kdo je bil sam?</b><p>Kdor je bil sam s stvarjo, ki manjka, je to naredil.</p><small>Primer rešen!</small></div>
   </div>
   <p class="swipe">Povlecite →</p>
 </div></section>
 
 <section class="part" id="vsak-teden"><div class="wrap two">
   <div>
-    <span class="kicker">Vsak teden znova</span>
-    <h2>Branje, ki se ga veseli</h2>
-    <p class="sub">Vsak primer odklene nov namig. Vsak teden pride nova pustolovščina.</p>
+    <span class="kicker">Vedno kaj novega</span>
+    <h2>Novi primeri in sobe prihajajo.</h2>
+    <p class="sub">Branje, ki se ga otrok veseli: zgodba se nadaljuje, nove sobe čakajo, čin raste.</p>
     <div class="cork">
       <span class="cork-q"><i>📌</i>Kaj se skriva v zračniku?</span>
       <span class="slots"><span>👣</span><span>🔊</span><span>🥄</span><span class="empty">?</span><span class="empty">?</span><span class="empty">?</span></span>
@@ -289,9 +327,9 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
     </div>
   </div>
   <div class="grid">
-    <div class="card"><i style="background:#dff1ff">🧩</i><span><b>Zgodba se nadaljuje</b><p>Vsak primer doda namig na tablo.</p></span></div>
-    <div class="card"><i style="background:#fdeaa9">📬</i><span><b>Pismo s skrivnostjo</b><p>Pride ob naslednjem obisku.</p></span></div>
-    <div class="card"><i style="background:#f1e8fa">🔰</i><span><b>Čin raste</b><p>Samo navzgor.</p></span></div>
+    <div class="card"><i style="background:#dff1ff">🧩</i><span><b>Zgodba se nadaljuje</b><p>Vsak primer doda namig na tablo. Pismo s skrivnostjo pride ob naslednjem obisku.</p></span></div>
+    <div class="card"><i style="background:#fdeaa9">🚪</i><span><b>Nove skrivnostne sobe</b><p>Lahke, srednje in malo težje. Ko otrok reši vse, ga čakajo nove.</p></span></div>
+    <div class="card"><i style="background:#f1e8fa">🔰</i><span><b>Čin raste</b><p>Od vajenca do glavnega inšpektorja. Samo navzgor, za primere in sobe.</p></span></div>
     <div class="card"><i style="background:#fbe4e0">🤝</i><span><b>Ritem določite vi</b><p>Brez nizov in časovnih omejitev.</p></span></div>
   </div>
 </div></section>
@@ -305,21 +343,22 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
     <p class="trust">🔒 Brez računa in brez oglasov. Ime in napredek ostaneta na vaši napravi. <a href="zasebnost/">Več o zasebnosti</a></p>
   </div>
   <div class="grid">
-    <div class="card"><i>📖</i><span><b>Tekoče branje</b><p>Kratki stavki, velika pisava.</p></span></div>
-    <div class="card"><i>🔎</i><span><b>Razumevanje</b><p>Dokaz je v stavku.</p></span></div>
-    <div class="card"><i>⏳</i><span><b>Zaporedje</b><p>Prej, takrat, potem.</p></span></div>
-    <div class="card"><i>🧠</i><span><b>Sklepanje</b><p>Dva stavka, en sklep.</p></span></div>
+    <div class="card"><i>📖</i><span><b>Tekoče branje</b><p>Kratki stavki, velika pisava.</p><small class="gtag">🕵️ primeri · 🚪 sobe</small></span></div>
+    <div class="card"><i>🔎</i><span><b>Razumevanje</b><p>Dokaz je v stavku.</p><small class="gtag">🕵️ primeri</small></span></div>
+    <div class="card"><i>🎯</i><span><b>Natančno branje</b><p>Male besede štejejo: ob, v, na, ni.</p><small class="gtag">🚪 sobe</small></span></div>
+    <div class="card"><i>⏳</i><span><b>Zaporedje</b><p>Prej, takrat, potem.</p><small class="gtag">🕵️ primeri</small></span></div>
+    <div class="card"><i>🧠</i><span><b>Sklepanje</b><p>Dva stavka, en sklep.</p><small class="gtag">🕵️ primeri · 🚪 sobe</small></span></div>
   </div>
 </div></section>
 
 <section class="part"><div class="wrap">
   <div class="final">
     <div><h2>Prvi primer že čaka.</h2><p>Kdo je ponoči odprl omarico s piškoti?</p></div>
-    <a class="btn gold" href="solo/?play">▶ Igraj zdaj</a>
+    <a class="btn gold" href="solo/?play" data-cta="end">▶ Igraj zdaj</a>
   </div>
   <footer class="foot">
     <span>Bralni detektivi · Brez časovnih omejitev, točk in oglasov.</span>
-    <a class="adults" href="solo/">Za odrasle: nastavitve in pregled</a>
+    <a class="adults" href="solo/" data-cta="adult">Za odrasle: nastavitve in pregled</a>
     <a class="legal" href="zasebnost/">Zasebnost in pogoji</a>
     <button class="reopen" id="reopen" hidden>📲 Namesti na začetni zaslon</button>
   </footer>
@@ -335,6 +374,7 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
     <button class="pill" id="sheetClose">Razumem</button>
   </div>
 </div>
+<script src="shared/detective.js"></script>
 <script>
 // ---- Install: Chrome/Edge/Android get the real install dialog; Safari gets the steps.
 (() => {
@@ -356,12 +396,16 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
   if (!ios) window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferred = e; });
   window.addEventListener('appinstalled', () => { $('install').hidden = true; $('reopen').hidden = true; });
   const open = async () => {
+    DP.send('web', 'cta', { which: 'install', v: DP.variant() });
     if (deferred) {
       deferred.prompt();
-      await deferred.userChoice.catch(() => {});
+      DP.send('web', 'install', { how: 'prompt' });
+      const c = await deferred.userChoice.catch(() => null);
+      if (c && c.outcome === 'accepted') DP.send('web', 'install', { how: 'accepted' });
       deferred = null;
       return;
     }
+    DP.send('web', 'install', { how: 'sheet' });
     $('sheet').hidden = false;
   };
   $('installBtn').onclick = open;
@@ -374,6 +418,22 @@ footer.foot { margin: 24px 0 0; padding-bottom: 110px; text-align: center; font-
   $('sheetClose').onclick = () => { $('sheet').hidden = true; };
   $('sheet').onclick = (e) => { if (e.target === $('sheet')) $('sheet').hidden = true; };
   show();
+})();
+
+// ---- Anonymous events (docs/EVENTS.md): the page opened, the main buttons, and a new sitting if it starts here.
+// No name, no ID; the device's own counters are worked out in shared/detective.js.
+(() => {
+  DP.startSitting();
+  const d = DP.sittingData('web'); if (d) DP.send('web', 'sitting', d);
+  const src = DP.source();
+  DP.send('web', 'land', { ...(src ? { src } : {}), v: DP.variant(), pwa: DP.pwa() });
+  document.addEventListener('click', (e) => { const a = e.target.closest('[data-cta]'); if (a) DP.send('web', 'cta', { which: a.dataset.cta, v: DP.variant() }); });
+})();
+
+// ---- »Kako deluje«: a case or a room
+(() => {
+  const tabs = [['tabPrimer', 'stepsPrimer'], ['tabSoba', 'stepsSoba']].map(([t, s]) => [document.getElementById(t), document.getElementById(s)]);
+  tabs.forEach(([t]) => t.addEventListener('click', () => tabs.forEach(([x, s]) => { const on = x === t; x.setAttribute('aria-selected', on); s.hidden = !on; })));
 })();
 
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {

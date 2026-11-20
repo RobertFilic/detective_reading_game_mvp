@@ -17,6 +17,8 @@ const total = await p.evaluate(() => ALL_KEYS.length);
 await p.click('[data-act="age"][data-age="6-7"]');
 ok(await p.$('[data-act="orderMode"][data-mode="board"].btn:not(.secondary)'), 'board is the default mode');
 await p.click('[data-act="startSession"]'); await p.click('[data-act="begin"]');
+ok(await p.evaluate(() => S.screen) === 'office' && await p.$('.door-primeri') && await p.$('a.door-sobe[href="../kje-je-kdo/"]'), 'the session starts in the office: a door per game');
+await p.click('.door-primeri'); await wait();
 ok((await p.$$('.file-card:not(.teaser)')).length === open.length, `${open.length} adventures: ${open.join(', ')}`);
 ok(!(await p.$('.file-card[data-file="vesolje"], .file-card[data-file="kmetija"]')), 'the old space and farm adventures are gone');
 ok(total === open.length * 6, `every adventure has 6 cases (${total})`);
@@ -41,7 +43,7 @@ await p.evaluate(() => ACTIONS.toSetup());
 await p.click('[data-act="age"][data-age="6-7"]');
 ok((await p.content()).includes(`rešenih: 3 / ${total}`), `setup shows 3 / ${total} solved`);
 await p.evaluate(() => { localStorage.setItem('dp_played_v1', JSON.stringify([1, 2, 3, 4, 5, 6].map(n => 'bip:' + n))); });
-await p.click('[data-act="startSession"]'); await p.click('[data-act="begin"]'); await p.click('.medal[data-file="bip"]'); await wait();
+await p.click('[data-act="startSession"]'); await p.click('[data-act="begin"]'); await p.click('.door-primeri'); await wait(); await p.click('.medal[data-file="bip"]'); await wait();
 ok((await ticks()).length === 6 && await p.$('.trophy'), 'all 6 solved → a medal on the shelf, and its board has the trophy banner');
 
 // fixed mode runs through every adventure in order

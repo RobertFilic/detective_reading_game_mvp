@@ -11,7 +11,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   const evs = []; p.on('request', r => { if (r.url().endsWith('/api/e')) { try { evs.push(JSON.parse(r.postData())); } catch (e) {} } });
   await p.evaluateOnNewDocument(() => { if (window.speechSynthesis) speechSynthesis.getVoices = () => []; });
   await p.setViewport({ width: w, height: h, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
-  await p.goto('http://localhost:8765/solo/?play');
+  await p.goto('http://localhost:8765/solo/?play&igra=primeri');
   await p.evaluate(() => { localStorage.clear(); localStorage.setItem('dp_save_version', '3'); localStorage.setItem('dp_tutorial_done', 'true');
     localStorage.setItem('dp_played_v1', JSON.stringify(['bip:1']));
     localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻', g: 'm', sk: '🐶', name: 'Luka', id: '1234' })); });
@@ -64,7 +64,8 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   if (name === 'iphone14') console.log('   events:', evs.map(e => e.ev + (e.data.step ? ':' + e.data.step : '') + (e.data.kind ? ':' + e.data.kind : '') + (e.data.hint ? ':' + e.data.hint : '')).join(' '));
   const E = (ev) => evs.filter(e => e.ev === ev);
   const raw = JSON.stringify(evs);
-  ok(evs.length && evs.every(e => e.game === 'solo' && /^[a-z0-9]{10}$/.test(e.sid) && e.sid === evs[0].sid) && !raw.includes('Luka') && !raw.includes('1234') && !raw.includes('🐶') && !/"(player|session|child|age|name)"/.test(raw), `${name}: events: one random sitting number, no name, card, player or session`);
+  const own = evs.filter(e => e.game === 'solo' && e.ev !== 'sitting');   // the start page (game web) and the page before the reload (its »sitting«) have their own page's number
+  ok(own.length && evs.every(e => ['solo', 'web'].includes(e.game)) && own.every(e => /^[a-z0-9]{10}$/.test(e.sid) && e.sid === own[0].sid) && !raw.includes('Luka') && !raw.includes('1234') && !raw.includes('🐶') && !/"(player|session|child|age|name)"/.test(raw), `${name}: events: one random sitting number, no name, card, player or session`);
   ok(E('file').length === 1 && E('file')[0].data.file === 'bip', `${name}: events: the season opened`);
   ok(E('start').length === 1 && E('start')[0].data.case === 'b2' && E('start')[0].data.first === true && E('start')[0].data.file === 'bip', `${name}: events: start of b2, first time`);
   ok(E('step').map(e => e.data.step).join() === 'call,ask,solve' && E('step').every(e => e.data.case === 'b2' && Number.isInteger(e.sec)), `${name}: events: steps call → ask → solve, with seconds`);
@@ -96,7 +97,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   const evs = []; p.on('request', r => { if (r.url().endsWith('/api/e')) { try { evs.push(JSON.parse(r.postData())); } catch (e) {} } });
   await p.evaluateOnNewDocument(() => { if (window.speechSynthesis) speechSynthesis.getVoices = () => []; });
   await p.setViewport({ width: 390, height: 844, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
-  await p.goto('http://localhost:8765/solo/?play');
+  await p.goto('http://localhost:8765/solo/?play&igra=primeri');
   await p.evaluate(() => { localStorage.clear(); localStorage.setItem('dp_save_version', '3'); localStorage.setItem('dp_tutorial_done', 'true');
     localStorage.setItem('dp_played_v1', JSON.stringify(['bip:1']));
     localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏻', g: 'm', sk: '🐶', name: 'Luka', id: '1234' })); });

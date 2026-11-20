@@ -22,9 +22,9 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   const tokens = () => p.$$eval('.cell .tok', els => els.length);
 
   await p.goto('http://localhost:8765/'); await wait();
-  ok(await p.$eval('#kjekdo', e => e.textContent.includes('Skrivnostne sobe') && e.getAttribute('href') === 'kje-je-kdo/'), `${dev}: the start page has the »Skrivnostne sobe« tile`);
-  ok(await p.$eval('#kjekdo', e => !!e.closest('.hero') && e.textContent.includes('Novo!') && !!(e.compareDocumentPosition(document.getElementById('install')) & Node.DOCUMENT_POSITION_FOLLOWING)), `${dev}: it sits in the hero with »Novo!«, before »Namesti aplikacijo«`);
-  ok(await p.$eval('#kjekdo', e => { const r = e.getBoundingClientRect(); return r.top < innerHeight * 1.25 && r.right <= innerWidth && r.height >= 48; }) && await wide(), `${dev}: it is near the top of the page, fits the width`);
+  ok(await p.$eval('#kjekdo', e => e.textContent.includes('Skrivnostne sobe') && e.getAttribute('href') === 'kje-je-kdo/'), `${dev}: the start page has the »Skrivnostne sobe« card`);
+  ok(await p.$eval('#kjekdo', e => !!e.closest('#igre') && !!(e.compareDocumentPosition(document.getElementById('install')) & Node.DOCUMENT_POSITION_FOLLOWING)), `${dev}: it sits with the cases' card right under the hero, before »Namesti aplikacijo«`);
+  ok(await p.$eval('#kjekdo', e => { const r = e.getBoundingClientRect(); return r.right <= innerWidth && r.height >= 48; }) && await wide(), `${dev}: it fits the width`);
   if (process.env.SHOTS) await p.screenshot({ path: `shots/kjekdo-${dev}-landing.png` });
   await p.evaluate(() => { localStorage.removeItem('dp_kjekdo_v1'); localStorage.removeItem('dp_profile_v1'); localStorage.removeItem('dp_kjekdo_intro_v1'); });
   await Promise.all([p.waitForNavigation(), p.$eval('#kjekdo', e => e.click())]); await wait();
@@ -160,7 +160,8 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   // the events: anonymous, one random sitting number, nothing from the ID card
   await wait(300);
   const ev = (name, puzzle) => evs.filter(e => e.ev === name && (puzzle === undefined || e.puzzle === puzzle));
-  ok(evs.length > 0 && evs.every(e => e.game === 'sobe' && /^[a-z0-9]{10}$/.test(e.sid) && e.sid === evs[0].sid), `${dev}: events carry one random sitting number (${evs.length} events)`);
+  const own = evs.filter(e => e.game === 'sobe');   // the start page (game web) has its own page's number
+  ok(own.length > 0 && evs.every(e => ['sobe', 'web'].includes(e.game)) && own.every(e => /^[a-z0-9]{10}$/.test(e.sid) && e.sid === own[0].sid), `${dev}: events carry one random sitting number (${own.length} events)`);
   ok(!JSON.stringify(evs).includes('Ana') && !JSON.stringify(evs).includes('🦊') && evs.every(e => !('id' in e) && !('name' in e)), `${dev}: no name, helper or card number in any event`);
   ok(ev('intro').length === 2 && ev('intro')[0].data.first === true && ev('intro')[0].data.how === 'next' && ev('intro')[0].data.card === 6 && ev('intro')[1].data.first === false && ev('intro')[1].data.how === 'skip', `${dev}: intro: read to card 6 the first time, skipped from »?«`);
   ok(ev('start', 1).length === 1 && ev('start', 1)[0].data.first === true && ev('start', 2).length === 1, `${dev}: start of puzzles 1 and 2`);

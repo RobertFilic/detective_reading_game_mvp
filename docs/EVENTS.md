@@ -4,7 +4,7 @@ Since 2026-11-14, »Skrivnostne sobe« (`kje-je-kdo/`) and the main game (`solo/
 
 ## Privacy rules
 
-- **No name, no detective card, no IP address, no device ID.** Nothing is stored on the device for this.
+- **No name, no detective card, no IP address, no device ID.** The only thing stored on the device for events is `dp_visits_v1` (`shared/detective.js`): the sitting number, the days of the first and last sitting, the last tap, the minutes in view in this sitting, the source code (60 days) and the start page's variant. It is never sent as it is: only numbers worked out from it (`sittingData`), no dates, nothing that ties two sittings together.
 - **`sid` is a random number that lives in the page's memory.** It ties together the events of one sitting and is gone on reload. So the events count sittings and puzzles, not children.
 - **The Worker keeps only the fields listed below.** It drops anything else, and it has request logs switched off (`observability.enabled: false`), because those logs would hold IP addresses.
 - **Storage:** D1 database `bralni-dogodki`, EU jurisdiction. Rows older than 365 days are deleted.
@@ -67,6 +67,29 @@ FROM events WHERE game = 'solo' AND ev = 'verdict' GROUP BY c, v ORDER BY c;
 ```
 
 **The reading page shows all of this:** `node tools/read.mjs` from `solo/` → »📊 Analitika« ([solo/tools/stats.mjs](../solo/tools/stats.mjs)). It also shows page views from Cloudflare Web Analytics.
+
+## Both games: »Kdo danes igra?«
+
+| Event | When | `data` |
+|---|---|---|
+| `with` | The child answers »Kdo danes igra?« (»👧 Jaz« / »👧👩 Z odraslim«) or closes it (✕). Asked in a sitting's first game screen (the office in `solo/`, the list in `kje-je-kdo/`) in the device's 1st sitting, then every 3rd (4th, 7th …), once per sitting in either game. A sitting starts after 30 minutes without a tap (`shared/detective.js`). | `with` (`solo`, `adult` or `skip`), `n` (the device's sitting number), `g` (where it was asked: `solo` or `sobe`). The main question of the December validation (docs/marketing/VALIDATION.md, H1 vs H2) |
+
+```sql
+-- who plays: alone or with an adult, and does it change from the first sittings to later ones
+SELECT json_extract(data, '$.with') AS who, (json_extract(data, '$.n') > 1) AS later, COUNT(*) AS n
+FROM events WHERE ev = 'with' GROUP BY who, later ORDER BY later, who;
+```
+
+## The validation (docs/marketing/ANALYTICS.md): sittings, the start page, adults
+
+| Event | Game | When | `data` |
+|---|---|---|---|
+| `sitting` | `web`, `solo` or `sobe` (where it starts) | Once per sitting, on the page where it starts (a sitting starts after 30 minutes without a tap) | `n` (the device's sitting number), `days` (days since its first sitting; not called `age`, which tests forbid as a child's age), `wk` (`floor(days / 7)`), `fw` (the first sitting in this week of the device's life: count `wk = 1 AND fw` for »active in week 2«), `wd` (1 = Monday … 7), `hb` (the hour in 3-hour blocks, 0–7), `v` (the start page's variant), `pwa` (opened from the Home Screen), `g`; from the 2nd sitting `gap` (days since the last one) and `pm` (minutes in view of the last one); `src` if the device came from a leaflet (`?l=a07`) or a link (`?ref=word`) in the last 60 days |
+| `land` | `web` | The start page opens | `src`, `v`, `pwa` |
+| `cta` | `web` | A main button is tapped | `which` (`hero`, `end`, `solo`, `sobe`, `adult`, `install`), `v` |
+| `install` | `web` | The install dialog or the steps sheet opens; the install is accepted | `how` (`prompt`, `sheet`, `accepted`) |
+| `adult` | `solo` | An adult opens the adult overview (the 3-second corner or »Za odrasle«), exports, or shows the QR transfer | `how` (`gate`, `debrief`, `export`, `qr`) |
+| `survey` | `solo` | A parent answers one of the four optional questions in the adult overview (offered after 5 sittings or a finished season, again after each newly finished season) | `q` (`skupaj`, `vredno`, `priporocil`, `skrb`), `a` (a number; see `SURVEY` in `solo/index.html`), `n` |
 
 ## Reading the numbers
 

@@ -41,6 +41,14 @@ header.top .in { max-width: 960px; margin: 0 auto; display: flex; align-items: c
 .caps-btn { font: 700 15px var(--font); letter-spacing: .02em; padding: 0 6px; }
 .icon-btn { min-width: 48px; min-height: 48px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--paper); font-size: 20px; }
 
+/* on the list the header is the band every game shares (shared/detective.js): the small card back to the office, the tabs */
+header.top.dp-band { --dp-top: env(safe-area-inset-top); padding: calc(10px + var(--dp-top)) max(14px, env(safe-area-inset-right)) 14px max(14px, env(safe-area-inset-left)); position: relative; background: #164b33; border-bottom: 0; -webkit-backdrop-filter: none; backdrop-filter: none; }
+@supports (color: oklch(0 0 0)) { header.top.dp-band { background: oklch(0.37 0.07 160); } }
+header.top.dp-band .in { width: 100%; min-height: 0; }
+header.top.dp-band .ttl { display: none; }
+header.top.dp-band .icon-btn { border: 0; border-radius: 50%; background: rgba(255, 255, 255, .14); color: #fff; }
+header.top.dp-band #dpTabs { max-width: 960px; width: 100%; margin: 0 auto; }
+@media (pointer: coarse) and (orientation: portrait) { header.top.dp-band { --dp-top: max(calc(env(safe-area-inset-top) * 1.5), 32px); } }
 main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
 
 /* the level list */
@@ -165,6 +173,7 @@ main { max-width: 960px; margin: 0 auto; padding: 16px max(16px, env(safe-area-i
 .big { min-height: 58px; border: 0; border-radius: 18px; background: var(--season); color: #fff; font: 600 18px var(--font); padding: 0 20px; }
 .big.alt { background: var(--paper); color: var(--ink); border: 1.5px solid var(--line); }
 .win { align-items: center; text-align: center; }
+.rankup { background: #fdeaa9; border-radius: 14px; padding: 8px 14px; font: 600 18px/1.35 var(--font); }
 .intro-top { display: flex; align-items: center; justify-content: space-between; font: 600 15px var(--font); color: var(--ink-2); letter-spacing: .06em; margin-top: -8px; }
 .intro-card { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; min-height: 300px; }
 .intro-ico { width: 84px; height: 84px; border-radius: 50%; background: var(--season-soft); border: 3px solid var(--season); display: grid; place-items: center; font-size: 40px; box-shadow: 4px 5px 0 var(--line); }
@@ -223,7 +232,7 @@ html.caps .make input::placeholder { text-transform: none; }
   <span class="ttl"><small>Bralni detektivi · uganka</small><b id="title">Skrivnostne sobe</b></span>
   <button class="icon-btn caps-btn" id="capsBtn" aria-pressed="false" aria-label="Velike tiskane črke">ABC</button>
   <button class="icon-btn" id="rulesBtn" aria-label="Kako se igra?" hidden>?</button>
-</div></header>
+</div><div id="dpTabs" hidden></div></header>
 
 <main>
   <section id="list">
@@ -256,7 +265,10 @@ html.caps .make input::placeholder { text-transform: none; }
 
 <div class="sheet-wrap" id="sheet" hidden><div class="sheet" id="sheetBody" role="dialog"></div></div>
 
+<script src="../shared/detective.js"></script>
 <script>
+DP.css();
+DP.startSitting();   // this device's sittings, for »Kdo danes igra?« (kept on the device)
 // ---- The levels. Each person's `at` is the one solution and `rule` is their sentence as logic;
 // solo/tools/kjekdo.mjs proves that the rules give exactly `at` and that no sentence is spare.
 // Rules: {on: obj} | {notOn: obj} | {room: r} | {notRoom: r} | {beside: obj} | {notBeside: obj} | {} (no clue).
@@ -912,6 +924,12 @@ const say = (html) => { $('say').innerHTML = html; };
 const SID = (Math.random().toString(36).slice(2) + '00000000').slice(0, 10);
 let T = null;   // this puzzle: {t0, idle (ms on the board since the last placement), hints, wrongs, undos, notes, stuck: Set, done}
 const placedN = () => (S ? Object.keys(S.pos).length : 0);
+document.addEventListener('click', (e) => {
+  const w = e.target.closest('#list [data-with]');
+  if (!w) return;
+  track('with', { ...DP.answerWho(w.dataset.with), g: 'sobe' });
+  w.closest('.dp-who').remove();
+});
 function track(ev, data) {
   const e = { game: 'sobe', sid: SID, ev };
   if (L && T) Object.assign(e, { puzzle: L.id, placed: placedN(), sec: Math.round((Date.now() - T.t0) / 1000) });
@@ -919,6 +937,8 @@ function track(ev, data) {
   try { navigator.sendBeacon('/api/e', JSON.stringify(e)); } catch (err) {}
 }
 const tally = () => ({ hints: T.hints, wrongs: T.wrongs, undos: T.undos, notes: T.notes });
+// a new sitting that starts in the rooms (docs/EVENTS.md, `sitting`)
+{ const d = DP.sittingData('sobe'); if (d) track('sitting', d); }
 // leaving a puzzle before it's solved (back to the list, another puzzle, or closing the page)
 function leave() {
   if (L && T && !T.done) { track('left', tally()); T.done = true; }
@@ -956,6 +976,23 @@ function heroLevel() {
   return first ? { l: first, tag: 'Nova soba' } : null;
 }
 
+// ---- The band (on the list only): the small detective card goes back to the office in solo/, the tabs switch games.
+// In a puzzle or while making the ID card the header is the plain one, with ← back.
+const myPoints = () => DP.points(DP.casesSolvedRough(), DP.roomsSolved(solved).length);
+const myTotal = () => DP.casesSolvedRough() + DP.roomsSolved(solved).length;
+function band(on) {
+  const h = document.querySelector('header.top'), back = $('back'), tabs = $('dpTabs');
+  h.classList.toggle('dp-band', on);
+  tabs.hidden = !on;
+  if (!on) { back.className = 'back'; back.textContent = '←'; back.setAttribute('aria-label', 'Nazaj'); return; }
+  const t = document.createElement('div');
+  t.innerHTML = DP.me({ p: me, name: me.name || detTitle(me), rank: DP.rankName(DP.rankOf(me, myPoints()), me), total: myTotal(), href: '../solo/?play&igra=pisarna' });
+  const el = t.firstElementChild;
+  back.className = el.className; back.innerHTML = el.innerHTML; back.setAttribute('aria-label', 'Nazaj v pisarno');
+  back.setAttribute('href', '../solo/?play&igra=pisarna');
+  tabs.innerHTML = DP.tabs([{ id: 'primeri', label: '🕵️ Primeri', href: '../solo/?play&igra=primeri' }, { id: 'sobe', label: '🚪 Sobe', on: true }]);
+}
+
 // ---- The level list
 function showList() {
   leave();
@@ -963,7 +1000,10 @@ function showList() {
   if (!me) return makeCard();
   $('list').hidden = false; $('game').hidden = true; $('make').hidden = true; $('rulesBtn').hidden = false;
   $('title').textContent = 'Skrivnostne sobe';
-  $('back').setAttribute('href', '../');
+  band(true);
+  // »Kdo danes igra?«: once per sitting, in whichever game the sitting starts (docs/marketing/ANALYTICS.md §2)
+  const oldWho = document.querySelector('#list .dp-who'); if (oldWho) oldWho.remove();
+  if (DP.askWho()) $('list').insertAdjacentHTML('afterbegin', DP.whoCard());
   $('mePic').innerHTML = mePic(me);
   $('meName').textContent = detName(me);
   // every room that is out stays open; the future ones are not listed (only the teaser knows the date)
@@ -985,6 +1025,7 @@ function makeCard(then) {
 }
 
 function drawMake() {
+  band(false);
   $('list').hidden = true; $('game').hidden = true; $('make').hidden = false; $('rulesBtn').hidden = true;
   $('title').textContent = 'Detektivska izkaznica';
   $('back').setAttribute('href', mk.step > 1 ? '#' : '../');
@@ -1031,6 +1072,7 @@ function start(id) {
   S = { pos: {}, crosses: new Set(), notes: {}, sel: L.people[0].id, mode: 'place', history: [], hint: null, shown: new Set() };
   track('start', { first: !solved.includes(id) });
   showErrs(false);
+  band(false);
   $('list').hidden = true; $('game').hidden = false; $('make').hidden = true; $('rulesBtn').hidden = false;
   $('helperPic').textContent = me.sk;
   $('title').textContent = L.title;
@@ -1359,8 +1401,10 @@ function answer(id, el) {
     say(`Ni še prav. Poglej rdeči prostor (${L.names[L.room].toLowerCase()}). Kdo stoji v njem?`);
     return;
   }
-  const firstTime = !solved.includes(L.id);
+  const firstTime = !solved.includes(L.id), rankBefore = DP.rankAt(me, myPoints());
   if (firstTime) solved.push(L.id);
+  const rankNow = DP.rankAt(me, myPoints()), rankUp = rankNow > rankBefore;
+  if (rankNow > (Number.isInteger(me.rk) ? me.rk : 0)) { me = { ...me, rk: rankNow }; try { localStorage.setItem(PROFILE_KEY, JSON.stringify(me)); } catch (e) {} }
   if (T && !T.done) { track('solved', { ...tally(), first: firstTime, done: solved.length }); T.done = true; }
   try { localStorage.setItem(KEY, JSON.stringify(solved)); localStorage.removeItem('kjekdo_solved'); } catch (e) {}
   const p = person(id), next = nextUnsolved(LEVELS.indexOf(L));
@@ -1370,8 +1414,9 @@ function answer(id, el) {
     <span class="who-face">${p.face}</span>
     <h3>${L.win}</h3><p class="story">${L.why}</p>
     <p class="errs-win">${T && T.wrongs ? `Napake: ${T.wrongs}` : 'Brez napake! 🌟'}</p>
+    ${rankUp ? `<p class="rankup">🎉 ${me.g === 'f' ? 'Napredovala' : 'Napredoval'} si! Zdaj si ${esc(DP.rankName(DP.RANKS[rankNow], me))}.</p>` : ''}
     <p class="heart"><b>Zakaj?</b> ${L.heart}</p>
-    <div class="btns">${next ? `<button class="big" id="next">Naslednja uganka ${next.icon}</button>` : ''}<button class="big ${next ? 'alt' : ''}" id="toList">Vse uganke</button><a class="big alt" href="../" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Na začetno stran</a></div></div>`);
+    <div class="btns">${next ? `<button class="big" id="next">Naslednja uganka ${next.icon}</button>` : ''}<button class="big ${next ? 'alt' : ''}" id="toList">Vse uganke</button><a class="big alt" href="../solo/?play&amp;igra=pisarna" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Moja pisarna</a></div></div>`);
   if (next) $('next').onclick = () => { closeSheet(); start(next.id); };
   $('toList').onclick = () => { closeSheet(); showList(); };
 }

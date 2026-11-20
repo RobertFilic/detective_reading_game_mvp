@@ -48,7 +48,7 @@ for (const [dev, w, h] of [['iphone14', 390, 664], ['se', 340, 667], ['land', 85
   ok(await p.$('[data-act="warmGo"]'), 'a reload with the card open: the card again');
   await p.click('[data-act="warmSkip"]'); await wait(300);
   const hp = await p.help();
-  ok(await p.st() === 'files' && hp.warm === 'skipped' && hp.g === 2, '»Že znam, preskoči« → the adventures, warm skipped, help 2');
+  ok(await p.st() === 'office' && hp.warm === 'skipped' && hp.g === 2, '»Že znam, preskoči« → the office, warm skipped, help 2');
   ok(await p.evaluate(() => LOG.some(e => e.type === 'warm_skip')), 'warm_skip logged');
   // the adult replays the practice: no card (the child has chosen already)
   await p.click('[data-act="tutorial"]'); await wait(300);

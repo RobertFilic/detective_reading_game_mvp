@@ -12,7 +12,23 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
   await p.goto('http://localhost:8765/'); await wait();
   ok(await p.title() === 'Bralni detektivi' && (await p.$eval('h1', e => e.textContent)) === 'Vsak stavek je sled.', `${dev}: »Bralni detektivi«, »Vsak stavek je sled.«`);
   const text = await p.evaluate(() => document.body.innerText);
-  ok(text.includes('od 6 do 10 let') && text.includes('Vsak teden nova pustolovščina'), `${dev}: ages 6–10, a new adventure every week`);
+  ok(text.includes('od 6 do 10 let') && text.includes('Vedno kaj novega') && text.includes('Novi primeri in sobe prihajajo'), `${dev}: ages 6–10, »Vedno kaj novega«`);
+  // docs/TWO_GAMES.md decision 2: no rhythm promised for any game, and no room count
+  ok(!/vsak teden|vsak četrtek|vsak dan|12 ugank|28 sob/i.test(text), `${dev}: no release rhythm or room count promised`);
+  // both games, right under the hero: two equal cards that also link straight in, one detective for both
+  ok(await p.evaluate(() => { const g = document.getElementById('igre'); return g && g.previousElementSibling && g.previousElementSibling.classList.contains('hero') && g.querySelectorAll('.game').length === 2; }), `${dev}: two game cards, the first section after the hero`);
+  ok(await p.$eval('#igra-primeri', e => e.getAttribute('href') === 'solo/?play' && e.textContent.includes('Detektivski primeri') && e.textContent.includes('Kdo je bil?'))
+    && await p.$eval('#kjekdo', e => e.getAttribute('href') === 'kje-je-kdo/' && e.textContent.includes('Skrivnostne sobe') && e.textContent.includes('Kje je bil kdo?') && !!e.querySelector('.dp-board')), `${dev}: »Detektivski primeri« → solo/?play, »Skrivnostne sobe« (a real room board) → kje-je-kdo/`);
+  ok(text.includes('En detektiv za obe igri'), `${dev}: »En detektiv za obe igri«`);
+  ok(await p.$eval('.hero .room-card', e => !!e.querySelector('.dp-board') && e.textContent.includes('Kdo je načel torto?')), `${dev}: the hero shows a real room (room 1) next to the case`);
+  ok(await p.$$eval('.game', els => els.every(e => e.getBoundingClientRect().height >= 48 && e.getBoundingClientRect().right <= innerWidth)), `${dev}: the game cards fit the width`);
+  // »Kako deluje«: a case or a room
+  ok(await p.$$eval('#stepsPrimer .step', els => els.length) === 5 && await p.$eval('#stepsSoba', e => e.hidden), `${dev}: »Kako deluje« starts on the case's 5 steps`);
+  await p.$eval('#tabSoba', e => e.click()); await wait(100);
+  ok(await p.$eval('#stepsSoba', e => !e.hidden && e.querySelectorAll('.step').length === 3) && await p.$eval('#stepsPrimer', e => e.hidden) && await p.$eval('#tabSoba', e => e.getAttribute('aria-selected') === 'true'), `${dev}: the »Soba« tab shows the room's 3 steps`);
+  await p.$eval('#tabPrimer', e => e.click()); await wait(100);
+  ok(await p.$eval('#stepsPrimer', e => !e.hidden) && await p.$eval('#stepsSoba', e => e.hidden), `${dev}: and »Primer« back`);
+  ok(await p.$$eval('#zakaj .gtag', els => els.length) === 5 && text.includes('Natančno branje'), `${dev}: »Za starše«: each skill says which game trains it`);
   ok(!/Play now|How it works|Detektivska pisarna/.test(text) && !(await p.$('[data-lang]')), `${dev}: Slovenian only, the new brand`);
   ok(await p.$$eval('a[href="solo/?play"]', els => els.length >= 2), `${dev}: »Igraj zdaj« links to the game (solo/?play)`);
   ok(await p.evaluate(() => { const r = document.getElementById('play').getBoundingClientRect(); return r.bottom <= innerHeight || innerHeight < 500; }), `${dev}: »Igraj zdaj« is on screen without scrolling`);

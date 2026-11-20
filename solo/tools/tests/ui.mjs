@@ -47,7 +47,9 @@ for (const [dev, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land',
     localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏽‍♀️', g: 'f', sk: '🦊', name: 'Ana', id: '1234' })); });
   await p.reload(); await wait(500);
   const hue = () => p.evaluate(() => getComputedStyle(document.getElementById('app')).getPropertyValue('--hue').trim());
-  ok(await p.evaluate(() => S.screen) === 'files' && await hue() === '160', 'the start screen is brand green (160)');
+  ok(await p.evaluate(() => S.screen) === 'office' && await hue() === '160', 'the office is brand green (160)');
+  await p.click('.door-primeri'); await wait(300);
+  ok(await p.evaluate(() => S.screen) === 'files' && await hue() === '160', 'the cases\' dashboard is brand green (160)');
   const seen = new Set();
   for (const f of await p.evaluate(() => FILES.map(f => [f.id, String(f.hue)]))) {
     await p.evaluate((id) => { S.file = id; toBoard(); }, f[0]); await wait(100);

@@ -9,7 +9,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   const errors = []; p.on('pageerror', e => errors.push(e.message));
   await p.evaluateOnNewDocument(() => { if (window.speechSynthesis) speechSynthesis.getVoices = () => []; });
   await p.setViewport({ width: w, height: h, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
-  await p.goto('http://localhost:8765/solo/?play');
+  await p.goto('http://localhost:8765/solo/?play&igra=primeri');
   await p.evaluate(() => { localStorage.clear(); localStorage.setItem('dp_save_version', '4'); localStorage.setItem('dp_tutorial_done', 'true');
     localStorage.setItem('dp_played_v1', JSON.stringify(['bip:1', 'bip:2']));
     localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏽‍♀️', g: 'f', sk: '🐶', name: 'Ana', id: '1234' })); });

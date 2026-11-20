@@ -32,7 +32,7 @@ const fixture = () => {
   for (const [k, v] of Object.entries(store)) localStorage.setItem(k, v);
 };
 const OLD = 'http://localhost:8765/solo/', NEW = 'http://127.0.0.1:8765/solo/';
-const storageOf = (p) => p.evaluate(() => Object.fromEntries(Object.keys(localStorage).filter(k => k !== 'dp_log_v1' && k !== 'dp_child_n').map(k => [k, localStorage.getItem(k)])));
+const storageOf = (p) => p.evaluate(() => Object.fromEntries(Object.keys(localStorage).filter(k => k !== 'dp_log_v1' && k !== 'dp_child_n' && k !== 'dp_visits_v1' && k !== 'dp_survey_v1').map(k => [k, localStorage.getItem(k)])));
 
 // --- sender
 const a = await page(OLD);

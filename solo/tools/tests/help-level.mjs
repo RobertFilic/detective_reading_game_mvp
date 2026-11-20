@@ -122,7 +122,7 @@ for (const [name, extra] of [['no help state yet', {}], ['a v1 state without ski
   ok(await p.evaluate(() => S.screen === 'call' && S.c.id === 'w1'), '»Nadaljuj igro« starts the warm-up');
   await p.evaluate(() => go('debrief')); await wait(100);
   await p.click('[data-act="warmOff"]'); await wait(100); await p.click('[data-act="resume"]'); await wait(300);
-  ok((await p.help()).warm === 'skipped' && await p.evaluate(() => S.screen === 'files'), '»Preskoči vajo«: back to the adventures');
+  ok((await p.help()).warm === 'skipped' && await p.evaluate(() => S.screen === 'office'), '»Preskoči vajo«: back to the office');
   ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth) && !p.errors.length, `no sideways scroll, no page errors ${p.errors.join('|')}`);
   await p.close();
 }
