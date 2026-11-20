@@ -4,7 +4,9 @@ The producer's tasks for later sittings. On a ping, read this file together with
 
 ## 2026-11-20, after 17:00
 
-### Izboljšave: ⚽ Skrivnost zlatega pokala, case 2 (`p2`, Bor in the goat costume), solo/index.html
+### ✅ 2026-11-20 Izboljšave: ⚽ Skrivnost zlatega pokala, case 2 (`p2`, Bor in the goat costume), solo/index.html
+
+**Done 2026-11-20:** s2 »Kaj delaš na tekmi?« → »Meee! Sem bela koza, maskota Reala iz Madrida!«; s3 (the proof) »Kje je kos mreže z malega gola?« → »Kos mreže visi na rogu Borovega kostuma.«; s9 »Kaj si našla na vaši klopi?« → »Na klopi je risba REAL. Črke so bele!«; reveal »… na rogu Borovega kostuma«; letter »Pia bo Boru popravila rog kostuma.« Case writer, fair-play tester (one answer, s3 the only proof) and Slovenian editor; `cases.mjs` ✔, `tests/run.mjs pokal` ✔ (except the »phew« sound check, which fails in headless Chrome before the change too). Open 🟠 for the producer: s2's »bela« matches the film's white blur, so a child can reasonably tap it; the game says it is not the proof.
 
 The producer's notes (2026-11-19), with the line they refer to:
 

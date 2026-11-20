@@ -14,7 +14,7 @@ for (const [name, w, h] of [['iphone14', 390, 844], ['ipad', 820, 1180], ['land'
   await p.evaluateOnNewDocument(() => { const D = Date, t = new D('2026-11-12T09:00:00').getTime() - D.now();
     window.Date = class extends D { constructor(...a) { super(...(a.length ? a : [D.now() + t])); } static now() { return D.now() + t; } }; });
   await p.setViewport({ width: w, height: h, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
-  await p.goto('http://localhost:8765/solo/?play');
+  await p.goto('http://localhost:8765/solo/?play&igra=primeri');
   await p.evaluate(() => { localStorage.clear(); localStorage.setItem('dp_save_version', '4'); localStorage.setItem('dp_tutorial_done', 'true');
     localStorage.setItem('dp_profile_v1', JSON.stringify({ av: '🕵🏽‍♀️', g: 'f', sk: '🐶', name: 'Ana', id: '1234' })); });
   await p.reload(); await wait(400);
