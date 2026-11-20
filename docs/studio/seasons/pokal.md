@@ -58,7 +58,7 @@ The cards are **the strange drawings**: five of them, all true, all nameless, ea
 | After case | Card (draft, words) | What it seems to mean | What it means at the end |
 |---|---|---|---|
 | 1 | 🖍️ »Na klopi Barcelone je siva risba: BARCELONA.« (7) | A fan's drawing. Zoja draws, and she plays for Barcelona. | A rubbing of the first name cut into the cup. |
-| 2 | ⬜ »Na klopi je risba REAL. Črke so bele!« (7; was »Na risbi REAL so bele črke.«, reworded 2026-11-20) | Odd style. The thought: »Bele črke na sivem? Kot moje drgnjenje!« (4 + 4) | Rubbed, not drawn: the letters are cut into something (the child did it in case 1). |
+| 2 | ⬜ »Na klopi je risba z belim napisom REAL.« (8; was »Na risbi REAL so bele črke.«, reworded 2026-11-20) | Odd style. The thought: »Bele črke na sivem? Kot moje drgnjenje!« (4 + 4) | Rubbed, not drawn: the letters are cut into something (the child did it in case 1). |
 | 3 | 🏆 »Na risbi CITY je obris ročaja.« (6) | A drawing of a mug? | The rubbed thing has a handle: it is **the cup**. Someone is cutting names into it. |
 | 4 | ✨ »Na risbi BAYERN so zlate mrvice.« (6) | Glitter? | Fresh crumbs of gold: the cutting is happening today. Who cuts letters? Tone (case 1). |
 | 5 | 🔄 »Na zadnji risbi so vsa štiri imena.« (7) | Somebody likes everyone? | All teams go on the cup. Not one team's fan (not Luka, not Zoja). |

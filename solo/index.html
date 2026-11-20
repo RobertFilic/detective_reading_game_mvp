@@ -2586,7 +2586,7 @@ const CASES = [
       // the culprit's »alibi« from his happy sister: true, but before the match (a yellow card)
       ['s1', '»Pred tekmo je Bor plesal ob igrišču.«', 'neutral', { who: 'pia', ask: 'Kje je bil tvoj bratec Bor?' }],
       // a lead, not a proof: white (the film's blur) and horns (the proof)
-      ['s2', '»Meee! Sem bela koza, maskota Reala iz Madrida!«', 'neutral', { who: 'bor', ask: 'Kaj delaš na tekmi?' }],
+      ['s2', '»Sem maskota Reala. Nosim kostum z rogovi!«', 'neutral', { who: 'bor', ask: 'Kaj delaš na tekmi?' }],
       // the proof, in the upper half: a trace of the deed (the net tore on the film) on the culprit
       ['s3', '»Kos mreže visi na rogu Borovega kostuma.«', 'evidence', { who: 'tone', ask: 'Kje je kos mreže z malega gola?' }],
       ['s4', '»Med tekmo je Pia branila na velikem igrišču.«', 'clear', { who: 'neza', ask: 'Kje je bila Pia med tekmo?', clears: 'pia' }],
@@ -2598,17 +2598,17 @@ const CASES = [
       // plant for the big mystery: Tone is at every bench before every match
       ['s8', '»Pred vsako tekmo postavim klopi.«', 'neutral', { who: 'tone', ask: 'Kaj delate pred vsako tekmo?' }],
       // card 2: white letters (a rubbing, as the child made in p1)
-      ['s9', '»Na klopi je risba REAL. Črke so bele!«', 'neutral', { who: 'pia', ask: 'Kaj si našla na vaši klopi?' }],
+      ['s9', '»Na klopi je risba z belim napisom REAL.«', 'neutral', { who: 'pia', ask: 'Kaj si našla na vaši klopi?' }],
     ],
     // ⏰ 3 cards: Bor before (true, no alibi), Hana's alibi during, Hana at the goal after
     when: { deed: 'med tekmo: skrivni gol',
       cards: { s1: 'before', s7: 'during', s5: 'after' },
       h1: 'Pred tekmo, med tekmo ali po tekmi?' },
     h1: 'Kdo NI mogel biti? Kje je kos mreže?',
-    reveal: ['Kos mreže je visel na rogu Borovega kostuma.', 'Med tekmo je Bor stekel k malemu golu.', 'Žogo je zabil z glavo, kot prava koza!', 'Ples pa je bil pred tekmo. Napačen čas! 🟨'],
-    caught: 'Bora', excuse: 'Meee! Tudi jaz sem Mbappe!',
+    reveal: ['Kos mreže je visel na rogu Borovega kostuma.', 'Med tekmo je Bor stekel k malemu golu.', 'Žogo je zabil z glavo, kot pravi napadalec!', 'Ples pa je bil pred tekmo. Napačen čas! 🟨'],
+    caught: 'Bora', excuse: 'Tudi jaz sem Mbappe!',
     card: { icon: '🖍️', sid: 's9', think: 'Bele črke na sivem? Kot z mojim svinčnikom! 🤔' },
-    letter: ['Hvala! Boru so dali medaljo »najboljša maskota«. 🏅', 'Pia bo Boru popravila rog kostuma. Meee!', 'P. S. Luka je kapetan Cityja. Ima rdeč trak!'],
+    letter: ['Hvala! Boru so dali medaljo »najboljša maskota«. 🏅', 'Pia bo Boru popravila rog kostuma.', 'P. S. Luka je kapetan Cityja. Ima rdeč trak!'],
   },
   {
     id: 'p3', file: 'pokal', no: 3, type: 'elim', level: 'A', sticker: '🎗️', place: 'Klop Cityja',
